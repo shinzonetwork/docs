@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "main": "src/worker.js",
+  "name": "shinzo-docs",
+  "compatibility_date": "2025-12-03",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./build",
+    "binding": "ASSETS"
+  }
+}
