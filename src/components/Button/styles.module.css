@@ -1,0 +1,65 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border: none;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 150ms ease;
+  outline: none;
+  cursor: pointer;
+
+  background-color: var(--code-foreground);
+  color: var(--ifm-color-content-inverse);
+
+  height: 2.75rem;
+  padding: 0.5rem 2rem;
+}
+
+.button:hover {
+  background-color: color-mix(in srgb, var(--code-foreground) 90%, transparent);
+}
+
+.button:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.button svg {
+  pointer-events: none; /* [&_svg]:pointer-events-none */
+  flex-shrink: 0;       /* [&_svg]:shrink-0 */
+}
+
+.button svg:not([class*="size-"]) {
+  width: 1rem;
+  height: 1rem;
+}
+
+.button {
+  flex-shrink: 0;
+}
+
+.button:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 50%, transparent);
+}
+
+.button[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+
+.button[aria-invalid="true"]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 20%, transparent);
+}
+
+:global(.dark) .button[aria-invalid="true"]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 40%, transparent);
+}
+
+.button:has(> svg) {
+  padding-left: 0.75rem; /* px-3 */
+  padding-right: 0.75rem;
+}

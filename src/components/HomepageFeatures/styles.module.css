@@ -1,0 +1,15 @@
+.features {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+}
+
+.feature {
+  padding: 2rem;
+  border-right: 1px solid var(--szo-border);
+}
