@@ -1,3 +1,11 @@
+---
+title: Quick Start
+sidebar_label: Quick Start
+sidebar_position: 2
+description: View Creator (**Viewkit**) is a CLI tool that helps you initialize, manage, and publish **Shinzo vie...
+---
+
+
 # View Creator
 
 View Creator (**Viewkit**) is a CLI tool that helps you initialize, manage, and publish **Shinzo views**.
