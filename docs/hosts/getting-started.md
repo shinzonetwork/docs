@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Hosts
 
 Hosts play a very important role in the Shinzo ecosystem. The Host's role is primarily as a data transformer and data availability layer. Hosts are responsible for transforming primitive data (blocks, logs, transactions, etc.) into useful "Views" of data. 

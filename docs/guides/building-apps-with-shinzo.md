@@ -1,3 +1,7 @@
+---
+sidebar_position: 5
+---
+
 # Building Apps with Shinzo
 
 Building an app with Shinzo is made easy using our [app-sdk](https://github.com/shinzonetwork/app-sdk)!
