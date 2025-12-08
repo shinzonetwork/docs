@@ -1,3 +1,10 @@
+---
+title: Building Apps With Shinzo
+sidebar_label: Building Apps With Shinzo
+sidebar_position: 5
+description: Building dApps with Shinzo App SDK - local-first querying with embedded DefraDB integration
+---
+
 # Building Apps with Shinzo
 
 Building an app with Shinzo is made easy using our [app-sdk](https://github.com/shinzonetwork/app-sdk)!

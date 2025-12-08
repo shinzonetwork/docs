@@ -1,23 +1,24 @@
-# Hosts
+---
+title: Quick Start
+sidebar_label: Quick Start
+sidebar_position: 2
+description: xxx
+---
 
-Hosts play a very important role in the Shinzo ecosystem. The Host's role is primarily as a data transformer and data availability layer. Hosts are responsible for transforming primitive data (blocks, logs, transactions, etc.) into useful "Views" of data. 
+A go based application for a shinzo host to run
 
-"Views" can be thought of as user-defined APIs. The user/developer is responsible for defining how to retrieve the primitive data, how to transform the data, and finally how to serve the data. The Host is responsible for providing the infrastructure, compute, and memory required to actually perform those transactions and to deliver the View output to the users that need it.
+## Installation
 
-Hosts also play an integral role in the security of the Shinzo network. They are responsible for creating "Attestation Records" which are used to propogate sign-offs from Indexer(s) on primitive data; users have the option to validate the source data against what other Indexers have posted, providing a means for data self-verification.
-
-To help facilitate the Host role, the Shinzo team provides a Host application client that we highly recommend using.
-
-## Setup
-
-First, clone the Host client app repo.
+Clone the Host Client repository and navigate to the project directory:
 
 ```bash
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
 ```
 
-Open the `config.yaml` file at the root of the project, here we will place some config values.
+## Configuration
+
+The Host Client uses a `config.yaml` file for configuration. Open it in your editor:
 
 - `defradb`
     - `url` - you can modify this if you wish to expose a different API url. You may find that you want to change this if you plan on running the Host on your machine directly and you would like to expose a different port. The base URL is expected to be "localhost" or another loopback address or your machine's IP address. If running in a container, make sure to expose this port.
