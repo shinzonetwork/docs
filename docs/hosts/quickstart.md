@@ -9,43 +9,7 @@ Hosts transform raw blockchain data into structured **Views** and contribute to 
 
 ---
 
-## 1. Install DefraDB (Required for Hosting)
-
-Hosts must run a local **DefraDB** instance to sync and store data.
-
-Below are the minimal installation and startup steps extracted from the official documentation.
-
-### Install DefraDB
-
-```bash
-git clone https://github.com/sourcenetwork/defradb.git
-cd defradb
-make install
-export PATH=$PATH:$(go env GOPATH)/bin
-```
-
-### Key Management (Initial Setup)
-
-Create a key for signing operations:
-
-```bash
-export DEFRA_KEYRING_SECRET=<make_a_password>
-defradb keyring generate
-```
-
-### Start DefraDB
-
-Start a local node:
-
-```bash
-defradb start
-```
-
-This will expose the DefraDB API at the default local port.
-
----
-
-## 2. Install the Shinzo Host Client
+## 1. Install the Shinzo Host Client
 
 Clone the repository and enter the directory:
 
@@ -56,15 +20,19 @@ cd shinzo-host-client
 
 ---
 
-## 3. Configuration
+## 2. Configuration
 
 The Host Client reads from `config.yaml`, which comes with sensible defaults.
-Only modify values when needed.
+The only field you need to set is **defradb.keyring_secret** which can alternatively be set with the following command in the terminal window.
+
+```bash
+export DEFRA_KEYRING_SECRET=<make_a_password>
+```
 
 ### Key Fields
 
 * **defradb.url** – API endpoint of your local DefraDB node. Defaults work for most setups.
-* **defradb.keyring_secret** – Optional. Usually provided via the `DEFRA_KEYRING_SECRET` environment variable.
+* **defradb.keyring_secret** – Requires a secret to generate your private keys. 
 * **p2p.bootstrap_peers** – Seed peers for joining the Shinzo network. Defaults include a reliable bootstrap peer.
 * **p2p.listen_addr** – Default is suitable for local runs. Override when containerizing.
 * **store.path** – Directory where local DefraDB data is stored.
@@ -93,10 +61,10 @@ make build-with-playground
 make start-playground
 ```
 
-This runs the Host and also exposes a **Playground GUI** at:
+This runs the Host and also exposes a **Playground GUI**. In the output logs, look for the address:
 
 ```
-http://192.168.50.33:9182
+🧪 GraphQL Playground available at ...
 ```
 
 The playground allows you to interactively run GraphQL queries against primitive data and any Views your Host is serving.
