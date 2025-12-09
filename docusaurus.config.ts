@@ -49,7 +49,7 @@ const config: Config = {
   themeConfig: {
     docs: {
       sidebar: {
-        autoCollapseCategories: true,
+        autoCollapseCategories: false,
       },
     },
     colorMode: {
