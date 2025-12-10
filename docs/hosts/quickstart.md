@@ -2,12 +2,10 @@
 title: Quick Start
 sidebar_label: Quick Start
 sidebar_position: 2
-description: xxx
+description: Run a Shinzo Host to transform blockchain data into verifiable Views
 ---
 
 Hosts transform raw blockchain data into structured **Views** and contribute to network security by producing **Attestation Records**. This quick start guide walks you through installing, configuring, and running the Shinzo Host Client.
-
----
 
 ## 1. Install the Shinzo Host Client
 
@@ -17,8 +15,6 @@ Clone the repository and enter the directory:
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
 ```
-
----
 
 ## 2. Configuration
 
@@ -44,9 +40,7 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 The included `config.yaml` is ready for most local development workflows. You should only need to modify peer settings or storage paths for advanced setups.
 
----
-
-## 4. Running the Host
+## 3. Running the Host
 
 To start the Host Client:
 
@@ -68,8 +62,6 @@ This runs the Host and also exposes a **Playground GUI**. In the output logs, lo
 ```
 
 The playground allows you to interactively run GraphQL queries against primitive data and any Views your Host is serving.
-
----
 
 ## Next Steps
 
