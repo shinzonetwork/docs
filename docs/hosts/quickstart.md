@@ -5,7 +5,7 @@ sidebar_position: 2
 description: xxx
 ---
 
-Hosts transform raw blockchain data into structured **Views** and contribute to network security by producing **Attestation Records**. This quickstart guides you through running the Host Client.
+Hosts transform raw blockchain data into structured **Views** and contribute to network security by producing **Attestation Records**. This quick start guide walks you through installing, configuring, and running the Shinzo Host Client.
 
 ---
 
