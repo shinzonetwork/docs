@@ -94,6 +94,69 @@ To check the health status and uptime data, you can visit here: http://localhost
 
 > On running `make stop` command, it will shut down the client and DefraDB and all data will be saved to the configured storage location.
 
+## Querying the Indexer
+
+Once the indexer is running, you can query the stored blockchain data through the built-in APIs. The indexer exposes the following interfaces:
+
+**GraphQL API (Playground Included)**
+
+The indexer provides a GraphQL endpoint with an optional in-browser GraphQL Playground for interactive development.
+
+GraphQL Endpoint: http://localhost:9181/api/v0/graphql
+
+**GraphQL Playground:**
+
+To enable the interactive GraphQL playground, set the following in your `.env` file:
+
+```bash
+DEFRADB_PLAYGROUND=true
+```
+
+Once enabled, access the playground at: http://localhost:9181/api/v0/playground
+
+This UI allows you to explore all available queries, run test requests, and inspect schema documentation.
+
+Example Query:
+
+```bash
+{
+  Block(filter: { number: { _eq: 18100003 } }) {
+    hash
+    number
+    transactions {
+      hash
+      value
+      gasPrice
+      accessList {
+        address
+        storageKeys
+      }
+      logs {
+        logIndex
+        data
+        address
+        topics
+      }
+    }
+  }
+}
+```
+
+**OpenAPI / REST API**
+
+The indexer also exposes an OpenAPI-compatible REST endpoint for basic health and operational checks:
+
+Health Check:
+
+```bash
+http://localhost:8080/health
+```
+
+:::tip
+⚠️ Security Recommendation
+The GraphQL and REST endpoints are intended for local or private-network access only. Shinzo Hosts are expected to expose necessary public data, so you should NOT directly expose your indexer’s APIs to the public internet. Ensure proper firewall rules or private networking when deploying in production.
+:::
+
 ## ShinzoHub Registration
 
 To participate in the Shinzo Network, you must register your indexer. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your indexer will not be recognized by the network. To register your indexer in ShinzoHub, follow the steps below:
@@ -157,3 +220,7 @@ To participate in the Shinzo Network, you must register your indexer. Registrati
     ```
 
 **🎉 Your indexer is now successfully registered and fully authorized to participate in the Shinzo Network.**
+
+## Need Help?
+
+If you encounter any issues while installing or running the Shinzo Indexer, please let us know by opening a GitHub issue here: https://github.com/shinzonetwork/shinzo-indexer-client/issues
