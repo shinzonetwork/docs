@@ -22,7 +22,7 @@ cd shinzo-host-client
 
 ## 2. Configuration
 
-The Host Client reads from `config.yaml`, which comes with sensible defaults.
+The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config.yaml) which comes with sensible defaults.
 The only field you need to set is **defradb.keyring_secret** which can alternatively be set with the following command in the terminal window.
 
 ```bash
