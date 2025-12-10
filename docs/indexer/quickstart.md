@@ -112,8 +112,6 @@ To enable the interactive GraphQL playground, set the following in your `.env` f
 DEFRADB_PLAYGROUND=true
 ```
 
-Once enabled, access the playground at: http://localhost:9181/api/v0/playground
-
 This UI allows you to explore all available queries, run test requests, and inspect schema documentation.
 
 Example Query:
