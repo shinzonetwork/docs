@@ -2,7 +2,7 @@
 title: Quick Start
 sidebar_label: Quick Start
 sidebar_position: 2
-description: View Creator (**Viewkit**) is a CLI tool that helps you initialize, manage, and publish **Shinzo vie...
+description: View Creator (Viewkit) is a CLI tool that helps you initialize, manage, and publish Shinzo views
 ---
 
 
@@ -30,7 +30,7 @@ This README walks you from **cloning the repo** to **deploying a view locally an
 
 - `git`
 - `make`
-- **Go** 1.23+ installed and on your PATH
+- `go` - 1.23+ installed and on your PATH
 
 Check Go:
 
@@ -49,42 +49,23 @@ Optional but helpful:
 From the directory where you keep your projects:
 
 ```bash
-cd ~/code   # or any directory you prefer
-
-git clone https://github.com/shinzonetwork/view-creator.git
-cd view-creator
+git clone https://github.com/shinzonetwork/shinzo-view-creator.git
+cd shinzo-view-creator
 ```
 
-You are now at the **repo root** of `view-creator`.
+You are now at the **repo root** of `shinzo-view-creator`.
 
 ## 3. Build the `viewkit` binary
 
 From the repo root:
 
 ```bash
-# from the repo root
 make build
 ```
 
-If the build is successful, you should see a `build` directory:
+Now let's add `viewkit` to your PATH:
 
 ```bash
-ls build
-# viewkit  (plus any other build artifacts)
-```
-
-You can now run Viewkit via:
-
-```bash
-./build/viewkit --help
-```
-
-### Optional: add `viewkit` to your PATH
-
-So you don’t have to type `./build` each time:
-
-```bash
-# assuming you're in the repo root
 echo 'export PATH="$PWD/build:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
@@ -94,8 +75,6 @@ Then you can run:
 ```bash
 viewkit --help
 ```
-
-from anywhere.
 
 ## 4. Wasmer runtime on macOS (Apple Silicon)
 
