@@ -11,6 +11,7 @@ The **Shinzo Indexer** is the entry point into the Shinzo Network. The indexer i
 
 - Make sure to have minimum Go version 1.24 or higher. You can download the latest Go verion from [here](https://go.dev/doc/install).
 - Running Ethereum node with JSON-RPC and WebSocket access (GCP Managed Blockchain Node recommended).
+- Metamask with a wallet setup. This wallet does not need to hold any funds.
 
 ## Installation
 
@@ -160,8 +161,13 @@ The GraphQL and REST endpoints are intended for local or private-network access 
 To participate in the Shinzo Network, you must register your indexer. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your indexer will not be recognized by the network. To register your indexer in ShinzoHub, follow the steps below:
 
 1. Start your Indexer
-2. Open the [registration route](http://localhost:8080/registration)
-3. Copy the required fields under registration `message`, `public_key`, `signed_pk_message`, `peer_id` and `signed_peer_message`
+2. Add Shinzo Devnet to Metamask with the following values:
+  - Network name: Shinzo
+  - Default RPC URL: http://shinzohub-rpc.infra.source.network:8545
+  - Chain ID: 9000
+  - Currency symbol: SHN
+3. Open the [registration route](http://localhost:8080/registration)
+4. Copy the required fields under registration `message`, `public_key`, `signed_pk_message`, `peer_id` and `signed_peer_message`
 
 ```bash
 "registration": {
@@ -177,45 +183,8 @@ To participate in the Shinzo Network, you must register your indexer. Registrati
     }
 }
 ```
-
-4. Install Foundry forge to use cast from https://getfoundry.sh/introduction/installation/
-5. Complete this script and `run`
-
-    ```bash
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    RPC_URL="http://34.29.171.79:8545"
-    FROM_ADDR="0x..."
-    PRECOMPILE_ADDR="0x0000000000000000000000000000000000000211"
-    GAS_HEX="0x100000"
-    ENTITY=1
-
-    PEER_PUB="0x..."
-    PEER_SIG="0x..."
-
-    NODE_PUB="0x..."
-    NODE_SIG="0x..."
-
-    # "Shinzo Network Indexer registration" in hex, starting with 0x
-    MESSAGE="0x..."
-
-    PRIVATE_KEY="0x..."
-
-    cast send "$PRECOMPILE_ADDR" \
-      "register(bytes,bytes,bytes,bytes,bytes,uint8)" \
-      "$PEER_PUB" \
-      "$PEER_SIG" \
-      "$NODE_PUB" \
-      "$NODE_SIG" \
-      "$MESSAGE" \
-      "$ENTITY" \
-      --rpc-url "$RPC_URL" \
-      --from "$FROM_ADDR" \
-      --private-key "$PRIVATE_KEY" \
-      --gas-limit "$GAS_LIMIT"
-
-    ```
+5. Go to [register.shinzo.network](https://register.shinzo.network), connect your wallet, click register, and fill in the copied fields from the previous step
+6. Submit your registration. In the metamask popup, click the edit icon in Network fee, then click **Advanced**. Set `Max base fee` to 0. Click **Edit** by `Gas limit` and set this to the max allowed, which should be 35000000. Click **Save** and then **Confirm**. After a few seconds you should see a successful registration toast at the top of the page!
 
 **🎉 Your indexer is now successfully registered and fully authorized to participate in the Shinzo Network.**
 
