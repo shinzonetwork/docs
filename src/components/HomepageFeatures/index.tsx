@@ -15,7 +15,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/shinzo-logo.svg').default,
     description: (
       <>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Shinzō is a trustless data read layer for blockchains that allows apps to read data directly from the network, without relying on centralized indexers or APIs. Validators and a peer network of Hosts provide provable, verifiable data, enabling developers to build on chain data without trusting a middleman.
       </>
     ),
   },
@@ -24,8 +24,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/shinzo-logo.svg').default,
     description: (
       <>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </>
+        Validators create application-ready views from consensus events with cryptographic proofs. Hosts replicate and serve this data over a decentralized network, while apps access it through APIs or streams, transforming raw events into balances, histories, and cross-chain views, all fully verifiable.      </>
     ),
   },
   {
@@ -33,7 +32,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/shinzo-logo.svg').default,
     description: (
       <>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Shinzō gives blockchain data the same guarantees as the base layer. Every answer is cryptographically verifiable, no single vendor controls access, and reading the chain is open and permissionless. Shinzō lets developers build on blockchain truth rather than assumptions: reading the chain as it is, not as someone tells you it is.
       </>
     ),
   },
