@@ -82,33 +82,56 @@ const config: Config = {
       ],
     },
     footer: {
-      style: "light",
-      logo: {
-        alt: "Shinzo Logo",
-        src: "img/shinzo-logo-footer.svg",
-        srcDark: "img/shinzo-logo-footer-w.svg",
-        href: "https://shinzo.network",
-      },
-      links: [
+  style: "light",
+  logo: {
+    alt: "Shinzo Logo",
+    src: "img/shinzo-logo-footer.svg",
+    srcDark: "img/shinzo-logo-footer-w.svg",
+    href: "https://shinzo.network",
+  },
+  links: [
+    {
+      title: "Developers",
+      items: [
         {
-          items: [
-            {
-              label: "Getting Started",
-              to: "/docs/intro",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/shinzonetwork",
-            },
-            {
-              label: "shinzo.network",
-              href: "https://shinzo.network/",
-            },
-          ],
+          label: "Getting Started",
+          to: "/docs/intro",
+        },
+        {
+          label: "GitHub",
+          href: "https://github.com/shinzonetwork",
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Shinzo`,
     },
+    {
+      title: "Community",
+      items: [
+        {
+          label: "X",
+          href: "https://x.com/shinzonetwork",
+        },
+        {
+          label: "Discord",
+          href: "https://discord.gg/shinzo",
+        },
+      ],
+    },
+    {
+      title: "Resources",
+      items: [
+        {
+          label: "Home",
+          href: "https://shinzo.network/",
+        },
+        {
+          label: "Blog",
+          href: "https://medium.com/shinzo",
+        },
+      ],
+    },
+  ],
+  copyright: `Copyright © ${new Date().getFullYear()} Shinzo. Built with Docusaurus.`,
+  },
     prism: {
       theme: codeTheme,
     },
