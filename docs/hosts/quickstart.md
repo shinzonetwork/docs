@@ -29,7 +29,7 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 * **defradb.url** – API endpoint of your local DefraDB node. Defaults work for most setups.
 * **defradb.keyring_secret** – Requires a secret to generate your private keys. 
-* **p2p.bootstrap_peers** – Seed peers for joining the Shinzo network. Defaults include a reliable bootstrap peer.
+* **p2p.bootstrap_peers** – Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer.
 * **p2p.listen_addr** – Default is suitable for local runs. Override when containerizing.
 * **store.path** – Directory where local DefraDB data is stored.
 * **shinzo.web_socket_url** – Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
@@ -39,6 +39,17 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 ### Default Behavior
 
 The included `config.yaml` is ready for most local development workflows. You should only need to modify peer settings or storage paths for advanced setups.
+
+### Connecting to your Indexer
+
+If you are running your own indexer, you can connect your Host to this indexer by modifying **p2p.bootstrap_peers**. In your indexer logs you should see something like:
+
+```
+Dec 17 19:14:55.645 INF p2p Adding pubsub topic PeerID=12D3KooWSY5bv77pAaotM1WGKDFW7nPYaEe8e95XAYxpamkSVvsK Topic=bafyreiehjqcssqfigaawuwnbs3zbjlbubyri4w5dmghd5ocwp4oxhfmf2a
+Dec 17 19:14:55.652 INF node Providing HTTP API at http://192.168.50.33:9181
+```
+From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in **p2p.bootstrap_peers** with your indexer peer.
+
 
 ## 3. Running the Host
 
