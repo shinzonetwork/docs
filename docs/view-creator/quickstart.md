@@ -10,15 +10,6 @@ description: View Creator (**Viewkit**) is a CLI tool that helps you initialize,
 
 View Creator (**Viewkit**) is a CLI tool that helps you initialize, manage, and publish **Shinzo views**.
 
-A **view** is a versioned bundle that can include:
-
-- **Queries** – the raw data shape you want to ingest
-- **SDL** – a GraphQL schema describing how data is modeled or materialized
-- **Lenses** – WebAssembly transforms for filtering, decoding, or reshaping data
-- **Wallet** – credentials used to sign deployments to a target network
-
-This README walks you from **cloning the repo** to **deploying a view locally and on devnet**, including how to use the local DefraDB GraphQL Playground.
-
 ## 1. Prerequisites
 
 **OS**
@@ -42,27 +33,22 @@ go version
 Optional but helpful:
 
 - A code editor (VS Code, GoLand, etc.)
-- Basic comfort with terminal commands
+- Basic comfortability running terminal commands
 
 ## 2. Clone the repository
 
 From the directory where you keep your projects:
 
 ```bash
-cd ~/code   # or any directory you prefer
-
-git clone https://github.com/shinzonetwork/view-creator.git
-cd view-creator
+git clone https://github.com/shinzonetwork/shinzo-view-creator.git
+cd shinzo-view-creator
 ```
-
-You are now at the **repo root** of `view-creator`.
 
 ## 3. Build the `viewkit` binary
 
 From the repo root:
 
 ```bash
-# from the repo root
 make build
 ```
 
@@ -84,7 +70,6 @@ You can now run Viewkit via:
 So you don’t have to type `./build` each time:
 
 ```bash
-# assuming you're in the repo root
 echo 'export PATH="$PWD/build:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
@@ -94,8 +79,6 @@ Then you can run:
 ```bash
 viewkit --help
 ```
-
-from anywhere.
 
 ## 4. Wasmer runtime on macOS (Apple Silicon)
 
@@ -171,7 +154,7 @@ Viewkit revolves around **views**. Each view is a bundle that includes:
 
 Think of the pipeline as:
 
-> raw data → query → lenses (WASM) → GraphQL SDL → view stored + queryable
+**raw data → query → lenses (WASM) → GraphQL SDL → view stored + queryable**
 
 ## 6. Quickstart: create and deploy a view (`testdeploy`)
 
