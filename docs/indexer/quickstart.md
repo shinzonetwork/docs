@@ -15,6 +15,13 @@ The **Shinzo Indexer** is the entry point into the Shinzo Network. The indexer i
 
 ## Installation
 
+0. If using Linux, install the native build toolchain:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential pkg-config
+```
+
 1. Clone the repository:
 
 ```bash
