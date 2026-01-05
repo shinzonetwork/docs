@@ -7,6 +7,15 @@ description: Run a Shinzo Host to transform blockchain data into verifiable View
 
 Hosts transform raw blockchain data into structured **Views** and contribute to network security by producing **Attestation Records**. This quick start guide walks you through installing, configuring, and running the Shinzo Host Client.
 
+## Hardware Recommendations
+
+| Component | Minimum | Recommended |
+| --- | --- | --- |
+| CPU | 8 vCPUs | 16 vCPUs |
+| Memory (RAM) | 16 GB | 32–64 GB |
+| Storage | 3 TB NVMe | 4+ TB NVMe |
+| OS | Ubuntu 24.04 | Ubuntu 24.04 |
+
 ## 1. Install the Shinzo Host Client
 
 Clone the repository and enter the directory:
