@@ -7,6 +7,15 @@ description: Instructions for installing and running the Shinzo Indexer
 
 The **Shinzo Indexer** is the entry point into the Shinzo Network. The indexer is a client built with golang allowing a validator of any network to earn an additional reward for sorting and storing blocks with Shinzo.
 
+## Hardware Recommendations
+
+| Component | Minimum | Recommended |
+| --- | --- | --- |
+| CPU | 8 vCPUs | 16 vCPUs |
+| Memory (RAM) | 16 GB | 32–64 GB |
+| Storage | 3 TB NVMe | 4+ TB NVMe |
+| OS | Ubuntu 24.04 | Ubuntu 24.04 |
+
 ## Prerequisites
 
 - Make sure to have minimum Go version 1.24 or higher. You can download the latest Go verion from [here](https://go.dev/doc/install).
