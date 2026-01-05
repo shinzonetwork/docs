@@ -71,8 +71,8 @@ go run cmd/main.go
 ### Or Run with Playground Enabled
 
 ```bash
-make build-with-playground
-make start-playground
+make build-playground
+./bin/host
 ```
 
 This runs the Host and also exposes a **Playground GUI**. In the output logs, look for the address:

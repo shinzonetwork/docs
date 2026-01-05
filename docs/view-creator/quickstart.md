@@ -14,8 +14,7 @@ View Creator (**Viewkit**) is a CLI tool that helps you initialize, manage, and 
 
 **OS**
 
-- macOS on Apple Silicon (M1/M2/M3) for the Wasmer setup below  
-  (Linux/Intel will use a different Wasmer library path)
+- macOS on Apple Silicon (M1/M2/M3) or Linux (x86_64 / amd_64)
 
 **Tools**
 
@@ -80,7 +79,7 @@ Then you can run:
 viewkit --help
 ```
 
-## 4. Wasmer runtime on macOS (Apple Silicon)
+## 4. Wasmer runtime
 
 Viewkit can execute WebAssembly **lenses** locally to validate and preview them.
 
@@ -106,7 +105,7 @@ This ensures `wasmer-go` and its packaged native libraries are present in your `
 We will use three environment variables:
 
 - `WASMER_ROOT`  
-  Points to the directory where the Apple Silicon `libwasmer.dylib` lives.
+  Points to the directory where  `libwasmer.dylib` lives.
 
 - `WASMER_LIB_PATH`  
   Used by `wasmer-go` to find the dynamic library.
@@ -114,14 +113,22 @@ We will use three environment variables:
 - `DYLD_LIBRARY_PATH`  
   macOS dynamic loader search path. We prepend `WASMER_ROOT` so the loader can find `libwasmer.dylib` when `viewkit` starts.
 
-### 4.3 Configure the env vars (Apple Silicon)
+### 4.3 Configure the env vars
 
-Append these lines to your `~/.zshrc`:
+Append these lines to your `~/.zshrc` if on **Apple Silicon**:
 
 ```bash
 echo 'export WASMER_ROOT="$(go env GOPATH)/pkg/mod/github.com/wasmerio/wasmer-go@v1.0.4/wasmer/packaged/lib/darwin-aarch64"' >> ~/.zshrc
 echo 'export WASMER_LIB_PATH="$WASMER_ROOT"' >> ~/.zshrc
 echo 'export DYLD_LIBRARY_PATH="$WASMER_ROOT:$DYLD_LIBRARY_PATH"' >> ~/.zshrc
+```
+
+Otherwise append these lines to your `~/.zshrc` if on **Linux**:
+
+```bash
+echo 'export WASMER_ROOT="$(go env GOPATH)/pkg/mod/github.com/wasmerio/wasmer-go@v1.0.4/wasmer/packaged/lib/linux-amd64"' >> ~/.zshrc
+echo 'export WASMER_LIB_PATH="$WASMER_ROOT"' >> ~/.zshrc
+echo 'export LD_LIBRARY_PATH="$WASMER_ROOT:$LD_LIBRARY_PATH"' >> ~/.zshrc
 ```
 
 Reload your shell configuration:
@@ -377,7 +384,7 @@ Make sure:
 Then:
 
 ```bash
-viewkit view deploy testdeploy --target devnet
+viewkit view deploy testdeploy --target devnet --rpc http://shinzohub-rpc.infra.source.network:8545
 ```
 
 Conceptually:
