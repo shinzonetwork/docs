@@ -107,20 +107,13 @@ docker-compose up --build
 
 Once you start the client using `make start` command, it will begin submitting block data to the configured DefraDB instance.
 
-To check the health status and uptime data, you can visit here: http://localhost:8080/health
 
-> On running `make stop` command, it will shut down the client and DefraDB and all data will be saved to the configured storage location.
+> Running `make stop` command will shut down the client and DefraDB and all data will be saved to the configured storage location.
 
 
 **OpenAPI / REST API**
 
-The indexer also exposes an OpenAPI-compatible REST endpoint for basic health and operational checks:
-
-Health Check:
-
-```bash
-http://localhost:8080/health
-```
+The indexer also exposes an OpenAPI-compatible REST endpoint for basic health and operational checks, which you can visit here: http://localhost:8080/health
 
 :::tip
 ⚠️ Security Recommendation
