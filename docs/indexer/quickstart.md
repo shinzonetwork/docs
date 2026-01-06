@@ -111,51 +111,6 @@ To check the health status and uptime data, you can visit here: http://localhost
 
 > On running `make stop` command, it will shut down the client and DefraDB and all data will be saved to the configured storage location.
 
-## Querying the Indexer
-
-Once the indexer is running, you can query the stored blockchain data through the built-in APIs. The indexer exposes the following interfaces:
-
-**GraphQL API (Playground Included)**
-
-The indexer provides a GraphQL endpoint with an optional in-browser GraphQL Playground for interactive development.
-
-GraphQL Endpoint: http://localhost:9181/api/v0/graphql
-
-**GraphQL Playground:**
-
-To enable the interactive GraphQL playground, set the following in your `.env` file:
-
-```bash
-DEFRADB_PLAYGROUND=true
-```
-
-This UI allows you to explore all available queries, run test requests, and inspect schema documentation.
-
-Example Query:
-
-```bash
-{
-  Block(filter: { number: { _eq: 18100003 } }) {
-    hash
-    number
-    transactions {
-      hash
-      value
-      gasPrice
-      accessList {
-        address
-        storageKeys
-      }
-      logs {
-        logIndex
-        data
-        address
-        topics
-      }
-    }
-  }
-}
-```
 
 **OpenAPI / REST API**
 
