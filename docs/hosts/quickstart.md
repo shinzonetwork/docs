@@ -77,7 +77,7 @@ go run cmd/main.go
 
 ```bash
 make build-playground
-./bin/host
+make start
 ```
 
 This runs the Host and also exposes a **Playground GUI**. In the output logs, look for the address:
@@ -86,7 +86,26 @@ This runs the Host and also exposes a **Playground GUI**. In the output logs, lo
 🧪 GraphQL Playground available at ...
 ```
 
-The playground allows you to interactively run GraphQL queries against primitive data and any Views your Host is serving.
+The playground allows you to interactively run GraphQL queries against primitive data and any Views your Host is serving. Give it a try with the following GraphQL query:
+
+```graphql
+query GetLatestLogs {
+  Ethereum__Mainnet__Log(
+    order: { blockNumber: DESC }
+    limit: 10
+  ) {
+    address
+    topics
+    data
+    blockNumber
+    blockHash
+    transactionHash
+    transactionIndex
+    logIndex
+    removed
+  }
+}
+```
 
 ## Next Steps
 
