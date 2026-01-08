@@ -16,6 +16,58 @@ Hosts transform raw blockchain data into structured **Views** and contribute to 
 | Storage | 3 TB NVMe | 4+ TB NVMe |
 | OS | Ubuntu 24.04 | Ubuntu 24.04 |
 
+## 0. One-Step Cloud Setup
+
+You can run the host with the following commands.
+
+```bash
+#!/bin/bash
+set -e
+
+# Install Docker
+echo "Installing Docker..."
+sudo apt-get update
+sudo apt-get install -y docker.io
+
+
+echo "🛑 Stopping existing container if running..."
+sudo docker stop shinzo-host || true
+sudo docker rm shinzo-host || true
+
+# HOST
+sudo mkdir -p ~/data/defradb ~/data/lens
+sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
+curl -L -o ~/config.yaml \
+  https://raw.githubusercontent.com/shinzonetwork/shinzo-host-client/main/config.yaml
+
+# NON BRANCHABLE HOST
+
+sudo docker pull ghcr.io/shinzonetwork/shinzo-host-client:sha-ddfead9
+sudo docker run -d \
+  --name shinzo-host \
+  --network host \
+  -v ~/data/defradb:/app/.defra/data \
+  -v ~/data/lens:/app/.lens \
+  -v ~/config.yaml:/app/config.yaml:ro \
+  -e DEFRA_URL=0.0.0.0:9181 \
+  -e LOG_LEVEL=error \
+  -e LOG_SOURCE=false \
+  -e LOG_STACKTRACE=false \
+  --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:8080/metrics || exit 1" \
+  --health-interval=30s \
+  --health-timeout=10s \
+  --health-retries=3 \
+  --health-start-period=40s \
+  --restart unless-stopped \
+  ghcr.io/shinzonetwork/shinzo-host-client:sha-ddfead9
+```
+
+To ensure this is running properly, you can test it by checking the metrics endpoint.
+
+```bash
+curl http://localhost:8080/metrics
+```
+
 ## 1. Install the Shinzo Host Client
 
 Clone the repository and enter the directory:

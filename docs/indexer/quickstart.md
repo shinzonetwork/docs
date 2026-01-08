@@ -51,6 +51,12 @@ docker pull ghcr.io/shinzonetwork/shinzo-indexer-client:sha-8701915
 sudo docker run -d --network host --name shinzo-indexer   --restart unless-stopped   -e GETH_RPC_URL="<YOUR_RPC_URL>"   -e GETH_WS_URL="<YOUR_WS_URL>"   -e GETH_API_KEY="<YOUR_API_KEY>"   -e INDEXER_START_HEIGHT=23900000   -e DEFRADB_KEYRING_SECRET="pingpong"   -v /mnt/defradb-data:/app/.defra   -v /mnt/defradb-data/logs:/app/logs   -p 8080:8080   -p 9171:9171  ghcr.io/shinzonetwork/shinzo-indexer-client:sha-8701915
 ```
 
+To ensure this is running properly, you can test it by checking the metrics endpoint.
+
+```bash
+curl http://localhost:8080/metrics
+```
+
 ## Installation
 
 0. If using Linux, install the native build toolchain:
