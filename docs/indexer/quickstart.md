@@ -22,6 +22,35 @@ The **Shinzo Indexer** is the entry point into the Shinzo Network. The indexer i
 - Running Ethereum node with JSON-RPC and WebSocket access (GCP Managed Blockchain Node recommended).
 - Metamask with a wallet setup. This wallet does not need to hold any funds.
 
+## One-Step Cloud Setup
+
+You can run the indexer with the following commands. Be sure to replace **"&lt;YOUR_RPC_URL&gt;", "&lt;YOUR_WS_URL&gt;", and "&lt;YOUR_API_KEY&gt;"** before running.
+
+
+```bash
+#!/bin/bash
+set -e
+
+# Install Docker
+echo "Installing Docker..."
+sudo apt-get update
+sudo apt-get install -y docker.io
+
+
+echo "🛑 Stopping existing container if running..."
+sudo docker stop shinzo-indexer || true
+sudo docker rm shinzo-indexer || true
+
+# INDEXER
+sudo mkdir -p /mnt/defradb-data/logs
+sudo chown -R 1001:1001 /mnt/defradb-data
+
+# STANDARD SETUP (NON BRANCHABLE)
+docker pull ghcr.io/shinzonetwork/shinzo-indexer-client:sha-8701915
+
+sudo docker run -d --network host --name shinzo-indexer   --restart unless-stopped   -e GETH_RPC_URL="<YOUR_RPC_URL>"   -e GETH_WS_URL="<YOUR_WS_URL>"   -e GETH_API_KEY="<YOUR_API_KEY>"   -e INDEXER_START_HEIGHT=23900000   -e DEFRADB_KEYRING_SECRET="pingpong"   -v /mnt/defradb-data:/app/.defra   -v /mnt/defradb-data/logs:/app/logs   -p 8080:8080   -p 9171:9171  ghcr.io/shinzonetwork/shinzo-indexer-client:sha-8701915
+```
+
 ## Installation
 
 0. If using Linux, install the native build toolchain:
