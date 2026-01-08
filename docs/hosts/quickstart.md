@@ -59,7 +59,7 @@ Dec 17 19:14:55.652 INF node Providing HTTP API at http://192.168.50.33:9181
 ```
 From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in **p2p.bootstrap_peers** with your indexer peer.
 
-If you are running your own indexer locally, it's likely already using port 9181. so update your **defradb url** field to:
+If you are running your own indexer locally, it's likely already using port 9181. If so, in **config.yaml** update the **defradb url** field to:
 
 ```
 url: "localhost:9182"
@@ -67,7 +67,13 @@ url: "localhost:9182"
 
 ## 3. Running the Host
 
-To start the Host Client:
+### Run with Docker Compose
+
+```bash
+docker compose up --build
+```
+
+### Run just the Host Client
 
 ```bash
 go run cmd/main.go
