@@ -22,6 +22,41 @@ The **Shinzo Indexer** is the entry point into the Shinzo Network. The indexer i
 - Running Ethereum node with JSON-RPC and WebSocket access (GCP Managed Blockchain Node recommended).
 - Metamask with a wallet setup. This wallet does not need to hold any funds.
 
+## One-Step Cloud Setup
+
+You can run the indexer with the following commands. Be sure to replace **"&lt;YOUR_RPC_URL&gt;", "&lt;YOUR_WS_URL&gt;", and "&lt;YOUR_API_KEY&gt;"** before running.
+
+
+```bash
+#!/bin/bash
+set -e
+
+# Install Docker
+echo "Installing Docker..."
+sudo apt-get update
+sudo apt-get install -y docker.io
+
+
+echo "🛑 Stopping existing container if running..."
+sudo docker stop shinzo-indexer || true
+sudo docker rm shinzo-indexer || true
+
+# INDEXER
+sudo mkdir -p /mnt/defradb-data/logs
+sudo chown -R 1001:1001 /mnt/defradb-data
+
+# STANDARD SETUP (NON BRANCHABLE)
+docker pull ghcr.io/shinzonetwork/shinzo-indexer-client:sha-8701915
+
+sudo docker run -d --network host --name shinzo-indexer   --restart unless-stopped   -e GETH_RPC_URL="<YOUR_RPC_URL>"   -e GETH_WS_URL="<YOUR_WS_URL>"   -e GETH_API_KEY="<YOUR_API_KEY>"   -e INDEXER_START_HEIGHT=23900000   -e DEFRADB_KEYRING_SECRET="pingpong"   -v /mnt/defradb-data:/app/.defra   -v /mnt/defradb-data/logs:/app/logs   -p 8080:8080   -p 9171:9171  ghcr.io/shinzonetwork/shinzo-indexer-client:sha-8701915
+```
+
+To ensure this is running properly, you can test it by checking the metrics endpoint.
+
+```bash
+curl http://localhost:8080/metrics
+```
+
 ## Installation
 
 0. If using Linux, install the native build toolchain:
@@ -107,65 +142,13 @@ docker-compose up --build
 
 Once you start the client using `make start` command, it will begin submitting block data to the configured DefraDB instance.
 
-To check the health status and uptime data, you can visit here: http://localhost:8080/health
 
-> On running `make stop` command, it will shut down the client and DefraDB and all data will be saved to the configured storage location.
+> Running `make stop` command will shut down the client and DefraDB and all data will be saved to the configured storage location.
 
-## Querying the Indexer
-
-Once the indexer is running, you can query the stored blockchain data through the built-in APIs. The indexer exposes the following interfaces:
-
-**GraphQL API (Playground Included)**
-
-The indexer provides a GraphQL endpoint with an optional in-browser GraphQL Playground for interactive development.
-
-GraphQL Endpoint: http://localhost:9181/api/v0/graphql
-
-**GraphQL Playground:**
-
-To enable the interactive GraphQL playground, set the following in your `.env` file:
-
-```bash
-DEFRADB_PLAYGROUND=true
-```
-
-This UI allows you to explore all available queries, run test requests, and inspect schema documentation.
-
-Example Query:
-
-```bash
-{
-  Block(filter: { number: { _eq: 18100003 } }) {
-    hash
-    number
-    transactions {
-      hash
-      value
-      gasPrice
-      accessList {
-        address
-        storageKeys
-      }
-      logs {
-        logIndex
-        data
-        address
-        topics
-      }
-    }
-  }
-}
-```
 
 **OpenAPI / REST API**
 
-The indexer also exposes an OpenAPI-compatible REST endpoint for basic health and operational checks:
-
-Health Check:
-
-```bash
-http://localhost:8080/health
-```
+The indexer also exposes an OpenAPI-compatible REST endpoint for basic health and operational checks, which you can visit here: http://localhost:8080/health
 
 :::tip
 ⚠️ Security Recommendation
