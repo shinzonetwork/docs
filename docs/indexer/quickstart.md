@@ -162,7 +162,7 @@ To participate in the Shinzo Network, you must register your indexer. Registrati
 1. Start your Indexer
 2. Add Shinzo Devnet to Metamask with the following values:
   - Network name: Shinzo
-  - Default RPC URL: http://shinzohub-rpc.infra.source.network:8545
+  - Default RPC URL: http://rpc.devnet.shinzo.network:8545
   - Chain ID: 9000
   - Currency symbol: SHN
 3. Open the [registration route](http://localhost:8080/registration)
