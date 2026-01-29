@@ -95,8 +95,8 @@ DEFRADB_KEYRING_SECRET=<pick_a_password>
 # DEFRADB_P2P_BOOTSTRAP_PEERS=[]
 # DEFRADB_P2P_LISTEN_ADDR="/ip4/127.0.0.1/tcp/9171"
 
-# Indexer Configuration
-INDEXER_START_HEIGHT=<pick_a_starting_block> # recommended 23000000
+# Indexer Configuration (recommended 23000000)
+INDEXER_START_HEIGHT=<pick_a_starting_block>
 ```
 
 :::tip Note
