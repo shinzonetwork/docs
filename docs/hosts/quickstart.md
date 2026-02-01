@@ -173,10 +173,11 @@ query GetLatestLogs {
 }
 ```
 
+You can checkout more query examples [here](/docs/hosts/examples.md).
+
 ## Next Steps
 
 You are now ready to:
 
 * Begin receiving and hosting Views
 * Experiment with queries through the playground GUI
-
