@@ -22,7 +22,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Host",
-      items: ["hosts/overview","hosts/quickstart"],
+      items: ["hosts/overview","hosts/quickstart", "hosts/examples"],
     },
     {
       type: "category",
