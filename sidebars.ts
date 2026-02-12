@@ -17,7 +17,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Indexer",
-      items: ["indexer/overview","indexer/quickstart"],
+      items: ["indexer/overview","indexer/quickstart","indexer/faq"],
     },
     {
       type: "category",
