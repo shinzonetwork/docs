@@ -163,10 +163,9 @@ To participate in the Shinzo Network, you must register your indexer. Registrati
   - Default RPC URL: http://rpc.devnet.shinzo.network:8545
   - Chain ID: 91273002
   - Currency symbol: SHN
-3. Open the [registration route](http://localhost:8080/registration-app)
-4. Go to [register.shinzo.network](https://register.shinzo.network), connect your wallet and share your wallet address in the Shinzo Discord channel to request whitelisting as an Indexer.
-5. Once your address has been whitelisted, return to the registration page, click Register, and select "Indexer" as your role to complete the process.
-6. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
+3. Open the [registration route](http://localhost:8080/registration-app), connect your wallet and share your wallet address in the Shinzo Discord channel to request whitelisting as an Indexer.
+4. Once your address has been whitelisted, return to the registration page, click Register, and select "Indexer" as your role to complete the process.
+5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
 
 **🎉 Your indexer is now successfully registered and fully authorized to participate in the Shinzo Network.**
 
