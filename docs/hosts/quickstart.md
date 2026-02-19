@@ -175,6 +175,26 @@ query GetLatestLogs {
 
 You can checkout more query examples [here](/docs/hosts/examples.md).
 
+## 4. ShinzoHub Registration
+
+To participate in the Shinzo Network, you must register your host. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your host will not be recognized by the network. To register your host in ShinzoHub, follow the steps below:
+
+1. Start your Host
+2. Add Shinzo Devnet to Metamask with the following values:
+  - Network name: Shinzo
+  - Default RPC URL: http://rpc.devnet.shinzo.network:8545
+  - Chain ID: 91273002
+  - Currency symbol: SHN
+3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
+4. On the registration page, click Register and select "Host" as your role to complete the process.
+5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
+
+**🎉 Your host is now successfully registered and fully authorized to participate in the Shinzo Network.**
+
+## Need Help?
+
+If you encounter any issues while installing or running the Shinzo Indexer, please let us know by opening a GitHub issue [here](https://github.com/shinzonetwork/shinzo-indexer-client/issues).
+
 ## Next Steps
 
 You are now ready to:
