@@ -142,9 +142,7 @@ docker-compose up --build
 
 Once you start the client using `make start` command, it will begin submitting block data to the configured DefraDB instance.
 
-
 > Running `make stop` command will shut down the client and DefraDB and all data will be saved to the configured storage location.
-
 
 **OpenAPI / REST API**
 
@@ -165,28 +163,12 @@ To participate in the Shinzo Network, you must register your indexer. Registrati
   - Default RPC URL: http://rpc.devnet.shinzo.network:8545
   - Chain ID: 91273002
   - Currency symbol: SHN
-3. Open the [registration route](http://localhost:8080/registration)
-4. Copy the required fields under registration `message`, `public_key`, `signed_pk_message`, `peer_id` and `signed_peer_message`
-
-```bash
-"registration": {
-    "enabled": true,
-    "message": "0x5368696e7a6f204e6574776f726b20496e646578657220726567697374726174696f6e",
-    "defra_pk_registration": {
-        "public_key": "0x02cea33c883fe893a277ef7637efbc844638d78a595e1776e7e30263631be798e3",
-        "signed_pk_message": "0x3045022100c210e58b0547d7ed236cacc395c424a866b941422632e8d28f714ca7a0e6baa302201e94c77ac2124a21a62921bc28c909beaf4c8c3b03072c03d58853b12ea10f05"
-    },
-    "peer_id_registration": {
-        "peer_id": "0xe02a3d4bd4b735aade91f5bcda664c446ecc44a5edfd8f6a45e49ac0bde4c2f6",
-        "signed_peer_message": "0x0f926a1f832ca9b79581bdee22cc74c60099460ff6a75616f763cb1a1dd5508a184bf45efd7f25c048d60347ad99b19dd652c278f4b9c808eabe64c15e9f7201"
-    }
-}
-```
-5. Go to [register.shinzo.network](https://register.shinzo.network), connect your wallet, click register, and fill in the copied fields from the previous step
-6. Submit your registration. In the metamask popup, click the edit icon in Network fee, then click **Advanced**. Set `Max base fee` to 0. Click **Edit** by `Gas limit` and set this to the max allowed, which should be 35000000. Click **Save** and then **Confirm**. After a few seconds you should see a successful registration toast at the top of the page!
+3. Open the [registration route](http://localhost:8080/registration-app), connect your wallet and share your wallet address in the Shinzo Discord channel to request whitelisting as an Indexer.
+4. Once your address has been whitelisted, return to the registration page, click Register, and select "Indexer" as your role to complete the process.
+5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
 
 **🎉 Your indexer is now successfully registered and fully authorized to participate in the Shinzo Network.**
 
 ## Need Help?
 
-If you encounter any issues while installing or running the Shinzo Indexer, please let us know by opening a GitHub issue here: https://github.com/shinzonetwork/shinzo-indexer-client/issues
+If you encounter any issues while installing or running the Shinzo Indexer, please let us know by opening a GitHub issue [here](https://github.com/shinzonetwork/shinzo-indexer-client/issues).
