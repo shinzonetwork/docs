@@ -39,7 +39,6 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           sidebarCollapsible: true,
           sidebarCollapsed: true,
-          editUrl: "https://github.com/shinzonetwork/web/tree/main/apps/docs/",
         },
         theme: {
           customCss: "./src/css/custom.scss",
