@@ -34,6 +34,8 @@ const config: Config = {
       "classic",
       {
         docs: {
+          path: "./content",
+          routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           sidebarCollapsible: true,
           sidebarCollapsed: true,
@@ -95,7 +97,7 @@ const config: Config = {
       items: [
         {
           label: "Getting Started",
-          to: "/docs/intro",
+          to: "/intro",
         },
         {
           label: "GitHub",
