@@ -13,7 +13,6 @@ import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 const sidebars: SidebarsConfig = {
   shinzoSidebar: [
     "intro",
-    "supported-networks",
     {
       type: "category",
       label: "Indexer",
@@ -34,7 +33,6 @@ const sidebars: SidebarsConfig = {
       label: "Guides",
       items: ["guides/building-apps-with-shinzo"],
     },
-    "tokenomics",
     "glossary",
   ],
 };
