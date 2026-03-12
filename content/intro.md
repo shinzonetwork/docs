@@ -1,8 +1,9 @@
 ---
-title: What is Shinzō?
+title: What is Shinzō?
 sidebar_label: Introduction
 sidebar_position: 1
-description: Shinzō Network - decentralized data indexing, querying, and access-control protocol for blockchain
+slug: /
+description: Shinzō Network - decentralized data indexing, querying, and access-control protocol for blockchain
 ---
 
 # What is Shinzō?
