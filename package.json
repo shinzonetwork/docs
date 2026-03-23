@@ -50,6 +50,12 @@
   "pnpm": {
     "overrides": {
       "serialize-javascript": "^7.0.3"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "docusaurus-plugin-glossary>react": "^19.0.0",
+        "docusaurus-plugin-glossary>react-dom": "^19.0.0"
+      }
     }
   }
 }
