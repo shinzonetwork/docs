@@ -11,8 +11,9 @@ const glossaryOptions = {
 };
 
 const config: Config = {
-  title: "Shinzō Developer Portal",
+  title: "Shinzō Developer Portal",
   tagline: "Build the Read Layer of Truth",
+  clientModules: ["./src/plausible.ts"],
   url: "https://docs.shinzo.network",
   baseUrl: "/",
   favicon: "img/favicon.png",
