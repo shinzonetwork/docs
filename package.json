@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
+    "docusaurus": "IGNORE_PEER_DEPENDENCIES=react,react-dom docusaurus",
+    "start": "IGNORE_PEER_DEPENDENCIES=react,react-dom docusaurus start",
+    "build": "IGNORE_PEER_DEPENDENCIES=react,react-dom docusaurus build",
     "build-and-deploy": "pnpm build && wrangler deploy",
     "build-and-upload": "pnpm build && wrangler versions upload",
     "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
+    "serve": "IGNORE_PEER_DEPENDENCIES=react,react-dom docusaurus serve",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -18,6 +18,7 @@
     "@easyops-cn/docusaurus-search-local": "^0.55.1",
     "@mdx-js/react": "^3.1.1",
     "clsx": "^2.1.1",
+    "docusaurus-plugin-glossary": "^3.1.0",
     "docusaurus-plugin-sass": "^0.2.6",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.4",
@@ -49,6 +50,20 @@
   "pnpm": {
     "overrides": {
       "serialize-javascript": "^7.0.3"
-    }
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "docusaurus-plugin-glossary>react": "^19.0.0",
+        "docusaurus-plugin-glossary>react-dom": "^19.0.0"
+      }
+    },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "core-js",
+      "core-js-pure",
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
   }
 }
