@@ -33,7 +33,11 @@ const sidebars: SidebarsConfig = {
       label: "Guides",
       items: ["guides/building-apps-with-shinzo"],
     },
-    "glossary",
+    {
+      type: "link",
+      label: "Glossary",
+      href: "/glossary",
+    },
   ],
 };
 

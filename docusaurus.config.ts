@@ -2,6 +2,14 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import { codeTheme } from "./src/code-theme";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const glossaryPlugin = require("docusaurus-plugin-glossary");
+
+const glossaryOptions = {
+  glossaryPath: "glossary/glossary.json",
+  routePath: "/glossary",
+};
+
 const config: Config = {
   title: "Shinzō Developer Portal",
   tagline: "Build the Read Layer of Truth",
@@ -39,6 +47,11 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           sidebarCollapsible: true,
           sidebarCollapsed: true,
+          remarkPlugins: [
+            glossaryPlugin.getRemarkPlugin(glossaryOptions, {
+              siteDir: __dirname,
+            }),
+          ],
         },
         theme: {
           customCss: "./src/css/custom.scss",
@@ -154,6 +167,10 @@ const config: Config = {
           highlightSearchTermsOnTargetPage: true,
           explicitSearchResultPath: true,
         },
+    ],
+    [
+      "docusaurus-plugin-glossary",
+      glossaryOptions,
     ],
   ],
 };
