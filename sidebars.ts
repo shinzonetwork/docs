@@ -16,17 +16,28 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Indexer",
-      items: ["indexer/overview","indexer/quickstart","indexer/faq"],
+      link: { type: "doc", id: "indexer/overview" },
+      items: [
+        "indexer/quickstart",
+        "indexer/faq"
+      ],
     },
     {
       type: "category",
       label: "Host",
-      items: ["hosts/overview","hosts/quickstart", "hosts/examples"],
+      link: { type: "doc", id: "hosts/overview" },
+      items: [
+        "hosts/quickstart", 
+        "hosts/examples"
+      ],
     },
     {
       type: "category",
       label: "View Creator",
-      items: ["view-creator/overview","view-creator/quickstart"],
+      link: { type: "doc", id: "view-creator/overview" },
+      items: [
+        "view-creator/quickstart"
+      ],
     },
     {
       type: "category",
