@@ -16,16 +16,19 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Indexer",
+      link: { type: "doc", id: "indexer/overview" },
       items: ["indexer/overview","indexer/quickstart","indexer/faq"],
     },
     {
       type: "category",
       label: "Host",
+      link: { type: "doc", id: "hosts/overview" },
       items: ["hosts/overview","hosts/quickstart", "hosts/examples"],
     },
     {
       type: "category",
       label: "View Creator",
+      link: { type: "doc", id: "view-creator/overview" },
       items: ["view-creator/overview","view-creator/quickstart"],
     },
     {

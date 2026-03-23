@@ -45,8 +45,7 @@ const config: Config = {
           path: "./content",
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          sidebarCollapsible: true,
-          sidebarCollapsed: true,
+          sidebarCollapsible: false,
           remarkPlugins: [
             glossaryPlugin.getRemarkPlugin(glossaryOptions, {
               siteDir: __dirname,
@@ -62,9 +61,7 @@ const config: Config = {
 
   themeConfig: {
     docs: {
-      sidebar: {
-        autoCollapseCategories: false,
-      },
+      sidebar: {},
     },
     colorMode: {
       respectPrefersColorScheme: false,
