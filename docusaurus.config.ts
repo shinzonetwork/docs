@@ -17,6 +17,15 @@ const config: Config = {
   baseUrl: "/",
   favicon: "img/favicon.png",
 
+  // Plausible Analytics
+  scripts: [
+    {
+      src: "https://plausible.source.network/js/script.js",
+      defer: true,
+      "data-domain": "docs.shinzo.network",
+    },
+  ],
+
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true,
@@ -68,7 +77,6 @@ const config: Config = {
       defaultMode: "light",
     },
     navbar: {
-      title: null,
       hideOnScroll: false,
       logo: {
         alt: "Shinzo Network Documentation",
