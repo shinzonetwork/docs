@@ -77,7 +77,6 @@ const config: Config = {
       defaultMode: "light",
     },
     navbar: {
-      title: null,
       hideOnScroll: false,
       logo: {
         alt: "Shinzo Network Documentation",
