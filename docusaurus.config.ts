@@ -114,7 +114,7 @@ const config: Config = {
       items: [
         {
           label: "Getting Started",
-          to: "/intro",
+          to: "/introduction/what-is-shinzo",
         },
         {
           label: "GitHub",
