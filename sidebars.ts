@@ -5,7 +5,6 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Introduction",
-      collapsible: false,
       items: [
         "introduction/what-is-shinzo",
         "introduction/how-it-works",
@@ -16,7 +15,6 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Guides",
-      collapsible: false,
       items: [
         {
           type: "category",
@@ -53,7 +51,6 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Reference",
-      collapsible: false,
       items: [
         "reference/architecture-overview",
         {
@@ -84,7 +81,6 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Economics",
-      collapsible: false,
       items: [
         "economics/shnz-token",
         "economics/indexer-earnings",
@@ -95,7 +91,6 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Roadmap",
-      collapsible: false,
       items: [
         "roadmap/scheduler",
         "roadmap/network-gateway",
@@ -105,7 +100,6 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Contributing",
-      collapsible: false,
       items: [
         {
           type: "category",
@@ -122,7 +116,6 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Resources",
-      collapsible: false,
       items: [
         {
           type: "link",

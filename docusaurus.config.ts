@@ -54,7 +54,7 @@ const config: Config = {
           path: "./content",
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          sidebarCollapsible: false,
+          sidebarCollapsible: true,
           remarkPlugins: [
             glossaryPlugin.getRemarkPlugin(glossaryOptions, {
               siteDir: __dirname,
@@ -155,6 +155,7 @@ const config: Config = {
       theme: codeTheme,
     },
   } satisfies Preset.ThemeConfig,
+
   plugins: [
     [
       "docusaurus-plugin-sass",
