@@ -33,7 +33,7 @@ This tutorial covers spinning up a Shinzo indexer on a fresh Ubuntu 24.04 VM, ch
     chown -R 1001:1001 ~/data/defradb ~/data/lens
     ```
 
-  The indexer stores blockchain data on the host so it persists across container restarts. The container runs as UID 1001. If these directories are owned by root, DefraDB will fail to start with a `permission denied` error.
+    The indexer stores blockchain data on the host so it persists across container restarts. The container runs as UID 1001. If these directories are owned by root, DefraDB will fail to start with a `permission denied` error.
 
 
 1. Build the Docker image. This takes around 15 minutes on the first run:
