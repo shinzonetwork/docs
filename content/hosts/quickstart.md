@@ -134,43 +134,20 @@ You can checkout more query examples [here](/docs/hosts/examples.md).
 
 ## VM Deployment
 
-This section covers deploying the host on a Ubuntu 24.04 VM using Docker, docker-compose, and Nginx — the recommended approach for production and devnet participation.
+This section covers deploying the host on a virtual machine using Docker, docker-compose, and Nginx — the recommended approach for production and devnet participation.
 
 ### Prerequisites
 
-- Ubuntu 24.04 VM
-- `sudo` access
 - Ports `9171`, `9181`, `8080`, and `444` open in your firewall/security group
 
-### 1. Generate SSL Certificates
-
-Run the following on the VM to create a self-signed certificate for Nginx:
-
-```bash
-sudo mkdir -p ~/ssl
-sudo openssl genrsa -out ~/ssl/nginx.key 2048
-sudo openssl req -new -key ~/ssl/nginx.key -out /tmp/nginx.csr \
-  -subj "/C=US/ST=State/L=City/O=Shinzo/OU=Host Client/CN=shinzo.network"
-sudo openssl x509 -req -days 365 -in /tmp/nginx.csr \
-  -signkey ~/ssl/nginx.key -out ~/ssl/nginx.crt
-sudo rm /tmp/nginx.csr
-```
-
-### 2. Install System Dependencies
-
-```bash
-sudo apt-get update
-sudo apt-get install -y docker.io docker-compose nginx
-```
-
-### 3. Create the Data Directory
+### 1. Create the Data Directory
 
 ```bash
 sudo mkdir -p ~/data/defradb ~/data/lens
 sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
 ```
 
-### 4. Write the Configuration File
+### 2. Write the Configuration File
 
 Create `~/config.yaml` with your desired settings. The production config enables all performance tuning, peer reconnection, pruning, and optional event filtering. Key values to set:
 
@@ -199,7 +176,7 @@ host:
 
 > The full production config (with pruning, batch processing, event filtering, and memory tuning) is generated automatically by `host-prod-setup.sh`. See below.
 
-### 5. Write the docker-compose File
+### 3. Write the docker-compose File
 
 Create `~/docker-compose.yml`:
 
@@ -251,7 +228,7 @@ services:
     restart: unless-stopped
 ```
 
-### 6. Write the Nginx Config
+### 4. Write the Nginx Config
 
 Create `~/nginx.conf`:
 
@@ -295,34 +272,11 @@ http {
 }
 ```
 
-### 7. Start the Host
+### 5. Start the Host
 
 ```bash
 docker-compose up -d
 ```
-
-### 8. One-Command Setup (Alternative)
-
-The repository includes `host-prod-setup.sh` and `host-prod.sh` which automate all of the above steps — writing configs, installing dependencies, generating SSL certificates, and launching docker-compose — in a single command. On a fresh VM:
-
-```bash
-# Step 1: Write configs
-bash host-prod-setup.sh
-
-# Step 2: Install deps, generate SSL, and start
-bash host-prod.sh
-```
-
-Review both scripts before running to set your `keyring_secret` and bootstrap peers.
-
-### Port Reference
-
-| Port | Service |
-|------|---------|
-| `9171` | P2P networking (must be externally reachable) |
-| `9181` | DefraDB API (internal) |
-| `444` | GraphQL Playground |
-| `8080` | Nginx — metrics + GraphQL proxy |
 
 ### Monitoring
 
