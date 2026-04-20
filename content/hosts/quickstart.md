@@ -16,77 +16,33 @@ Hosts transform raw blockchain data into structured **Views** and contribute to 
 | Storage | 3 TB NVMe | 4+ TB NVMe |
 | OS | Ubuntu 24.04 | Ubuntu 24.04 |
 
-## 0. One-Step Cloud Setup
 
-You can run the host with the following commands.
+## Local Deployment
 
-```bash
-#!/bin/bash
-set -e
+This section covers running the Shinzo Host Client directly on your local machine for development and testing.
 
-# Install Docker
-echo "Installing Docker..."
-sudo apt-get update
-sudo apt-get install -y docker.io
+### Prerequisites
 
+- Go 1.25
+- Metamask with a wallet setup. This wallet does not need to hold any funds.
 
-echo "🛑 Stopping existing container if running..."
-sudo docker stop shinzo-host || true
-sudo docker rm shinzo-host || true
-
-# HOST
-sudo mkdir -p ~/data/defradb ~/data/lens
-sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
-curl -L -o ~/config.yaml \
-  https://raw.githubusercontent.com/shinzonetwork/shinzo-host-client/main/config.yaml
-
-# NON BRANCHABLE HOST
-
-sudo docker pull ghcr.io/shinzonetwork/shinzo-host-client:sha-ddfead9
-sudo docker run -d \
-  --name shinzo-host \
-  --network host \
-  -v ~/data/defradb:/app/.defra/data \
-  -v ~/data/lens:/app/.lens \
-  -v ~/config.yaml:/app/config.yaml:ro \
-  -e DEFRA_URL=0.0.0.0:9181 \
-  -e LOG_LEVEL=error \
-  -e LOG_SOURCE=false \
-  -e LOG_STACKTRACE=false \
-  --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:8080/metrics || exit 1" \
-  --health-interval=30s \
-  --health-timeout=10s \
-  --health-retries=3 \
-  --health-start-period=40s \
-  --restart unless-stopped \
-  ghcr.io/shinzonetwork/shinzo-host-client:sha-ddfead9
-```
-
-To ensure this is running properly, you can test it by checking the metrics endpoint.
-
-```bash
-curl http://localhost:8080/metrics
-```
-
-## 1. Install the Shinzo Host Client
-
-Clone the repository and enter the directory:
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
 ```
 
-## 2. Configuration
+### 2. Configuration
 
-The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config.yaml) which comes with sensible defaults.
+The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) which comes with sensible defaults.
 The only field you need to set is **defradb.keyring_secret** which can alternatively be set with the following command in the terminal window.
 
 ```bash
 export DEFRA_KEYRING_SECRET=<make_a_password>
 ```
 
-### Key Fields
+#### Key Fields
 
 * **defradb.url** – API endpoint of your local DefraDB node. Defaults work for most setups.
 * **defradb.keyring_secret** – Requires a secret to generate your private keys. 
@@ -97,11 +53,9 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 * **logger.development** – Set to `false` for production.
 * **host.lens_registry_path** – Where received WASM lens files are stored.
 
-### Default Behavior
+> The included `config.yaml` is ready for most local development workflows. You should only need to modify peer settings or storage paths for advanced setups.
 
-The included `config.yaml` is ready for most local development workflows. You should only need to modify peer settings or storage paths for advanced setups.
-
-### Connecting to your Indexer
+### 3. Connecting to an Indexer
 
 If you are running your own indexer, you can connect your Host to this indexer by modifying **p2p.bootstrap_peers**. In your indexer logs you should see something like:
 
@@ -125,21 +79,24 @@ bootstrap_peers:
 listen_addr: "/ip4/127.0.0.1/tcp/9171"
 ```
 
-## 3. Running the Host
+### 4. Build and Run
 
-### Run with Docker Compose
-
-```bash
-docker compose up --build
-```
-
-### Run just the Host Client
+**Option A — Run directly (no build step):**
 
 ```bash
 go run cmd/main.go
 ```
 
-### Or Run with Playground Enabled
+**Option B — Build then run:**
+
+```bash
+make build
+make start
+```
+
+### 5. (Optional) Enable the GraphQL Playground
+
+The host ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
 
 ```bash
 make build-playground
@@ -175,7 +132,222 @@ query GetLatestLogs {
 
 You can checkout more query examples [here](/docs/hosts/examples.md).
 
-## 4. ShinzoHub Registration
+## VM Deployment
+
+This section covers deploying the host on a Ubuntu 24.04 VM using Docker, docker-compose, and Nginx — the recommended approach for production and devnet participation.
+
+### Prerequisites
+
+- Ubuntu 24.04 VM
+- `sudo` access
+- Ports `9171`, `9181`, `8080`, and `444` open in your firewall/security group
+
+### 1. Generate SSL Certificates
+
+Run the following on the VM to create a self-signed certificate for Nginx:
+
+```bash
+sudo mkdir -p ~/ssl
+sudo openssl genrsa -out ~/ssl/nginx.key 2048
+sudo openssl req -new -key ~/ssl/nginx.key -out /tmp/nginx.csr \
+  -subj "/C=US/ST=State/L=City/O=Shinzo/OU=Host Client/CN=shinzo.network"
+sudo openssl x509 -req -days 365 -in /tmp/nginx.csr \
+  -signkey ~/ssl/nginx.key -out ~/ssl/nginx.crt
+sudo rm /tmp/nginx.csr
+```
+
+### 2. Install System Dependencies
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose nginx
+```
+
+### 3. Create the Data Directory
+
+```bash
+sudo mkdir -p ~/data/defradb ~/data/lens
+sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
+```
+
+### 4. Write the Configuration File
+
+Create `~/config.yaml` with your desired settings. The production config enables all performance tuning, peer reconnection, pruning, and optional event filtering. Key values to set:
+
+```yaml
+defradb:
+  url: "localhost:9181"
+  keyring_secret: "<YOUR_SECRET>"        # Required — change this
+  p2p:
+    enabled: true
+    bootstrap_peers:
+      - '/ip4/34.63.13.57/tcp/9171/p2p/12D3KooWMYhYNBo4zAi9j7TpyGQJBSvbwSSNkgsMrLs6vHUnFUzY'
+    listen_addr: "/ip4/0.0.0.0/tcp/9171"
+    enable_auto_reconnect: true
+  store:
+    path: "./.defra"
+shinzo:
+  hub_base_url: rpc.devnet.shinzo.network:26657
+  minimum_attestations: 1
+logger:
+  development: false
+  level: "error"
+host:
+  lens_registry_path: "./.defra/lens"
+  health_server_port: 8080
+```
+
+> The full production config (with pruning, batch processing, event filtering, and memory tuning) is generated automatically by `host-prod-setup.sh`. See below.
+
+### 5. Write the docker-compose File
+
+Create `~/docker-compose.yml`:
+
+```yaml
+networks:
+  shinzo-net:
+    driver: bridge
+
+services:
+  shinzo-host:
+    image: ghcr.io/shinzonetwork/shinzo-host-client:v0.5.7
+    mem_limit: 16g
+    mem_reservation: 13g
+    restart: unless-stopped
+    container_name: shinzo-host
+    networks:
+      - shinzo-net
+    ports:
+      - "9181:9181"   # DefraDB API
+      - "444:9182"    # GraphQL Playground
+      - "9171:9171"   # P2P networking
+    volumes:
+      - ~/data/defradb:/app/.defra/data
+      - ~/data/lens:/app/.lens
+      - ~/config.yaml:/app/config.yaml:ro
+    environment:
+      - DEFRA_URL=0.0.0.0:9181
+      - GOMEMLIMIT=14GiB
+      - LOG_LEVEL=error
+      - LOG_SOURCE=false
+      - LOG_STACKTRACE=false
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/metrics"]
+      interval: 15s
+      timeout: 30s
+      retries: 10
+      start_period: 120s
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - shinzo-host
+    networks:
+      - shinzo-net
+    restart: unless-stopped
+```
+
+### 6. Write the Nginx Config
+
+Create `~/nginx.conf`:
+
+```nginx
+events { worker_connections 1024; }
+
+http {
+  map $http_origin $cors_origin {
+    default "";
+    "https://explorer.shinzo.network" $http_origin;
+  }
+
+  server {
+    listen 8080;
+    server_name _;
+
+    add_header 'Access-Control-Allow-Origin' $cors_origin always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+    add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, Accept, Origin' always;
+    add_header 'Access-Control-Max-Age' 3600 always;
+    add_header 'Vary' 'Origin' always;
+
+    location / {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:9181;
+      proxy_set_header Host $host;
+    }
+
+    location = /metrics {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:8080/metrics;
+      proxy_set_header Host $host;
+    }
+
+    location = /api/v0/graphql {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:9181/api/v0/graphql;
+      proxy_set_header Host $host;
+    }
+  }
+}
+```
+
+### 7. Start the Host
+
+```bash
+docker-compose up -d
+```
+
+### 8. One-Command Setup (Alternative)
+
+The repository includes `host-prod-setup.sh` and `host-prod.sh` which automate all of the above steps — writing configs, installing dependencies, generating SSL certificates, and launching docker-compose — in a single command. On a fresh VM:
+
+```bash
+# Step 1: Write configs
+bash host-prod-setup.sh
+
+# Step 2: Install deps, generate SSL, and start
+bash host-prod.sh
+```
+
+Review both scripts before running to set your `keyring_secret` and bootstrap peers.
+
+### Port Reference
+
+| Port | Service |
+|------|---------|
+| `9171` | P2P networking (must be externally reachable) |
+| `9181` | DefraDB API (internal) |
+| `444` | GraphQL Playground |
+| `8080` | Nginx — metrics + GraphQL proxy |
+
+### Monitoring
+
+The health check endpoint is available at:
+
+```
+http://<VM_IP>:8080/metrics
+```
+
+The container health check polls this every 15 seconds. View container status with:
+
+```bash
+docker ps
+docker logs shinzo-host
+```
+
+### Docker Image
+
+The multi-stage Dockerfile builds the host binary (Go 1.25) along with Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
+
+```
+ghcr.io/shinzonetwork/shinzo-host-client:<version>
+```
+
+## ShinzoHub Registration
 
 To participate in the Shinzo Network, you must register your host. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your host will not be recognized by the network. To register your host in ShinzoHub, follow the steps below:
 
