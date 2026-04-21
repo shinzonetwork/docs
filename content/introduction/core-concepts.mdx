@@ -36,12 +36,9 @@ Attestation is how Shinzo tracks how much of the network has independently agree
 
 ### The problem it solves
 
-With a centralized indexer, you trust the provider because you have no other option. You can't verify(\*) the data you got matches what's actually on chain. In Shinzo, Indexers cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Indexers saw the same thing.
+With a centralized indexer, you trust the provider because you have no other option. You can't verify[^1] the data you got matches what's actually on chain. In Shinzo, Indexers cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Indexers saw the same thing.
 
 Attestation answers that question.
-
-> ![TIP]
-> \* Ok so techincally you can verify that the data you're getting is correct. But you'd have to sign up to multiple APIs, request the same data from each, work it into the same schema, and then compare between them. This is obviously a huge hassle, and incredlibly costly.
 
 ### How it works
 
@@ -101,3 +98,7 @@ What's confirmed so far:
 - **Protocol cut**: a flat percentage comes off every consumption event. It's enforced in the SVS-1 contract standard and can't be bypassed with a custom pricing contract.
 
 The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out. The [SHNZ Token](../../economics/shnz-token.mdx) page in the Economics section will cover the full picture once it's settled.
+
+<!-- Footnotes -->
+[^1]: Ok so techincally you can verify that the data you're getting is correct. But you'd have to sign up to multiple APIs, request the same data from each, work it into the same schema, and then compare between them. This is obviously a huge hassle, and incredlibly costly.
+
