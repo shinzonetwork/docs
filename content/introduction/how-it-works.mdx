@@ -9,15 +9,15 @@ At its simplest, Shinzo has four kinds of moving parts:
 
 Data flows from left to right. Coordination happens on the side.
 
-## The data's journey: from block to app
+## The data's journey
 
-To make this concrete, let's follow a single ERC-20 token transfer — say, a USDC transfer on Ethereum Mainnet — from the moment it lands on-chain to the moment an app shows it to a user.
-
-![](./images/data-journey-black.svg)
+To make this concrete, let's follow a single USDC transfer on Ethereum Mainnet from the moment it lands on-chain to the moment an app shows it to a user.
 
 ### 1. A block arrives at a validator
 
 Somewhere on the network, an Ethereum validator's node produces or receives the block containing the transfer. The validator is already running a full execution client (Geth, typically) and already has the data. Shinzo takes advantage of that.
+
+![](./images/data-journey-1.svg)
 
 ### 2. The Indexer structures and signs it
 
@@ -25,9 +25,13 @@ Sitting next to the Ethereum node is the Shinzo Indexer (a lightweight sidecar t
 
 Those documents land in the Indexer's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
 
+![](./images/data-journey-2.svg)
+
 ### 3. Hosts pick it up over P2P
 
 Hosts subscribe to the primitive collection topics they care about (blocks, transactions, logs, access lists). When the Indexer's DefraDB gossips the new log document, subscribed Hosts receive it, verify the signature, and update an attestation record for it (essentially just a running tally of how many distinct Indexers have signed off on this exact piece of data). If three Indexers all wrote the same log, the attestation record has three votes. Apps can later use those votes to set their own trust thresholds.
+
+![](./images/data-journey-3.svg)
 
 ### 4. A View transforms primitives into something useful
 
@@ -35,9 +39,13 @@ A Host with thousands of raw log documents isn't doing much for an app developer
 
 The filtering and decoding are implemented as _Lens transforms_, which are WASM modules the developer authors with `viewkit` and deploys to ShinzoHub. Hosts that choose to serve the View run those transforms against primitives as they arrive and produce view documents. Because Lens transforms are deterministic, any Host (or auditor) running the same transform on the same input gets the same output.
 
+![](./images/data-journey-4.svg)
+
 ### 5. The app queries locally
 
 On the app side, things look (surprisingly) normal. The app embeds DefraDB using the [app-sdk](https://github.com/shinzonetwork/app-sdk), subscribes to the `TokenTransfer` View, and from then on, Hosts push new view documents to it over P2P. The app queries them with GraphQL against its local database. No per-query API call, no network round trip, and an attestation filter available for any query that needs it.
+
+![](./images/data-journey-5.svg)
 
 ## The four participants
 
