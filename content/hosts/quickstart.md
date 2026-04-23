@@ -140,14 +140,33 @@ This section covers deploying the host on a virtual machine using Docker, docker
 
 - Ports `9171`, `9181`, `8080`, and `444` open in your firewall/security group
 
-### 1. Create the Data Directory
+### 1. Install System Dependencies
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose nginx
+```
+
+### 2. Create the Data Directory
 
 ```bash
 sudo mkdir -p ~/data/defradb ~/data/lens
 sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
 ```
 
-### 2. Write the Configuration File
+### 3. Generate SSL Certificates
+
+```bash
+# Generate private key, certificate signing request, and self-signed certificate
+set -e &&
+sudo mkdir -p ~/ssl &&
+sudo openssl genrsa -out ~/ssl/nginx.key 2048 &&
+sudo openssl req -new -key ~/ssl/nginx.key -out /tmp/nginx.csr -subj "/C=US/ST=State/L=City/O=Shinzo/OU=Host Client/CN=shinzo.network" &&
+sudo openssl x509 -req -days 365 -in /tmp/nginx.csr -signkey ~/ssl/nginx.key -out ~/ssl/nginx.crt &&
+sudo rm /tmp/nginx.csr
+```
+
+### 4. Write the Configuration File
 
 Create `~/config.yaml` with your desired settings. The production config enables all performance tuning, peer reconnection, pruning, and optional event filtering. Key values to set:
 
@@ -176,7 +195,51 @@ host:
 
 > The full production config (with pruning, batch processing, event filtering, and memory tuning) is generated automatically by `host-prod-setup.sh`. See below.
 
-### 3. Write the docker-compose File
+### 5. Write the Nginx Config
+
+Create `~/nginx.conf`:
+
+```bash
+events { worker_connections 1024; }
+
+http {
+  map $http_origin $cors_origin {
+    default "";
+    "https://explorer.shinzo.network" $http_origin;
+  }
+
+  server {
+    listen 8080;
+    server_name _;
+
+    add_header 'Access-Control-Allow-Origin' $cors_origin always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+    add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, Accept, Origin' always;
+    add_header 'Access-Control-Max-Age' 3600 always;
+    add_header 'Vary' 'Origin' always;
+
+    location / {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:9181;
+      proxy_set_header Host $host;
+    }
+
+    location = /metrics {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:8080/metrics;
+      proxy_set_header Host $host;
+    }
+
+    location = /api/v0/graphql {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:9181/api/v0/graphql;
+      proxy_set_header Host $host;
+    }
+  }
+}
+```
+ 
+### 6. Write the docker-compose File
 
 Create `~/docker-compose.yml`:
 
@@ -187,7 +250,7 @@ networks:
 
 services:
   shinzo-host:
-    image: ghcr.io/shinzonetwork/shinzo-host-client:v0.5.7
+    image: ghcr.io/shinzonetwork/shinzo-host-client:standard
     mem_limit: 16g
     mem_reservation: 13g
     restart: unless-stopped
@@ -228,51 +291,7 @@ services:
     restart: unless-stopped
 ```
 
-### 4. Write the Nginx Config
-
-Create `~/nginx.conf`:
-
-```nginx
-events { worker_connections 1024; }
-
-http {
-  map $http_origin $cors_origin {
-    default "";
-    "https://explorer.shinzo.network" $http_origin;
-  }
-
-  server {
-    listen 8080;
-    server_name _;
-
-    add_header 'Access-Control-Allow-Origin' $cors_origin always;
-    add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-    add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, Accept, Origin' always;
-    add_header 'Access-Control-Max-Age' 3600 always;
-    add_header 'Vary' 'Origin' always;
-
-    location / {
-      if ($request_method = OPTIONS) { return 204; }
-      proxy_pass http://shinzo-host:9181;
-      proxy_set_header Host $host;
-    }
-
-    location = /metrics {
-      if ($request_method = OPTIONS) { return 204; }
-      proxy_pass http://shinzo-host:8080/metrics;
-      proxy_set_header Host $host;
-    }
-
-    location = /api/v0/graphql {
-      if ($request_method = OPTIONS) { return 204; }
-      proxy_pass http://shinzo-host:9181/api/v0/graphql;
-      proxy_set_header Host $host;
-    }
-  }
-}
-```
-
-### 5. Start the Host
+### 7. Start the Host
 
 ```bash
 docker-compose up -d
@@ -298,12 +317,14 @@ docker logs shinzo-host
 The multi-stage Dockerfile builds the host binary (Go 1.25) along with Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
 
 ```
-ghcr.io/shinzonetwork/shinzo-host-client:<version>
+ghcr.io/shinzonetwork/shinzo-host-client:standard
 ```
 
 ## ShinzoHub Registration
 
 To participate in the Shinzo Network, you must register your host. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your host will not be recognized by the network. To register your host in ShinzoHub, follow the steps below:
+
+### Option A: Register with the GUI
 
 1. Start your Host
 2. Add Shinzo Devnet to Metamask with the following values:
@@ -314,6 +335,29 @@ To participate in the Shinzo Network, you must register your host. Registration 
 3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
 4. On the registration page, click Register and select "Host" as your role to complete the process.
 5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
+
+### Option B: Register with the CLI
+
+You can also register your host by submitting the registration transaction directly with Foundry’s `cast` CLI.
+
+```bash
+cast send "0x0000000000000000000000000000000000000211" \
+  "register(bytes,bytes,bytes,bytes,bytes,uint8)" \
+  "<public_key>" \
+  "<public_key_signedMessage>" \
+  "<peer_id>" \
+  "<peer_id_signedMessage>" \
+  "<signed_message>" \
+  "1" \
+  --rpc-url "http://rpc.devnet.shinzo.network:8545" \
+  --from "<your_address>" \
+  --private-key "<your_private_key>" \
+  --gas-limit 100000
+  ```
+
+Replace each placeholder with your actual registration values.
+
+> Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
 
 **🎉 Your host is now successfully registered and fully authorized to participate in the Shinzo Network.**
 
