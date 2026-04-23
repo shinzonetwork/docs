@@ -52,7 +52,9 @@
     "overrides": {
       "serialize-javascript": "^7.0.3",
       "react": "19.2.5",
-      "react-dom": "19.2.5"
+      "react-dom": "19.2.5",
+      "follow-redirects": "1.16.0",
+      "uuid": "14.0.0"
     },
     "peerDependencyRules": {
       "allowedVersions": {
