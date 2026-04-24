@@ -65,18 +65,21 @@ Dec 17 19:14:55.652 INF node Providing HTTP API at http://192.168.50.33:9181
 ```
 From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in **p2p.bootstrap_peers** with your indexer peer.
 
-If you are running your own indexer locally on the same machine, it's likely already using port 9181. If so, in **config.yaml** update the **defradb url** field to:
+If you are running both Indexer and Host on the same machine, apply the following changes to the [Host's **config.yaml**](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
+
+The Indexer is likely already using port `9181`, so update the **defradb url** field:
 
 ```
 url: "localhost:9182"
 ```
 
-Also, if you are running your own indexer locally on the same machine, then set the IP addresses to your localhost IP:
+Also update the P2P settings to use localhost and a different port so the Host doesn't clash with the Indexer:
+
 
 ```
 bootstrap_peers:
   - '/ip4/127.0.0.1/tcp/9171/p2p/<PeerID>'
-listen_addr: "/ip4/127.0.0.1/tcp/9171"
+listen_addr: "/ip4/0.0.0.0/tcp/9172"
 ```
 
 ### 4. Build and Run
