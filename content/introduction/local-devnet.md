@@ -4,7 +4,7 @@ This tutorial walks through spinning up a local Ethereum development network usi
 
 ### Prerequisites
 
-You will need a cloud VM running Ubuntu 24.04 on amd64 (for example, a Hetzner CX22 or similar). The indexer and host Docker images are amd64-only and will not run on arm64. You will also need a GitHub account with access to the Shinzo container registry, and the following tools installed on your VM:
+You will need a cloud VM running Ubuntu 24.04 on amd64. The indexer and host Docker images are amd64-only and will not run on arm64. You will also need a GitHub account with access to the Shinzo container registry, and the following tools installed on your VM:
 
 - Geth
 - Go 1.25
