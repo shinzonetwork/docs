@@ -16,7 +16,7 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Introduction",
       items: [
-        "introduction/what-is-shinzo",
+        "introduction/what-is-shinzo/index",
         "introduction/how-it-works",
         "introduction/core-concepts"
       ],

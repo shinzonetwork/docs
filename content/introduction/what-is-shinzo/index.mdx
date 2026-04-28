@@ -12,7 +12,9 @@ If you've built any kind web3 app before, you know the usual pattern: you pick a
 
 Blockchains are good at writing data and bad at reading it. If you want to show a user all their previous transactions, or count token transfers for a given contract, you can't just ask the chain. The raw data isn't organized for questions like that. So the industry bolted centralized indexing services onto the side of every chain, and those services now sit in the trust path between your app and the data.
 
-This setup is expensive, incredibly rigid, and introduces a significant trust-gap.
+![The current world of blockchain indexing.](./images/current-indexing-scheme.svg)
+
+This setup is expensive, introduces a significant trust-gap, and there's a lot of places where things can go wrong. The DNS of the indexer might fail, or the cloud service where they host their applications might go down. On top of that, there's no way to verify that the data you're receiving is true until _after_ you've received (and paid) for it.
 
 The goal of Shinzo is to make reading blockchain data as decentralized and verifiable as writing to it.
 
@@ -26,11 +28,10 @@ Three kinds of participants run the network.
 
 **Developers** define the Views. A View is basically a way to say _"here's the raw data I care about, here's how I want it filtered and decoded, and here's the schema I want it exposed as."_ Once a View is deployed, Hosts pick it up, run it, and push the results to whoever subscribes.
 
+![Decentralized indexing data, built with Shinzo.](./images/shinzo-indexing-scheme.svg)
+
 Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a peer-to-peer document database that handles replication, access control, and GraphQL queries. Applications embed DefraDB locally and query it the way they'd query any other database, which means no per-read round trip to an external API.
 
-<!-- TODO: add this link once the page has been written. -->
-<!-- For a more detailed architecture walkthrough, go read [How it works](#). -->
-<!---->
 ## How to get involved
 
 There are two ways to participate today.
@@ -39,9 +40,10 @@ There are two ways to participate today.
 
 If you already operate an Ethereum node, adding a Shinzo Indexer is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. Recommended extra resources are around 4 CPU cores, 8 GB of RAM, and 100 GB of storage with pruning on, on top of whatever the node itself needs.
 
-<!-- TODO: Add link once page exists. -->
-<!-- You don't have to be a validator to run one on devnet. The [Run an Indexer](#) guide has the details. -->
-<!---->
+:::tip
+It's important to note here that you _do not_ need to run a Validator node in order to run an Indexer. You can simply connect and Indexer to a third-party Validator node. Validator node and the Shinzo Indexer _do not_ need to be on the same network.
+:::
+
 ### Build a View
 
 If you're a developer working on a dapp, wallet, or any kind of web3 app, Views are where you'll spend your time. A View is a versioned bundle that contains:
@@ -50,11 +52,7 @@ If you're a developer working on a dapp, wallet, or any kind of web3 app, Views 
 - A **schema** (GraphQL SDL) describing the shape you want to expose.
 - One or more **Lens transforms** (WASM modules) that do the filtering and decoding.
 
-<!-- TODO: link to viewkit page, once it exists. -->
 You build Views with `viewkit`, Shinzo's CLI, and deploy them to the network. Any Host can then pick up the View, run it, and serve the results. Your application subscribes through the [app-sdk](https://github.com/shinzonetwork/app-sdk) and queries the resulting data locally.
-
-<!-- TODO: link to viewkit page, once it exists. -->
-<!-- Start with [Build a View](#), or skip straight to the [building-apps-with-shinzo](./guides/building-apps-with-shinzo.md) guide. -->
 
 ## Where the project is today
 
@@ -65,18 +63,3 @@ Shinzo is in active development on devnet. These core pieces work end to end:
 - **Viewkit** is usable for defining, packaging, and deploying Views to devnet today.
 - **ShinzoHub** (built on the Cosmos SDK) handles view registration and access control, and talks to Sourcehub over IBC to gate subscriptions behind payment.
 - The **app-sdk** lets Go applications embed DefraDB and run attestation-filtered queries against it.
-
-Anyone can join the current Indexer cohort or the devnet program using the links at the bottom of this page.
-
-## Where it's going next
-
-A few larger pieces are still in design and should land over the coming quarters.
-
-<!-- TODO: Add link once page exists. -->
-The **Scheduler** will match Indexers with Hosts, handle payments between them, and verify that data was actually delivered, without either side being able to just claim so. The [Roadmap](#) covers the design in more depth.
-
-The **Network Gateway** is a routing layer that helps applications figure out which Hosts serve a given View. It uses verifiable random host selection and fan-out validation so that no single Host, or cluster of Sybils, can dominate routing.
-
-**Shinzo Studio** is a product UI for browsing, composing, and subscribing to Views without writing code. It's aimed at less technical users who still want to build on Shinzo data.
-
-Beyond those, support for chains other than Ethereum Mainnet, a finalized `SHNZ` token design, and staking plus slashing rules for Hosts are all in progress.
