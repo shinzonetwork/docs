@@ -173,8 +173,6 @@ query GetLatestLogs {
 }
 ```
 
-You can checkout more query examples [here](/docs/hosts/examples.md).
-
 ## 4. ShinzoHub Registration
 
 To participate in the Shinzo Network, you must register your host. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your host will not be recognized by the network. To register your host in ShinzoHub, follow the steps below:
