@@ -55,7 +55,7 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 > The included `config.yaml` is ready for most local development workflows. You should only need to modify peer settings or storage paths for advanced setups.
 
-### 3. Connecting to an Indexer
+### 3. Running Indexer and Host on the Same Machine (Avoiding Port Collisions)
 
 If you are running your own indexer, you can connect your Host to this indexer by modifying **p2p.bootstrap_peers**. In your indexer logs you should see something like:
 
@@ -154,7 +154,7 @@ sudo apt-get install -y docker.io docker-compose nginx
 
 ```bash
 sudo mkdir -p ~/data/defradb ~/data/lens
-sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
+sudo chown -R 0:0 ~/data/defradb ~/data/lens
 ```
 
 ### 3. Generate SSL Certificates
