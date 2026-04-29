@@ -44,6 +44,14 @@ If you already operate an Ethereum node, adding a Shinzo Indexer is cheap. It's 
 It's important to note here that you _do not_ need to run a Validator node in order to run an Indexer. You can simply connect and Indexer to a third-party Validator node. Validator node and the Shinzo Indexer _do not_ need to be on the same network.
 :::
 
+### Run a Host
+
+Hosts sit between Indexers and applications. They receive signed primitive data over P2P, apply your View's Lens transforms, build attestation records, and serve results to subscribers. Running one is a good way to support the network if you don't want to operate a blockchain node.
+
+You'll need a machine that stays online reliably. The rough recommended spec is 8 CPU cores, 16 GB of RAM, and 500 GB of SSD storage. A Host doesn't need to be close to a blockchain node, just a stable connection and enough disk for the Views it's serving.
+
+Hosts are configured through a YAML file that lists which Views to subscribe to, the minimum number of Indexers that must have signed a document before it's accepted, and where to listen for subscriber connections. New Views can be picked up and served without restarting.
+
 ### Build a View
 
 If you're a developer working on a dapp, wallet, or any kind of web3 app, Views are where you'll spend your time. A View is a versioned bundle that contains:
