@@ -1,3 +1,7 @@
+---
+title: "Core concepts"
+---
+
 # Core concepts
 
 Shinzo runs on four ideas that show up everywhere in the stack: Views, Attestation, DefraDB, and the SHNZ token. This page covers what each one is and why it works the way it does. The [How it works](./how-it-works.mdx) page covers how they fit together end to end.
@@ -97,8 +101,8 @@ What's confirmed so far:
 - **Funding**: consumers prepay SHNZ into a View's contract, tied to their DID. The balance sits there until a Host serves a query, at which point the current price is debited and credited to the creator's earnings.
 - **Protocol cut**: a flat percentage comes off every consumption event. It's enforced in the SVS-1 contract standard and can't be bypassed with a custom pricing contract.
 
-The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out. The [SHNZ Token](../../economics/shnz-token.mdx) page in the Economics section will cover the full picture once it's settled.
+The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out.
 
-<!-- Footnotes -->
+{/* Footnotes */}
 [^1]: Ok so techincally you can verify that the data you're getting is correct. But you'd have to sign up to multiple APIs, request the same data from each, work it into the same schema, and then compare between them. This is obviously a huge hassle, and incredlibly costly.
 
