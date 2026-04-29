@@ -75,6 +75,7 @@ const config: Config = {
     colorMode: {
       respectPrefersColorScheme: false,
       defaultMode: "light",
+      disableSwitch: true, // TEMPORARY: dark mode toggle disabled
     },
     navbar: {
       hideOnScroll: false,
