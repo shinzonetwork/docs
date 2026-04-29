@@ -55,7 +55,7 @@ This walkthrough introduces each player in the order they touch the data:
 
 **Hosts** are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](#) for operational details and [Host Client reference](#) for internals.
 
-**Developers** don't run anything on the network. They write Views with `viewkit`, deploy them to ShinzoHub, and build applications that subscribe to the resulting data. See [Build a View](#) to start.
+**Developers** don't run anything on the network. They write Views with `viewkit`, deploy them to ShinzoHub, and build applications that subscribe to the resulting data.
 
 **Applications** embed DefraDB locally, subscribe to the Views they need, and query the data like a regular database. Devs have the option of filtering results by attestation threshold when correctness matters more than speed.
 
