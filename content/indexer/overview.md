@@ -7,11 +7,7 @@ description: Introduction to the Shinzo Indexer
 
 The Shinzo Indexer is a lightweight sidecar that runs alongside an existing Ethereum execution client and reads from it. It pulls block data out of the node and writes it into a local DefraDB in a shape that is easy to query.
 
-:::info[The indexer is not an RPC node.]
-It does not replace Geth, Reth, Nethermind, or any other execution client, and it does not serve JSON-RPC traffic to applications.
-:::
-
-Instead, the indexer consumes upstream RPC and WebSocket endpoints from a node you already have access to: a local execution client, a node co-located with your validator, or a managed provider. It transforms the raw chain data those endpoints return into structured, relationally linked documents stored in its local DefraDB instance.
+The indexer is **not** an RPC node. It does not replace Geth, Reth, Nethermind, or any other execution client, and it does not serve JSON-RPC traffic to applications. Instead, the indexer consumes upstream RPC and WebSocket endpoints from a node you already have access to: a local execution client, a node co-located with your validator, or a managed provider. It transforms the raw chain data those endpoints return into structured, relationally linked documents stored in its local DefraDB instance.
 
 ## Purpose and role in the stack
 
