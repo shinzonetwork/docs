@@ -10,29 +10,32 @@ If indexers are data producers, hosts are consumers and servers. The separation 
 
 ## Architecture
 
-```plaintext
-Indexer-1 --+
-Indexer-2 --+----- P2P (DefraDB replication) -----> HOST
-Indexer-3 --+                                        |
-                                                     |
-                      +------------------------------+
-                      |
-                      v
-        +----------------------------------+
-        |         Host Process             |
-        |                                  |
-        |  1. Verify block signatures      |
-        |  2. Create AttestationRecords    |
-        |  3. Apply Lens transforms (WASM) |
-        |  4. Write View documents         |
-        |  5. Serve GraphQL                |
-        |                                  |
-        +------+--------+--------+--------+
-               |        |        |
-               v        v        v
-          Port 444  Port 9181  Port 8080
-         Playground  Internal   Health/
-          (GraphQL)    API      Metrics
+```mermaid
+flowchart LR
+  subgraph Indexers["Indexers"]
+    direction TB
+    I1["Indexer 1"]
+    I2["Indexer 2"]
+    I3["Indexer 3"]
+  end
+
+  subgraph HOST["Host process"]
+    direction LR
+    S1["1. Verify<br/>signatures"] --> S2["2. Create<br/>attestations"]
+    S2 --> S3["3. Apply<br/>WASM lens"]
+    S3 --> S4["4. Write view<br/>documents"]
+    S4 --> S5["5. Serve<br/>GraphQL"]
+  end
+
+  subgraph Ports["Exposed ports"]
+    direction TB
+    P444["444 — Playground"]
+    P9181["9181 — Internal API"]
+    P8080["8080 — Metrics"]
+  end
+
+  Indexers -- "P2P (DefraDB)" --> HOST
+  HOST --> Ports
 ```
 
 ### Components
@@ -98,24 +101,19 @@ Merge:  {A: 1, B: 1} -> total = 2
 
 ### Attestation flow
 
-```plaintext
-1. Indexer A writes Block #1000 + BlockSignature
-      | (P2P replication)
-      v
-2. Host receives Block #1000 + BlockSignature
-   Verifies BlockSignature cryptographically
-   Creates AttestationRecord { attested_doc: "block_1000", vote_count: 1 }
-      |
-3. Indexer B writes Block #1000 + BlockSignature (independently)
-      | (P2P replication)
-      v
-4. Host receives same data from Indexer B
-   Verifies BlockSignature
-   Upserts AttestationRecord: vote_count increments to 2
-      |
-5. P2P replication between hosts
-   P-counter merges automatically
-   All hosts agree: vote_count = 2
+```mermaid
+sequenceDiagram
+  participant IA as Indexer A
+  participant IB as Indexer B
+  participant H as Host
+  participant H2 as Other hosts
+
+  IA->>H: Block #1000 + BlockSignature<br/>(P2P)
+  Note over H: verify signature,<br/>create AttestationRecord<br/>(vote_count = 1)
+  IB->>H: Block #1000 + BlockSignature<br/>(P2P)
+  Note over H: verify signature,<br/>upsert AttestationRecord<br/>(vote_count → 2)
+  H<<->>H2: P2P replication
+  Note over H,H2: P-counter merges automatically<br/>all hosts agree: vote_count = 2
 ```
 
 The upsert pattern in GraphQL:
@@ -185,21 +183,13 @@ When the host receives a view bundle (from either discovery path):
 
 The host runs LensVM (`source-gh/lens`) to execute WASM modules that transform primitives into view documents.
 
-```plaintext
-Raw Log documents (from indexers)
-        |
-        v
-  +------------------+
-  |  WASM Lens        |
-  |  Filter by        |
-  |  contract address |
-  |  ABI-decode event |
-  |  Map to view      |
-  |  schema fields    |
-  +------------------+
-        |
-        v
-View documents (USDCTransfer, etc.)
+```mermaid
+flowchart LR
+  In["Raw Log documents<br/>(from indexers)"]
+  Lens["<b>WASM Lens</b><br/>filter address · ABI-decode<br/>· map to view schema"]
+  Out["View documents<br/>(USDCTransfer, …)"]
+
+  In --> Lens --> Out
 ```
 
 WASM runtimes in use:

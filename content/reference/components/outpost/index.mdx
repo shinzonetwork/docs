@@ -36,28 +36,16 @@ How the digest is computed depends on the implementation. Different chains have 
 
 On Ethereum, the outpost contract (`ShinzoChallengeIssuerV1`) uses EIP-712 typed data signatures and a two-step process:
 
-```
-Validator                           ChallengeIssuer Contract
-  |                                 |
-  |  createAttestation(             |
-  |    consensusPubKey,             |
-  |    delegateKey)                 |
-  |  -----------------------------> |
-  |                                 |  returns: attestationId
-  |                                 |           + EIP-712 digest
-  |                                 |
-  |  submitAttestationSignature(    |
-  |    attestationId,               |
-  |    withdrawalSig,               |
-  |    delegateSig)                 |
-  |  -----------------------------> |
-  |                                 |  returns: 15-byte pointer
-  |                                 |
-  |  Validator sets pointer as      |
-  |  block extraData:               |
-  |  "SH" + 30 hex chars            |
-  |  (only real block producers     |
-  |   can write extraData)          |
+```mermaid
+sequenceDiagram
+  participant V as Validator
+  participant C as ChallengeIssuer<br/>contract
+
+  V->>C: createAttestation(<br/>consensusPubKey, delegateKey)
+  C-->>V: attestationId<br/>+ EIP-712 digest
+  V->>C: submitAttestationSignature(<br/>attestationId, withdrawalSig, delegateSig)
+  C-->>V: 15-byte pointer
+  Note over V: set pointer as block extraData<br/>"SH" + 30 hex chars<br/>(only block producers can write extraData)
 ```
 
 The "SH" prefix in `extraData` is the verification mechanism. Only actual block producers can set the `extraData` field of a block they propose. If a block's `extraData` starts with "SH", the block's proposer has a registered attestation on the ChallengeIssuer contract.

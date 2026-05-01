@@ -10,27 +10,23 @@ Indexers are write-only data producers. They push data out and reject all incomi
 
 ## Architecture
 
-```plaintext
-+-----------------------------------------------------+
-|                  VALIDATOR MACHINE                   |
-|                                                      |
-|  +------------------+      +----------------------+  |
-|  |    Geth Node      |      |   Indexer Client      |  |
-|  |                   |      |                       |  |
-|  |  Port 8545 (HTTP)----->  |  RPC Client           |  |
-|  |  Port 8546 (WS) ----->  |  Block Handler         |  |
-|  |                   |      |  Signing               |  |
-|  +------------------+      |  Embedded DefraDB      |  |
-|                             |       |                |  |
-|                             +-------+----------------+  |
-|                                     |                   |
-+-------------------------------------+-------------------+
-                                      |
-                                      | P2P (libp2p)
-                                      v
-                              +---------------+
-                              |   Host(s)     |
-                              +---------------+
+```mermaid
+flowchart LR
+  subgraph VM["Validator machine"]
+    direction LR
+    Geth["<b>Geth node</b><br/>:8545 HTTP<br/>:8546 WS"]
+    subgraph IC["Indexer client"]
+      direction LR
+      RPC["RPC client"] --> BH["Block handler"]
+      BH --> Sig["Signing"]
+      Sig --> DB[("Embedded<br/>DefraDB")]
+    end
+    Geth -- "HTTP / WS" --> RPC
+  end
+
+  Hosts["Host(s)"]
+
+  DB -- "P2P (libp2p)" --> Hosts
 ```
 
 The indexer connects to Geth over two channels:
@@ -42,19 +38,12 @@ The indexer connects to Geth over two channels:
 
 Each block goes through six stages:
 
-```plaintext
-1. RECEIVE    Block header arrives via WebSocket subscription
-      |
-2. FETCH      Full block: header, transactions, receipts, logs, access lists
-      |
-3. STRUCTURE  Transform into 6 document types
-      |
-4. SIGN       Compute Merkle root over all document CIDs, sign with identity key
-      |
-5. STORE      Write all documents to local embedded DefraDB
-      |
-6. PUBLISH    DefraDB P2P layer broadcasts to subscribed peers (hosts)
-```
+1. **Receive.** A new block header arrives over the WebSocket subscription.
+1. **Fetch.** The full block is pulled over JSON-RPC: header, transactions, receipts, logs, and access lists.
+1. **Structure.** Raw data is transformed into the six document types.
+1. **Sign.** A Merkle root is computed over all document CIDs and signed with the indexer's identity key.
+1. **Store.** Documents are written to the local embedded DefraDB.
+1. **Publish.** DefraDB's P2P layer broadcasts to subscribed peers (hosts).
 
 ## Document types
 
@@ -254,13 +243,13 @@ Environment variables: `SNAPSHOT_ENABLED`, `SNAPSHOT_BLOCKS_PER_FILE`, `SNAPSHOT
 
 ## P2P data distribution
 
-The indexer does not manage P2P connections directly. DefraDB handles all of that through libp2p.
+The indexer does not manage P2P connections directly. DefraDB handles all of that through libp2p:
 
-```plaintext
-Indexer writes doc -> DefraDB computes digest -> gossips to peers
-                                                  -> peer requests full content
-                                                  -> DefraDB sends full document
-```
+1. The indexer writes a document.
+1. DefraDB computes a content digest.
+1. DefraDB gossips the digest to connected peers.
+1. A peer that wants the document requests its full content.
+1. DefraDB sends the full document.
 
 This is unidirectional. The replication filter in `pkg/indexer/replication_filter.go` rejects all inbound documents. Indexers only push.
 

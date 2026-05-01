@@ -92,32 +92,15 @@ VWL (View Wire Language) is the binary format for view bundles.
 
 ### Byte layout
 
-```plaintext
-+-------------------+
-| "VWL" (3 bytes)   |  Magic bytes
-| Version (1 byte)  |  Currently 0x01
-+-------------------+
-| Query length (u32)|
-| Query bytes       |  GraphQL query string
-+-------------------+
-| SDL length (u32)  |
-| SDL bytes         |  GraphQL schema string
-+-------------------+
-| Lens count (u16)  |
-| Per lens:         |
-|   ID (u32)        |
-|   Args len (u32)  |
-|   Args bytes      |  JSON arguments
-+-------------------+
-| Codec byte        |  0=none, 1=zstd
-| Blob length (u32) |
-| Lens blob:        |
-|   Count (u16)     |
-|   Per WASM:       |
-|     Len (u32)     |
-|     WASM bytes    |
-+-------------------+
-```
+The bundle is a single byte stream written in the order below. Each section is appended directly after the previous one.
+
+| # | Section | Contents |
+|---|---------|----------|
+| 1 | Header | `"VWL"` magic (3 bytes) · version (1 byte, currently `0x01`) |
+| 2 | Query | length (`u32`) · GraphQL query string |
+| 3 | SDL | length (`u32`) · GraphQL schema string |
+| 4 | Lens metadata | count (`u16`); for each lens: ID (`u32`), args length (`u32`), JSON args bytes |
+| 5 | Lens blob | codec byte (`0` = none, `1` = zstd) · blob length (`u32`) · WASM count (`u16`); for each WASM: length (`u32`) and bytes |
 
 WASM binaries can be 70-200+ KB each. zstd compression is applied before the bundle goes on chain. The host decompresses when applying.
 
@@ -211,27 +194,20 @@ AssemblyScript lenses follow the same interface as Rust lenses. The host runtime
 
 Five repos are involved in the lifecycle from creation to query:
 
-```plaintext
-YOUR MACHINE              SHINZOHUB                 HOST                   USER
-(shinzo-view-creator)     (shinzohub)               (shinzo-host-client)   (shinzo-app-sdk)
+```mermaid
+sequenceDiagram
+  participant Dev as Your machine<br/>(viewkit)
+  participant SH as ShinzoHub<br/>(View Registry)
+  participant Host as Host<br/>(host client)
+  participant User as User<br/>(app SDK)
 
-1. viewkit view create
-   Define query, SDL,
-   add WASM lens
-
-2. viewkit view deploy
-   -> encodes VWL        3. View Registry (0x0210)
-   -> EVM tx                -> validate bundle
-                             -> RegisterObject (ICA)
-                             -> deploy SVS-1 contract
-                             -> emit Registered event
-                                                     4. Host detects event
-                                                        -> downloads bundle
-                                                        -> loads WASM lens
-                                                        -> starts transforming
-                                                           incoming primitives
-                                                                              5. User queries
-                                                                                 via GraphQL
+  Note over Dev: 1. viewkit view create<br/>(define query, SDL, add lens)
+  Dev->>SH: 2. viewkit view deploy<br/>(encode VWL, send EVM tx)
+  Note over SH: 3. validate bundle,<br/>RegisterObject (ICA),<br/>deploy SVS-1 contract
+  SH-)Host: emit Registered event
+  Note over Host: 4. download bundle,<br/>load WASM lens,<br/>transform primitives
+  User->>Host: 5. GraphQL query
+  Host->>User: view documents
 ```
 
 Indexers are not involved in the view lifecycle. By the time a view is created and applied, indexers have already delivered raw data to hosts over P2P.

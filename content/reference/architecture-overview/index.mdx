@@ -8,7 +8,40 @@ Neither layer works without the other. The on-chain layer controls who can parti
 
 ## System diagram
 
-![High-level system architecture.](./images/architecture-system-diagram.svg)
+```mermaid
+flowchart LR
+  Src["Source chains<br/>(Ethereum, Cosmos, …)"]
+
+  subgraph OffChain["Off-chain data layer"]
+    direction TB
+    Idx["Indexer<br/>(Geth + indexer client)"]
+    Host["Host<br/>(host client + DefraDB)"]
+    Idx -- "signed blocks" --> Host
+  end
+
+  subgraph OnChain["On-chain coordination layer"]
+    direction TB
+    SH["ShinzoHub<br/>(registries, payments)"]
+    Source["SourceHub<br/>(ACP / access control)"]
+    SH <-- "ICA / IBC" --> Source
+  end
+
+  subgraph Coord["Coordination services"]
+    direction TB
+    Sched["Scheduler"]
+    GW["Gateway"]
+  end
+
+  User["User / app"]
+
+  Src --> Idx
+  Sched -. "matches" .-> Idx
+  Sched -. "matches" .-> Host
+  User --> GW --> Host
+  Idx -. "register" .-> SH
+  Host -. "register" .-> SH
+  User -. "pay / subscribe" .-> SH
+```
 
 The scheduler and gateway are coordination services. They match indexers to hosts and route user queries to the right host. They never touch the actual data.
 
@@ -96,13 +129,13 @@ The bottom two layers (clients and connections) are set up once and persist. The
 
 ICA lets ShinzoHub control an account on SourceHub. When a precompile registration happens on ShinzoHub, the keeper constructs an ICA packet wrapping a `MsgDirectPolicyCmd` and sends it to SourceHub. The packet structure:
 
-```plaintext
-ICA Packet
-    +-- CosmosTx
-          +-- MsgDirectPolicyCmd
-                creator:   <ICA account on SourceHub>
-                policy_id: <Shinzo policy ID>
-                cmd:       RegisterObjectCmd / SetRelationshipCmd / etc.
+```mermaid
+flowchart TB
+  subgraph ICA["ICA Packet"]
+    subgraph TX["CosmosTx"]
+      M["<b>MsgDirectPolicyCmd</b><br/>creator: ICA account on SourceHub<br/>policy_id: Shinzo policy ID<br/>cmd: RegisterObjectCmd / SetRelationshipCmd / …"]
+    end
+  end
 ```
 
 The Hermes relayer (Rust binary by [Informal Systems](https://hermes.informal.systems/) is the off-chain process that physically moves packets between chains. It reads outbound packets from ShinzoHub's state, fetches Merkle proofs, and submits them to SourceHub. It then reads acknowledgements from SourceHub and returns them to ShinzoHub. Hermes is stateless and trustless. It cannot fabricate packets because SourceHub verifies each packet against a state proof.
@@ -175,98 +208,72 @@ Snapshots bundle multiple blocks into signed files for faster initial sync. The 
 
 Spans two chains and a relayer:
 
-```
-Source chain (Ethereum)                    ShinzoHub                    SourceHub
-                                                                        
-1. Validator calls                                                      
-   createAttestation() on                                               
-   ChallengeIssuer contract                                             
-   -> returns attestationId                                             
-   -> returns EIP-712 digest                                            
-                                                                        
-2. Validator submits signatures                                         
-   -> gets 15-byte pointer                                              
-   -> sets pointer in block                                             
-      extraData: "SH" + pointer                                         
-                                                                        
-3. EVM Relayer scans extraData,     4. ShinzoHub processes              
-   resolves pointer, verifies          MsgIndexerAssertion,             
-   signatures, broadcasts              stores assertion                 
-   MsgIndexerAssertion ----------->                                     
-                                    5. Operator calls register()        
-                                       on Indexer Registry (0x0212)     
-                                       -> verifies assertion            
-                                       -> derives DID/PID              
-                                       -> ICA packet to SourceHub ---> 6. ACP adds DID to
-                                                                           indexer group
+```mermaid
+sequenceDiagram
+  participant Op as Indexer operator
+  participant Eth as Ethereum<br/>(Outpost + block extraData)
+  participant Rel as EVM relayer
+  participant SH as ShinzoHub<br/>(Indexer Registry 0x0212)
+  participant Source as SourceHub
+
+  Op->>Eth: produce block with<br/>SH-tagged extraData
+  Op->>Eth: post EIP-712 attestation<br/>to ChallengeIssuer
+  Rel->>Eth: scan extraData,<br/>resolve attestation
+  Rel->>Rel: verify EIP-712 sigs
+  Rel->>SH: MsgIndexerAssertion
+  SH->>SH: record indexer,<br/>derive DID
+  SH->>Source: ICA RegisterObject
+  Source->>Source: ACP adds DID<br/>to indexer group
 ```
 
 ### Host registration
 
-```
-ShinzoHub                                  SourceHub
+```mermaid
+sequenceDiagram
+  participant Op as Operator
+  participant SH as ShinzoHub<br/>(Host Registry 0x0211)
+  participant Source as SourceHub
 
-1. Operator calls register()
-   on Host Registry (0x0211)
-   -> provides peer key + node key
-   -> registry verifies signatures
-   -> derives DID/PID
-   -> ICA packet to SourceHub -----------> 2. ACP adds DID to
-                                              host group
+  Op->>SH: register(peerKey, nodeKey)
+  SH->>SH: verify sigs,<br/>derive DID/PID
+  SH->>Source: ICA packet
+  Source->>Source: ACP adds DID<br/>to host group
 ```
 
 ### View registration
 
-```
-Developer machine          ShinzoHub                              SourceHub
+```mermaid
+sequenceDiagram
+  participant Dev as Developer
+  participant SH as ShinzoHub<br/>(View Registry 0x0210)
+  participant Source as SourceHub
+  participant Host as Host
 
-1. viewkit view deploy     2. View Registry (0x0210)
-   -> encodes VWL bytes       -> decodes VWL header
-   -> signs EVM tx             -> extracts SDL type name
-   -> sends to 0x0210         -> deploys SVS-1 contract
-                               -> ICA RegisterObject ----------> 3. ACP registers
-                               -> emits Registered event            view object
-                                          |
-                                          v
-                               4. Host detects event
-                                  -> downloads bundle
-                                  -> loads WASM lens
-                                  -> starts transforming
+  Dev->>SH: viewkit view deploy<br/>(encode VWL, sign EVM tx)
+  SH->>SH: decode VWL header,<br/>extract SDL type,<br/>deploy SVS-1 contract
+  SH->>Source: ICA RegisterObject
+  Source->>Source: ACP registers<br/>view object
+  SH-)Host: emit Registered event
+  Host->>Host: download bundle,<br/>load WASM lens,<br/>start transforming
 ```
 
 ## Transaction flow through a precompile
 
 The full path of an EVM transaction that hits a registry precompile and triggers a cross-chain ICA call:
 
-```
-User sends EVM tx to precompile (e.g., 0x0210)
-  |
-  v
-Validator includes tx in ShinzoHub block
-  |
-  v
-EVM calls precompile.Run()
-  |
-  v
-Precompile Go code:
-  1. Decode ABI arguments
-  2. Business logic (validate, store)
-  3. Call Cosmos keeper (e.g., RegisterObject)
-  4. Keeper builds ICA packet, committed to IBC state
-  5. Emit EVM log + Cosmos event
-  |
-  v
-Hermes relayer picks up ICA packet (async)
-  |
-  v
-Hermes submits packet + state proof to SourceHub
-  |
-  v
-SourceHub verifies proof, executes ACP command
-  |
-  v
-Hermes relays acknowledgement back to ShinzoHub
-```
+1. User sends an EVM tx to a precompile (e.g. `0x0210`).
+1. A validator includes the tx in a ShinzoHub block.
+1. The EVM calls `precompile.Run()`.
+1. The precompile Go code runs five sequential operations:
+   1. Decode ABI arguments.
+   1. Run business logic (validate, store).
+   1. Call the Cosmos keeper (e.g. `RegisterObject`).
+   1. The keeper builds an ICA packet and commits it to IBC state.
+   1. Emit an EVM log and a Cosmos event.
+1. Hermes picks up the ICA packet (async).
+1. Hermes submits the packet plus state proof to SourceHub.
+1. SourceHub verifies the proof and executes the ACP command.
+1. Hermes relays the acknowledgement back to ShinzoHub.
 
 The precompile emits both a Solidity EVM log and a Cosmos SDK event. The event names differ between layers:
 
