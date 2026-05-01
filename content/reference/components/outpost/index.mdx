@@ -2,8 +2,6 @@
 title: "Outpost"
 ---
 
-Repo: [shinzonetwork/shinzo-outpost](https://github.com/shinzonetwork/shinzo-outpost) (Solidity)
-
 An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as indexers, and lets users pay for view access without interacting with ShinzoHub directly.
 
 Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](relayer.md) bridge the results to [ShinzoHub](shinzohub.md).
@@ -67,7 +65,7 @@ Users on external chains can pay for Shinzo resources without interacting with S
 ## Implementations
 
 | Implementation | Chain type | Status |
-|---------------|-----------|--------|
+| --- | --- | --- |
 | shinzo-outpost | EVM (Ethereum, L2s) | Complete |
 | Cosmos outpost | Cosmos SDK chains | Not yet implemented |
 | CosmosEVM outpost | Hybrid Cosmos+EVM chains | Not yet implemented |

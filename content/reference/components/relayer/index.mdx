@@ -2,8 +2,6 @@
 title: "Relayer"
 ---
 
-Repo: [shinzonetwork/shinzo-evm-relayer](https://github.com/shinzonetwork/shinzo-evm-relayer) (Go)
-
 A relayer is a process that moves data from an external chain to ShinzoHub. It watches for assertions and payments produced by [outpost](outpost.md) contracts and delivers them to ShinzoHub as Cosmos SDK transactions.
 
 ShinzoHub does not watch external chains. It only processes messages that are broadcast to it. The relayer reads what happened on the source chain and tells ShinzoHub about it.
@@ -26,7 +24,7 @@ After ShinzoHub processes the message, the validator can register as an indexer 
 ### What gets relayed
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | Consensus public key | Public key of the validator |
 | Delegate address | Address derived from the delegate key |
 | Source chain | Identifier of the source chain |
@@ -59,7 +57,7 @@ The payment pipeline is optional and can be toggled in the relayer's configurati
 The relayer maintains two connections:
 
 | Connection | Purpose |
-|-----------|---------|
+| --- | --- |
 | Source chain (Ethereum) | Read assertion and payment data |
 | ShinzoHub | Broadcast transactions |
 
@@ -68,7 +66,7 @@ The relayer has its own wallet on ShinzoHub and needs SHNZ for gas to broadcast 
 ## Implementations
 
 | Implementation | Source chain type | Status |
-|---------------|------------------|--------|
+| --- | --- | --- |
 | shinzo-evm-relayer | EVM (Ethereum, L2s) | Complete |
 | Cosmos relayer | Cosmos SDK chains | Not yet implemented |
 | CosmosEVM relayer | Hybrid Cosmos+EVM chains | Not yet implemented |

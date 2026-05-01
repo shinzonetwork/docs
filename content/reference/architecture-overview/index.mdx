@@ -48,7 +48,7 @@ The scheduler and gateway are coordination services. They match indexers to host
 ## Component inventory
 
 | Component | Layer | Language | Repo | Touches data? |
-|-----------|-------|----------|------|---------------|
+| --- | --- | --- | --- | --- |
 | Geth (source chain node) | Off-chain | Go | [go-ethereum](https://github.com/ethereum/go-ethereum) | Yes |
 | Indexer client | Off-chain | Go | [shinzo-indexer-client](https://github.com/shinzonetwork/shinzo-indexer-client/) | Yes |
 | Host client | Off-chain | Go | [shinzo-host-client](https://github.com/shinzonetwork/shinzo-host-client/) | Yes |
@@ -83,7 +83,7 @@ ShinzoHub also runs five custom Cosmos modules: `x/admin`, `x/sourcehub` (ICA co
 #### Chain IDs
 
 | Environment | Chain ID |
-|-------------|----------|
+| --- | --- |
 | Devnet | 91273002 |
 | Testnet | 91273001 |
 | Mainnet | 91273000 |
@@ -114,7 +114,7 @@ SourceHub manages two independent policy domains:
 
 Users never interact with SourceHub directly. ShinzoHub sends commands to it via ICA.
 
-## Cross-chain communication: IBC and ICA
+## Cross-chain communication with IBC and ICA
 
 ShinzoHub and SourceHub communicate over IBC (Inter-Blockchain Communication). IBC has four layers:
 
@@ -278,7 +278,7 @@ The full path of an EVM transaction that hits a registry precompile and triggers
 The precompile emits both a Solidity EVM log and a Cosmos SDK event. The event names differ between layers:
 
 | Precompile | EVM log | Cosmos event |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | View Registry (0x0210) | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
 | Host Registry (0x0211) | `Registered(address,string)` | `"HostRegistered"` |
 | Indexer Registry (0x0212) | `Registered(address,string)` | `"Registered"` |

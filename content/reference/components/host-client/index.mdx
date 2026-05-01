@@ -2,8 +2,6 @@
 title: "Host client"
 ---
 
-Repo: `shinzo-gh/shinzo-host-client` (Go)
-
 The host client receives indexed blockchain data from multiple indexers over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
 
 If indexers are data producers, hosts are consumers and servers. The separation lets you scale serving independently from indexing.
@@ -29,9 +27,9 @@ flowchart LR
 
   subgraph Ports["Exposed ports"]
     direction TB
-    P444["444 — Playground"]
-    P9181["9181 — Internal API"]
-    P8080["8080 — Metrics"]
+    P444["444: Playground"]
+    P9181["9181: Internal API"]
+    P8080["8080: Metrics"]
   end
 
   Indexers -- "P2P (DefraDB)" --> HOST
@@ -41,7 +39,7 @@ flowchart LR
 ### Components
 
 | Component | What it does |
-|-----------|-------------|
+| --- | --- |
 | ShinzoHub Listener | Subscribes to ShinzoHub events over a CometBFT WebSocket. Watches for `Registered` (new views) and `EntityRegistered` (new indexers/hosts). |
 | DefraDB | Embedded database. Handles storage, P2P replication, content addressing, CRDT merging, and query serving. |
 | Attestation Handler | Listens to DefraDB's event bus for new BlockSignature documents. Verifies signatures and creates AttestationRecords with P-counter vote counts. |
@@ -51,7 +49,7 @@ flowchart LR
 ### Key source files
 
 | Component | File |
-|-----------|------|
+| --- | --- |
 | Main host logic | `pkg/host/host.go` |
 | ShinzoHub event subscription | `pkg/shinzohub/events.go` |
 | Attestation processing | `pkg/attestation/attestationRecordService.go` |
@@ -68,12 +66,10 @@ cancel, channel, err := shinzohub.StartEventSubscription(wsURL)
 
 This subscribes to two query filters:
 
-- `"tm.event='Tx' AND Registered.key EXISTS"` -- view registration events.
-- `"tm.event='Tx' AND EntityRegistered.key EXISTS"` -- new indexers/hosts joining.
+- `"tm.event='Tx' AND Registered.key EXISTS"`: view registration events.
+- `"tm.event='Tx' AND EntityRegistered.key EXISTS"`: new indexers or hosts joining.
 
 Events arrive on the returned channel. The host's main loop reads from this channel and dispatches to the view processor or network handler as appropriate.
-
-Code: `pkg/shinzohub/events.go`, lines 95-99.
 
 ## Attestation system
 
@@ -146,7 +142,7 @@ When multiple hosts create AttestationRecords for the same document but with dif
 
 When a blockchain re-org happens, different indexers may briefly have different versions of the same block:
 
-```
+```plaintext
 Indexer A: Block #1000 with hash 0xaaa (pre-reorg)
 Indexer B: Block #1000 with hash 0xbbb (post-reorg)
 ```
@@ -167,17 +163,12 @@ There is a known bug here: the View Registry precompile emits `"ViewRegistered"`
 
 When the host receives a view bundle (from either discovery path):
 
-1. `ProcessViewFromWireFormat()` -- base64-decodes the wire bytes, parses VWL format, extracts the view name from SDL via regex.
-
-1. `PostWasmToFile()` -- for each lens: base64-decodes the WASM bytes, validates the WASM magic number (`0x00 0x61 0x73 0x6D`), writes to disk with a sha256-derived filename.
-
-1. `SetupLensInDefraDB()` -- builds a LensConfig (source collection, destination, lens path, arguments) and calls `defraNode.DB.AddLens()` to register with LensVM.
-
-1. `ConfigureLens()` -- calls `defraNode.DB.AddView()` with or without a transform CID, auto-corrects field names for schema compatibility.
-
-1. `SubscribeTo()` -- enables P2P replication for the view's collection via `CreateP2PCollections()`.
-
-1. `SaveViewToRegistry()` -- persists view metadata to `views.json` in the lens registry directory so the host can recover on restart.
+1. `ProcessViewFromWireFormat()`: base64-decodes the wire bytes, parses VWL format, extracts the view name from SDL via regex.
+1. `PostWasmToFile()`: for each lens, base64-decodes the WASM bytes, validates the WASM magic number (`0x00 0x61 0x73 0x6D`), and writes to disk with a sha256-derived filename.
+1. `SetupLensInDefraDB()`: builds a LensConfig (source collection, destination, lens path, arguments) and calls `defraNode.DB.AddLens()` to register with LensVM.
+1. `ConfigureLens()`: calls `defraNode.DB.AddView()` with or without a transform CID, auto-corrects field names for schema compatibility.
+1. `SubscribeTo()`: enables P2P replication for the view's collection via `CreateP2PCollections()`.
+1. `SaveViewToRegistry()`: persists view metadata to `views.json` in the lens registry directory so the host can recover on restart.
 
 ## Lens transforms
 
@@ -195,7 +186,7 @@ flowchart LR
 WASM runtimes in use:
 
 | Runtime | Language | Where |
-|---------|----------|-------|
+| --- | --- | --- |
 | Wasmtime | Rust | Primary runtime in production hosts |
 | Wasmer | Rust | viewkit local testing |
 | Wazero | Go | Pure Go alternative, no CGo dependency |
@@ -205,7 +196,7 @@ Lens binary size varies by source language. AssemblyScript produces ~73 KB WASM.
 ## GraphQL serving
 
 | Port | Purpose |
-|------|---------|
+| --- | --- |
 | 444 | GraphQL Playground (interactive query UI) |
 | 9181 | Internal DefraDB API |
 | 8080 | Health endpoint, Prometheus metrics |
@@ -238,7 +229,7 @@ Port 8080 exposes Prometheus metrics: block processing rates, attestation counts
 ## Resource requirements
 
 | Resource | Minimum | Recommended |
-|----------|---------|-------------|
+| --- | --- | --- |
 | CPU | 2 cores | 4 cores |
 | RAM | 4 GB | 8 GB |
 | Storage | 100 GB | 500 GB (depends on number of views) |
@@ -247,7 +238,7 @@ Port 8080 exposes Prometheus metrics: block processing rates, attestation counts
 ## Key files
 
 | Path | Purpose |
-|------|---------|
+| --- | --- |
 | `cmd/main.go` | Entry point |
 | `pkg/host/` | Core host logic |
 | `pkg/shinzohub/` | WebSocket watcher for ShinzoHub events |

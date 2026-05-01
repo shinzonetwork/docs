@@ -2,8 +2,6 @@
 title: "Viewkit"
 ---
 
-Repo: `shinzo-gh/shinzo-view-creator` (Go)
-
 Viewkit is a CLI tool for creating, testing, and deploying views. It does not process or serve data (hosts do that). It packages a view into a binary bundle on your machine and submits a transaction to ShinzoHub.
 
 ## What viewkit does and does not do
@@ -27,9 +25,9 @@ What it does not do:
 
 A view has three pieces:
 
-1. A query -- which primitive data to select (e.g., "all Logs from the USDC contract").
-1. An SDL -- GraphQL schema defining the output shape.
-1. A lens (optional) -- WASM module that transforms the data.
+1. A query that picks which primitive data to select (e.g., "all Logs from the USDC contract").
+1. An SDL, the GraphQL schema defining the output shape.
+1. A lens (optional), a WASM module that transforms the data.
 
 ### The @materialized directive
 
@@ -41,7 +39,7 @@ Important: the `limit` parameter should be on the source query (e.g., `Log(limit
 
 ## CLI commands
 
-```bash
+```shell
 # Initialize a new view
 viewkit view create my-usdc-view \
   --query 'Ethereum__Mainnet__Log { address topics data transactionHash blockNumber }'
@@ -95,19 +93,19 @@ VWL (View Wire Language) is the binary format for view bundles.
 The bundle is a single byte stream written in the order below. Each section is appended directly after the previous one.
 
 | # | Section | Contents |
-|---|---------|----------|
-| 1 | Header | `"VWL"` magic (3 bytes) · version (1 byte, currently `0x01`) |
-| 2 | Query | length (`u32`) · GraphQL query string |
-| 3 | SDL | length (`u32`) · GraphQL schema string |
+| --- | --- | --- |
+| 1 | Header | `"VWL"` magic (3 bytes), version (1 byte, currently `0x01`) |
+| 2 | Query | length (`u32`), GraphQL query string |
+| 3 | SDL | length (`u32`), GraphQL schema string |
 | 4 | Lens metadata | count (`u16`); for each lens: ID (`u32`), args length (`u32`), JSON args bytes |
-| 5 | Lens blob | codec byte (`0` = none, `1` = zstd) · blob length (`u32`) · WASM count (`u16`); for each WASM: length (`u32`) and bytes |
+| 5 | Lens blob | codec byte (`0` = none, `1` = zstd), blob length (`u32`), WASM count (`u16`); for each WASM: length (`u32`) and bytes |
 
 WASM binaries can be 70-200+ KB each. zstd compression is applied before the bundle goes on chain. The host decompresses when applying.
 
 Two implementations of the wire format exist:
 
 | Implementation | Language | Side | Used by |
-|---------------|----------|------|---------|
+| --- | --- | --- | --- |
 | viewbundle-go | Go | Server-side | viewkit, precompile |
 | viewbundle | TypeScript | Client-side | Browser-based tooling |
 
@@ -167,7 +165,7 @@ LensVM supports bidirectional transforms (the `inverse()` function in the WASM m
 ### Binary size by language
 
 | Language | Typical WASM size | Notes |
-|----------|-------------------|-------|
+| --- | --- | --- |
 | Rust | ~200 KB | Preferred for production |
 | AssemblyScript | ~73 KB | Easier if you know TypeScript, smaller binary |
 
@@ -178,7 +176,7 @@ Smaller binaries mean less P2P overhead.
 Stored in `shinzo-gh/wasm-bucket`. Currently available:
 
 | Lens | Purpose |
-|------|---------|
+| --- | --- |
 | `decode_log` | ABI-decodes EVM log events. Takes ABI JSON as argument. |
 | `filter_transaction` | Filters by contract address |
 
@@ -215,7 +213,7 @@ Indexers are not involved in the view lifecycle. By the time a view is created a
 ## Key files
 
 | What | Location |
-|------|----------|
+| --- | --- |
 | View deploy logic | `shinzo-gh/shinzo-view-creator/core/service/deploy.go` |
 | VWL encoding/decoding | `shinzo-gh/viewbundle-go/` |
 | VWL bundler (compress/decompress) | `shinzo-gh/viewbundle-go/bundler.go` |
