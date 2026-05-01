@@ -5,50 +5,54 @@ sidebar_position: 1
 description: Introduction to the Shinzo Indexer
 ---
 
-The Shinzo Indexer is a high-performance, fault-tolerant blockchain indexing engine designed for deterministic, query-friendly extraction of Ethereum data. It sits between an Ethereum execution node and downstream applications, transforming raw chain data into structured, relationally linked documents stored in DefraDB, all while maintaining strong guarantees around consistency, concurrency, and observability.
+The Shinzo Indexer is a lightweight sidecar that runs alongside an existing Ethereum execution client and reads from it. It pulls block data out of the node and writes it into a local DefraDB in a shape that is easy to query.
 
-## Purpose and Role in the Stack
+The indexer is not an RPC node. It does not replace Geth, Reth, Nethermind, or any other execution client, and it does not serve JSON-RPC traffic to applications.
 
-At its core, the indexer continuously consumes blocks, transactions, logs, and EIP-2930 access lists from an Ethereum node and normalizes them into a strongly-typed data model. It exposes this indexed data through Peer-2-Peer Network powered by DefraDB, enabling downstream services to query block-level and transaction-level information without depending directly on JSON-RPC. This separates data access from blockchain node operations, enabling stateless microservices, cheaper infra, and deterministic historical queries.
+Instead, the indexer consumes upstream RPC and WebSocket endpoints from a node you already have access to: a local execution client, a node co-located with your validator, or a managed provider. It transforms the raw chain data those endpoints return into structured, relationally linked documents stored in its local DefraDB instance.
 
-## Architecture Overview
+## Purpose and role in the stack
 
-### 1. Indexer Engine (Go)
+The indexer continuously pulls blocks, transactions, logs, and EIP-2930 access lists from whichever upstream Ethereum node you point it at, then normalizes them into a strongly-typed data model. It exposes this indexed data through a peer-to-peer network powered by DefraDB, so downstream services can query block-level and transaction-level information without going through JSON-RPC themselves. The execution client still does the work of being an execution client. The indexer just reads from it and reshapes the data for query.
 
-The core indexing engine is written in Go and handles concurrent block processing. It connects to managed blockchain nodes via dual WebSocket/HTTP connections and ensures deterministic document IDs, duplicate block protection, and graceful shutdown handling.
+## Architecture overview
 
-### 2. Current Supported Chains
+### Indexer engine (Go)
 
-Supports connections to Ethereum Mainnet currently through a Geth client using JSON-RPC and WebSocket endpoints. Handles network-level errors with retries and timeouts.
+The core indexing engine is written in Go and handles concurrent block processing. It connects to an upstream Ethereum node over HTTP and WebSocket, and provides deterministic document IDs, duplicate block protection, and graceful shutdown handling. The upstream node is supplied by you. The indexer does not run one.
 
-### 3. DefraDB
+### Currently supported chains
 
-Acts as the primary persistence layer, providing a P2P-ready, decentralized document store with GraphQL query capabilities. The indexer uses it to store:
+The indexer currently supports Ethereum Mainnet. It works with any execution client that exposes a standard Ethereum JSON-RPC and WebSocket interface (Geth, Reth, Nethermind, Erigon, or a managed provider). Network-level errors are handled with retries and timeouts.
 
-- Blocks
-- Transactions
-- Logs
-- AccessListEntries
-- Relationships between blockchain entities
+### DefraDB
 
-DefraDB provides queryable, P2P-ready storage, which aligns with Shinzo Network’s distributed architecture goals.
+DefraDB is the indexer's local persistence layer. It is a peer-to-peer document store with GraphQL query capabilities. The indexer writes the following into its local DefraDB instance:
 
-### 4. GraphQL API
+- Blocks.
+- Transactions.
+- Logs.
+- AccessListEntries.
+- Relationships between blockchain entities.
 
-DefraDB exposes all indexed blockchain data via GraphQL, enabling typed queries for both real-time and historical blockchain data.
+DefraDB provides the queryable, P2P-ready storage that the rest of the Shinzo Network reads from.
 
-### 5. Logging & Error System
+### GraphQL API
 
-- Uber Zap: global structured logging with context (block number, tx hash, etc.)
-- IndexerError System: typed errors (NetworkError, DataError, StorageError, SystemError) with severity levels, structured context, and smart retry logic
+DefraDB exposes the indexed data via GraphQL for typed queries against both real-time and historical data. This is the indexer's read interface; it is not an Ethereum JSON-RPC endpoint.
 
-### 6. Configuration Layer (Viper)
+### Logging and error system
+
+- Uber Zap for structured logging with context (block number, tx hash, etc.).
+- The IndexerError system: typed errors (NetworkError, DataError, StorageError, SystemError) with severity levels, structured context, and retry logic.
+
+### Configuration layer (Viper)
 
 YAML-based configuration with environment variable overrides for:
 
-- Ethereum node endpoints
-- DefraDB settings (P2P, keyring, embedded/remote)
-- Indexer start height
-- Logger configuration
+- Upstream Ethereum node endpoints (RPC and WebSocket URLs supplied by you).
+- DefraDB settings (P2P, keyring, embedded/remote).
+- Indexer start height.
+- Logger configuration.
 
-In summary, the Shinzo Indexer serves as a reliable bridge between Ethereum nodes and applications, providing structured, queryable blockchain data. Its design emphasizes concurrency, error handling, and observability, enabling developers to interact with consistent and deterministic data while keeping application logic decoupled from node operations.
+The Shinzo Indexer is a client that reads from an Ethereum node you already have and writes structured data into a local DefraDB. It does not replace your execution client, and it does not expose JSON-RPC. Applications query the normalized data instead of talking to the chain directly.
