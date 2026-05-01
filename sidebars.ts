@@ -55,10 +55,10 @@ const sidebars: SidebarsConfig = {
           items: [
             "reference/components/host-client/index",
             "reference/components/indexer-client/index",
-            "reference/components/output/index",
+            "reference/components/outpost/index",
             "reference/components/relayer/index",
             "reference/components/shinzohub/index",
-            "reference/components/view-creator/index",
+            "reference/components/viewkit/index",
           ],
         },
 
