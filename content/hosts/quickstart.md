@@ -57,26 +57,26 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 ### 3. Running Indexer and Host on the Same Machine (Avoiding Port Collisions)
 
-If you are running your own indexer, you can connect your Host to this indexer by modifying **p2p.bootstrap_peers**. In your indexer logs you should see something like:
+If you are running your own indexer, you can connect your Host to this indexer by configuring **p2p.bootstrap_peers**. To get the required Peer ID, query the registration endpoint:
 
+```bash
+curl http://localhost:8080/registration
 ```
-Dec 17 19:14:55.645 INF p2p Adding pubsub topic PeerID=12D3KooWSY5bv77pAaotM1WGKDFW7nPYaEe8e95XAYxpamkSVvsK Topic=bafyreiehjqcssqfigaawuwnbs3zbjlbubyri4w5dmghd5ocwp4oxhfmf2a
-Dec 17 19:14:55.652 INF node Providing HTTP API at http://192.168.50.33:9181
-```
+
 From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in **p2p.bootstrap_peers** with your indexer peer.
 
 If you are running both Indexer and Host on the same machine, apply the following changes to the [Host's **config.yaml**](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
 
 The Indexer is likely already using port `9181`, so update the **defradb url** field:
 
-```
+```bash
 url: "localhost:9182"
 ```
 
 Also update the P2P settings to use localhost and a different port so the Host doesn't clash with the Indexer:
 
 
-```
+```bash
 bootstrap_peers:
   - '/ip4/127.0.0.1/tcp/9171/p2p/<PeerID>'
 listen_addr: "/ip4/0.0.0.0/tcp/9172"
@@ -141,7 +141,7 @@ This section covers deploying the host on a virtual machine using Docker, docker
 
 ### Prerequisites
 
-- Ports `9171`, `9181`, `8080`, and `444` open in your firewall/security group
+- Port `444` open in your firewall/security group
 
 ### 1. Install System Dependencies
 
@@ -254,6 +254,7 @@ networks:
 services:
   shinzo-host:
     image: ghcr.io/shinzonetwork/shinzo-host-client:standard
+    user: "0:0"
     mem_limit: 16g
     mem_reservation: 13g
     restart: unless-stopped
@@ -304,7 +305,7 @@ docker-compose up -d
 
 The health check endpoint is available at:
 
-```
+```bash
 http://<VM_IP>:8080/metrics
 ```
 
@@ -319,7 +320,7 @@ docker logs shinzo-host
 
 The multi-stage Dockerfile builds the host binary (Go 1.25) along with Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
 
-```
+```bash
 ghcr.io/shinzonetwork/shinzo-host-client:standard
 ```
 
