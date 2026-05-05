@@ -23,17 +23,17 @@ This section covers running the Shinzo Host Client directly on your local machin
 
 ### Prerequisites
 
-- Go 1.25
+- Go 1.25.
 - Metamask with a wallet setup. This wallet does not need to hold any funds.
 
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
 ```
 
-### 2. Configuration
+### Configuration
 
 The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) which comes with sensible defaults.
 The only field you need to set is **defradb.keyring_secret** which can alternatively be set with the following command in the terminal window.
@@ -44,18 +44,18 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 #### Key Fields
 
-* **defradb.url** – API endpoint of your local DefraDB node. Defaults work for most setups.
-* **defradb.keyring_secret** – Requires a secret to generate your private keys. 
-* **p2p.bootstrap_peers** – Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer.
-* **p2p.listen_addr** – Default is suitable for local runs. Override when containerizing.
-* **store.path** – Directory where local DefraDB data is stored.
-* **shinzo.web_socket_url** – Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
-* **logger.development** – Set to `false` for production.
-* **host.lens_registry_path** – Where received WASM lens files are stored.
+- **defradb.url** – API endpoint of your local DefraDB node. Defaults work for most setups.
+- **defradb.keyring_secret** – Requires a secret to generate your private keys.
+- **p2p.bootstrap_peers** – Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer.
+- **p2p.listen_addr** – Default is suitable for local runs. Override when containerizing.
+- **store.path** – Directory where local DefraDB data is stored.
+- **shinzo.web_socket_url** – Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
+- **logger.development** – Set to `false` for production.
+- **host.lens_registry_path** – Where received WASM lens files are stored.
 
 > The included `config.yaml` is ready for most local development workflows. You should only need to modify peer settings or storage paths for advanced setups.
 
-### 3. Running Indexer and Host on the Same Machine (Avoiding Port Collisions)
+### Running Indexer and Host on the Same Machine
 
 If you are running your own indexer, you can connect your Host to this indexer by configuring **p2p.bootstrap_peers**. To get the required Peer ID, query the registration endpoint:
 
@@ -82,22 +82,22 @@ bootstrap_peers:
 listen_addr: "/ip4/0.0.0.0/tcp/9172"
 ```
 
-### 4. Build and Run
+### Build and Run
 
-**Option A — Run directly (no build step):**
+**Option A: Run directly (no build step):**
 
 ```bash
 go run cmd/main.go
 ```
 
-**Option B — Build then run:**
+**Option B: Build then run:**
 
 ```bash
 make build
 make start
 ```
 
-### 5. (Optional) Enable the GraphQL Playground
+### Enable the Optional GraphQL Playground
 
 The host ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
 
@@ -108,7 +108,7 @@ make start
 
 This runs the Host and also exposes a **Playground GUI**. In the output logs, look for the address:
 
-```
+```plaintext
 🧪 GraphQL Playground available at ...
 ```
 
@@ -137,27 +137,27 @@ You can checkout more query examples [here](/docs/hosts/examples.md).
 
 ## VM Deployment
 
-This section covers deploying the host on a virtual machine using Docker, docker-compose, and Nginx — the recommended approach for production and devnet participation.
+This section covers deploying the host on a virtual machine using Docker, docker-compose, and Nginx. This is the recommended approach for production and devnet participation.
 
 ### Prerequisites
 
-- Port `444` open in your firewall/security group
+- Port `444` open in your firewall/security group.
 
-### 1. Install System Dependencies
+### Install System Dependencies
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y docker.io docker-compose nginx
 ```
 
-### 2. Create the Data Directory
+### Create the Data Directory
 
 ```bash
 sudo mkdir -p ~/data/defradb ~/data/lens
 sudo chown -R 0:0 ~/data/defradb ~/data/lens
 ```
 
-### 3. Generate SSL Certificates
+### Generate SSL Certificates
 
 ```bash
 # Generate private key, certificate signing request, and self-signed certificate
@@ -169,14 +169,14 @@ sudo openssl x509 -req -days 365 -in /tmp/nginx.csr -signkey ~/ssl/nginx.key -ou
 sudo rm /tmp/nginx.csr
 ```
 
-### 4. Write the Configuration File
+### Write the Configuration File
 
 Create `~/config.yaml` with your desired settings. The production config enables all performance tuning, peer reconnection, pruning, and optional event filtering. Key values to set:
 
 ```yaml
 defradb:
   url: "localhost:9181"
-  keyring_secret: "<YOUR_SECRET>"        # Required — change this
+  keyring_secret: "<YOUR_SECRET>"        # Required, change this
   p2p:
     enabled: true
     bootstrap_peers:
@@ -198,7 +198,7 @@ host:
 
 > The full production config (with pruning, batch processing, event filtering, and memory tuning) is generated automatically by `host-prod-setup.sh`. See below.
 
-### 5. Write the Nginx Config
+### Write the Nginx Config
 
 Create `~/nginx.conf`:
 
@@ -242,7 +242,7 @@ http {
 }
 ```
  
-### 6. Write the docker-compose File
+### Write the docker-compose File
 
 Create `~/docker-compose.yml`:
 
@@ -295,7 +295,7 @@ services:
     restart: unless-stopped
 ```
 
-### 7. Start the Host
+### Start the Host
 
 ```bash
 docker-compose up -d
@@ -330,15 +330,15 @@ To participate in the Shinzo Network, you must register your host. Registration 
 
 ### Option A: Register with the GUI
 
-1. Start your Host
-2. Add Shinzo Devnet to Metamask with the following values:
+1. Start your Host.
+1. Add Shinzo Devnet to Metamask with the following values:
   - Network name: Shinzo
   - Default RPC URL: http://rpc.devnet.shinzo.network:8545
   - Chain ID: 91273002
   - Currency symbol: SHN
-3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
-4. On the registration page, click Register and select "Host" as your role to complete the process.
-5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
+1. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
+1. On the registration page, click Register and select "Host" as your role to complete the process.
+1. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
 
 ### Option B: Register with the CLI
 
@@ -365,7 +365,7 @@ Replace each placeholder with your actual registration values.
 
 **🎉 Your host is now successfully registered and fully authorized to participate in the Shinzo Network.**
 
-## Need Help?
+## Need Help
 
 If you encounter any issues while installing or running the Shinzo Indexer, please let us know by opening a GitHub issue [here](https://github.com/shinzonetwork/shinzo-indexer-client/issues).
 
@@ -373,5 +373,5 @@ If you encounter any issues while installing or running the Shinzo Indexer, plea
 
 You are now ready to:
 
-* Begin receiving and hosting Views
-* Experiment with queries through the playground GUI
+- Begin receiving and hosting Views.
+- Experiment with queries through the playground GUI.
