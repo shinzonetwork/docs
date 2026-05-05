@@ -42,7 +42,7 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 #### Key Fields
 
-- `defradb.url` – API endpoint of your local DefraDB node. Defaults work for most setups.
+- `defradb.url`: API endpoint of your local DefraDB node. Defaults work for most setups.
 - `defradb.keyring_secret`: Requires a secret to generate your private keys.
 - `p2p.bootstrap_peers`: Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer.
 - `p2p.listen_addr`: Default is suitable for local runs. Override when containerizing.
@@ -51,21 +51,23 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 - `logger.development`: Set to `false` for production.
 - `host.lens_registry_path`: Where received WASM lens files are stored.
 
-> The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups.
+:::tip Note
+The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups.
+:::
 
 ### Running Indexer and Host on the Same Machine
 
-If you are running your own indexer, you can connect your Host to this indexer by configuring **p2p.bootstrap_peers**. To get the required Peer ID, query the registration endpoint:
+If you are running your own indexer, you can connect your Host to this indexer by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the registration endpoint:
 
 ```shell
 curl http://localhost:8080/registration
 ```
 
-From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in **p2p.bootstrap_peers** with your indexer peer.
+From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in `p2p.bootstrap_peers` with your indexer peer.
 
-If you are running both Indexer and Host on the same machine, apply the following changes to the [Host's **config.yaml**](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
+If you are running both Indexer and Host on the same machine, apply the following changes to the [Host's `config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
 
-The Indexer is likely already using port `9181`, so update the **defradb url** field:
+The Indexer is likely already using port `9181`, so update the `defradb.url` field:
 
 ```shell
 url: "localhost:9182"
@@ -194,7 +196,9 @@ host:
   health_server_port: 8080
 ```
 
-> The full production config is generated automatically by `host-prod-setup.sh`. See below.
+:::tip Note
+The full production config is generated automatically by `host-prod-setup.sh`. See below.
+:::
 
 ### Write the Nginx Config
 
@@ -359,7 +363,9 @@ cast send "0x0000000000000000000000000000000000000211" \
 
 Replace each placeholder with your actual registration values.
 
-> Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
+:::warning
+Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
+:::
 
 Your host is now registered and authorized to participate in the Shinzo Network.
 
