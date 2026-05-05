@@ -22,7 +22,7 @@ Run the Shinzo Host Client directly on your local machine for development and te
 
 ### Prerequisites
 
-- Go 1.25.
+- Go 1.25
 - Metamask with a wallet setup. This wallet does not need to hold any funds.
 
 ### Clone the Repository
@@ -73,7 +73,7 @@ The Indexer is likely already using port `9181`, so update the `defradb.url` fie
 url: "localhost:9182"
 ```
 
-Also update the P2P settings to use localhost and a different port so the Host doesn't clash with the Indexer:
+Also update the [P2P settings](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml#L4) to use localhost and a different port so the Host doesn't clash with the Indexer:
 
 
 ```shell
@@ -97,7 +97,7 @@ make build
 make start
 ```
 
-### Enable the Optional GraphQL Playground
+### (Optional) Enable the GraphQL Playground
 
 The host ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
 
@@ -133,7 +133,7 @@ query GetLatestLogs {
 }
 ```
 
-More query examples are available [here](/docs/hosts/examples.md).
+More query examples are available [here](/content/hosts/examples.md).
 
 ## VM Deployment
 
@@ -333,14 +333,14 @@ To participate in the Shinzo Network, you must register your host. Registration 
 ### Option A: Register with the GUI
 
 1. Start your Host.
-1. Add Shinzo Devnet to Metamask with the following values:
+2. Add Shinzo Devnet to Metamask with the following values:
   - Network name: Shinzo
   - Default RPC URL: http://rpc.devnet.shinzo.network:8545
   - Chain ID: 91273002
   - Currency symbol: SHN
-1. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
-1. On the registration page, click Register and select "Host" as your role to complete the process.
-1. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
+3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
+4. On the registration page, click Register and select "Host" as your role to complete the process.
+5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
 
 ### Option B: Register with the CLI
 
@@ -371,7 +371,7 @@ Your host is now registered and authorized to participate in the Shinzo Network.
 
 ## Need Help
 
-If you run into issues installing or running the Shinzo Host, open a GitHub issue [here](https://github.com/shinzonetwork/shinzo-indexer-client/issues).
+If you run into issues installing or running the Shinzo Host, open a GitHub issue [here](https://github.com/shinzonetwork/shinzo-host-client/issues).
 
 ## Next Steps
 
