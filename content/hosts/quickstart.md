@@ -5,7 +5,7 @@ sidebar_position: 2
 description: Run a Shinzo Host to transform blockchain data into verifiable Views
 ---
 
-Hosts transform raw blockchain data into structured **Views** and contribute to network security by producing **Attestation Records**. This quick start guide walks you through installing, configuring, and running the Shinzo Host Client.
+Hosts turn raw blockchain data into structured **Views** and produce **Attestation Records** that help secure the network. This guide covers installing, configuring, and running the Shinzo Host Client.
 
 ## Hardware Recommendations
 
@@ -16,10 +16,9 @@ Hosts transform raw blockchain data into structured **Views** and contribute to 
 | Storage | 3 TB NVMe | 4+ TB NVMe |
 | OS | Ubuntu 24.04 | Ubuntu 24.04 |
 
-
 ## Local Deployment
 
-This section covers running the Shinzo Host Client directly on your local machine for development and testing.
+Run the Shinzo Host Client directly on your local machine for development and testing.
 
 ### Prerequisites
 
@@ -28,38 +27,37 @@ This section covers running the Shinzo Host Client directly on your local machin
 
 ### Clone the Repository
 
-```bash
+```shell
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
 ```
 
 ### Configuration
 
-The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) which comes with sensible defaults.
-The only field you need to set is **defradb.keyring_secret** which can alternatively be set with the following command in the terminal window.
+The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml), which comes with working defaults. The only field you need to set is `defradb.keyring_secret`. Alternatively, you can also set the password as an environment variable to avoid storing it in plaintext:
 
-```bash
+```shell
 export DEFRA_KEYRING_SECRET=<make_a_password>
 ```
 
 #### Key Fields
 
-- **defradb.url** – API endpoint of your local DefraDB node. Defaults work for most setups.
-- **defradb.keyring_secret** – Requires a secret to generate your private keys.
-- **p2p.bootstrap_peers** – Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer.
-- **p2p.listen_addr** – Default is suitable for local runs. Override when containerizing.
-- **store.path** – Directory where local DefraDB data is stored.
-- **shinzo.web_socket_url** – Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
-- **logger.development** – Set to `false` for production.
-- **host.lens_registry_path** – Where received WASM lens files are stored.
+- `defradb.url` – API endpoint of your local DefraDB node. Defaults work for most setups.
+- `defradb.keyring_secret`: Requires a secret to generate your private keys.
+- `p2p.bootstrap_peers`: Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer.
+- `p2p.listen_addr`: Default is suitable for local runs. Override when containerizing.
+- `store.path`: Directory where local DefraDB data is stored.
+- `shinzo.web_socket_url`: Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
+- `logger.development`: Set to `false` for production.
+- `host.lens_registry_path`: Where received WASM lens files are stored.
 
-> The included `config.yaml` is ready for most local development workflows. You should only need to modify peer settings or storage paths for advanced setups.
+> The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups.
 
 ### Running Indexer and Host on the Same Machine
 
 If you are running your own indexer, you can connect your Host to this indexer by configuring **p2p.bootstrap_peers**. To get the required Peer ID, query the registration endpoint:
 
-```bash
+```shell
 curl http://localhost:8080/registration
 ```
 
@@ -69,14 +67,14 @@ If you are running both Indexer and Host on the same machine, apply the followin
 
 The Indexer is likely already using port `9181`, so update the **defradb url** field:
 
-```bash
+```shell
 url: "localhost:9182"
 ```
 
 Also update the P2P settings to use localhost and a different port so the Host doesn't clash with the Indexer:
 
 
-```bash
+```shell
 bootstrap_peers:
   - '/ip4/127.0.0.1/tcp/9171/p2p/<PeerID>'
 listen_addr: "/ip4/0.0.0.0/tcp/9172"
@@ -86,13 +84,13 @@ listen_addr: "/ip4/0.0.0.0/tcp/9172"
 
 **Option A: Run directly (no build step):**
 
-```bash
+```shell
 go run cmd/main.go
 ```
 
 **Option B: Build then run:**
 
-```bash
+```shell
 make build
 make start
 ```
@@ -101,18 +99,18 @@ make start
 
 The host ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
 
-```bash
+```shell
 make build-playground
 make start
 ```
 
-This runs the Host and also exposes a **Playground GUI**. In the output logs, look for the address:
+This runs the Host and exposes a Playground GUI. Check the output logs for the address:
 
 ```plaintext
 🧪 GraphQL Playground available at ...
 ```
 
-The playground allows you to interactively run GraphQL queries against primitive data and any Views your Host is serving. Give it a try with the following GraphQL query:
+The playground lets you run GraphQL queries against primitive data and any Views your Host is serving. Try this query:
 
 ```graphql
 query GetLatestLogs {
@@ -133,11 +131,11 @@ query GetLatestLogs {
 }
 ```
 
-You can checkout more query examples [here](/docs/hosts/examples.md).
+More query examples are available [here](/docs/hosts/examples.md).
 
 ## VM Deployment
 
-This section covers deploying the host on a virtual machine using Docker, docker-compose, and Nginx. This is the recommended approach for production and devnet participation.
+This is the recommended approach for production and devnet participation. It uses Docker, docker-compose, and Nginx on a virtual machine.
 
 ### Prerequisites
 
@@ -145,21 +143,21 @@ This section covers deploying the host on a virtual machine using Docker, docker
 
 ### Install System Dependencies
 
-```bash
+```shell
 sudo apt-get update
 sudo apt-get install -y docker.io docker-compose nginx
 ```
 
 ### Create the Data Directory
 
-```bash
+```shell
 sudo mkdir -p ~/data/defradb ~/data/lens
 sudo chown -R 0:0 ~/data/defradb ~/data/lens
 ```
 
 ### Generate SSL Certificates
 
-```bash
+```shell
 # Generate private key, certificate signing request, and self-signed certificate
 set -e &&
 sudo mkdir -p ~/ssl &&
@@ -171,7 +169,7 @@ sudo rm /tmp/nginx.csr
 
 ### Write the Configuration File
 
-Create `~/config.yaml` with your desired settings. The production config enables all performance tuning, peer reconnection, pruning, and optional event filtering. Key values to set:
+Create `~/config.yaml`. The production config enables performance tuning, peer reconnection, pruning, and optional event filtering. Key values to set:
 
 ```yaml
 defradb:
@@ -196,13 +194,13 @@ host:
   health_server_port: 8080
 ```
 
-> The full production config (with pruning, batch processing, event filtering, and memory tuning) is generated automatically by `host-prod-setup.sh`. See below.
+> The full production config is generated automatically by `host-prod-setup.sh`. See below.
 
 ### Write the Nginx Config
 
 Create `~/nginx.conf`:
 
-```bash
+```shell
 events { worker_connections 1024; }
 
 http {
@@ -297,7 +295,7 @@ services:
 
 ### Start the Host
 
-```bash
+```shell
 docker-compose up -d
 ```
 
@@ -305,28 +303,28 @@ docker-compose up -d
 
 The health check endpoint is available at:
 
-```bash
+```shell
 http://<VM_IP>:8080/metrics
 ```
 
-The container health check polls this every 15 seconds. View container status with:
+The container health check polls this every 15 seconds. To check container status:
 
-```bash
+```shell
 docker ps
 docker logs shinzo-host
 ```
 
 ### Docker Image
 
-The multi-stage Dockerfile builds the host binary (Go 1.25) along with Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
+The multi-stage Dockerfile builds the host binary (Go 1.25) along with the Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
 
-```bash
+```shell
 ghcr.io/shinzonetwork/shinzo-host-client:standard
 ```
 
 ## ShinzoHub Registration
 
-To participate in the Shinzo Network, you must register your host. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your host will not be recognized by the network. To register your host in ShinzoHub, follow the steps below:
+To participate in the Shinzo Network, you must register your host. Registration identifies your node so it can replicate data and earn rewards. An unregistered host will not be recognized by the network. There are two ways to register:
 
 ### Option A: Register with the GUI
 
@@ -344,7 +342,7 @@ To participate in the Shinzo Network, you must register your host. Registration 
 
 You can also register your host by submitting the registration transaction directly with Foundry’s `cast` CLI.
 
-```bash
+```shell
 cast send "0x0000000000000000000000000000000000000211" \
   "register(bytes,bytes,bytes,bytes,bytes,uint8)" \
   "<public_key>" \
@@ -363,15 +361,12 @@ Replace each placeholder with your actual registration values.
 
 > Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
 
-**🎉 Your host is now successfully registered and fully authorized to participate in the Shinzo Network.**
+Your host is now registered and authorized to participate in the Shinzo Network.
 
 ## Need Help
 
-If you encounter any issues while installing or running the Shinzo Indexer, please let us know by opening a GitHub issue [here](https://github.com/shinzonetwork/shinzo-indexer-client/issues).
+If you run into issues installing or running the Shinzo Host, open a GitHub issue [here](https://github.com/shinzonetwork/shinzo-indexer-client/issues).
 
 ## Next Steps
 
-You are now ready to:
-
-- Begin receiving and hosting Views.
-- Experiment with queries through the playground GUI.
+Your host can now receive and serve Views. Try running queries against it through the playground GUI.
