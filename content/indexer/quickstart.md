@@ -20,7 +20,7 @@ The indexer is not an RPC node. It does not replace your execution client (Geth,
 
 ## Prerequisites
 
-- Go 1.24 or higher. You can download the latest version from [the Go site](https://go.dev/doc/install).
+- Go 1.25 or higher. You can download the latest version from [the Go site](https://go.dev/doc/install).
 - Access to an Ethereum execution node that exposes JSON-RPC and WebSocket. The indexer does not run a node for you; it reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider (GCP Managed Blockchain Node works well).
 - Metamask with a wallet setup. This wallet does not need to hold any funds.
 
@@ -105,7 +105,8 @@ DEFRADB_KEYRING_SECRET=<pick_a_password>
 INDEXER_START_HEIGHT=<pick_a_starting_block>
 ```
 
-:::tip Note
+:::tip 
+Note
 The indexer needs to know how to reach an upstream Ethereum execution node. It does not run one. The variables are named `GETH_*` for historical reasons, but they accept the RPC and WebSocket URL of any standard Ethereum execution client (Geth, Reth, Nethermind, Erigon) or managed provider.
 
 ```bash
@@ -127,7 +128,7 @@ If you plan to use the GraphQL API, open port `9181` as well. This is the indexe
 
 To run the indexer locally, you have two options.
 
-### Using Makefile (recommended)
+### Using Makefile
 
 ```bash
 # Build the indexer
@@ -152,7 +153,8 @@ Once you run `make start`, the client begins writing block data into the configu
 
 The indexer exposes an OpenAPI-compatible REST endpoint for basic health and operational checks at http://localhost:8080/health. This is for monitoring the indexer itself; it is not a JSON-RPC endpoint.
 
-:::tip Security recommendation
+:::tip 
+Security recommendation
 The GraphQL and REST endpoints are intended for local or private-network access only. Shinzo Hosts are the layer expected to expose public data, so you should not expose your indexer's APIs directly to the public internet. Use proper firewall rules or private networking when deploying in production.
 :::
 
@@ -162,10 +164,10 @@ To participate in the Shinzo Network, you must register your indexer. Registrati
 
 1. Start your indexer.
 1. Add Shinzo Devnet to Metamask with the following values:
-   - Network name: Shinzo.
-   - Default RPC URL: http://rpc.devnet.shinzo.network:8545.
-   - Chain ID: 91273002.
-   - Currency symbol: SHN.
+   - Network name: Shinzo
+   - Default RPC URL: http://rpc.devnet.shinzo.network:8545
+   - Chain ID: 91273002
+   - Currency symbol: SHN
 1. Open the [registration route](http://localhost:8080/registration-app), connect your wallet, and share your wallet address in the Shinzo Discord channel to request whitelisting as an Indexer.
 1. Once your address has been whitelisted, return to the registration page, click Register, and select "Indexer" as your role.
 1. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
