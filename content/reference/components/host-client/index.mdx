@@ -18,22 +18,24 @@ flowchart LR
   end
 
   subgraph HOST["Host process"]
-    direction LR
-    S1["1. Verify<br/>signatures"] --> S2["2. Create<br/>attestations"]
-    S2 --> S3["3. Apply<br/>WASM lens"]
-    S3 --> S4["4. Write view<br/>documents"]
-    S4 --> S5["5. Serve<br/>GraphQL"]
-  end
-
-  subgraph Ports["Exposed ports"]
     direction TB
-    P444["444: Playground"]
-    P9181["9181: Internal API"]
-    P8080["8080: Metrics"]
+    subgraph Pipeline["Pipeline"]
+      direction LR
+      S1["1. Verify<br/>signatures"] --> S2["2. Create<br/>attestations"]
+      S2 --> S3["3. Apply<br/>WASM lens"]
+      S3 --> S4["4. Write view<br/>documents"]
+      S4 --> S5["5. Serve<br/>GraphQL"]
+    end
+    subgraph Ports["Exposed ports"]
+      direction TB
+      P444["444: Playground"]
+      P9181["9181: Internal API"]
+      P8080["8080: Metrics"]
+    end
+    Pipeline --> Ports
   end
 
   Indexers -- "P2P (DefraDB)" --> HOST
-  HOST --> Ports
 ```
 
 ### Components
