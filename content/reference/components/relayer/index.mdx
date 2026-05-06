@@ -35,15 +35,6 @@ After ShinzoHub processes the message, the validator can register as an indexer 
 | Delegate digest | The assertion digest that was signed |
 | Delegate signature | The delegate's signature over the digest |
 
-### EVM assertion detection
-
-The EVM relayer scans each new Ethereum block's `extraData` field for the "SH" tag. When found, it:
-
-1. Extracts the 15-byte pointer from `extraData`.
-1. Resolves the pointer to an attestation on the ChallengeIssuer contract.
-1. Verifies the EIP-712 signatures.
-1. Sends `MsgIndexerAssertion` to ShinzoHub as a Cosmos SDK transaction.
-
 ### Chain-specific detection
 
 How the relayer detects assertions depends on the source chain. EVM chains expose data through block headers and event logs. Cosmos chains emit `wasm-assertion_signed` events. ShinzoHub does not care how the relayer found the assertion. As long as it gets a valid `MsgIndexerAssertion`, it processes it the same way.
