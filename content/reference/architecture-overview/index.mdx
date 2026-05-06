@@ -35,6 +35,7 @@ flowchart LR
   User["User / app"]
 
   Src --> Idx
+  Sched -. "reads registrations" .-> SH
   Sched -. "matches" .-> Idx
   Sched -. "matches" .-> Host
   User --> GW --> Host
