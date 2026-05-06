@@ -4,7 +4,7 @@ title: "Core concepts"
 
 # Core concepts
 
-Shinzo runs on four ideas that show up everywhere in the stack: Views, Attestation, DefraDB, and the SHNZ token. This page covers what each one is and why it works the way it does. The [How it works](./how-it-works.mdx) page covers how they fit together end to end.
+Shinzo runs on four ideas that show up everywhere in the stack: Views, Attestation, DefraDB, and the SHNZ token. The [How it works](./how-it-works.mdx) page covers how they fit together end to end.
 
 ## Views
 
@@ -14,9 +14,9 @@ A View is a developer-defined data product. It describes what raw blockchain dat
 
 Every View is a versioned bundle with three parts:
 
-- **A query** that specifies which primitive data to pull from the Indexer layer. Today that means blocks, transactions, logs, and access list entries from Ethereum Mainnet.
-- **A schema**, a GraphQL SDL type definition describing the shape of the output. This is what subscribers see and query against.
-- **One or more Lens transforms**, WebAssembly modules that do the actual filtering, decoding, and reshaping work.
+- A query that specifies which primitive data to pull from the Indexer layer. Today that means blocks, transactions, logs, and access list entries from Ethereum Mainnet.
+- A schema, a GraphQL SDL type definition describing the shape of the output. This is what subscribers see and query against.
+- One or more Lens transforms, WebAssembly modules that do the actual filtering, decoding, and reshaping work.
 
 ### Why it's designed this way
 
@@ -28,9 +28,9 @@ You deploy Views through `viewkit` to ShinzoHub, which validates and registers t
 
 Views fall into three categories depending on what data they touch:
 
-- **Primary**: derived directly from Indexer primitives (e.g. decoded ERC-20 transfers from raw logs).
-- **Secondary**: derived from other Views (e.g. a portfolio view built on top of multiple token transfer Views).
-- **Tertiary**: aggregated or computed across multiple secondary sources.
+- Primary: derived directly from Indexer primitives (e.g. decoded ERC-20 transfers from raw logs).
+- Secondary: derived from other Views (e.g. a portfolio view built on top of multiple token transfer Views).
+- Tertiary: aggregated or computed across multiple secondary sources.
 
 Most developers today build primary Views. Secondary and tertiary Views become useful once more primary Views exist for them to draw from.
 
@@ -76,10 +76,10 @@ Rather than signing every document individually, Indexers produce a `BatchSignat
 
 DefraDB is an open-source document database built by Source Network. It stores data as content-addressed documents, exposes a GraphQL query interface, handles schema definition, and ships with a libp2p networking layer for replication between nodes. A few properties make it a good fit for Shinzo in particular:
 
-- **Schema enforcement**: primitive documents have defined types that Indexers write into and Hosts read from
-- **P2P replication**: documents gossiped between instances are verified by CID before being accepted
-- **DID-based access control**: read access to any collection can be gated by a DID, which is how subscription access is enforced
-- **CRDT support**: conflict-free merge semantics for types like the P-counter in Attestation Records
+- Schema enforcement: primitive documents have defined types that Indexers write into and Hosts read from.
+- P2P replication: documents gossiped between instances are verified by CID before being accepted.
+- DID-based access control: read access to any collection can be gated by a DID, which is how subscription access is enforced.
+- CRDT support: conflict-free merge semantics for types like the P-counter in Attestation Records.
 
 ### How it connects the network
 
@@ -95,14 +95,13 @@ A conventional database has a server and a client, which means the server is a s
 
 SHNZ is the native token of ShinzoHub, the Cosmos SDK chain that coordinates the Shinzo network. It's the economic unit flowing between developers who publish Views, Hosts who serve them, and consumers who subscribe.
 
-What's confirmed so far:
+Confirmed so far:
 
-- **Staking**: any address can stake SHNZ on a View to signal demand. Stake feeds into the View's price.
-- **Funding**: consumers prepay SHNZ into a View's contract, tied to their DID. The balance sits there until a Host serves a query, at which point the current price is debited and credited to the creator's earnings.
-- **Protocol cut**: a flat percentage comes off every consumption event. It's enforced in the SVS-1 contract standard and can't be bypassed with a custom pricing contract.
+- Staking: any address can stake SHNZ on a View to signal demand. Stake feeds into the View's price.
+- Funding: consumers prepay SHNZ into a View's contract, tied to their DID. The balance sits there until a Host serves a query, at which point the current price is debited and credited to the creator's earnings.
+- Protocol cut: a flat percentage comes off every consumption event. It's enforced in the SVS-1 contract standard and can't be bypassed with a custom pricing contract.
 
 The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out.
 
 {/* Footnotes */}
-[^1]: Ok so techincally you can verify that the data you're getting is correct. But you'd have to sign up to multiple APIs, request the same data from each, work it into the same schema, and then compare between them. This is obviously a huge hassle, and incredlibly costly.
-
+[^1]: Technically you can verify that the data you're getting is correct. But you'd have to sign up to multiple APIs, request the same data from each, work it into the same schema, and then compare between them. This is obviously a huge hassle, and incredibly costly.

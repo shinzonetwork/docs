@@ -17,8 +17,8 @@ const sidebars: SidebarsConfig = {
       label: "Introduction",
       items: [
         "introduction/what-is-shinzo/index",
-        "introduction/how-it-works",
-        "introduction/core-concepts"
+        "introduction/how-it-works/index",
+        "introduction/core-concepts/index"
       ],
     },
     {

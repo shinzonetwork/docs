@@ -1,25 +1,25 @@
 # How it works
 
-At its simplest, Shinzo has four kinds of moving parts: 
+Shinzo has four kinds of moving parts: 
 
 1. **Indexers** that read the chain.
 1. **Hosts** that transform and serve the data. 
-1. **Applications** that consume that data 
+1. **Applications** that consume that data.
 1. **ShinzoHub**, a coordination layer that tells everyone what's going on. 
 
 Data flows from left to right. Coordination happens on the side.
 
 ## The data's journey
 
-To make this concrete, let's follow a single USDC transfer on Ethereum Mainnet from the moment it lands on-chain to the moment an app shows it to a user.
+Here's a single USDC transfer on Ethereum Mainnet, from the moment it lands on-chain to the moment an app shows it to a user.
 
-### 1. A block arrives at a validator
+### A block arrives at a validator
 
 Somewhere on the network, an Ethereum validator's node produces or receives the block containing the transfer. The validator is already running a full execution client (Geth, typically) and already has the data. Shinzo takes advantage of that.
 
 ![](./images/data-journey-1.svg)
 
-### 2. The Indexer structures and signs it
+### The Indexer structures and signs it
 
 Sitting next to the Ethereum node is the Shinzo Indexer (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Indexer pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
 
@@ -27,13 +27,13 @@ Those documents land in the Indexer's embedded [DefraDB](https://github.com/sour
 
 ![](./images/data-journey-2.svg)
 
-### 3. Hosts pick it up over P2P
+### Hosts pick it up over P2P
 
 Hosts subscribe to the primitive collection topics they care about (blocks, transactions, logs, access lists). When the Indexer's DefraDB gossips the new log document, subscribed Hosts receive it, verify the signature, and update an attestation record for it (essentially just a running tally of how many distinct Indexers have signed off on this exact piece of data). If three Indexers all wrote the same log, the attestation record has three votes. Apps can later use those votes to set their own trust thresholds.
 
 ![](./images/data-journey-3.svg)
 
-### 4. A View transforms primitives into something useful
+### A View transforms primitives into something useful
 
 A Host with thousands of raw log documents isn't doing much for an app developer. That's what _Views_ are for. A developer writes a View that says, in effect: _"take Log documents, filter to the USDC contract address, decode the transfer topic using the ERC-20 ABI, and expose the result as a `TokenTransfer` type with `from`, `to`, and `amount` fields."_
 
@@ -41,7 +41,7 @@ The filtering and decoding are implemented as _Lens transforms_, which are WASM 
 
 ![](./images/data-journey-4.svg)
 
-### 5. The app queries locally
+### The app queries locally
 
 On the app side, things look (surprisingly) normal. The app embeds DefraDB using the [app-sdk](https://github.com/shinzonetwork/app-sdk), subscribes to the `TokenTransfer` View, and from then on, Hosts push new view documents to it over P2P. The app queries them with GraphQL against its local database. No per-query API call, no network round trip, and an attestation filter available for any query that needs it.
 
@@ -49,15 +49,21 @@ On the app side, things look (surprisingly) normal. The app embeds DefraDB using
 
 ## The four participants
 
-This walkthrough introduces each player in the order they touch the data:
+#### Indexers
 
-**Indexers** are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off. The component reference has the [full Indexer spec](#).
+Indexers are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off. The component reference has the [full Indexer spec](#).
 
-**Hosts** are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](#) for operational details and [Host Client reference](#) for internals.
+#### Hosts
 
-**Developers** don't run anything on the network. They write Views with `viewkit`, deploy them to ShinzoHub, and build applications that subscribe to the resulting data.
+Hosts are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](#) for operational details and [Host Client reference](#) for internals.
 
-**Applications** embed DefraDB locally, subscribe to the Views they need, and query the data like a regular database. Devs have the option of filtering results by attestation threshold when correctness matters more than speed.
+#### Developers
+
+Developers don't run anything on the network. They write Views with `viewkit`, deploy them to ShinzoHub, and build applications that subscribe to the resulting data.
+
+#### Applications
+
+Applications embed DefraDB locally, subscribe to the Views they need, and query the data like a regular database. Devs have the option of filtering results by attestation threshold when correctness matters more than speed.
 
 ## The coordination layer
 
@@ -65,13 +71,13 @@ ShinzoHub is a Cosmos SDK chain that sits to the side of the data path. It doesn
 
 That means three things in practice: 
 
-1. **View registration**: When a developer deploys a View, ShinzoHub validates and registers it, then emits an event that Hosts listen for
-1. **Participant tracking**: Indexers and Hosts register themselves on-chain so the rest of the network can discover them, 
+1. **View registration**: When a developer deploys a View, ShinzoHub validates and registers it, then emits an event that Hosts listen for.
+1. **Participant tracking**: Indexers and Hosts register themselves on-chain so the rest of the network can discover them.
 1. **Access control**: When a user pays for access to a View via the Outpost contract, ShinzoHub broadcasts that grant so Hosts know to start replicating data to that user. Access control is actually enforced through a separate chain called Sourcehub, connected to ShinzoHub via IBC.
 
 ## Why it's built this way
 
-A few design choices shape the rest of the stack, and it's worth pausing on them.
+Some design choices shape the rest of the stack and are worth understanding upfront.
 
 ### Indexing lives at the validator
 
