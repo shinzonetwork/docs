@@ -87,11 +87,29 @@ const config: Config = {
 
       items: [
         {
-          type: "docSidebar",
-          sidebarId: "shinzoSidebar",
+          to: "/indexer/overview",
           position: "left",
-          label: "Get Started",
-          className: "header-docs-link-shinzo",
+          label: "Indexer",
+        },
+        {
+          to: "/hosts/overview",
+          position: "left",
+          label: "Host",
+        },
+        {
+          to: "/view-creator/overview",
+          position: "left",
+          label: "View Creator",
+        },
+        {
+          to: "/guides/building-apps-with-shinzo",
+          position: "left",
+          label: "Guides",
+        },
+        {
+          to: "/glossary",
+          position: "left",
+          label: "Glossary",
         },
         {
           href: "https://github.com/shinzonetwork/",
