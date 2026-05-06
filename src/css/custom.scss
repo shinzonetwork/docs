@@ -305,6 +305,22 @@ html {
       }
     }
   }
+
+}
+
+// Category labels with no href are non-clickable section headers.
+// Applies to both desktop (.main-wrapper) and mobile (.navbar-sidebar) sidebars.
+.menu__list-item-collapsible {
+  a.menu__link:not([href]) {
+    cursor: default;
+    opacity: 0.45;
+    font-weight: bold;
+
+    &:hover {
+      background: none;
+      color: var(--ifm-menu-color);
+    }
+  }
 }
 
 // Footer
