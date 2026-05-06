@@ -197,9 +197,9 @@ Peers discover each other through bootstrap peers configured in DefraDB and thro
 
 ### Signing and attestation
 
-Each indexer signs every block batch it produces. After writing all documents for a block (Block, Transaction, Log, AccessListEntry), the indexer computes a Merkle root over all document CIDs, signs it with its identity key, and writes a `BlockSignature` document. Individual documents also carry per-document signatures in their `_version` array.
+Each indexer signs every block batch it produces. After writing all documents for a block (Block, Transaction, Log, AccessListEntry), the indexer computes a Merkle root over all document CIDs, signs it with its identity key, and writes a `BlockSignature` document. 
 
-Hosts verify incoming `BlockSignature` documents by recomputing the Merkle root and checking the signature against the indexer's known identity. They then create `AttestationRecord` documents that track how many independent indexers produced the same data. The `vote_count` field uses a P-counter CRDT, which merges deterministically across hosts.
+Hosts verify the signature included in the `blockSignature` against the CID for that document. They can then create an `AttestationRecord` (document) for that block to track how many independent indexers produced the same data. The `vote_count` field uses a P-counter CRDT, which tracks the number of indexers which produced that block. 
 
 Snapshots bundle multiple blocks into signed files for faster initial sync. The indexer periodically creates `SnapshotSignature` documents whose Merkle root is computed over the per-block `BlockSignature` roots within the range. So you get a two-level Merkle tree: document CIDs roll up into per-block roots, which roll up into per-snapshot roots.
 
