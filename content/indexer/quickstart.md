@@ -105,8 +105,7 @@ DEFRADB_KEYRING_SECRET=<pick_a_password>
 INDEXER_START_HEIGHT=<pick_a_starting_block>
 ```
 
-:::tip 
-Note
+:::tip
 The indexer needs to know how to reach an upstream Ethereum execution node. It does not run one. The variables are named `GETH_*` for historical reasons, but they accept the RPC and WebSocket URL of any standard Ethereum execution client (Geth, Reth, Nethermind, Erigon) or managed provider.
 
 ```bash
@@ -154,7 +153,7 @@ Once you run `make start`, the client begins writing block data into the configu
 The indexer exposes an OpenAPI-compatible REST endpoint for basic health and operational checks at http://localhost:8080/health. This is for monitoring the indexer itself; it is not a JSON-RPC endpoint.
 
 :::tip 
-Security recommendation
+Security recommendation:
 The GraphQL and REST endpoints are intended for local or private-network access only. Shinzo Hosts are the layer expected to expose public data, so you should not expose your indexer's APIs directly to the public internet. Use proper firewall rules or private networking when deploying in production.
 :::
 
@@ -173,6 +172,18 @@ To participate in the Shinzo Network, you must register your indexer. Registrati
 1. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
 
 Your indexer is now registered and authorized to participate in the Shinzo Network.
+
+:::tip 
+Back up your node-identity-key.
+
+This key defines your indexer’s identity on the network. Persisting it ensures your node can be restored without losing identity.
+
+- Store a secure backup of the key
+- In a recovery scenario, place it back into the same path (e.g. /defra/keys)
+- Use the same keyring/secret configuration
+
+Failing to back up this key means the node cannot be restored with the same identity.
+:::
 
 ## Need help
 
