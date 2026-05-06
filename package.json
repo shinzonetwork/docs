@@ -16,6 +16,7 @@
     "@docusaurus/core": "3.10.1",
     "@docusaurus/faster": "3.10.1",
     "@docusaurus/preset-classic": "3.10.1",
+    "@docusaurus/theme-mermaid": "^3.10.0",
     "@easyops-cn/docusaurus-search-local": "^0.55.1",
     "@mdx-js/react": "^3.1.1",
     "clsx": "^2.1.1",
@@ -65,6 +66,7 @@
     },
     "onlyBuiltDependencies": [
       "@parcel/watcher",
+      "@swc/core",
       "core-js",
       "core-js-pure",
       "esbuild",
