@@ -207,22 +207,25 @@ Snapshots bundle multiple blocks into signed files for faster initial sync. The 
 
 ### Indexer registration
 
-Spans two chains and a relayer:
+Spans two chains and a relayer. The indexer cannot register on ShinzoHub until the validator has signed an assertion that ties the indexer's operator key to the validator's identity.
 
 ```mermaid
 sequenceDiagram
-  participant Op as Indexer operator
-  participant Eth as Ethereum<br/>(Outpost + block extraData)
+  participant Idx as Indexer<br/>(operator key)
+  participant Wd as Validator<br/>(withdrawal key)
+  participant Out as Outpost<br/>(IndexerAssertion contract)
   participant Rel as EVM relayer
   participant SH as ShinzoHub<br/>(Indexer Registry 0x0212)
   participant Source as SourceHub
 
-  Op->>Eth: produce block with<br/>SH-tagged extraData
-  Op->>Eth: post EIP-712 attestation<br/>to ChallengeIssuer
-  Rel->>Eth: scan extraData,<br/>resolve attestation
-  Rel->>Rel: verify EIP-712 sigs
+  Idx->>Idx: generate operator/delegate<br/>key locally
+  Wd->>Out: createAssertion + EIP-712 sig<br/>(withdrawal addr, operator pubkey,<br/>consensus key)
+  Out->>Out: verify validator status<br/>and signature
+  Out-->>Rel: emit AssertionSigned event
   Rel->>SH: MsgIndexerAssertion
-  SH->>SH: record indexer,<br/>derive DID
+  SH->>SH: record assertion slip<br/>for operator pubkey
+  Idx->>SH: register() on 0x0212<br/>(signed by operator key)
+  SH->>SH: derive DID from<br/>operator pubkey
   SH->>Source: ICA RegisterObject
   Source->>Source: ACP adds DID<br/>to indexer group
 ```
