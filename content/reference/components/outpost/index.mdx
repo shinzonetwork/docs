@@ -39,9 +39,9 @@ sequenceDiagram
   participant V as Validator
   participant C as ChallengeIssuer<br/>contract
 
-  V->>C: createAttestation(<br/>consensusPubKey, delegateKey)
-  C-->>V: attestationId<br/>+ EIP-712 digest
-  V->>C: submitAttestationSignature(<br/>attestationId, withdrawalSig, delegateSig)
+  V->>C: createAssertion(<br/>consensusPubKey, delegateKey)
+  C-->>V: assertionId<br/>+ EIP-712 digest
+  V->>C: submitAssertionSignature(<br/>assertionId, withdrawalSig, delegateSig)
   C-->>V: 15-byte pointer
   Note over V: set pointer as block extraData<br/>"SH" + 30 hex chars<br/>(only block producers can write extraData)
 ```
