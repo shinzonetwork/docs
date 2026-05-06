@@ -30,7 +30,7 @@ flowchart LR
 The indexer connects to Geth over two channels:
 
 - WebSocket (port 8546): subscribes to new block headers for real-time feed.
-- HTTP JSON-RPC (port 8545): fetches full block details, fills gaps on restart, handles historical ranges.
+- HTTP JSON-RPC (port 8545): fetches full block details, fills gaps on restart, handles historical ranges. This is a backup connection.
 
 ## Data processing pipeline
 
@@ -56,8 +56,8 @@ Collection names use a chain prefix: `Ethereum__Mainnet__Block`, `Optimism__Main
 
 ```graphql
 type Ethereum__Mainnet__Block {
-    hash: String @index(unique: true)
-    number: Int @index
+    hash: String 
+    number: Int 
     timestamp: String
     parentHash: String
     difficulty: String
@@ -86,9 +86,9 @@ Merges fields from both the transaction object and its receipt. Receipt-specific
 
 ```graphql
 type Ethereum__Mainnet__Transaction {
-    hash: String @index(unique: true)
-    blockHash: String @index
-    blockNumber: Int @index
+    hash: String
+    blockHash: String 
+    blockNumber: Int 
     from: String
     to: String
     value: String
@@ -108,7 +108,7 @@ type Ethereum__Mainnet__Transaction {
     status: Boolean
     cumulativeGasUsed: String
     effectiveGasPrice: String
-    block: Ethereum__Mainnet__Block @index @relation(name: "block_transactions")
+    block: Ethereum__Mainnet__Block @relation(name: "block_transactions")
     logs: [Ethereum__Mainnet__Log] @relation(name: "transaction_logs")
     accessList: [Ethereum__Mainnet__AccessListEntry] @relation(name: "transaction_accessList")
 }
@@ -118,21 +118,6 @@ type Ethereum__Mainnet__Transaction {
 
 Event logs emitted during transaction execution. `topics` is an array of hex-encoded indexed parameters (topic[0] is the event signature hash). `data` is the hex-encoded non-indexed parameters. No ABI decoding happens at this layer; everything is stored as raw hex.
 
-```graphql
-type Ethereum__Mainnet__Log {
-    address: String @index
-    topics: [String]
-    data: String
-    transactionHash: String @index
-    blockHash: String @index
-    blockNumber: Int @index
-    transactionIndex: Int @index
-    logIndex: Int @index
-    removed: String
-    block: Ethereum__Mainnet__Block @index @relation(name: "block_logs")
-    transaction: Ethereum__Mainnet__Transaction @index @relation(name: "transaction_logs")
-}
-```
 
 ### AccessListEntry
 
@@ -143,7 +128,7 @@ type Ethereum__Mainnet__AccessListEntry {
     address: String
     storageKeys: [String]
     blockNumber: Int
-    transaction: Ethereum__Mainnet__Transaction @index @relation(name: "transaction_accessList")
+    transaction: Ethereum__Mainnet__Transaction @relation(name: "transaction_accessList")
 }
 ```
 
@@ -190,7 +175,7 @@ Signing is opt-in and configured by the indexer operator. Hosts disable it with 
 
 The signing flow:
 
-1. At startup, the indexer loads a persistent identity from the DefraDB keyring using `GetIdentityContext()` (in `shinzo-app-sdk/pkg/defra/defra.go`).
+1. At startup, the indexer loads a persistent identity from the DefraDB keyring using `GetIdentityContext()`.
 1. The identity is injected into the Go context via `node.ContextWithBlockSigning(ctx, collector)`, which enables CID collection.
 1. As the block handler writes documents, DefraDB collects the CID of each document written.
 1. After all documents for a block are written, the indexer calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.
@@ -271,7 +256,7 @@ SNAPSHOT_INTERVAL_SECONDS=60
 LOG_LEVEL=error
 ```
 
-`INDEXER_START_HEIGHT` is the block number to start indexing from on first run with no existing data.
+`INDEXER_START_HEIGHT` is the block number to start indexing from on first run with no existing data. Setting the value to 0 will start indexing at the tip of any chain. For a specific block select please use that blocknumber.
 
 ## Chain abstraction (in progress)
 
