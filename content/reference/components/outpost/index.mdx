@@ -18,11 +18,11 @@ An assertion is a cryptographic proof that a validator on an external chain is w
 
 The flow:
 
-1. Validator calls the outpost contract, providing their consensus public key and a delegate key.
-1. Outpost verifies the validator using the chain's native mechanism.
-1. Both the validator (withdrawal address) and the delegate sign a digest.
-1. A [relayer](relayer.md) picks up the signed assertion and broadcasts `MsgIndexerAssertion` to ShinzoHub.
-1. ShinzoHub verifies the assertion. The validator can now register in the Indexer Registry (`0x0212`).
+1. The indexer generates an operator (delegate) key locally.
+1. The validator's withdrawal key calls the outpost, providing their consensus public key and the operator pubkey, and signs the assertion digest.
+1. Outpost verifies the validator using the chain's native mechanism, stores the signed assertion, and emits an `AssertionSigned` event.
+1. A [relayer](relayer.md) picks up the event and broadcasts `MsgIndexerAssertion` to ShinzoHub.
+1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The indexer can now register in the Indexer Registry (`0x0212`), signing the registration with its operator key.
 
 ### The digest
 
@@ -32,21 +32,22 @@ How the digest is computed depends on the implementation. Different chains have 
 
 ### EVM implementation
 
-On Ethereum, the outpost contract (`ShinzoChallengeIssuerV1`) uses EIP-712 typed data signatures and a two-step process:
+On Ethereum, the outpost contract (`IndexerAssertion`) uses EIP-712 typed data signatures. The validator opens an assertion with `createAssertion`, then submits the withdrawal-key signature with `submitAssertionSignature`. The contract emits `AssertionSigned`, which the relayer subscribes to:
 
 ```mermaid
 sequenceDiagram
-  participant V as Validator
-  participant C as ChallengeIssuer<br/>contract
+  participant V as Validator<br/>(withdrawal key)
+  participant C as IndexerAssertion<br/>contract
+  participant R as EVM relayer
 
   V->>C: createAssertion(<br/>consensusPubKey, delegateKey)
   C-->>V: assertionId<br/>+ EIP-712 digest
-  V->>C: submitAssertionSignature(<br/>assertionId, withdrawalSig, delegateSig)
-  C-->>V: 15-byte pointer
-  Note over V: set pointer as block extraData<br/>"SH" + 30 hex chars<br/>(only block producers can write extraData)
+  V->>C: submitAssertionSignature(<br/>assertionId, withdrawalSig)
+  C->>C: verify signature<br/>and validator status
+  C-->>R: emit AssertionSigned event
 ```
 
-The "SH" prefix in `extraData` is the verification mechanism. Only actual block producers can set the `extraData` field of a block they propose. If a block's `extraData` starts with "SH", the block's proposer has a registered attestation on the ChallengeIssuer contract.
+The relayer reads the assertion fields from the event log and forwards them to ShinzoHub. There is no `extraData` tagging and no dependency on who built the block, which matters on mainnet where MEV-boost builders construct the block header (including `extraData`) on the validator's behalf.
 
 ### Chain-specific verification
 
