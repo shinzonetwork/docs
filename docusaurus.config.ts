@@ -75,6 +75,7 @@ const config: Config = {
     colorMode: {
       respectPrefersColorScheme: false,
       defaultMode: "light",
+      disableSwitch: true, // TEMPORARY: dark mode toggle disabled
     },
     navbar: {
       hideOnScroll: false,
@@ -114,7 +115,7 @@ const config: Config = {
       items: [
         {
           label: "Getting Started",
-          to: "/intro",
+          to: "/",
         },
         {
           label: "GitHub",
