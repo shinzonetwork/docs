@@ -12,7 +12,15 @@ import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
  */
 const sidebars: SidebarsConfig = {
   shinzoSidebar: [
-    "intro",
+    {
+      type: "category",
+      label: "Introduction",
+      items: [
+        "introduction/what-is-shinzo/index",
+        "introduction/how-it-works/index",
+        "introduction/core-concepts/index"
+      ],
+    },
     {
       type: "category",
       label: "Indexer",

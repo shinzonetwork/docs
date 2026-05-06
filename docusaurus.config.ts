@@ -182,7 +182,7 @@ const config: Config = {
       items: [
         {
           label: "Getting Started",
-          to: "/intro",
+          to: "/",
         },
         {
           label: "GitHub",
