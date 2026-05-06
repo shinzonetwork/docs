@@ -53,6 +53,26 @@ const sidebars: SidebarsConfig = {
       items: ["guides/building-apps-with-shinzo"],
     },
     {
+      type: "category",
+      label: "Reference",
+      items: [
+        "reference/architecture-overview/index",
+        {
+          type: "category",
+          label: "Components",
+          items: [
+            "reference/components/host-client/index",
+            "reference/components/indexer-client/index",
+            "reference/components/outpost/index",
+            "reference/components/relayer/index",
+            "reference/components/shinzohub/index",
+            "reference/components/viewkit/index",
+          ],
+        },
+
+      ],
+    },
+    {
       type: "link",
       label: "Glossary",
       href: "/glossary",
