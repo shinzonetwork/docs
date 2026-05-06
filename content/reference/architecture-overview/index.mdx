@@ -153,7 +153,7 @@ Two components connect external blockchains (Ethereum, Cosmos chains, etc.) to S
 
 Outpost contracts are deployed on each source chain. They handle two things:
 
-- Validator assertions: A challenge-response protocol where a validator proves their identity using chain-native mechanisms. On Ethereum, this uses EIP-712 typed signatures and embeds a 15-byte pointer in the block's `extraData` field with an `SH` prefix. Only block producers can write `extraData`, so the tag is proof of validator status.
+- Validator assertions: a validator proves their identity using chain-native mechanisms and authorises an operator (delegate) key to act as their indexer. On Ethereum, the validator's withdrawal key signs an EIP-712 message on the outpost contract that names the validator (consensus public key) and the operator pubkey. The contract verifies the signature, checks validator status, and emits an `AssertionSigned` event.
 - Payments: Users call `payment()` on the outpost. The contract stores a receipt and emits a `PaymentCreated` event.
 
 The outpost design is chain agnostic. Each chain gets its own implementation using whatever verification mechanism is native to that chain. The only requirement is that the output is a signed assertion that a relayer can deliver to ShinzoHub.
@@ -162,7 +162,7 @@ The outpost design is chain agnostic. Each chain gets its own implementation usi
 
 The EVM relayer is a Go process with two pipelines:
 
-1. The assertion pipeline scans each Ethereum block's `extraData` for the `SH` tag, extracts the pointer, resolves it to an attestation on the `ChallengeIssuer` contract, verifies the EIP-712 signatures, and broadcasts `MsgIndexerAssertion` to ShinzoHub.
+1. The assertion pipeline subscribes to `AssertionSigned` events on the outpost's `IndexerAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts `MsgIndexerAssertion` to ShinzoHub. No block scanning and no dependency on who built the block.
 1. The payment pipeline subscribes to `PaymentCreated` log events from the outpost, extracts user `DID` and payment amount, and broadcasts `MsgRequestStreamAccess` to ShinzoHub.
 
 The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for gas.
