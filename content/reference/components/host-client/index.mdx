@@ -12,9 +12,15 @@ If indexers are data producers, hosts are consumers and servers. The separation 
 flowchart LR
   subgraph Indexers["Indexers"]
     direction TB
-    I1["Indexer 1"]
-    I2["Indexer 2"]
-    I3["Indexer 3"]
+    subgraph VM1["Validator machine 1"]
+      I1["Indexer client"]
+    end
+    subgraph VM2["Validator machine 2"]
+      I2["Indexer client"]
+    end
+    subgraph VM3["Validator machine 3"]
+      I3["Indexer client"]
+    end
   end
 
   subgraph HOST["Host process"]
