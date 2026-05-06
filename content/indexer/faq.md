@@ -40,6 +40,19 @@ The indexer reads from whatever execution node you point it at. That upstream no
 
 > Note: The indexer only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
 
+
+### What happens if I lose my node-identity-key? Can I regenerate it?
+
+If you lose your `node-identity-key`, your node’s identity is permanently lost.
+
+- The key cannot be regenerated
+- You must spin up a new indexer instance
+- You must register again with a new identity
+- The new node may use the same EVM address, but it will be treated as a new identity
+
+To avoid this, always back up your node-identity-key.
+
+
 ### What types of data are indexed?
 
 All blockchain data is indexed, including blocks, transactions, logs, and storage access lists. The data is indexed by hash (block and transaction), block number, and document.
