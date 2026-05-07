@@ -7,7 +7,7 @@ const glossaryPlugin = require("docusaurus-plugin-glossary");
 
 const glossaryOptions = {
   glossaryPath: "glossary/glossary.json",
-  routePath: "/glossary",
+  routePath: "/reference/glossary",
 };
 
 const config: Config = {
@@ -180,9 +180,9 @@ const config: Config = {
           label: "Guides",
         },
         {
-          to: "/glossary",
+          to: "/reference/architecture-overview",
           position: "left",
-          label: "Glossary",
+          label: "Reference",
         },
         {
           href: "https://github.com/shinzonetwork/",
