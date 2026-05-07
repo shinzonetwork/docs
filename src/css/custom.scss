@@ -170,6 +170,11 @@ html {
   h1:first-child {
     --ifm-h1-font-size: 2.5rem;
   }
+
+  table {
+    display: table;
+    width: 100%;
+  }
 }
 
 // NavBar
@@ -300,6 +305,22 @@ html {
       }
     }
   }
+
+}
+
+// Category labels with no href are non-clickable section headers.
+// Applies to both desktop (.main-wrapper) and mobile (.navbar-sidebar) sidebars.
+.menu__list-item-collapsible {
+  a.menu__link:not([href]) {
+    cursor: default;
+    opacity: 0.45;
+    font-weight: bold;
+
+    &:hover {
+      background: none;
+      color: var(--ifm-menu-color);
+    }
+  }
 }
 
 // Footer
@@ -321,6 +342,118 @@ html {
 pre {
   white-space: pre-wrap;
   border: 2px solid var(--code-border);
+}
+
+// Mermaid diagrams: center small ones, allow wide ones to scroll horizontally
+// instead of being squashed (which makes text unreadable).
+.docusaurus-mermaid-container {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  text-align: center;
+  overflow-x: auto;
+  border: 1px solid var(--szo-border);
+  border-radius: 0.5rem;
+  background: var(--background);
+
+  // Don't force the SVG down to the container width — let it keep its natural
+  // size so text stays legible. The container scrolls if needed.
+  svg {
+    display: inline-block;
+    max-width: none;
+    height: auto;
+
+    // Ensure rendered text uses the site font even if Mermaid injects its own.
+    text,
+    .nodeLabel,
+    .edgeLabel,
+    .messageText,
+    .actor text,
+    .loopText,
+    .noteText {
+      font-family: "Geist", sans-serif !important;
+    }
+  }
+}
+
+// Dark-mode overrides for Mermaid. Mermaid's themeVariables are baked in at
+// config time, so we restyle here using the same brand palette but tuned for
+// the dark background.
+[data-theme="dark"] .docusaurus-mermaid-container {
+  svg {
+    // Node fills (flowchart default + class .node rect)
+    .node rect,
+    .node polygon,
+    .node circle,
+    .node ellipse,
+    .node path {
+      fill: #2a1416 !important;
+      stroke: #d01f27 !important;
+    }
+
+    // Subgraph / cluster backgrounds
+    .cluster rect {
+      fill: #1c1c1c !important;
+      stroke: var(--szo-border) !important;
+    }
+
+    // All text inside diagrams
+    .nodeLabel,
+    .edgeLabel,
+    .cluster-label,
+    .messageText,
+    .loopText,
+    .noteText,
+    .labelText,
+    .actor text,
+    text,
+    foreignObject div {
+      fill: #ffffff !important;
+      color: #ffffff !important;
+    }
+
+    // Edge label background — match the page bg so labels don't show a white box
+    .edgeLabel {
+      background-color: var(--background) !important;
+    }
+    .edgeLabel rect {
+      fill: var(--background) !important;
+    }
+
+    // Arrows and connecting lines
+    .flowchart-link,
+    .messageLine0,
+    .messageLine1,
+    path.path,
+    line {
+      stroke: #c7c7c7 !important;
+    }
+    marker path,
+    .arrowheadPath {
+      fill: #c7c7c7 !important;
+      stroke: #c7c7c7 !important;
+    }
+
+    // Sequence diagram actors
+    .actor {
+      fill: #2a1416 !important;
+      stroke: #d01f27 !important;
+    }
+    .actor-line {
+      stroke: var(--szo-border) !important;
+    }
+
+    // Sequence note boxes
+    .note {
+      fill: #2d2a14 !important;
+      stroke: var(--szo-border) !important;
+    }
+
+    // Sequence loop / alt boxes
+    .labelBox {
+      fill: #2a1416 !important;
+      stroke: #d01f27 !important;
+    }
+  }
 }
 
 // Border utilities

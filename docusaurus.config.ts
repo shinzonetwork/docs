@@ -39,6 +39,7 @@ const config: Config = {
     hooks: {
       onBrokenMarkdownLinks: "warn",
     },
+    mermaid: true,
   },
 
   i18n: {
@@ -69,6 +70,72 @@ const config: Config = {
   ],
 
   themeConfig: {
+    mermaid: {
+      // Use the "base" theme so themeVariables fully take effect.
+      theme: { light: "base", dark: "base" },
+      options: {
+        fontSize: 16,
+        fontFamily: '"Geist", sans-serif',
+        flowchart: {
+          useMaxWidth: false,
+          htmlLabels: true,
+          curve: "basis",
+        },
+        sequence: {
+          useMaxWidth: false,
+          actorFontFamily: '"Geist Mono", monospace',
+          messageFontFamily: '"Geist", sans-serif',
+          noteFontFamily: '"Geist", sans-serif',
+        },
+        themeVariables: {
+          // Shinzo brand palette
+          primaryColor: "#ffe9e9",
+          primaryTextColor: "#353535",
+          primaryBorderColor: "#d01f27",
+
+          secondaryColor: "#f3f3f3",
+          secondaryTextColor: "#353535",
+          secondaryBorderColor: "#c7c7c7",
+
+          tertiaryColor: "#ffffff",
+          tertiaryTextColor: "#353535",
+          tertiaryBorderColor: "#c7c7c7",
+
+          // Lines and arrows
+          lineColor: "#353535",
+          textColor: "#353535",
+
+          // Backgrounds
+          background: "#ffffff",
+          mainBkg: "#ffe9e9",
+          secondBkg: "#f3f3f3",
+
+          // Notes
+          noteBkgColor: "#fff8d6",
+          noteTextColor: "#353535",
+          noteBorderColor: "#c7c7c7",
+
+          // Sequence diagrams
+          actorBkg: "#ffe9e9",
+          actorBorder: "#d01f27",
+          actorTextColor: "#353535",
+          actorLineColor: "#c7c7c7",
+          signalColor: "#353535",
+          signalTextColor: "#353535",
+          labelBoxBkgColor: "#ffe9e9",
+          labelBoxBorderColor: "#d01f27",
+          labelTextColor: "#353535",
+          loopTextColor: "#353535",
+
+          // Flowchart clusters / subgraphs
+          clusterBkg: "#fafafa",
+          clusterBorder: "#c7c7c7",
+
+          // Edge label
+          edgeLabelBackground: "#ffffff",
+        },
+      },
+    },
     docs: {
       sidebar: {},
     },
@@ -174,6 +241,8 @@ const config: Config = {
       theme: codeTheme,
     },
   } satisfies Preset.ThemeConfig,
+  themes: ["@docusaurus/theme-mermaid"],
+
   plugins: [
     [
       "docusaurus-plugin-sass",
