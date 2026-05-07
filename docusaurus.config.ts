@@ -261,10 +261,15 @@ const config: Config = {
     [
       require.resolve("@easyops-cn/docusaurus-search-local"),
         {
-          hashed:true,
+          hashed: true,
           language: ["en"],
           highlightSearchTermsOnTargetPage: true,
           explicitSearchResultPath: true,
+          // Docs are served at the site root (see preset docs.routeBasePath: "/").
+          // The search plugin defaults to "docs", which would filter out every page
+          // and produce an empty search index. Mirror the docs route here.
+          docsRouteBasePath: "/",
+          indexBlog: false,
         },
     ],
     [
