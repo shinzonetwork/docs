@@ -16,8 +16,7 @@
       "definition": "A document type produced by the indexer for EIP-2930 access list entries attached to Ethereum transactions. Most transactions have no access list, so this collection is usually sparse.",
       "relatedTerms": [
         "EIP-2930",
-        "Indexer",
-        "Transaction"
+        "Indexer"
       ]
     },
     {
@@ -26,14 +25,6 @@
       "definition": "A set of rules that controls which identities can read, write, query, or update Shinzo data.",
       "relatedTerms": [
         "SourceHub"
-      ]
-    },
-    {
-      "term": "Application Developer",
-      "definition": "A developer who builds applications on top of Shinzo data feeds, schemas, or APIs.",
-      "relatedTerms": [
-        "Curator",
-        "View"
       ]
     },
     {
@@ -92,14 +83,6 @@
       ]
     },
     {
-      "term": "Collection",
-      "definition": "A schema-defined document type in defraDB. Collections enforce structure, validation rules, and constraints.",
-      "relatedTerms": [
-        "defraDB",
-        "Schema Definition Language"
-      ]
-    },
-    {
       "term": "CometBFT",
       "definition": "The BFT consensus engine used by Cosmos SDK chains. ShinzoHub runs CometBFT for block production. Hosts connect to ShinzoHub's CometBFT RPC over WebSocket to receive real-time event notifications.",
       "relatedTerms": [
@@ -154,20 +137,10 @@
         "defraDB"
       ]
     },
-    {
-      "term": "Curator",
-      "definition": "A developer or entity that creates structured data views, feeds, or SDL-described schemas within Shinzo.",
-      "relatedTerms": [
-        "View",
-        "Schema Definition Language",
-        "ShinzoHub"
-      ]
-    },
-    {
+        {
       "term": "defraDB",
       "definition": "A peer-to-peer, document-oriented database embedded in every indexer and host. It handles storage, content addressing, CRDT merging, query serving, and P2P replication via libp2p.",
       "relatedTerms": [
-        "Collection",
         "GraphQL",
         "View",
         "MerkleCRDT",
@@ -208,8 +181,7 @@
       "term": "EIP-2930",
       "definition": "An Ethereum standard that adds optional access lists to transactions, pre-declaring which storage slots a transaction will read or write. The indexer stores these as `AccessListEntry` documents.",
       "relatedTerms": [
-        "AccessListEntry",
-        "Transaction"
+        "AccessListEntry"
       ]
     },
     {
@@ -259,10 +231,8 @@
     },
     {
       "term": "GraphQL",
-      "definition": "A query language and runtime for retrieving structured data from defraDB, collections, and views within Shinzo.",
       "relatedTerms": [
         "defraDB",
-        "Collection",
         "View"
       ]
     },
@@ -394,7 +364,6 @@
       "definition": "A document type the indexer produces for event logs emitted during transaction execution. `topics` holds the indexed parameters and `data` holds the non-indexed ones, both as raw hex. ABI decoding happens later, in a lens.",
       "relatedTerms": [
         "Indexer",
-        "Transaction",
         "Lens",
         "ABI"
       ]
@@ -574,7 +543,6 @@
       "abbreviation": "SDL",
       "definition": "The GraphQL-based schema language used to define document types, fields, constraints, and relationships in defraDB. Views and collections are both defined in SDL.",
       "relatedTerms": [
-        "Collection",
         "View",
         "defraDB"
       ]
@@ -584,7 +552,6 @@
       "definition": "Shinzo's coordination chain: a Cosmos SDK chain (v0.53.4) with an integrated EVM, running CometBFT consensus. It holds the view, host, and indexer registries and the economic layer (staking, pricing, payments). It does not store or serve indexed blockchain data.",
       "relatedTerms": [
         "Host",
-        "Curator",
         "Outpost",
         "SourceHub",
         "Cosmos SDK",
@@ -639,7 +606,6 @@
       "term": "Stream ID",
       "definition": "A unique identifier assigned to a curated data feed when it is registered.",
       "relatedTerms": [
-        "Curator",
         "View"
       ]
     },
@@ -660,15 +626,6 @@
         "View",
         "View Registry",
         "SVPS-1"
-      ]
-    },
-    {
-      "term": "Transaction",
-      "definition": "A document type the indexer produces by merging an Ethereum transaction object with its receipt. Receipt fields include `status`, `gasUsed`, `cumulativeGasUsed`, and `effectiveGasPrice`.",
-      "relatedTerms": [
-        "Indexer",
-        "Block Data",
-        "Log"
       ]
     },
     {
@@ -695,8 +652,7 @@
       "definition": "A curated, SDL-defined representation of defraDB documents. Views transform raw indexed data into a structured output shape.",
       "relatedTerms": [
         "defraDB",
-        "Schema Definition Language",
-        "Curator"
+        "Schema Definition Language"
       ]
     },
     {
