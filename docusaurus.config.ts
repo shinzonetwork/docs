@@ -7,7 +7,7 @@ const glossaryPlugin = require("docusaurus-plugin-glossary");
 
 const glossaryOptions = {
   glossaryPath: "glossary/glossary.json",
-  routePath: "/glossary",
+  routePath: "/reference/glossary",
 };
 
 const config: Config = {
@@ -154,11 +154,35 @@ const config: Config = {
 
       items: [
         {
-          type: "docSidebar",
-          sidebarId: "shinzoSidebar",
+          to: "/",
+          activeBaseRegex: "^/$|^/introduction/",
           position: "left",
-          label: "Get Started",
-          className: "header-docs-link-shinzo",
+          label: "Introduction",
+        },
+        {
+          to: "/indexer/overview",
+          position: "left",
+          label: "Indexer",
+        },
+        {
+          to: "/hosts/overview",
+          position: "left",
+          label: "Host",
+        },
+        {
+          to: "/view-creator/overview",
+          position: "left",
+          label: "View Creator",
+        },
+        {
+          to: "/guides/building-apps-with-shinzo",
+          position: "left",
+          label: "Guides",
+        },
+        {
+          to: "/reference/architecture-overview",
+          position: "left",
+          label: "Reference",
         },
         {
           href: "https://github.com/shinzonetwork/",

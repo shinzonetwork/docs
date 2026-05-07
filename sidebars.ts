@@ -69,13 +69,12 @@ const sidebars: SidebarsConfig = {
             "reference/components/viewkit/index",
           ],
         },
-
+        {
+          type: "link",
+          label: "Glossary",
+          href: "/reference/glossary",
+        },
       ],
-    },
-    {
-      type: "link",
-      label: "Glossary",
-      href: "/glossary",
     },
   ],
 };
