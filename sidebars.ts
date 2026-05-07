@@ -12,7 +12,15 @@ import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
  */
 const sidebars: SidebarsConfig = {
   shinzoSidebar: [
-    "intro",
+    {
+      type: "category",
+      label: "Introduction",
+      items: [
+        "introduction/what-is-shinzo/index",
+        "introduction/how-it-works/index",
+        "introduction/core-concepts/index"
+      ],
+    },
     {
       type: "category",
       label: "Indexer",
@@ -45,9 +53,28 @@ const sidebars: SidebarsConfig = {
       items: ["guides/building-apps-with-shinzo"],
     },
     {
-      type: "link",
-      label: "Glossary",
-      href: "/glossary",
+      type: "category",
+      label: "Reference",
+      items: [
+        "reference/architecture-overview/index",
+        {
+          type: "category",
+          label: "Components",
+          items: [
+            "reference/components/host-client/index",
+            "reference/components/indexer-client/index",
+            "reference/components/outpost/index",
+            "reference/components/relayer/index",
+            "reference/components/shinzohub/index",
+            "reference/components/viewkit/index",
+          ],
+        },
+        {
+          type: "link",
+          label: "Glossary",
+          href: "/reference/glossary",
+        },
+      ],
     },
   ],
 };

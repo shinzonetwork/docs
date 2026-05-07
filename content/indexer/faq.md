@@ -9,9 +9,13 @@ description: Frequently Asked Questions for Indexer
 
 https://github.com/shinzonetwork/shinzo-indexer-client
 
+### Does the indexer replace my Ethereum node?
+
+No. The indexer is a sidecar client that reads from an existing Ethereum execution node (Geth, Reth, Nethermind, Erigon, or a managed provider). It does not run an execution client, does not serve JSON-RPC, and is not a substitute for your validator's node. You point it at an upstream RPC and WebSocket endpoint, and it ingests block data from there into its local DefraDB.
+
 ### What hardware is recommended for deploying Shinzo?
 
-Shinzo is lightweight in terms of CPU usage, but **storage performance and host stability are critical** for reliable operation. Based on current production usage:
+Shinzo is lightweight on CPU, but storage performance and host stability matter for reliable operation. Based on current production usage:
 
 | Component | Minimum | Recommended |
 | --- | --- | --- |
@@ -20,26 +24,38 @@ Shinzo is lightweight in terms of CPU usage, but **storage performance and host 
 | Storage | 3 TB NVMe | 4+ TB NVMe |
 | OS | Ubuntu 24.04 | Ubuntu 24.04 |
 
-### Which RPC methods are supported?
+### Which RPC methods does the indexer call on the upstream node?
 
-To ingest data from an EVM chain, the connected RPC node must support the following methods:
+The indexer reads from whatever execution node you point it at. That upstream node must support these methods:
 
-- `eth_getTransactionReceipt` **(required)**
-- `eth_getBlockByNumber` **(required)**
+- `eth_getTransactionReceipt` (required)
+- `eth_getBlockByNumber` (required)
 - `eth_getLogs`
 - `eth_call`
 - `eth_getBlockByHash`
 - `net_version`
 - `net_peers`
 - `eth_getUncleByBlockHashAndIndex`
-- `eth_getBlockByNumber`
 - `eth_getBlockReceipts`
 
-> Note: The indexer only actively uses `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data but all listed methods are supported for compatibility.
+> Note: The indexer only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
+
+
+### What happens if I lose my node-identity-key? Can I regenerate it?
+
+If you lose your `node-identity-key`, your node’s identity is permanently lost.
+
+- The key cannot be regenerated
+- You must spin up a new indexer instance
+- You must register again with a new identity
+- The new node may use the same EVM address, but it will be treated as a new identity
+
+To avoid this, always back up your node-identity-key.
+
 
 ### What types of data are indexed?
 
-All blockchain data is indexed, including blocks, transactions, logs, and storage access lists. The data is indexed by **hash [block + transaction]**, **block number**, and **document**.
+All blockchain data is indexed, including blocks, transactions, logs, and storage access lists. The data is indexed by hash (block and transaction), block number, and document.
 
 ### How much space do I need?
 
@@ -57,7 +73,7 @@ The further back you choose, the longer it will take to get to current blocks. H
 
 ### How often is the indexer updated with new blocks?
 
-The indexer fetches blocks directly by block number from its connected validator or RPC node. As soon as a block becomes available via RPC after being gossiped and finalized on the network, it can be indexed.
+The indexer fetches blocks by block number from the upstream Ethereum node it is configured to read from. As soon as a block becomes available on that node after being gossiped and finalized on the network, the indexer can pull it in. The indexer does not participate in consensus or gossip itself; it just reads from a node that does.
 
 ### How does storage grow over time?
 
