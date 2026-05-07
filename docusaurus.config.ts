@@ -154,6 +154,12 @@ const config: Config = {
 
       items: [
         {
+          to: "/",
+          activeBaseRegex: "^/$|^/introduction/",
+          position: "left",
+          label: "Introduction",
+        },
+        {
           to: "/indexer/overview",
           position: "left",
           label: "Indexer",
