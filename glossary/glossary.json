@@ -2,144 +2,790 @@
   "description": "Glossary of terms and definitions for Shinzo Network's decentralized data indexing protocol",
   "terms": [
     {
+      "term": "ABI",
+      "abbreviation": "Application Binary Interface",
+      "definition": "Describes how to encode and decode function calls, arguments, and event data for an EVM contract. Lenses such as `decode_log` take ABI JSON as input to read raw log data.",
+      "relatedTerms": [
+        "EVM",
+        "Lens",
+        "Log"
+      ]
+    },
+    {
+      "term": "AccessListEntry",
+      "definition": "A document type produced by the indexer for EIP-2930 access list entries attached to Ethereum transactions. Most transactions have no access list, so this collection is usually sparse.",
+      "relatedTerms": [
+        "EIP-2930",
+        "Indexer",
+        "Transaction"
+      ]
+    },
+    {
       "term": "ACP",
       "abbreviation": "Access Control Policy",
-      "definition": "A set of rules defining read, write, query, or update permissions for identities interacting with Shinzo data.",
-      "relatedTerms": ["SourceHub"]
+      "definition": "A set of rules that controls which identities can read, write, query, or update Shinzo data.",
+      "relatedTerms": [
+        "SourceHub"
+      ]
     },
     {
       "term": "Application Developer",
-      "definition": "A developer who builds applications that consume Shinzo data feeds, schemas, or APIs.",
-      "relatedTerms": ["Curator", "View"]
+      "definition": "A developer who builds applications on top of Shinzo data feeds, schemas, or APIs.",
+      "relatedTerms": [
+        "Curator",
+        "View"
+      ]
+    },
+    {
+      "term": "Assertion",
+      "definition": "A cryptographic proof, produced on a source chain, that a validator is who they claim to be. It ties the validator's consensus identity to an operator key. Without a valid assertion, a validator cannot register as an indexer on ShinzoHub.",
+      "relatedTerms": [
+        "Outpost",
+        "Operator Key",
+        "Withdrawal Key",
+        "Consensus Key",
+        "Indexer"
+      ]
+    },
+    {
+      "term": "AttestationRecord",
+      "definition": "A document a host creates to track how many independent indexers produced the same data for a given block. The `vote_count` field is a P-counter CRDT, so counts converge across hosts without any coordination step.",
+      "relatedTerms": [
+        "Host",
+        "P-counter",
+        "BlockSignature",
+        "CRDT"
+      ]
+    },
+    {
+      "term": "Bech32",
+      "definition": "An address encoding format used on Cosmos SDK chains. ShinzoHub uses the `shinzo` prefix (e.g., `shinzo1ws69...`). The same underlying key produces both a hex address and a bech32 address — they are different representations, not different keys.",
+      "relatedTerms": [
+        "ShinzoHub",
+        "Cosmos SDK"
+      ]
+    },
+    {
+      "term": "BIP-44",
+      "definition": "A Bitcoin Improvement Proposal that defines a hierarchical deterministic key derivation path. ShinzoHub uses coin type 60 (the same as Ethereum), so the path `m/44'/60'/0'/0/0` produces the same key on both chains.",
+      "relatedTerms": [
+        "ShinzoHub"
+      ]
     },
     {
       "term": "Block Data",
-      "definition": "Raw blockchain data that includes blocks, transactions, logs, commonly sourced from networks such as Ethereum.",
-      "relatedTerms": ["Indexer", "Indexing", "Epoch"]
+      "definition": "Raw blockchain data: blocks, transactions, and logs. The indexer fetches this from source chains such as Ethereum and structures it into defraDB documents.",
+      "relatedTerms": [
+        "Indexer",
+        "Indexing",
+        "Epoch"
+      ]
+    },
+    {
+      "term": "BlockSignature",
+      "definition": "A document the indexer writes after it finishes processing a block. It contains a Merkle root over all document CIDs for that block, signed with the indexer's identity key. Hosts check it to verify the batch came from a known indexer.",
+      "relatedTerms": [
+        "Indexer",
+        "Merkle Tree",
+        "AttestationRecord",
+        "SnapshotSignature"
+      ]
     },
     {
       "term": "Collection",
       "definition": "A schema-defined document type in defraDB. Collections enforce structure, validation rules, and constraints.",
-      "relatedTerms": ["defraDB", "Schema Definition Language"]
+      "relatedTerms": [
+        "defraDB",
+        "Schema Definition Language"
+      ]
+    },
+    {
+      "term": "CometBFT",
+      "definition": "The BFT consensus engine used by Cosmos SDK chains. ShinzoHub runs CometBFT for block production. Hosts connect to ShinzoHub's CometBFT RPC over WebSocket to receive real-time event notifications.",
+      "relatedTerms": [
+        "Cosmos SDK",
+        "ShinzoHub"
+      ]
+    },
+    {
+      "term": "Consensus Key",
+      "definition": "The public key a validator uses to sign blocks and participate in chain consensus. During an assertion, this key is bound to an operator key so the indexer can act on the validator's behalf on ShinzoHub.",
+      "relatedTerms": [
+        "Validator",
+        "Assertion",
+        "Operator Key"
+      ]
     },
     {
       "term": "Content Addressable Data",
-      "definition": "A storage model where data is addressed by a cryptographic hash of its content. Any modification produces a new hash, ensuring immutability and verifiability.",
-      "relatedTerms": ["Content Identifier", "IPLD", "Merkle DAG"]
+      "definition": "A storage approach where data is identified by a cryptographic hash of its content. Changing anything produces a different hash, so you can verify content without trusting the source.",
+      "relatedTerms": [
+        "Content Identifier",
+        "IPLD",
+        "Merkle DAG"
+      ]
     },
     {
       "term": "Content Identifier",
       "abbreviation": "CID",
-      "definition": "A hash-based identifier generated from content. Used across IPLD and hash-linked data structures.",
-      "relatedTerms": ["Content Addressable Data", "IPLD"]
+      "definition": "A hash-based identifier derived from content. Used across IPLD and hash-linked data structures to address data by what it is, not where it lives.",
+      "relatedTerms": [
+        "Content Addressable Data",
+        "IPLD"
+      ]
+    },
+    {
+      "term": "Cosmos SDK",
+      "definition": "A Go framework for building app-specific blockchains. ShinzoHub (v0.53.4) and SourceHub are both Cosmos SDK chains. ShinzoHub also bundles an EVM module.",
+      "relatedTerms": [
+        "ShinzoHub",
+        "SourceHub",
+        "CometBFT",
+        "Module"
+      ]
+    },
+    {
+      "term": "CRDT",
+      "abbreviation": "Conflict-free Replicated Data Type",
+      "definition": "A data structure that multiple nodes can update independently and then merge without coordination, always reaching the same result. defraDB uses CRDTs — specifically MerkleCRDTs — to merge document updates from peers.",
+      "relatedTerms": [
+        "MerkleCRDT",
+        "P-counter",
+        "defraDB"
+      ]
     },
     {
       "term": "Curator",
       "definition": "A developer or entity that creates structured data views, feeds, or SDL-described schemas within Shinzo.",
-      "relatedTerms": ["View", "Schema Definition Language", "ShinzoHub"]
+      "relatedTerms": [
+        "View",
+        "Schema Definition Language",
+        "ShinzoHub"
+      ]
     },
     {
       "term": "defraDB",
-      "definition": "A NoSQL, document-oriented, edge-first database used by Shinzo to store encrypted or schema-defined data.",
-      "relatedTerms": ["Collection", "GraphQL", "View"]
+      "definition": "A peer-to-peer, document-oriented database embedded in every indexer and host. It handles storage, content addressing, CRDT merging, query serving, and P2P replication via libp2p.",
+      "relatedTerms": [
+        "Collection",
+        "GraphQL",
+        "View",
+        "MerkleCRDT",
+        "libp2p"
+      ]
+    },
+    {
+      "term": "DID",
+      "abbreviation": "Decentralized Identifier",
+      "definition": "A self-sovereign identifier (e.g., `did:key:z6Mk...`) derived from a public key. Hosts, indexers, and users are identified by DIDs in SourceHub authorization tuples.",
+      "relatedTerms": [
+        "DID Key",
+        "SourceHub",
+        "ACP"
+      ]
     },
     {
       "term": "DID Key",
       "abbreviation": "Digital Identity Key",
-      "definition": "A cryptographic key pair representing a user's or device's identity in Shinzo. Used for signing, encrypting, and authenticating operations.",
-      "relatedTerms": ["Orbis", "Host"]
+      "definition": "A cryptographic key pair that represents a user's or device's identity in Shinzo. It is used for signing, encrypting, and authenticating operations.",
+      "relatedTerms": [
+        "DID",
+        "Orbis",
+        "Host"
+      ]
+    },
+    {
+      "term": "ECDSA",
+      "abbreviation": "Elliptic Curve Digital Signature Algorithm",
+      "definition": "The signature algorithm used by Ethereum and ShinzoHub (secp256k1 curve). Viewkit derives an ECDSA private key from the wallet to sign deploy transactions.",
+      "relatedTerms": [
+        "EVM",
+        "ShinzoHub",
+        "Viewkit"
+      ]
+    },
+    {
+      "term": "EIP-2930",
+      "definition": "An Ethereum standard that adds optional access lists to transactions, pre-declaring which storage slots a transaction will read or write. The indexer stores these as `AccessListEntry` documents.",
+      "relatedTerms": [
+        "AccessListEntry",
+        "Transaction"
+      ]
+    },
+    {
+      "term": "EIP-712",
+      "definition": "An Ethereum standard for signing structured, typed data in a form users can read before approving. The EVM outpost contract uses EIP-712 for the digest that a validator's withdrawal key signs during an assertion.",
+      "relatedTerms": [
+        "Outpost",
+        "Assertion",
+        "Withdrawal Key"
+      ]
     },
     {
       "term": "Epoch",
-      "definition": "A standardized period of blockchain time determined by a fixed number of blocks. For example, on Ethereum an epoch equals 32 blocks.",
-      "relatedTerms": ["Block Data", "Indexing"]
+      "definition": "A fixed number of blocks treated as one unit of time. On Ethereum, an epoch is 32 blocks.",
+      "relatedTerms": [
+        "Block Data",
+        "Indexing"
+      ]
+    },
+    {
+      "term": "EVM",
+      "abbreviation": "Ethereum Virtual Machine",
+      "definition": "The runtime that executes Solidity smart contracts. ShinzoHub embeds an EVM module so its registries are accessible as precompiled contracts at fixed addresses, callable from any EVM tooling.",
+      "relatedTerms": [
+        "Precompile",
+        "ShinzoHub",
+        "Smart Contract"
+      ]
+    },
+    {
+      "term": "EVM Relayer",
+      "definition": "A Go process that bridges an external EVM chain (e.g. Ethereum) to ShinzoHub. It subscribes to outpost events, extracts assertion or payment data, and broadcasts the relevant Cosmos SDK messages to ShinzoHub. Not the same as the Hermes IBC relayer.",
+      "relatedTerms": [
+        "Outpost",
+        "Relayer",
+        "Hermes",
+        "ShinzoHub"
+      ]
+    },
+    {
+      "term": "Geth",
+      "definition": "Go-Ethereum, the Go implementation of an Ethereum node. Each indexer runs alongside a Geth node and connects over WebSocket (port 8546) and JSON-RPC (port 8545) to fetch block data.",
+      "relatedTerms": [
+        "Indexer",
+        "Validator"
+      ]
     },
     {
       "term": "GraphQL",
-      "definition": "A query language and runtime used for retrieving structured data from defraDB, collections, and views within Shinzo.",
-      "relatedTerms": ["defraDB", "Collection", "View"]
+      "definition": "A query language and runtime for retrieving structured data from defraDB, collections, and views within Shinzo.",
+      "relatedTerms": [
+        "defraDB",
+        "Collection",
+        "View"
+      ]
+    },
+    {
+      "term": "Hermes",
+      "definition": "An IBC relayer written in Rust by Informal Systems. It moves IBC packets between ShinzoHub and SourceHub by fetching Merkle proofs from one chain and submitting them to the other. It is stateless and cannot fabricate packets; SourceHub verifies each one against a state proof.",
+      "relatedTerms": [
+        "IBC",
+        "ICA",
+        "Relayer",
+        "ShinzoHub",
+        "SourceHub"
+      ]
     },
     {
       "term": "Host",
-      "definition": "The local Shinzo client that manages identity, encrypted storage, data syncing, and communication with the network from a user's device.",
-      "relatedTerms": ["DID Key", "Orbis", "ShinzoHub"]
+      "definition": "A Shinzo node that receives indexed data from indexers over P2P, verifies it, runs lens transforms to produce view documents, and serves those documents over GraphQL.",
+      "relatedTerms": [
+        "DID Key",
+        "Orbis",
+        "ShinzoHub"
+      ]
+    },
+    {
+      "term": "Host Registry",
+      "definition": "The ShinzoHub EVM precompile at `0x0211` that tracks registered hosts. View.sol contracts check it before accepting `report()` and `consume()` calls.",
+      "relatedTerms": [
+        "Host",
+        "Precompile",
+        "ShinzoHub"
+      ]
     },
     {
       "term": "IBC",
       "abbreviation": "Inter-Blockchain Communication",
-      "definition": "A protocol enabling secure messaging between blockchains. Only relevant if Shinzo interacts with IBC-enabled chains."
+      "definition": "A protocol for passing authenticated messages between independent blockchains. It works in layers: light clients verify state proofs, connections link two chains, channels carry ordered or unordered packets, and applications (like ICA) run on top. ShinzoHub and SourceHub communicate over IBC."
     },
     {
-      "term": "Indexing",
-      "definition": "The process of parsing blockchain data and storing structured, schema-compliant documents in defraDB.",
-      "relatedTerms": ["Indexer", "defraDB", "Block Data"]
+      "term": "ICA",
+      "abbreviation": "Interchain Accounts",
+      "definition": "An IBC application that lets one chain control an account on another. ShinzoHub uses ICA to send policy commands to its account on SourceHub. ICA channels are ordered, meaning a single timed-out packet permanently closes the channel and a new one must be opened.",
+      "relatedTerms": [
+        "IBC",
+        "Hermes",
+        "ShinzoHub",
+        "SourceHub"
+      ]
     },
     {
       "term": "Indexer",
-      "definition": "A client that reads blockchain data (blocks, transactions, logs), parses it, and writes normalized documents into defraDB.",
-      "relatedTerms": ["Indexing", "defraDB", "Block Data", "Primitive Prefix"]
+      "definition": "A node that reads blockchain data from a source chain, parses it into structured documents, and writes them to defraDB. Indexers are write-only: they push data out over P2P and reject all incoming replication.",
+      "relatedTerms": [
+        "Indexing",
+        "defraDB",
+        "Block Data",
+        "Primitive Prefix",
+        "Validator"
+      ]
+    },
+    {
+      "term": "Indexer Registry",
+      "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered indexers. An indexer cannot register here directly — it must first complete an assertion via an outpost contract. The registry verifies the stored assertion before accepting registration.",
+      "relatedTerms": [
+        "Indexer",
+        "Precompile",
+        "Assertion",
+        "Outpost"
+      ]
+    },
+    {
+      "term": "Indexing",
+      "definition": "The process of parsing blockchain data and storing it as structured, schema-compliant documents in defraDB.",
+      "relatedTerms": [
+        "Indexer",
+        "defraDB",
+        "Block Data"
+      ]
     },
     {
       "term": "IPLD",
       "abbreviation": "Interplanetary Linked Data",
-      "definition": "A data model used by decentralized systems (e.g., IPFS) to create verifiable, linkable, content-addressed objects using Merkle DAGs.",
-      "relatedTerms": ["Merkle DAG", "Content Identifier", "Content Addressable Data"]
+      "definition": "A data model for decentralized systems (used by IPFS, among others). It structures data as Merkle DAGs so every object is content-addressed and verifiable.",
+      "relatedTerms": [
+        "Merkle DAG",
+        "Content Identifier",
+        "Content Addressable Data"
+      ]
+    },
+    {
+      "term": "Keeper",
+      "definition": "In Cosmos SDK, a Go object that owns a module's state and provides the only sanctioned way to read or write it. Precompile code on ShinzoHub calls keepers directly — for example, to send an ICA packet — without going through Solidity bytecode.",
+      "relatedTerms": [
+        "Cosmos SDK",
+        "Module",
+        "Precompile"
+      ]
+    },
+    {
+      "term": "Lens",
+      "definition": "A WASM module that transforms primitive documents (e.g., raw `Log` records) into view documents (e.g., `USDCTransfer`). Lenses must be deterministic: the same input always produces the same output. Hosts run them via LensVM.",
+      "relatedTerms": [
+        "LensVM",
+        "View",
+        "WASM",
+        "Viewkit"
+      ]
+    },
+    {
+      "term": "LensVM",
+      "definition": "The WASM execution environment inside a host that runs lens transforms. It supports Wasmtime, Wasmer, and Wazero runtimes, and can run lenses in both directions if the WASM module exposes an `inverse()` function.",
+      "relatedTerms": [
+        "Lens",
+        "WASM",
+        "Wasmtime",
+        "Wasmer",
+        "Wazero"
+      ]
+    },
+    {
+      "term": "libp2p",
+      "definition": "A peer-to-peer networking library. defraDB uses it for peer discovery and document replication between indexers and hosts.",
+      "relatedTerms": [
+        "defraDB",
+        "P2P"
+      ]
+    },
+    {
+      "term": "Log",
+      "definition": "A document type the indexer produces for event logs emitted during transaction execution. `topics` holds the indexed parameters and `data` holds the non-indexed ones, both as raw hex. ABI decoding happens later, in a lens.",
+      "relatedTerms": [
+        "Indexer",
+        "Transaction",
+        "Lens",
+        "ABI"
+      ]
+    },
+    {
+      "term": "Materialized directive",
+      "definition": "A GraphQL SDL annotation used in view definitions. `@materialized(if: true)` tells defraDB to pre-compute and store view data at write time, so queries are fast but storage use is higher. `@materialized(if: false)` computes results on query.",
+      "relatedTerms": [
+        "View",
+        "Schema Definition Language",
+        "defraDB"
+      ]
     },
     {
       "term": "Merkle DAG",
-      "definition": "A Directed Acyclic Graph where nodes are linked by cryptographic hashes. Nodes may have multiple parents, enabling efficient linking and deduplication of data.",
-      "relatedTerms": ["Merkle Tree", "IPLD", "Content Addressable Data"]
+      "definition": "A directed acyclic graph where each node is identified by a hash of its content and links to parents by their hashes. Unlike a Merkle tree, nodes can have multiple parents. defraDB uses Merkle DAGs to store document history.",
+      "relatedTerms": [
+        "Merkle Tree",
+        "IPLD",
+        "Content Addressable Data"
+      ]
     },
     {
       "term": "Merkle Tree",
-      "definition": "A tree structure where each non-leaf node is the hash of its child nodes. Used to verify large datasets efficiently.",
-      "relatedTerms": ["Merkle DAG"]
+      "definition": "A tree where each internal node is the hash of its children. Changing any leaf changes every hash up to the root, so you can verify any piece of the dataset by checking a small proof.",
+      "relatedTerms": [
+        "Merkle DAG"
+      ]
+    },
+    {
+      "term": "MerkleCRDT",
+      "definition": "defraDB's core storage primitive. Each document update is a CRDT operation stored as a node in a Merkle DAG. The CRDT part handles conflict-free merging; the Merkle DAG part gives verifiable history and lets peers sync only what they are missing.",
+      "relatedTerms": [
+        "CRDT",
+        "Merkle DAG",
+        "defraDB"
+      ]
+    },
+    {
+      "term": "MEV-boost",
+      "definition": "A service on Ethereum that lets validators hand off block construction to external builders. Because those builders control the block's `extraData` field, Shinzo's assertion design does not rely on it — validator identity is read directly from the outpost event instead.",
+      "relatedTerms": [
+        "Validator",
+        "Outpost",
+        "Assertion"
+      ]
+    },
+    {
+      "term": "Module",
+      "definition": "A Cosmos SDK building block that owns a slice of chain state, handles messages, and emits events. ShinzoHub adds five custom modules (`x/admin`, `x/sourcehub`, `x/host`, `x/indexer`, `x/view`) on top of the standard Cosmos set.",
+      "relatedTerms": [
+        "Cosmos SDK",
+        "ShinzoHub",
+        "Keeper"
+      ]
+    },
+    {
+      "term": "Network Gateway",
+      "definition": "A coordination service that routes user GraphQL queries to the right host. It never touches the underlying data.",
+      "relatedTerms": [
+        "Scheduler",
+        "Host"
+      ]
+    },
+    {
+      "term": "Node Key",
+      "definition": "A node identity key submitted alongside the peer key during host registration. ShinzoHub verifies both signatures and derives the host's DID and PID from them.",
+      "relatedTerms": [
+        "Host",
+        "Peer Key",
+        "DID",
+        "PID"
+      ]
+    },
+    {
+      "term": "Operator Key",
+      "definition": "Also called the delegate key. Generated locally by an indexer operator and bound to a validator's identity through an assertion. The indexer uses it to sign ShinzoHub registrations and protocol actions.",
+      "relatedTerms": [
+        "Indexer",
+        "Validator",
+        "Assertion",
+        "Withdrawal Key"
+      ]
     },
     {
       "term": "Orbis",
-      "definition": "Shinzo's key-management component, responsible for generating, storing, and handling cryptographic keys used for identity, encryption, and signing.",
-      "relatedTerms": ["DID Key", "Host"]
+      "definition": "Shinzo's key management component. It generates, stores, and provides access to the cryptographic keys used for identity, encryption, and signing.",
+      "relatedTerms": [
+        "DID Key",
+        "Host"
+      ]
     },
     {
       "term": "Outpost",
-      "definition": "The on-chain payment contract for purchasing or enabling access to data on a given blockchain network.",
-      "relatedTerms": ["Smart Contract", "ShinzoHub"]
+      "definition": "A smart contract deployed on a source chain. Validators call it to prove their identity before registering as indexers; users call it to pay for view access in the source chain's native currency. Each chain type has its own outpost implementation.",
+      "relatedTerms": [
+        "Smart Contract",
+        "ShinzoHub",
+        "Assertion",
+        "Relayer"
+      ]
+    },
+    {
+      "term": "P-counter",
+      "abbreviation": "Positive Counter",
+      "definition": "A CRDT that only increments. Each node tracks its own count separately; merging just takes the max per node and sums them. `AttestationRecord.vote_count` uses a P-counter so all hosts converge on the same indexer count without coordinating.",
+      "relatedTerms": [
+        "CRDT",
+        "AttestationRecord"
+      ]
+    },
+    {
+      "term": "Peer Key",
+      "definition": "One of two keys submitted during host registration. It identifies the host on the libp2p network.",
+      "relatedTerms": [
+        "Host",
+        "Node Key",
+        "libp2p"
+      ]
+    },
+    {
+      "term": "PID",
+      "abbreviation": "Peer ID",
+      "definition": "A libp2p peer identifier derived from a host's keys at registration time. Other peers use the PID to address the host on the P2P network.",
+      "relatedTerms": [
+        "Host",
+        "libp2p",
+        "Peer Key"
+      ]
+    },
+    {
+      "term": "Precompile",
+      "definition": "A contract at a fixed EVM address implemented in native Go rather than Solidity bytecode. ShinzoHub's three registries (View `0x0210`, Host `0x0211`, Indexer `0x0212`) are precompiles so they can call Cosmos SDK keepers directly and trigger ICA packets.",
+      "relatedTerms": [
+        "EVM",
+        "Keeper",
+        "View Registry",
+        "Host Registry",
+        "Indexer Registry"
+      ]
     },
     {
       "term": "Primitive Prefix",
-      "definition": "A prefix used to namespace document data submitted by an indexer per chain or per network (e.g., eth_mainnet_block).",
-      "relatedTerms": ["Indexer"]
+      "definition": "A prefix added to document collection names to namespace them by chain and network (e.g., `Ethereum__Mainnet__Block`). Keeps documents from different chains separate in the same defraDB instance.",
+      "relatedTerms": [
+        "Indexer"
+      ]
+    },
+    {
+      "term": "Re-org",
+      "definition": "Short for chain reorganization: the canonical block at a given height changes. When this happens, different indexers may briefly hold different versions of the same block. Hosts store each version as a separate document; applications pick the one with more attestation votes.",
+      "relatedTerms": [
+        "Indexer",
+        "AttestationRecord"
+      ]
+    },
+    {
+      "term": "Relayer",
+      "definition": "A process that moves data between chains. Shinzo uses two that share nothing but the name: the EVM relayer bridges Ethereum to ShinzoHub, and Hermes bridges ShinzoHub to SourceHub over IBC.",
+      "relatedTerms": [
+        "EVM Relayer",
+        "Hermes",
+        "Outpost"
+      ]
+    },
+    {
+      "term": "Scheduler",
+      "definition": "A coordination service that reads registrations from ShinzoHub and matches indexers to hosts. Like the gateway, it never handles actual data.",
+      "relatedTerms": [
+        "Network Gateway",
+        "Indexer",
+        "Host"
+      ]
     },
     {
       "term": "Schema Definition Language",
       "abbreviation": "SDL",
-      "definition": "A formal language used to define document schemas, data types, constraints, relationships, and validation rules inside Shinzo.",
-      "relatedTerms": ["Collection", "View", "defraDB"]
+      "definition": "The GraphQL-based schema language used to define document types, fields, constraints, and relationships in defraDB. Views and collections are both defined in SDL.",
+      "relatedTerms": [
+        "Collection",
+        "View",
+        "defraDB"
+      ]
     },
     {
       "term": "ShinzoHub",
-      "definition": "The central coordination service that handles data routing, availability, and payment settlement between Hosts, Curators, and blockchain Outposts.",
-      "relatedTerms": ["Host", "Curator", "Outpost"]
+      "definition": "Shinzo's coordination chain: a Cosmos SDK chain (v0.53.4) with an integrated EVM, running CometBFT consensus. It holds the view, host, and indexer registries and the economic layer (staking, pricing, payments). It does not store or serve indexed blockchain data.",
+      "relatedTerms": [
+        "Host",
+        "Curator",
+        "Outpost",
+        "SourceHub",
+        "Cosmos SDK",
+        "EVM",
+        "CometBFT"
+      ]
+    },
+    {
+      "term": "SHNZ",
+      "definition": "ShinzoHub's native token. The display denomination; on-chain the base unit is `ushinzo` (1 SHNZ = 10^18 ushinzo). Used for staking, transaction fees, view funding, and relayer gas.",
+      "relatedTerms": [
+        "ShinzoHub",
+        "ushinzo"
+      ]
     },
     {
       "term": "Smart Contract",
-      "definition": "Deterministic code deployed on a blockchain. Given the same input, execution always produces the same verifiable output.",
-      "relatedTerms": ["Outpost"]
+      "definition": "Deterministic code deployed on a blockchain. The same inputs always produce the same output, and the output is verifiable by anyone.",
+      "relatedTerms": [
+        "Outpost"
+      ]
+    },
+    {
+      "term": "SnapshotSignature",
+      "definition": "A document that seals a contiguous range of blocks into a single signed file for faster initial sync. Its Merkle root covers the per-block `BlockSignature` roots within the range, forming a two-level tree: document CIDs roll up to block roots, which roll up to the snapshot root.",
+      "relatedTerms": [
+        "BlockSignature",
+        "Indexer",
+        "Merkle Tree"
+      ]
+    },
+    {
+      "term": "Source chain",
+      "definition": "Any external blockchain that Shinzo indexes — Ethereum, an L2, a Cosmos chain, etc. A source chain hosts an outpost contract and is read by indexers.",
+      "relatedTerms": [
+        "Outpost",
+        "Indexer",
+        "Relayer"
+      ]
     },
     {
       "term": "SourceHub",
-      "definition": "Shinzo's authorization layer, enforcing role-based access control and ensuring permissions and policies are applied consistently across the network.",
-      "relatedTerms": ["ACP", "Host"]
+      "definition": "A separate Cosmos SDK chain built by Source Network that handles authorization for Shinzo. It runs the ACP module (based on Google's Zanzibar model) and stores authorization tuples in the form `object#relation@user`. Users never call SourceHub directly — ShinzoHub sends commands to it via ICA.",
+      "relatedTerms": [
+        "ACP",
+        "Host",
+        "ShinzoHub",
+        "ICA"
+      ]
     },
     {
       "term": "Stream ID",
-      "definition": "A unique identifier for a curated data feed or stream.",
-      "relatedTerms": ["Curator", "View"]
+      "definition": "A unique identifier assigned to a curated data feed when it is registered.",
+      "relatedTerms": [
+        "Curator",
+        "View"
+      ]
+    },
+    {
+      "term": "SVPS-1",
+      "abbreviation": "Shinzo View Pricing Standard 1",
+      "definition": "An optional pricing contract interface a view can use instead of the default SVS-1 formula. It exposes a single `price() returns (uint256)` function.",
+      "relatedTerms": [
+        "SVS-1",
+        "View"
+      ]
+    },
+    {
+      "term": "SVS-1",
+      "abbreviation": "Shinzo View Standard 1",
+      "definition": "A per-view smart contract deployed automatically by the View Registry at registration time. It exposes `stake()`, `fund(did)`, `consume(did)`, and `report()`. The default price formula is `rate × complexity × premium` minus a 5% protocol fee.",
+      "relatedTerms": [
+        "View",
+        "View Registry",
+        "SVPS-1"
+      ]
+    },
+    {
+      "term": "Transaction",
+      "definition": "A document type the indexer produces by merging an Ethereum transaction object with its receipt. Receipt fields include `status`, `gasUsed`, `cumulativeGasUsed`, and `effectiveGasPrice`.",
+      "relatedTerms": [
+        "Indexer",
+        "Block Data",
+        "Log"
+      ]
+    },
+    {
+      "term": "ushinzo",
+      "definition": "The base denomination of SHNZ on ShinzoHub. 1 SHNZ = 10^18 ushinzo. Most user-facing tools display SHNZ; on-chain accounting uses ushinzo.",
+      "relatedTerms": [
+        "SHNZ",
+        "ShinzoHub"
+      ]
+    },
+    {
+      "term": "Validator",
+      "definition": "An entity that participates in a chain's consensus. On Ethereum, a validator's withdrawal key signs an EIP-712 message on the outpost to authorize an operator key as its indexer.",
+      "relatedTerms": [
+        "Indexer",
+        "Assertion",
+        "Withdrawal Key",
+        "Operator Key",
+        "Consensus Key"
+      ]
     },
     {
       "term": "View",
-      "definition": "A curated representation of defraDB documents defined using SDL. Views transform raw data into structured outputs.",
-      "relatedTerms": ["defraDB", "Schema Definition Language", "Curator"]
+      "definition": "A curated, SDL-defined representation of defraDB documents. Views transform raw indexed data into a structured output shape.",
+      "relatedTerms": [
+        "defraDB",
+        "Schema Definition Language",
+        "Curator"
+      ]
+    },
+    {
+      "term": "View Registry",
+      "definition": "The ShinzoHub EVM precompile at `0x0210`. When `register(bytes)` is called, it decodes the VWL bundle, registers the view in SourceHub via ICA, and deploys an SVS-1 contract for the new view.",
+      "relatedTerms": [
+        "View",
+        "Precompile",
+        "VWL",
+        "SVS-1",
+        "ShinzoHub"
+      ]
+    },
+    {
+      "term": "ViewBundle",
+      "definition": "The packaged form of a view: GraphQL query, SDL, lens metadata, and WASM lens binaries. Viewkit produces a ViewBundle and submits it to the View Registry. The wire format is VWL.",
+      "relatedTerms": [
+        "VWL",
+        "Viewkit",
+        "View Registry"
+      ]
+    },
+    {
+      "term": "Viewkit",
+      "definition": "A CLI tool for creating, testing, and deploying views. It defines the SDL, attaches lenses, runs local validation using the Wasmer runtime, packages everything into a ViewBundle, and submits a deploy transaction to the View Registry.",
+      "relatedTerms": [
+        "View",
+        "ViewBundle",
+        "VWL",
+        "View Registry",
+        "Wasmer"
+      ]
+    },
+    {
+      "term": "VWL",
+      "abbreviation": "View Wire Language",
+      "definition": "The binary format for view bundles. It is a single byte stream: a `\"VWL\"` magic header and version byte, then the GraphQL query, SDL, lens metadata, and a lens blob (optionally zstd-compressed) containing the WASM binaries.",
+      "relatedTerms": [
+        "ViewBundle",
+        "Viewkit",
+        "View Registry"
+      ]
+    },
+    {
+      "term": "WASM",
+      "abbreviation": "WebAssembly",
+      "definition": "A portable, sandboxed bytecode format. Lens transforms compile to WASM — typically from Rust or AssemblyScript — and hosts run them via LensVM.",
+      "relatedTerms": [
+        "Lens",
+        "LensVM",
+        "Wasmtime",
+        "Wasmer",
+        "Wazero"
+      ]
+    },
+    {
+      "term": "Wasmer",
+      "definition": "A WASM runtime written in Rust. Viewkit uses it to validate lenses locally before deployment.",
+      "relatedTerms": [
+        "WASM",
+        "LensVM",
+        "Viewkit"
+      ]
+    },
+    {
+      "term": "Wasmtime",
+      "definition": "A WASM runtime written in Rust. The primary runtime used to execute lenses in production hosts.",
+      "relatedTerms": [
+        "WASM",
+        "LensVM"
+      ]
+    },
+    {
+      "term": "Wazero",
+      "definition": "A pure-Go WASM runtime with no CGo dependency. An alternative lens runtime in LensVM, useful when avoiding CGo is a requirement.",
+      "relatedTerms": [
+        "WASM",
+        "LensVM"
+      ]
+    },
+    {
+      "term": "Withdrawal Key",
+      "definition": "On Ethereum, the key that controls a validator's stake withdrawals. The outpost requires the withdrawal key to sign the EIP-712 assertion digest — it is the chain's strongest proof that a given party controls the validator.",
+      "relatedTerms": [
+        "Validator",
+        "Assertion",
+        "Outpost",
+        "EIP-712"
+      ]
     }
   ]
 }
