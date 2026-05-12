@@ -1,3 +1,8 @@
+---
+title: Registration
+sidebar_position: 3
+---
+
 # Registration
 
 To participate in the Shinzo Network, you must register your Indexer. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your Indexer will not be recognized by the network. To register in ShinzoHub, follow the steps below.
