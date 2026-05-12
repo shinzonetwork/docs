@@ -1,167 +1,94 @@
 # Running a Shinzo indexer
 
-This tutorial covers spinning up a Shinzo indexer on a fresh Ubuntu 24.04 VM, checking it works, and managing the container lifecycle.
+By the end of this page you will know how to install a Shinzo Indexer using Docker. To complete an Indexer setup, you must register it with the Shinzo Network (see [Registration](./registration) for more details).
 
-## Prerequisites
+## Hardware recommendations
 
-- Ubuntu 24.04 VM.
-- Root/sudo access.
-- Docker and Docker Compose installed.
-- A Geth node with HTTP and WebSocket endpoints.
-- A Geth API key (only required for externally hosted nodes).
+| Component | Minimum | Recommended |
+| --- | --- | --- |
+| CPU | 8 vCPUs | 16 vCPUs |
+| Memory (RAM) | 16 GB | 32–64 GB |
+| Storage | 3 TB NVMe | 4+ TB NVMe |
+| OS | Ubuntu 24.04 | Ubuntu 26.04 |
 
-## Steps
+## Using Docker 
 
-1. Verify that you've got Docker installed:
+These steps use Docker to run the Shinzo Indexer. To build the Indexer from source, see the [GitHub project](https://github.com/shinzonetwork/shinzo-indexer-client/) section.
 
-    ```shell
-    docker --version
-    # Docker version 29.1.3
-    ```
+### Prerequisites
 
-1. Clone the `shinzer-indexer-client` repo and move into it:
+- Docker
+- Access to an Ethereum execution node that exposes JSON-RPC and WebSocket. The indexer does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
+- A browser wallet setup. This wallet does not need to hold any funds.
 
-    ```shell
-    git clone https://github.com/shinzonetwork/shinzo-indexer-client.git
-    cd shinzo-indexer-client
-    ```
+### Steps
 
-1. Create local data directories:
+1. Pull the pre-built indexer image from the Shinzo container registry.
 
     ```shell
-    mkdir -p ~/data/defradb ~/data/lens
-    chown -R 1001:1001 ~/data/defradb ~/data/lens
+    docker pull ghcr.io/shinzonetwork/shinzo-indexer-client:standard
     ```
-
-    The indexer stores blockchain data on the host so it persists across container restarts. The container runs as UID 1001. If these directories are owned by root, DefraDB will fail to start with a `permission denied` error.
-
-
-1. Build the Docker image. This takes around 15 minutes on the first run:
-
-    ```shell
-    docker build -t shinzo-indexer:local .
-    ```
-
-1. Create `~/docker-compose.yml` with your Geth connection details. This file goes in your home directory, not inside the repo:
-
-    ```yaml
-    networks:
-      shinzo-net:
-        driver: bridge
-
-    services:
-      shinzo-indexer:
-        image: shinzo-indexer:local
-        container_name: shinzo-indexer
-        restart: unless-stopped
-        networks:
-          - shinzo-net
-        ports:
-          - "9171:9171"
-          - "8080:8080"
-          - "9181:9181"
-        volumes:
-          - ~/data/defradb:/app/.defra
-          - ~/data/lens:/app/.defra/lens
-        environment:
-          - GETH_RPC_URL=<your-geth-http-url>
-          - GETH_WS_URL=<your-geth-ws-url>
-          - GETH_API_KEY=<your-api-key>
-          - INDEXER_START_HEIGHT=0
-          - DEFRADB_KEYRING_SECRET=<choose-a-secret-and-keep-it>
-          - SNAPSHOT_ENABLED=false
-          - LOG_LEVEL=info
-        logging:
-          options:
-            max-size: "50m"
-            max-file: "3"
-    ```
-
-    | Variable | Description |
-    |---|---|
-    | `GETH_RPC_URL` | HTTP JSON-RPC endpoint of your Geth node. |
-    | `GETH_WS_URL` | WebSocket endpoint of your Geth node. |
-    | `GETH_API_KEY` | API key for your Geth node. Leave empty if your node needs no authentication ([see below](#do-you-need-an-api-key)). |
-    | `INDEXER_START_HEIGHT` | Block number to start from. `0` starts 100 blocks behind the current chain tip. |
-    | `DEFRADB_KEYRING_SECRET` | Used to encrypt the DefraDB identity. Pick any value and keep it — if you change it after the first run the indexer will fail to load its existing identity. |
-
-1. Start the indexer:
-
-    ```shell
-    docker-compose -f ~/docker-compose.yml up -d
-    ```
-
-1. Verify it is working:
-
-    ```shell
-    docker ps
-    ```
-
-    You should see `shinzo-indexer` with status `Up` and eventually `(healthy)`.
-
-1. Hit the health endpoint:
-
-    ```shell
-    curl http://localhost:8080/health
-    ```
-
-    A working indexer returns something like:
 
     ```output
-    {
-      "status": "healthy",
-      "current_block": 24891405,
-      "last_processed": "2026-04-16T09:13:42Z",
-      "defradb_connected": true,
-      "uptime_seconds": 341,
-      "p2p": {
-        "enabled": true,
-        "self": {
-          "id": "12D3KooWK...",
-          "addresses": ["/ip4/127.0.0.1/tcp/9171"]
-        }
-      }
-    }
+    standard: Pulling from shinzonetwork/shinzo-indexer-client
+    2521f1b70bf8: Pull complete
+    2c845527b24c: Pull complete
+    
+    [...]
+
+    Digest: sha256:a272b09607e6f3f07399d72d019f058919ba2854469835b80478fd75799fa0fd
+    Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-indexer-client:standard
     ```
 
-    Check that `status` is `"healthy"`, `defradb_connected` is `true`, and `current_block` is incrementing.
+1. Gather your Geth node's:
 
-1. Watch blocks being indexed in real time:
+    - RPC URL
+    - WebSocket URL
+    - API key ([if set](#do-you-need-an-api-key))
+
+1. Start the indexer by filling in your details and running:
 
     ```shell
-    docker logs -f shinzo-indexer
+    docker run --rm \
+      -e GETH_RPC_URL={{ YOUR RPC URL }}:8080 \
+      -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}:8080 \
+      -e GETH_API_KEY={{ YOUR API KEY }} \
+      -e INDEXER_START_HEIGHT=0 \
+      -e DEFRADB_KEYRING_SECRET=devnet-secret \
+      -e DEFRADB_PLAYGROUND=true \
+      -e DEFRADB_P2P_ENABLED=true \
+      -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9174 \
+      -e LOGGER_DEBUG=true \
+      -p 9181:9181 \
+      -p 9171:9171 \
+      -p 8080:8080 \
+      ghcr.io/shinzonetwork/shinzo-indexer-client:standard
     ```
 
-    You should see a stream of committed blocks:
+You should see the indexer connect to Geth and start collecting and committing blocks:
 
-    ```
-    INFO  Committed block 24891405 (ID: bae-...)
-    INFO  Committed block 24891406 (ID: bae-...)
-    ```
+```output
+2026-05-11T10:59:54.762Z	INFO	Committed block 25071330 (ID: bae-235bbc36-32ff-5fb0-8361-6c4dc3d6aeb9)
+2026-05-11T10:59:54.902Z	DEBUG	HTTP response: 200 OK (Content-Length: )
+2026-05-11T10:59:54.902Z	DEBUG	HTTP request successful, status: 200 OK
+2026-05-11T10:59:55.272Z	DEBUG	HTTP Request: POST http://35.193.228.182:8080
+2026-05-11T10:59:55.272Z	DEBUG	Setting x-goog-api-key header: df7f****e6db
+2026-05-11T10:59:55.272Z	DEBUG	Request headers: Content-Type=application/json, User-Agent=
+2026-05-11T10:59:55.409Z	DEBUG	HTTP response: 200 OK (Content-Length: )
+2026-05-11T10:59:55.409Z	DEBUG	HTTP request successful, status: 200 OK
+```
 
-1. To query indexed data, call the DefraDB GraphQL API runs on port 9181:
+Eventually your Indexer will catch up with your Validator node, and will start _waiting_ for block to be produced, rather than immediately grabbing historical data from the Validator node:
 
-    ```shell
-    curl -s -X POST http://localhost:9181/api/v0/graphql \
-      -H "Content-Type: application/json" \
-      -d '{"query":"{ Ethereum__Mainnet__Block(filter: { number: { _eq: 24891405 } }) { hash number } }"}'
-    ```
+```output
+2026-05-11T11:05:09.338Z	DEBUG	HTTP response: 200 OK (Content-Length: )
+2026-05-11T11:05:09.338Z	DEBUG	HTTP request successful, status: 200 OK
+2026-05-11T11:05:09.338Z	INFO	Block 25071451 not available yet, waiting...
+```
 
-1. Once you're done, you can stop the indexer:
+### Registration
 
-    ```shell
-    docker-compose -f ~/docker-compose.yml stop
-    ```
-
-    This stops the container but keeps it and all indexed data intact. To restart it again, run:
-
-    ```shell
-    docker-compose -f ~/docker-compose.yml start
-    ```
-
-    After restarting, the indexer loads the existing DefraDB identity from the keyring and picks up from the last indexed block. No data is lost.
-
-1. Done!
+Once your Indexer is up and running, you must register it with the Shinzo Network. See [Registration](./registration.md) for details.
 
 ## Do you need an API key?
 
@@ -171,28 +98,20 @@ If the indexer and the Geth node are on the same private network (both on VMs in
 
 If you are connecting to an externally hosted node, authentication is almost always required. Two common cases:
 
-- **GCP Blockchain Node Engine** (`blockchainnodeengine.com`) — expects the API key in the `X-goog-api-key` header.
-- **A self-hosted node behind a reverse proxy** (e.g. nginx) — the operator decides the header; `X-Api-Key` is common.
+- **GCP Blockchain Node Engine** (`blockchainnodeengine.com`): expects the API key in the `X-goog-api-key` header.
+- **A self-hosted node behind a reverse proxy** (e.g. nginx): the operator decides the header; `X-Api-Key` is common.
 
 The indexer picks the right header automatically based on the URL.
 
-## Automatic restart on VM reboot
-
-The `restart: unless-stopped` policy means Docker starts the indexer automatically on boot. You do not need to do anything after a normal reboot.
-
-If the container shows `(unhealthy)` after a reboot but otherwise appears to be running fine, this is a known Docker health check glitch that can occur after a host restart. A restart clears it:
-
-```shell
-docker-compose -f ~/docker-compose.yml restart
-```
-
 ## Exposed ports
+
+The following ports must be exposed and available on the machine.
 
 | Port | Service |
 |---|---|
-| `8080` | Health endpoint (`/health`), metrics (`/metrics`) |
-| `9171` | DefraDB P2P |
-| `9181` | DefraDB GraphQL API |
+| `8080` | Health endpoint (`/health`), metrics (`/metrics`). |
+| `9171` | DefraDB P2P. |
+| `9181` | DefraDB GraphQL API. |
 
 ## Troubleshooting
 
@@ -206,18 +125,10 @@ chown -R 1001:1001 ~/data/defradb ~/data/lens
 docker-compose -f ~/docker-compose.yml start
 ```
 
-**`401 Unauthorized` from the Geth endpoint**
-
-You are probably using the GHCR image rather than the local build. The GHCR image sends the wrong authentication header for non-GCP nodes. Rebuild locally (step 4) and make sure your compose file has `image: shinzo-indexer:local`.
-
-**`403 Forbidden` from the Geth endpoint**
-
-You are connecting to a GCP Blockchain Node Engine URL but the indexer is sending `X-Api-Key` instead of `X-goog-api-key`. Check that your `GETH_RPC_URL` contains `blockchainnodeengine.com` — the indexer uses the URL to pick the right header.
-
 **`failed to load existing DefraDB identity`**
 
 The `DEFRADB_KEYRING_SECRET` has changed since the first run. Restore the original value in your compose file and restart.
 
 **`WARN WebSocket unavailable, will use HTTP-only mode`**
 
-Not fatal — the indexer falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but may be slightly slower.
+The indexer falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but may be slightly slower.
