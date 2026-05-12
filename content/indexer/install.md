@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Running a Shinzo indexer
 
-By the end of this page you will know how to install a Shinzo Indexer using Docker. To complete an Indexer setup, you must register it with the Shinzo Network (see [Registration](./registration) for more details).
+By the end of this page you will know how to install a Shinzo Indexer using Docker. To complete an Indexer setup, you must register it with the Shinzo Network (see [Registration](./register) for more details).
 
 ## Hardware recommendations
 
@@ -93,7 +93,7 @@ Eventually your Indexer will catch up with your Validator node, and will start _
 
 ### Registration
 
-Once your Indexer is up and running, you must register it with the Shinzo Network. See [Registration](./registration.md) for details.
+Once your Indexer is up and running, you must register it with the Shinzo Network. See [Registration](./register) for details.
 
 ## Do you need an API key?
 
