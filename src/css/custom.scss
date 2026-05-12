@@ -344,6 +344,40 @@ pre {
   border: 2px solid var(--code-border);
 }
 
+// Output code blocks (```output)
+// - Darker background to visually distinguish from regular code blocks
+// - No copy button (hidden via CSS)
+// - No gap when immediately following another code block
+.theme-code-block--output {
+  .theme-code-block {
+    --prism-background-color: color-mix(in srgb, var(--code-background) 80%, black);
+    margin-bottom: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    pre {
+      border-top: none;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  // Hide copy and word-wrap buttons on output blocks
+  button {
+    display: none !important;
+  }
+}
+
+// Collapse margin/radius between a code block and an immediately following output block
+.theme-code-block:has(+ .theme-code-block--output) {
+  margin-bottom: 0;
+
+  pre {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
 // Mermaid diagrams: center small ones, allow wide ones to scroll horizontally
 // instead of being squashed (which makes text unreadable).
 .docusaurus-mermaid-container {
