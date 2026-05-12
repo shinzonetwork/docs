@@ -1,3 +1,8 @@
+---
+title: Install 
+sidebar_position: 2
+---
+
 # Running a Shinzo indexer
 
 By the end of this page you will know how to install a Shinzo Indexer using Docker. To complete an Indexer setup, you must register it with the Shinzo Network (see [Registration](./registration) for more details).
