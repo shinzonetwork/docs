@@ -2,7 +2,7 @@
 
 ## Before you start
 
-Open an issue to discuss your proposed change before submitting a PR. This avoids wasted effort if the change isn't a good fit.
+Open an issue to discuss your proposed change before submitting a PR. This avoids wasted effort if the change isn't a good fit. PRs without issues attached with be closed.
 
 ## Making changes
 

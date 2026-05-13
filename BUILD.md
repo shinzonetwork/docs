@@ -14,14 +14,15 @@ pnpm install
 pnpm build
 ```
 
-The build goes into `./build`.
+The build goes into `./build`, funnily enough.
 
 ## Useful commands
 
 | Command | What it does |
 | --- | --- |
-| `pnpm start` | Start a local dev server with hot reload |
-| `pnpm build` | Generate a production build into `./build` |
-| `pnpm serve` | Serve the production build locally |
-| `pnpm typecheck` | Run TypeScript type checking |
-| `pnpm clear` | Clear the Docusaurus cache |
+| `pnpm start` | Start a local dev server with hot reload. |
+| `pnpm build` | Generate a production build into `./build`. |
+| `pnpm serve` | Serve the production build locally. |
+| `pnpm typecheck` | Run TypeScript type checking. |
+| `pnpm clear` | Clear the Docusaurus cache. |
+| `sudo shutdown now` | Turns off your machine so you can go outside. |

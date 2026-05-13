@@ -2,8 +2,7 @@
   This README covers local setup, Docker, and deployment only.
   Do not add: architecture explanations, API reference, configuration 
   deep-dives, or troubleshooting guides. Those belong in the Shinzo 
-  documentation site. If you're tempted to add a section, link to the docs 
-  instead.
+  docs site. If you're tempted to add a section, link to the docs instead.
 -->
 
 # Shinzo Docs
@@ -11,7 +10,7 @@
 ![Build Status](https://img.shields.io/github/actions/workflow/status/shinzonetwork/docs/.github/workflows/ci.yml)
 ![License](https://img.shields.io/github/license/shinzonetwork/docs)
 
-Source code for the Shinzo developer documentation site at [docs.shinzo.network](https://docs.shinzo.network).
+Markdown content and webs code for the Shinzo developer docs site at [docs.shinzo.network](https://docs.shinzo.network).
 
 ## Getting started
 
