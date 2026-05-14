@@ -19,7 +19,7 @@ The core indexing engine is written in Go and handles concurrent block processin
 
 ### Currently supported chains
 
-The Indexer currently supports Ethereum Mainnet. It works with any execution client that exposes a standard Ethereum JSON-RPC and WebSocket interface (Geth, Reth, Nethermind, Erigon, or a managed provider). Network-level errors are handled with retries and timeouts.
+The Indexer currently supports Ethereum Mainnet. It works with any execution client that exposes a standard Ethereum JSON-RPC and WebSocket interface (Geth, Reth, Nethermind, Erigon, or a managed provider). Network-level errors are handled with retries and timeouts. Supported chains can also be found at [shinzo.network/chains](https://shinzo.network/chains).
 
 ### DefraDB
 
