@@ -55,9 +55,9 @@ These steps use Docker to run the Shinzo Indexer. To build the indexer from sour
 
     ```shell
     docker run --rm \
-      -e GETH_RPC_URL={{ YOUR RPC URL }}:8080 \
-      -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}:8080 \
-      -e GETH_API_KEY={{ YOUR API KEY }} \
+      -e GETH_RPC_URL={{ YOUR RPC URL }}\
+      -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
+      -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
       -e INDEXER_START_HEIGHT=0 \
       -e DEFRADB_KEYRING_SECRET=devnet-secret \
       -e DEFRADB_PLAYGROUND=true \
