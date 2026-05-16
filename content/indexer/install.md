@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Running a Shinzo indexer
 
-By the end of this page you will know how to install a Shinzo Indexer using Docker. To complete an Indexer setup, you must register it with the Shinzo Network (see [Registration](./register) for more details).
+This page covers installing a Shinzo Indexer with Docker or from source. To complete an indexer setup, you must also register it with the Shinzo Network (see [Registration](./register)).
 
 ## Hardware recommendations
 
@@ -18,11 +18,11 @@ By the end of this page you will know how to install a Shinzo Indexer using Dock
 
 ## Using Docker 
 
-These steps use Docker to run the Shinzo Indexer. To build the Indexer from source, see the [GitHub project](https://github.com/shinzonetwork/shinzo-indexer-client/) section.
+These steps use Docker to run the Shinzo Indexer. To build the indexer from source, see [Building from source](#building-from-source) below.
 
 ### Prerequisites
 
-- Docker
+- Docker.
 - Access to an Ethereum execution node that exposes JSON-RPC and WebSocket. The indexer does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
 - A browser wallet setup. This wallet does not need to hold any funds.
 
@@ -83,7 +83,7 @@ You should see the indexer connect to Geth and start collecting and committing b
 2026-05-11T10:59:55.409Z	DEBUG	HTTP request successful, status: 200 OK
 ```
 
-Eventually your Indexer will catch up with your Validator node, and will start _waiting_ for block to be produced, rather than immediately grabbing historical data from the Validator node:
+Eventually your indexer will catch up with the validator node and start waiting for new blocks rather than pulling historical data:
 
 ```output
 2026-05-11T11:05:09.338Z	DEBUG	HTTP response: 200 OK (Content-Length: )
@@ -93,7 +93,73 @@ Eventually your Indexer will catch up with your Validator node, and will start _
 
 ### Registration
 
-Once your Indexer is up and running, you must register it with the Shinzo Network. See [Registration](./register) for details.
+Once the indexer is running, register it with the Shinzo Network. See [Registration](./register) for details.
+
+## Building from source
+
+You can also build the indexer binary from source instead of using Docker.
+
+### Prerequisites
+
+- Go 1.26 or later.
+- Git.
+- Access to an Ethereum execution node (same as the [Docker install method](#using-docker)).
+
+### Steps
+
+1. Clone the repository and install the Go dependencies.
+
+    ```shell
+    git clone https://github.com/shinzonetwork/shinzo-indexer-client.git
+    cd shinzo-indexer-client
+    go mod download
+    ```
+
+1. Create a `.env` file with your node details and indexer settings.
+
+    ```shell
+    cat > .env << EOF
+    GETH_RPC_URL=<your-rpc-url>
+    GETH_WS_URL=<your-ws-url>
+    GETH_API_KEY=<your-api-key>
+
+    DEFRADB_KEYRING_SECRET=<your-keyring-secret>
+    DEFRADB_PLAYGROUND=true
+    DEFRADB_P2P_ENABLED=true
+    DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171
+
+    INDEXER_START_HEIGHT=0
+    LOGGER_DEBUG=true
+    EOF
+    ```
+
+    You [may not need to enter a Geth API key](#do-you-need-an-api-key).
+
+1. Build the binary. The default build uses a non-branchable schema and processes transactions in parallel.
+
+    ```shell
+    make build
+    ```
+
+    If you need sequential processing with DefraDB branchable collections, pass the `branchable` tag instead:
+
+    ```shell
+    make build TAGS=branchable
+    ```
+
+1. Run the indexer.
+
+    ```shell
+    make start
+    ```
+
+:::info
+The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups. Environment variables in `.env` override values in `config.yaml`.
+:::
+
+### Registration
+
+Once your indexer is running, register it with the Shinzo Network. See [Registration](./register) for details.
 
 ## Do you need an API key?
 
@@ -103,8 +169,8 @@ If the indexer and the Geth node are on the same private network (both on VMs in
 
 If you are connecting to an externally hosted node, authentication is almost always required. Two common cases:
 
-- **GCP Blockchain Node Engine** (`blockchainnodeengine.com`): expects the API key in the `X-goog-api-key` header.
-- **A self-hosted node behind a reverse proxy** (e.g. nginx): the operator decides the header; `X-Api-Key` is common.
+- GCP Blockchain Node Engine (`blockchainnodeengine.com`) expects the API key in the `X-goog-api-key` header.
+- A self-hosted node behind a reverse proxy (e.g. nginx) uses whatever header the operator configures. `X-Api-Key` is common.
 
 The indexer picks the right header automatically based on the URL.
 
@@ -113,14 +179,14 @@ The indexer picks the right header automatically based on the URL.
 The following ports must be exposed and available on the machine.
 
 | Port | Service |
-|---|---|
+| --- | --- |
 | `8080` | Health endpoint (`/health`), metrics (`/metrics`). |
 | `9171` | DefraDB P2P. |
 | `9181` | DefraDB GraphQL API. |
 
 ## Troubleshooting
 
-**`permission denied` on `.defra/keys`**
+### Permission denied on `.defra/keys`
 
 The data directories are owned by root but the container runs as UID 1001. Stop the container, fix the ownership, then start again:
 
@@ -130,10 +196,10 @@ chown -R 1001:1001 ~/data/defradb ~/data/lens
 docker-compose -f ~/docker-compose.yml start
 ```
 
-**`failed to load existing DefraDB identity`**
+### Failed to load existing DefraDB identity
 
-The `DEFRADB_KEYRING_SECRET` has changed since the first run. Restore the original value in your compose file and restart.
+`DEFRADB_KEYRING_SECRET` has changed since the first run. Restore the original value in your compose file and restart.
 
-**`WARN WebSocket unavailable, will use HTTP-only mode`**
+### WebSocket unavailable, will use HTTP-only mode
 
-The indexer falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but may be slightly slower.
+The indexer falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.
