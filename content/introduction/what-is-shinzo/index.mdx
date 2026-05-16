@@ -12,8 +12,6 @@ If you've built any kind web3 app before, you know the usual pattern: you pick a
 
 Blockchains are good at writing data and bad at reading it. If you want to show a user all their previous transactions, or count token transfers for a given contract, you can't just ask the chain. The raw data isn't organized for questions like that. So the industry bolted centralized indexing services onto the side of every chain, and those services now sit in the trust path between your app and the data.
 
-![The current world of blockchain indexing.](./images/current-indexing-scheme.svg)
-
 This setup is expensive and fragile. The indexer's DNS might fail, or the cloud service hosting it might go down. And there's no way to verify that the data you're receiving is accurate until _after_ you've received (and paid) for it.
 
 The goal of Shinzo is to make reading blockchain data as decentralized and verifiable as writing to it.
@@ -28,7 +26,35 @@ Three kinds of participants run the network.
 
 **Developers** define the Views. A View is basically a way to say _"here's the raw data I care about, here's how I want it filtered and decoded, and here's the schema I want it exposed as."_ Once a View is deployed, Hosts pick it up, run it, and push the results to whoever subscribes.
 
-![Decentralized indexing data, built with Shinzo.](./images/shinzo-indexing-scheme.svg)
+```mermaid
+flowchart LR
+  subgraph Chain["Blockchain network"]
+    direction TB
+    V1["Validator node"]
+    V2["Validator node"]
+    V3["Validator node"]
+    V1 <-.-> V2
+    V2 <-.-> V3
+    V1 <-.-> V3
+  end
+
+  subgraph Shinzo["Shinzo network"]
+    direction TB
+    Idx["Indexer"]
+    Idx --> H1["Host"]
+    Idx --> H2["Host"]
+    H1 --- View1(("View"))
+    H1 --- View2(("View"))
+    H2 --- View3(("View"))
+    H2 --- View4(("View"))
+  end
+
+  Chain --> Shinzo
+  View1 --> App1["App"]
+  View2 --> App1
+  View3 --> App2["App"]
+  View4 --> App2
+```
 
 Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a peer-to-peer document database that handles replication, access control, and GraphQL queries. Applications embed DefraDB locally and query it the way they'd query any other database, which means no per-read round trip to an external API.
 
