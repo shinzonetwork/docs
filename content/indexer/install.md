@@ -62,7 +62,7 @@ These steps use Docker to run the Shinzo Indexer. To build the indexer from sour
       -e DEFRADB_KEYRING_SECRET=devnet-secret \
       -e DEFRADB_PLAYGROUND=true \
       -e DEFRADB_P2P_ENABLED=true \
-      -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9174 \
+      -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
       -e LOGGER_DEBUG=true \
       -p 9181:9181 \
       -p 9171:9171 \
@@ -180,7 +180,7 @@ The following ports must be exposed and available on the machine.
 
 | Port | Service |
 | --- | --- |
-| `8080` | Health endpoint (`/health`), metrics (`/metrics`). |
+| `8080` | Health endpoint (`/health`), metrics (`/metrics`), and registration ('/registration'). |
 | `9171` | DefraDB P2P. |
 | `9181` | DefraDB GraphQL API. |
 

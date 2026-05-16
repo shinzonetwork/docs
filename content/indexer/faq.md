@@ -77,4 +77,4 @@ The Indexer fetches blocks by block number from the upstream Ethereum node it is
 
 Storage grows linearly at roughly 10GB/1K full blocks. The first 15M blocks of ethereum are significantly smaller than blocks after the POS migration, math has been done on recent blocks.
 
-Future improvements will allow the Indexer to passively prune documents that have already been gossiped, reducing long-term storage pressure.
+You can passively prune documents that has already been gossiped, reducing long-term storage pressure and clearing up old blocks.
