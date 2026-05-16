@@ -24,9 +24,10 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Indexer",
-      link: { type: "doc", id: "indexer/overview" },
       items: [
-        "indexer/quickstart",
+        "indexer/overview",
+        "indexer/install",
+        "indexer/register",
         "indexer/faq"
       ],
     },
