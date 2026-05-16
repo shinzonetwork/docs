@@ -26,6 +26,35 @@ Three kinds of participants run the network.
 
 **Developers** define the Views. A View is basically a way to say _"here's the raw data I care about, here's how I want it filtered and decoded, and here's the schema I want it exposed as."_ Once a View is deployed, Hosts pick it up, run it, and push the results to whoever subscribes.
 
+```mermaid
+flowchart LR
+  subgraph Chain["Blockchain network"]
+    direction TB
+    V1["Validator node"]
+    V2["Validator node"]
+    V3["Validator node"]
+    V1 <-.-> V2
+    V2 <-.-> V3
+    V1 <-.-> V3
+  end
+
+  subgraph Shinzo["Shinzo network"]
+    direction TB
+    Idx["Indexer"]
+    Idx --> H1["Host"]
+    Idx --> H2["Host"]
+    H1 --- View1(("View"))
+    H1 --- View2(("View"))
+    H2 --- View3(("View"))
+    H2 --- View4(("View"))
+  end
+
+  Chain --> Shinzo
+  View1 --> App1["App"]
+  View2 --> App1
+  View3 --> App2["App"]
+  View4 --> App2
+```
 
 Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a peer-to-peer document database that handles replication, access control, and GraphQL queries. Applications embed DefraDB locally and query it the way they'd query any other database, which means no per-read round trip to an external API.
 
