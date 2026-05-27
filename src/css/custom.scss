@@ -340,21 +340,7 @@ html {
   }
 }
 
-// Footer
-.footer {
-  border-top: 1px solid var(--szo-border);
-}
-
-.footer__bottom {
-  a {
-    opacity: 1;
-  }
-}
-
-.footer__copyright {
-  font-size: 12px;
-  margin: 30px 0;
-}
+// Footer styles are in src/theme/Footer/styles.module.css
 
 pre {
   white-space: pre-wrap;

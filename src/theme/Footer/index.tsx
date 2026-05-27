@@ -1,0 +1,151 @@
+import React from "react";
+import styles from "./styles.module.css";
+
+const ShinzoWordmark = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    viewBox="0 0 1058 187"
+    className={styles.wordmark}
+    aria-hidden="true"
+  >
+    <g fill="currentColor">
+      <path d="M188.448 78.955h-32.147v31.455h32.147zM32.147 78.955H0v31.455h32.147zM78.159 110.41h32.147V78.955H78.142v31.455zM71.226 40.586H39.08v108.176h32.146zM117.221 78.955v69.807h32.164V40.586h-32.164z" />
+      <path d="M117.221 78.955v69.807h32.164V40.586h-32.164zM110.306 117.177H78.159V187h32.147zM379.533 187V40.586h40.58v55.62h53.828v-55.62h40.58V187h-40.58v-59.338h-53.828V187zM609.325 187V40.586h44.18l35.647 57.48a275 275 0 0 1 8.632 14.936c2.683 4.974 5.267 10.469 7.783 16.454 2.516 6 5.066 12.979 7.683 20.986h-3.517c-.333-5.3-.75-11.447-1.25-18.426s-.95-13.861-1.35-20.627c-.4-6.784-.599-12.49-.599-17.154V40.586h41.779V187h-44.18l-33.247-53.452c-3.749-6.098-7.049-11.773-9.899-17.056-2.85-5.267-5.583-10.86-8.232-16.747a4052 4052 0 0 1-9.083-20.431h4.217c.533 6.881 1.05 13.73 1.55 20.53.499 6.815.899 13.142 1.199 18.963.3 5.838.45 10.746.45 14.741V187h-41.779zM582.21 40.586h-40.579V187h40.579zM1033.44 0v22.796h-85.861V0zM1033.35 40.586H923.032V187H1058V40.586zm-69.755 114.959V72.041h53.825v83.504zM352.584 186.999H230.462v-31.454h42.379q11.548 0 23.148.195 11.6.196 23.248 1.37l-2.516 12.181a1679 1679 0 0 1-17.015-17.888c-5.583-5.968-10.666-11.92-15.215-17.888l-54.229-70.949V40.553h122.122V72.04h-45.796q-10.748 0-21.498-.196a238 238 0 0 1-21.498-1.37l2.517-12.213a1312 1312 0 0 1 16.415 17.154c5.399 5.74 10.265 11.447 14.615 17.154l55.428 72.416v22.014zM775.446 187v-22.014l55.428-72.416c4.349-5.707 9.215-11.414 14.615-17.154a1319 1319 0 0 1 16.415-17.154l2.516 12.214a238 238 0 0 1-21.498 1.37q-10.749.195-21.498.195h-45.795V40.554H897.75v22.013l-54.228 70.949c-4.549 5.968-9.632 11.92-15.215 17.888a1689 1689 0 0 1-17.015 17.888l-2.517-12.181a279 279 0 0 1 23.248-1.37q11.6-.195 23.148-.195h42.379V187H775.429z" />
+    </g>
+  </svg>
+);
+
+export default function Footer(): React.ReactElement {
+  return (
+    <footer className={styles.footer}>
+      <div className={styles.wrapper}>
+        {/* Top grid */}
+        <div className={styles.grid}>
+          {/* Left: get started */}
+          <div className={styles.getStarted}>
+            <h4 className={styles.getStartedHeading}>
+              Get started building with Shinz&#333;
+            </h4>
+            <ul className={styles.linkList}>
+              <li>
+                <a
+                  href="https://docs.shinzo.network"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  Documentation
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Right: nav columns */}
+          <ul className={styles.navColumns}>
+            <li className={styles.navColumn}>
+              <div className={styles.columnTitle}>Who it&apos;s for</div>
+              <ul className={styles.columnLinks}>
+                <li>
+                  <a href="https://shinzo.network/chain-validators" target="_self" className={styles.link}>
+                    Existing Chain Validators
+                  </a>
+                </li>
+                <li>
+                  <a href="https://shinzo.network/data-hosts" target="_self" className={styles.link}>
+                    Data Hosts
+                  </a>
+                </li>
+                <li>
+                  <a href="https://shinzo.network/builders" target="_self" className={styles.link}>
+                    Builders
+                  </a>
+                </li>
+                <li>
+                  <a href="https://shinzo.network/protocols-and-foundations" target="_self" className={styles.link}>
+                    Protocols and Foundations
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li className={styles.navColumn}>
+              <div className={styles.columnTitle}>Resources</div>
+              <ul className={styles.columnLinks}>
+                <li>
+                  <a href="https://shinzo.network/blog" target="_self" className={styles.link}>
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a href="https://shinzo.network/truth" target="_self" className={styles.link}>
+                    Manifesto
+                  </a>
+                </li>
+                <li>
+                  <a href="https://shinzo.network/chains" target="_self" className={styles.link}>
+                    Chains
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li className={styles.navColumn}>
+              <div className={styles.columnTitle}>Community</div>
+              <ul className={styles.columnLinks}>
+                <li>
+                  <a
+                    href="https://discord.shinzo.network"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.link}
+                  >
+                    Discord
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/shinzonetwork"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.link}
+                  >
+                    GitHub
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://x.com/shinzonetwork"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.link}
+                  >
+                    X
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://t.me/shinzonetwork"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.link}
+                  >
+                    Telegram
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        {/* Bottom: copyright + wordmark */}
+        <div className={styles.bottom}>
+          <span className={styles.copyright}>Shinz&#333; &copy; 2026</span>
+          <div className={styles.wordmarkWrap}>
+            <ShinzoWordmark />
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

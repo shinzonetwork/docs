@@ -192,57 +192,8 @@ const config: Config = {
         },
       ],
     },
-    footer: {
-  style: "light",
-  logo: {
-    alt: "Shinzo Logo",
-    src: "img/shinzo-logo-footer.svg",
-    srcDark: "img/shinzo-logo-footer-w.svg",
-    href: "https://shinzo.network",
-  },
-  links: [
-    {
-      title: "Developers",
-      items: [
-        {
-          label: "Getting Started",
-          to: "/",
-        },
-        {
-          label: "GitHub",
-          href: "https://github.com/shinzonetwork",
-        },
-      ],
-    },
-    {
-      title: "Community",
-      items: [
-        {
-          label: "X",
-          href: "https://x.com/shinzonetwork",
-        },
-        {
-          label: "Discord",
-          href: "https://discord.gg/shinzo",
-        },
-      ],
-    },
-    {
-      title: "Resources",
-      items: [
-        {
-          label: "Home",
-          href: "https://shinzo.network/",
-        },
-        {
-          label: "Blog",
-          href: "https://medium.com/shinzo",
-        },
-      ],
-    },
-  ],
-  copyright: `Copyright © ${new Date().getFullYear()} Shinzo. Built with Docusaurus.`,
-  },
+    // Footer is rendered by src/theme/Footer/index.tsx (swizzled component).
+    footer: {},
     prism: {
       theme: codeTheme,
     },
