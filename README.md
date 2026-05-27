@@ -22,7 +22,7 @@ pnpm start
 ```
 
 > [!TIP]
-> See [BUILD.md](./BUILD.md) for full build-from-source instructions.
+> See [BUILD.md](./BUILD.md) to see how to build for production.
 
 ## Deployment
 
