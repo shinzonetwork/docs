@@ -34,8 +34,8 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Host",
-      link: { type: "doc", id: "hosts/overview" },
       items: [
+        "hosts/overview", 
         "hosts/quickstart", 
         "hosts/examples"
       ],
@@ -43,15 +43,17 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "View Creator",
-      link: { type: "doc", id: "view-creator/overview" },
       items: [
+        "view-creator/overview",
         "view-creator/quickstart"
       ],
     },
     {
       type: "category",
       label: "Guides",
-      items: ["guides/building-apps-with-shinzo"],
+      items: [
+        "guides/building-apps-with-shinzo"
+      ],
     },
     {
       type: "category",

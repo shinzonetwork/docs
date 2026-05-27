@@ -1,1 +1,8 @@
+/guides /guides/building-apps-with-shinzo
+/host /hosts/overview
+/indexer  /indexer/overview
 /indexer/quickstart /indexer/install
+/introduction /
+/reference /reference/architecture-overview/
+/reference/components  /reference/components/host-client/
+/view-creator  /view-creator/overview
