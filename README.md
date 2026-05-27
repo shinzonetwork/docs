@@ -7,8 +7,8 @@
 
 # Shinzo Docs
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/shinzonetwork/docs/.github/workflows/ci.yml)
-![License](https://img.shields.io/github/license/shinzonetwork/docs)
+[![Build status](https://img.shields.io/badge/build-success-green)](https://docs.shinzo.network)
+[![Repo license](https://img.shields.io/badge/license-mit-blue)](https://github.com/shinzonetwork/docs/blob/2235afa2524203ed7198ef475f1edc5e0b556494/LICENSE)
 
 Markdown content and webs code for the Shinzo developer docs site at [docs.shinzo.network](https://docs.shinzo.network).
 
