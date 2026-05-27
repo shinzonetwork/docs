@@ -4,7 +4,7 @@ title: "Outpost"
 
 An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as indexers, and lets users pay for view access without interacting with ShinzoHub directly.
 
-Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](relayer.md) bridge the results to [ShinzoHub](shinzohub.md).
+Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](../relayer) bridge the results to [ShinzoHub](../shinzohub).
 
 ## Why outposts exist
 
@@ -21,7 +21,7 @@ The flow:
 1. The indexer generates an operator (delegate) key locally.
 1. The validator's withdrawal key calls the outpost, providing their consensus public key and the operator pubkey, and signs the assertion digest.
 1. Outpost verifies the validator using the chain's native mechanism, stores the signed assertion, and emits an `AssertionSigned` event.
-1. A [relayer](relayer.md) picks up the event and broadcasts `MsgIndexerAssertion` to ShinzoHub.
+1. A [relayer](../relayer) picks up the event and broadcasts `MsgIndexerAssertion` to ShinzoHub.
 1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The indexer can now register in the Indexer Registry (`0x0212`), signing the registration with its operator key.
 
 ### The digest
@@ -61,7 +61,7 @@ Users on external chains can pay for Shinzo resources without interacting with S
 
 1. User calls `payment()` with a resource type, their DID, a stream ID, and an expiration duration.
 1. The contract stores a `PaymentReceipt` and emits a `PaymentCreated` event.
-1. A [relayer](relayer.md) picks up the event and delivers it to ShinzoHub as `MsgRequestStreamAccess`.
+1. A [relayer](../relayer) picks up the event and delivers it to ShinzoHub as `MsgRequestStreamAccess`.
 
 ## Implementations
 

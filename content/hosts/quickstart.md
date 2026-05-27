@@ -154,7 +154,7 @@ sudo apt-get install -y docker.io docker-compose nginx
 
 ```shell
 sudo mkdir -p ~/data/defradb ~/data/lens
-sudo chown -R 0:0 ~/data/defradb ~/data/lens
+sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
 ```
 
 ### Generate SSL Certificates
@@ -256,7 +256,7 @@ networks:
 services:
   shinzo-host:
     image: ghcr.io/shinzonetwork/shinzo-host-client:standard
-    user: "0:0"
+    user: "1001:1001"
     mem_limit: 16g
     mem_reservation: 13g
     restart: unless-stopped
