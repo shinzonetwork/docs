@@ -95,7 +95,7 @@
 
 /* Bottom row: copyright + wordmark */
 .bottom {
-  padding-bottom: 1.5rem;
+  padding-bottom: 0;
 }
 
 .copyright {
@@ -108,11 +108,6 @@
 
 .wordmarkWrap {
   overflow: hidden;
-  opacity: 0.15;
-}
-
-[data-theme="dark"] .wordmarkWrap {
-  opacity: 0.2;
 }
 
 .wordmark {
@@ -120,7 +115,11 @@
   width: 100%;
   height: auto;
   margin-top: 0.5rem;
-  color: var(--ifm-color-content);
+  color: #000;
+}
+
+[data-theme="dark"] .wordmark {
+  color: #fff;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────── */
