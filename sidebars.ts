@@ -60,6 +60,7 @@ const sidebars: SidebarsConfig = {
       label: "Reference",
       items: [
         "reference/architecture-overview/index",
+        "reference/tools/index",
         {
           type: "category",
           label: "Components",
