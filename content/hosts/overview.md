@@ -2,13 +2,49 @@
 title: Overview
 sidebar_label: Overview
 sidebar_position: 1
-description: Introduction to the Shinzo Host Client, its role, and how it fits into the Shinzo network.
+description: Introduction to the Shinzo Host, its role in the network, and how it fits into the Shinzo stack.
 ---
 
-Hosts play a very important role in the Shinzo ecosystem. The Host's role is primarily as a data transformer and data availability layer. Hosts are responsible for transforming primitive data (blocks, logs, transactions, etc.) into useful "Views" of data.
+A Shinzo Host is a service that turns indexed blockchain data into Views that applications can query over GraphQL. It receives signed data from one or more Indexers over a peer-to-peer network, verifies it, runs WebAssembly transforms over it, and stores the results in a local DefraDB instance.
 
-"Views" can be thought of as user-defined APIs. The user/developer is responsible for defining how to retrieve the primitive data, how to transform the data, and finally how to serve the data. The Host is responsible for providing the infrastructure, compute, and memory required to actually perform those transactions and to deliver the View output to the users that need it.
+A Host is not an Indexer. It does not talk to a source-chain execution client and does not pull blocks from Geth, Reth, or the equivalent node on other supported chains. Instead, the Host consumes primitive documents that Indexers have already produced and signed (blocks, transactions, logs, and chain-specific extras like EIP-2930 access list entries on Ethereum). The Host then verifies those documents, runs the transformations defined by registered Views, and makes the results available to applications.
 
-Hosts also play an integral role in the security of the Shinzo network. They are responsible for creating "Attestation Records" which are used to propogate sign-offs from Indexer(s) on primitive data; users have the option to validate the source data against what other Indexers have posted, providing a means for data self-verification.
+## Purpose and role in the stack
 
-To help facilitate the Host role, the Shinzo team provides a Host application client that we highly recommend using.
+```mermaid
+flowchart LR
+  IDX["Indexers<br/>(signed primitives)"]
+  Host["Host<br/>(host client + DefraDB)"]
+  Views[(View documents<br/>+ AttestationRecords)]
+  App["Applications<br/>(GraphQL clients)"]
+
+  IDX -- "P2P replication<br/>(blocks, txs, logs)" --> Host
+  Host -- "WASM lens<br/>transforms" --> Views
+  Views -- "GraphQL queries" --> App
+```
+
+A Host does two things.
+
+### Transformations
+
+Developers register Views on ShinzoHub, where each View defines how primitive data should be filtered, decoded, and reshaped. A View might ABI-decode ERC-20 `Transfer` logs from Ethereum into a `USDCTransfer` collection, or decode equivalent token events on another supported chain. The Host downloads the View's WebAssembly lens, runs it against the primitives it receives from Indexers, and writes the resulting documents to its local DefraDB. Applications query those documents over GraphQL.
+
+### Attestations
+
+When a Host receives the same block from multiple independent Indexers, it verifies each signature and creates an `AttestationRecord` that tracks how many Indexers produced identical data. These records replicate between Hosts using a P-counter CRDT, which lets applications check how many independent sources agree on a piece of data before trusting it.
+
+Indexers are the write side of the network. Hosts are the read side.
+
+## Supported networks
+
+Hosts can serve data for any chain Shinzo supports. Ethereum Mainnet is live today, and additional chains are being added. Any View registered against a supported source chain can be loaded and served by a Host. The current list of supported chains is at [shinzo.network/chains](https://shinzo.network/chains).
+
+## Running a Host
+
+The Shinzo team publishes a reference implementation, the [Shinzo Host Client](https://github.com/shinzonetwork/shinzo-host-client), which is the recommended way to participate in the network. You can run it locally for development or deploy it on a virtual machine for production.
+
+See the [Host Quick Start](/hosts/quickstart) for installation, configuration, and registration steps.
+
+## Related reading
+
+The [Architecture overview](/reference/architecture-overview/) covers how the Host connects to the rest of the stack, including the Indexer P2P layer, ShinzoHub registration, the attestation pipeline, and View distribution. The [Host client reference](/reference/components/host-client/) goes deeper into the client internals.
