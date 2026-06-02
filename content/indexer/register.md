@@ -5,6 +5,11 @@ sidebar_position: 3
 
 To participate in the Shinzo Network, you must register your Indexer. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your Indexer will not be recognized by the network. To register in ShinzoHub, follow the steps below.
 
+:::info
+If you are a validator on a source chain, registration may also prompt you to submit an [assertion](/reference/components/outpost#validator-assertions). Assertions require your **consensus public key** for the chain you validate on. See [Consensus public key](/reference/components/outpost#consensus-public-key) for what that is and how to retrieve it.
+:::
+
+
 1. Start your Indexer.
 1. Add the Shinzo Devnet to your browser wallet with the following values:
    - Network name: `Shinzo`
