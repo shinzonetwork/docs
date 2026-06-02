@@ -34,7 +34,7 @@
         "Outpost",
         "Operator Key",
         "Withdrawal Key",
-        "Consensus Key",
+        "Consensus Public Key",
         "Indexer"
       ]
     },
@@ -91,12 +91,13 @@
       ]
     },
     {
-      "term": "Consensus Key",
-      "definition": "The public key a validator uses to sign blocks and participate in chain consensus. During an assertion, this key is bound to an operator key so the indexer can act on the validator's behalf on ShinzoHub.",
+      "term": "Consensus Public Key",
+      "definition": "Also called the consensus key. The public key a validator uses to sign blocks and participate in chain consensus, and the field that identifies which validator is asserting on the outpost. The key type is chain-specific: on Ethereum it is a 48-byte BLS12-381 pubkey used on the beacon chain; on Cosmos SDK chains it is typically an Ed25519 CometBFT pubkey. It is distinct from the withdrawal key, which controls stake withdrawals on the execution layer. During an assertion, this key is bound to an operator key so the indexer can act on the validator's behalf on ShinzoHub.",
       "relatedTerms": [
         "Validator",
         "Assertion",
-        "Operator Key"
+        "Operator Key",
+        "Withdrawal Key"
       ]
     },
     {
@@ -644,7 +645,7 @@
         "Assertion",
         "Withdrawal Key",
         "Operator Key",
-        "Consensus Key"
+        "Consensus Public Key"
       ]
     },
     {
