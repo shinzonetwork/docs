@@ -33,7 +33,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "Host",
+      label: "Hosts",
       items: [
         "hosts/overview", 
         "hosts/quickstart", 
