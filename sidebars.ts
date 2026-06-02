@@ -23,12 +23,12 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "Indexer",
+      label: "Indexers",
       items: [
-        "indexer/overview",
-        "indexer/install",
-        "indexer/register",
-        "indexer/faq"
+        "indexers/overview",
+        "indexers/install",
+        "indexers/register",
+        "indexers/faq"
       ],
     },
     {
@@ -42,10 +42,10 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "View Creator",
+      label: "Views",
       items: [
-        "view-creator/overview",
-        "view-creator/quickstart"
+        "views/overview",
+        "views/quickstart"
       ],
     },
     {
