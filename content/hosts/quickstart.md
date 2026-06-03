@@ -337,7 +337,7 @@ To participate in the Shinzo Network, you must register your host. Registration 
   - Network name: Shinzo
   - Default RPC URL: http://rpc.devnet.shinzo.network:8545
   - Chain ID: 91273002
-  - Currency symbol: SHN
+  - Currency symbol: SHNZ
 3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
 4. On the registration page, click Register and select "Host" as your role to complete the process.
 5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
