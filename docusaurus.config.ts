@@ -160,19 +160,19 @@ const config: Config = {
           label: "Introduction",
         },
         {
-          to: "/indexer/overview",
+          to: "/indexers/overview",
           position: "left",
-          label: "Indexer",
+          label: "Indexers",
         },
         {
           to: "/hosts/overview",
           position: "left",
-          label: "Host",
+          label: "Hosts",
         },
         {
-          to: "/view-creator/overview",
+          to: "/views/overview",
           position: "left",
-          label: "View Creator",
+          label: "Views",
         },
         {
           to: "/guides/building-apps-with-shinzo",
