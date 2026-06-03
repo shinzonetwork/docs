@@ -449,7 +449,7 @@ viewkit view deploy testdeploy --target local
 # -> press Ctrl+C in the terminal to stop
 
 # 8) once you're happy, deploy to devnet
-viewkit view deploy testdeploy --target devnet
+viewkit view deploy testdeploy --target devnet --rpc http://rpc.devnet.shinzo.network:8545
 ```
 
 This gives you a clean path from **GitHub clone** to a **locally tested view** and then to a **devnet deployment**.
