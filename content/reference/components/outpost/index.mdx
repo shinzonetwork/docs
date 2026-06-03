@@ -24,6 +24,16 @@ The flow:
 1. A [relayer](../relayer) picks up the event and broadcasts `MsgIndexerAssertion` to ShinzoHub.
 1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The indexer can now register in the Indexer Registry (`0x0212`), signing the registration with its operator key.
 
+### Consensus public key
+
+The consensus public key (sometimes just called the consensus key) is the validator's identity on a chain's consensus layer. The outpost reads it from the assertion to know which validator is asserting, then asks the chain to confirm that validator is active and bonded. It is not the same as the withdrawal key: the withdrawal key signs the assertion to prove control of the validator's stake, while the consensus public key names the validator being asserted.
+
+The key type, format, and lookup tooling are all chain-specific. Each outpost implementation defines what it expects.
+
+- **Ethereum.** A 48-byte BLS12-381 pubkey used to sign beacon-chain attestations, presented as a `0x`-prefixed 96-character hex string. An operator who runs the validator can read it from their validator keystore (`keystore-m_*.json` -> `pubkey`) or via their client's CLI (for example `lighthouse account validator list`). It can also be queried from a beacon node at `GET /eth/v1/beacon/states/head/validators/{index}` (`data.validator.pubkey`), or looked up by validator index or withdrawal address on a public explorer such as beaconcha.in.
+- **Cosmos SDK chains.** Typically an Ed25519 CometBFT pubkey. On the validator node, `<chaind> tendermint show-validator` prints it in the chain's `valconspub...` bech32 form. It can also be read from `<chaind> query staking validator <valoper-addr>` under `consensus_pubkey`.
+- **Other chains.** Each future outpost will define its own consensus key type and the corresponding lookup procedure.
+
 ### The digest
 
 The outpost generates a hash that both parties must sign. The digest includes the assertion ID, withdrawal address, delegate key, consensus key hash, creation time, and signature deadline.
