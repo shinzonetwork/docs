@@ -1,8 +1,18 @@
 /guides /guides/building-apps-with-shinzo
-/host /hosts/overview
-/indexer  /indexer/overview
-/indexer/quickstart /indexer/install
-/introduction /
-/reference /reference/architecture-overview/
-/reference/components  /reference/components/host-client/
-/view-creator  /view-creator/overview
+
+/host     /hosts/overview
+/host/*   /hosts/:splat
+/hosts    /hosts/overview
+
+/indexer      /indexers/overview
+/indexer/*    /indexers/:splat
+/indexers     /indexers/overview
+
+/introduction   /
+
+/reference    /reference/architecture-overview/
+/reference/components   /reference/components/host-client/
+
+/view-creator   /views/overview
+/view-creator/* /views/:splat
+/views          /views/overview
