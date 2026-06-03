@@ -41,6 +41,7 @@ export default function CodeBlock({
   if (isOutput) {
     return (
       <div className="theme-code-block--output">
+        <span className="theme-code-block--output-label">output</span>
         <CodeBlockComp key={String(isBrowser)} {...props}>
           {children as string}
         </CodeBlockComp>

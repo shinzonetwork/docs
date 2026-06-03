@@ -351,7 +351,9 @@ pre {
 // - Darker background to visually distinguish from regular code blocks
 // - No copy button (hidden via CSS)
 // - No gap when immediately following another code block
+// - "output" label in the top-right corner
 .theme-code-block--output {
+  position: relative;
   .theme-code-block {
     --prism-background-color: color-mix(in srgb, var(--code-background) 80%, black);
     margin-bottom: 0;
@@ -369,6 +371,22 @@ pre {
   button {
     display: none !important;
   }
+}
+
+.theme-code-block--output-label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  padding: 0.2em 0.55em;
+  font-size: 0.7rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+  user-select: none;
+  pointer-events: none;
 }
 
 // Collapse margin/radius between a code block and an immediately following output block
