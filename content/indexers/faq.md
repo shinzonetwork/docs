@@ -50,6 +50,13 @@ If you lose your `node-identity-key`, your node’s identity is permanently lost
 
 To avoid this, always back up your node-identity-key.
 
+### How can I backup my keys?
+
+By default your DefraDB keys are stored in `~/.defra/keys`. To back them up, simply copy them from that location to another. For example, if you were backing up your keys to a mounted external drive, you would run:
+
+```shell
+cp -r ~/.defra/keys /mnt/backup-drive/
+```
 
 ### What types of data are indexed?
 
