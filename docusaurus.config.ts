@@ -227,6 +227,16 @@ const config: Config = {
       "docusaurus-plugin-glossary",
       glossaryOptions,
     ],
+    [
+      "docusaurus-plugin-llms",
+      {
+        docsDir: "content",
+        generateLLMsTxt: true,
+        generateLLMsFullTxt: true,
+        excludeImports: true,
+        removeDuplicateHeadings: true,
+      },
+    ],
   ],
 };
 
