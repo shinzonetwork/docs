@@ -135,16 +135,10 @@ You can also build the indexer binary from source instead of using Docker.
 
     You [may not need to enter a Geth API key](#do-you-need-an-api-key).
 
-1. Build the binary. The default build uses a non-branchable schema and processes transactions in parallel.
+1. Build the binary.
 
     ```shell
     make build
-    ```
-
-    If you need sequential processing with DefraDB branchable collections, pass the `branchable` tag instead:
-
-    ```shell
-    make build TAGS=branchable
     ```
 
 1. Run the indexer.
