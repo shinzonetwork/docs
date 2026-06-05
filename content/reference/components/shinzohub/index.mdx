@@ -2,7 +2,7 @@
 title: "ShinzoHub"
 ---
 
-ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, hosts, indexers, and the economic layer (staking, funding, pricing, earnings) all live here.
+ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. View, host, and indexer registration happen here; `x/sourcehub` bridges those registrations to SourceHub over ICA.
 
 ShinzoHub does not store or serve blockchain data. It is only a coordination layer.
 
@@ -39,19 +39,15 @@ ShinzoHub uses coin type 60, the same as Ethereum. The BIP-44 derivation path is
 
 ## Custom modules
 
-ShinzoHub extends the standard Cosmos SDK module set with five custom modules:
+ShinzoHub adds a single custom Cosmos SDK module:
 
 | Module | Path | Purpose |
 | --- | --- | --- |
-| admin | `x/admin/` | Network administration, governance |
 | sourcehub | `x/sourcehub/` | ICA controller, sends messages to SourceHub |
-| host | `x/host/` | Host registration data |
-| indexer | `x/indexer/` | Indexer assertions and registrations |
-| view | `x/view/` | View metadata after registration |
 
-These run alongside the standard Cosmos SDK modules (auth, bank, staking, mint, distribution, slashing, gov, etc.) and the EVM/ERC20 modules.
+This runs alongside the standard Cosmos SDK modules (auth, bank, staking, mint, distribution, slashing, gov, etc.) and the EVM/ERC20 modules.
 
-Some older docs reference "Access Module" and "Registry Module." These do not exist. The registries are EVM precompiles, and access control lives on SourceHub.
+Host, indexer, and view registration are not Cosmos modules. The `viewregistry` and `entityregistry` EVM precompiles handle registration and call into `x/sourcehub` to relay ICA messages to SourceHub. See [Precompiles](#precompiles) below.
 
 ## Precompiles
 
@@ -59,18 +55,18 @@ ShinzoHub uses EVM precompiled contracts to connect Cosmos module logic with the
 
 | Address | Precompile | Purpose |
 | --- | --- | --- |
-| `0x0210` | View Registry | Registers views, deploys SVS-1 contracts |
-| `0x0211` | Host Registry | Tracks registered hosts |
-| `0x0212` | Indexer Registry | Tracks registered indexers |
+| `0x0210` | View Registry (`viewregistry`) | Registers views in SourceHub ACP |
+| `0x0211` | Entity Registry (`entityregistry`) | Registers hosts and indexers (entity-typed) |
 
 ### View Registry (0x0210)
 
-Two registration methods:
+The View Registry has one registration method:
 
 | Method | Signature | Description |
 | --- | --- | --- |
-| `register` | `register(bytes) returns (address)` | Register view from VWL wire bytes, returns deployed View.sol address |
-| `registerWithPricing` | `registerWithPricing(bytes, address) returns (address)` | Same, but sets a custom SVPS-1 pricing contract |
+| `register` | `register(bytes)` | Register a view from VWL wire bytes |
+
+It also exposes `get(bytes32) returns (bytes)` for retrieval.
 
 When `register(bytes)` is called:
 
@@ -79,85 +75,61 @@ When `register(bytes)` is called:
 1. Computes key: `keccak256(caller, encodedValue)`.
 1. Modifies SDL to include unique ID (typename becomes `typename_0xkey`).
 1. Re-encodes via `viewbundle.EncodeHeader()`.
-1. Calls `sourcehubKeeper.RegisterObject()` via ICA to register in SourceHub ACP.
-1. Deploys an SVS-1 contract for the view.
+1. Calls `sourcehubKeeper.RegisterObject()` via ICA to register the object in SourceHub ACP.
 1. Stores creator mapping in EVM state.
-1. Emits `Registered(key, creator)` EVM log + Cosmos event.
+1. Emits `Registered(bytes32,address,bytes)` EVM log + Cosmos `Registered` event.
 
 Key files:
 - `app/precompiles/viewregistry/methods.go`
 - `app/precompiles/viewregistry/viewregistry.go`
 
-### Host Registry (0x0211)
+### Entity Registry (0x0211)
 
-Receives a peer key and node identity key. On registration:
+A single precompile registers both hosts and indexers, distinguished by an `entity` tag (`0` = indexer, `1` = host).
 
-1. Verifies signatures.
-1. Derives DID and PID.
-1. Triggers ICA to SourceHub to add the DID to the `"host"` group.
-
-View.sol contracts check this registry before allowing `report()` and `consume()` calls:
+Method:
 
 ```solidity
-require(HOST_REGISTRY_CONTRACT.isRegistered(msg.sender), "caller is not a registered host");
+function register(
+    bytes calldata peerKeyPubkey,
+    bytes calldata peerKeySignature,
+    bytes calldata nodeIdentityKeyPubkey,
+    bytes calldata nodeIdentityKeySignature,
+    bytes calldata message,
+    uint8 entity
+) external;
 ```
 
-Key files: `app/precompiles/hostregistry/methods.go`
+On registration the keeper (`sourcehubKeeper.RegisterEntity`):
 
-### Indexer Registry (0x0212)
+1. Verifies the peer-key and node-identity-key signatures over a domain-separated payload.
+1. Derives DID and PID.
+1. Triggers an ICA call to SourceHub adding the DID to the appropriate group (`"host"` or `"indexer"`).
 
-Indexers cannot self-register. They must go through the outpost + relayer assertion flow first:
+Emits `EntityRegistered(bytes32,address,bytes,bytes,uint8)` EVM log + Cosmos `EntityRegistered` event.
 
-1. Validator proves identity on source chain via outpost contract.
-1. Relayer delivers `MsgIndexerAssertion` to ShinzoHub.
-1. ShinzoHub's indexer module stores the assertion.
-1. Operator calls `register()`, registry verifies stored assertion, derives DID/PID, sends ICA to SourceHub.
-
-Key files: `app/precompiles/indexerregistry/methods.go`
+Key files:
+- `app/precompiles/entityregistry/method.go`
+- `app/precompiles/entityregistry/entityregistry.go`
 
 ## Event names
 
-Each precompile emits both a Solidity EVM log and a Cosmos SDK event. The names differ:
+Each precompile emits both a Solidity EVM log and a Cosmos SDK event:
 
 | Precompile | Solidity EVM log | Cosmos SDK event |
 | --- | --- | --- |
-| View Registry | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
-| Host Registry | `Registered(address,string)` | `"HostRegistered"` |
-| Indexer Registry | `Registered(address,string)` | `"Registered"` |
+| View Registry | `Registered(bytes32,address,bytes)` | `Registered` |
+| Entity Registry | `EntityRegistered(bytes32,address,bytes,bytes,uint8)` | `EntityRegistered` |
 
 Other events:
 
 | Event | Emitted by |
 | --- | --- |
-| `IndexerAsserted` | Indexer module msg_server |
-| `AccessRequestSuccess` | SourceHub module msg_server |
-
-There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches Indexer Registry events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
-
-Some older docs reference `DataPurchased`, `AccessRevoked`, and `AccessRequestPayment`. These event names do not exist in the codebase.
-
-## SVS-1 (Shinzo View Standard 1)
-
-A per-view smart contract that the View Registry deploys automatically during view registration. Each view gets its own SVS-1 instance.
-
-The contract exposes four functions:
-
-- `stake()`: stake SHNZ on the view.
-- `fund(did)`: fund a DID's access to query the view.
-- `consume(did)`: consume funded credits (called by hosts when serving queries).
-- `report()`: report usage.
-
-Price formula:
-
-```plaintext
-price = rate x complexity x premium - 5% protocol fee
-```
-
-For custom pricing, views can implement the SVPS-1 interface, which exposes a single `price() returns (uint256)` function.
+| `AccessRequestSuccess` | `x/sourcehub` `MsgRequestStreamAccess` handler |
 
 ## The sourcehub module (x/sourcehub)
 
-This module holds the ICA controller logic. It stores ICA connection metadata (controller/host connection IDs), builds and sends ICA packets to SourceHub, and uses a hardcoded 5-minute timeout on all `SendTx` calls.
+`x/sourcehub` is the ICA controller. It stores ICA connection metadata (controller/host connection IDs), builds and sends ICA packets to SourceHub, and uses a hardcoded 5-minute timeout on all `SendTx` calls.
 
 When a precompile registration triggers an ICA call, the keeper constructs a `MsgDirectPolicyCmd` wrapping a `RegisterObjectCmd` or `SetRelationshipCmd`, packs it into a `CosmosTx` envelope, and sends it over ICA. The Hermes relayer picks up the packet asynchronously.
 
@@ -166,8 +138,6 @@ The ICA relay is asynchronous. The EVM transaction completes and returns a recei
 Key file: `x/sourcehub/keeper/keeper.go`
 
 ## Payment and access flow
-
-The path from user payment to access grant has four steps:
 
 1. User calls `payment()` on the outpost contract on the source chain, sends ETH. Contract stores receipt, emits `PaymentCreated`.
 1. EVM relayer subscribes to `PaymentCreated`, builds `MsgRequestStreamAccess`, broadcasts to ShinzoHub.
@@ -184,8 +154,6 @@ The path from user payment to access grant has four steps:
 | gRPC | port 9090 |
 
 ## What is not implemented yet
-
-These appear in design docs but do not exist in any branch as of the current devnet:
 
 - Balance monitoring (no code monitors user balances for depletion).
 - Automatic access revocation (no RevokeAccess message; Expiration field exists in proto but is not enforced).
