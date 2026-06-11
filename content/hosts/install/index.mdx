@@ -1,0 +1,414 @@
+---
+title: Install
+sidebar_position: 2
+description: Install and run a Shinzo Host, either locally from source or on a VM with Docker.
+---
+
+# Running a Shinzo Host
+
+This page covers installing a Shinzo Host locally from source or on a virtual machine with Docker. A Host turns indexed blockchain data into structured [Views](/views/overview) and produces [Attestation Records](/reference/components/host-client) that help secure the network. To complete a Host setup, you must also register it with the Shinzo Network (see [Registration](#registration)).
+
+## Hardware recommendations
+
+| Component | Minimum | Recommended |
+| --- | --- | --- |
+| CPU | 8 vCPUs | 16 vCPUs |
+| Memory (RAM) | 16 GB | 32–64 GB |
+| Storage | 3 TB NVMe | 4+ TB NVMe |
+| OS | Ubuntu 24.04 | Ubuntu 26.04 |
+
+## Local deployment
+
+Run the Host Client directly on your machine for development and testing. For production or devnet participation, use the [VM deployment](#vm-deployment) instead.
+
+### Prerequisites
+
+- Go 1.25 or later.
+- Git.
+- A browser wallet (such as MetaMask) with a wallet setup. This wallet does not need to hold any funds.
+
+### Steps
+
+1. Clone the repository.
+
+    ```shell
+    git clone https://github.com/shinzonetwork/shinzo-host-client.git
+    cd shinzo-host-client
+    ```
+
+1. Set the keyring secret. The Host Client reads from [`config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml), which ships with working defaults. The only field you need to set is `defradb.keyring_secret`. Set it as an environment variable to avoid storing it in plaintext:
+
+    ```shell
+    export DEFRA_KEYRING_SECRET=<make-a-password>
+    ```
+
+1. Run the Host.
+
+    ```shell
+    go run cmd/main.go
+    ```
+
+    Alternatively, build the binary first and then run it:
+
+    ```shell
+    make build
+    make start
+    ```
+
+:::info
+The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups. See the [Configuration reference](#configuration-reference) for details.
+:::
+
+### Running an Indexer and Host on the same machine
+
+If you are running your own Indexer, connect your Host to it by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the Indexer's registration endpoint:
+
+```shell
+curl http://localhost:8080/registration
+```
+
+From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Replace the default peer in `p2p.bootstrap_peers` with your Indexer peer.
+
+When the Indexer and Host run on the same machine, apply the following changes to the [Host's `config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
+
+The Indexer is likely already using port `9181`, so update the `defradb.url` field:
+
+```yaml
+url: "localhost:9182"
+```
+
+Also update the [P2P settings](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml#L4) to use localhost and a different port so the Host doesn't clash with the Indexer:
+
+```yaml
+bootstrap_peers:
+  - '/ip4/127.0.0.1/tcp/9171/p2p/<PeerID>'
+listen_addr: "/ip4/0.0.0.0/tcp/9172"
+```
+
+### (Optional) Enable the GraphQL Playground
+
+The Host ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
+
+```shell
+make build-playground
+make start
+```
+
+This runs the Host and exposes a Playground GUI. Check the output logs for the address:
+
+```plaintext
+🧪 GraphQL Playground available at ...
+```
+
+The Playground lets you run GraphQL queries against primitive data and any Views your Host is serving. Try this query:
+
+```graphql
+query GetLatestLogs {
+  Ethereum__Mainnet__Log(
+    order: { blockNumber: DESC }
+    limit: 10
+  ) {
+    address
+    topics
+    data
+    blockNumber
+    blockHash
+    transactionHash
+    transactionIndex
+    logIndex
+    removed
+  }
+}
+```
+
+More query examples are available on the [Examples](./examples) page.
+
+## VM deployment
+
+This is the recommended approach for production and devnet participation. It uses Docker, docker-compose, and Nginx on a virtual machine.
+
+### Prerequisites
+
+- A virtual machine running Ubuntu 24.04 or later.
+- Port `444` open in your firewall or security group.
+
+### Steps
+
+1. Install the system dependencies.
+
+    ```shell
+    sudo apt-get update
+    sudo apt-get install -y docker.io docker-compose nginx
+    ```
+
+1. Create the data directory. The container runs as UID `1001`, so the directories must be owned by that user.
+
+    ```shell
+    sudo mkdir -p ~/data/defradb ~/data/lens
+    sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
+    ```
+
+1. Generate the SSL certificates.
+
+    ```shell
+    set -e &&
+    sudo mkdir -p ~/ssl &&
+    sudo openssl genrsa -out ~/ssl/nginx.key 2048 &&
+    sudo openssl req -new -key ~/ssl/nginx.key -out /tmp/nginx.csr -subj "/C=US/ST=State/L=City/O=Shinzo/OU=Host Client/CN=shinzo.network" &&
+    sudo openssl x509 -req -days 365 -in /tmp/nginx.csr -signkey ~/ssl/nginx.key -out ~/ssl/nginx.crt &&
+    sudo rm /tmp/nginx.csr
+    ```
+
+1. Write the configuration file. Create `~/config.yaml`. The production config enables performance tuning, peer reconnection, pruning, and optional event filtering. The only value you must change is `defradb.keyring_secret`. See the [Configuration reference](#configuration-reference) for details on the other fields.
+
+    ```yaml
+    defradb:
+      url: "localhost:9181"
+      keyring_secret: "<YOUR_SECRET>"        # Required, change this
+      p2p:
+        enabled: true
+        bootstrap_peers:
+          - '/ip4/34.63.13.57/tcp/9171/p2p/12D3KooWMYhYNBo4zAi9j7TpyGQJBSvbwSSNkgsMrLs6vHUnFUzY'
+        listen_addr: "/ip4/0.0.0.0/tcp/9171"
+        enable_auto_reconnect: true
+      store:
+        path: "./.defra"
+    shinzo:
+      hub_base_url: rpc.devnet.shinzo.network:26657
+      minimum_attestations: 1
+    logger:
+      development: false
+      level: "error"
+    host:
+      lens_registry_path: "./.defra/lens"
+      health_server_port: 8080
+    ```
+
+1. Write the Nginx config. Create `~/nginx.conf`.
+
+    ```nginx
+    events { worker_connections 1024; }
+
+    http {
+      map $http_origin $cors_origin {
+        default "";
+        "https://explorer.shinzo.network" $http_origin;
+      }
+
+      server {
+        listen 8080;
+        server_name _;
+
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, Accept, Origin' always;
+        add_header 'Access-Control-Max-Age' 3600 always;
+        add_header 'Vary' 'Origin' always;
+
+        location / {
+          if ($request_method = OPTIONS) { return 204; }
+          proxy_pass http://shinzo-host:9181;
+          proxy_set_header Host $host;
+        }
+
+        location = /metrics {
+          if ($request_method = OPTIONS) { return 204; }
+          proxy_pass http://shinzo-host:8080/metrics;
+          proxy_set_header Host $host;
+        }
+
+        location = /api/v0/graphql {
+          if ($request_method = OPTIONS) { return 204; }
+          proxy_pass http://shinzo-host:9181/api/v0/graphql;
+          proxy_set_header Host $host;
+        }
+      }
+    }
+    ```
+
+1. Write the docker-compose file. Create `~/docker-compose.yml`.
+
+    ```yaml
+    networks:
+      shinzo-net:
+        driver: bridge
+
+    services:
+      shinzo-host:
+        image: ghcr.io/shinzonetwork/shinzo-host-client:standard
+        user: "1001:1001"
+        mem_limit: 16g
+        mem_reservation: 13g
+        restart: unless-stopped
+        container_name: shinzo-host
+        networks:
+          - shinzo-net
+        ports:
+          - "9181:9181"   # DefraDB API
+          - "444:9182"    # GraphQL Playground
+          - "9171:9171"   # P2P networking
+        volumes:
+          - ~/data/defradb:/app/.defra/data
+          - ~/data/lens:/app/.lens
+          - ~/config.yaml:/app/config.yaml:ro
+        environment:
+          - DEFRA_URL=0.0.0.0:9181
+          - GOMEMLIMIT=14GiB
+          - LOG_LEVEL=error
+          - LOG_SOURCE=false
+          - LOG_STACKTRACE=false
+        healthcheck:
+          test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/metrics"]
+          interval: 15s
+          timeout: 30s
+          retries: 10
+          start_period: 120s
+
+      nginx:
+        image: nginx:alpine
+        ports:
+          - "8080:8080"
+        volumes:
+          - ./nginx.conf:/etc/nginx/nginx.conf:ro
+        depends_on:
+          - shinzo-host
+        networks:
+          - shinzo-net
+        restart: unless-stopped
+    ```
+
+1. Start the Host.
+
+    ```shell
+    docker-compose up -d
+    ```
+
+### Monitoring
+
+The health check endpoint is available at:
+
+```shell
+http://<VM_IP>:8080/metrics
+```
+
+The container health check polls this endpoint every 15 seconds. To check the container status and logs:
+
+```shell
+docker ps
+docker logs shinzo-host
+```
+
+### Docker image
+
+The multi-stage Dockerfile builds the Host binary (Go 1.25) along with the Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
+
+```shell
+ghcr.io/shinzonetwork/shinzo-host-client:standard
+```
+
+## Configuration reference
+
+The Host Client reads from [`config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml). The defaults work for most local development; the only field you must set is `defradb.keyring_secret`.
+
+| Field | Description |
+| --- | --- |
+| `defradb.url` | API endpoint of your local DefraDB node. Defaults work for most setups. |
+| `defradb.keyring_secret` | Secret used to generate your private keys. **Required.** Can be set with the `DEFRA_KEYRING_SECRET` environment variable instead. |
+| `p2p.bootstrap_peers` | Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer. |
+| `p2p.listen_addr` | The P2P listen address. The default is suitable for local runs; override it when containerizing. |
+| `store.path` | Directory where local DefraDB data is stored. |
+| `shinzo.hub_base_url` | ShinzoHub node URL. Only change if connecting to a different node. |
+| `shinzo.minimum_attestations` | Minimum number of independent Indexers required before data is served. |
+| `logger.development` | Set to `false` for production. |
+| `host.lens_registry_path` | Where received WASM lens files are stored. |
+| `host.health_server_port` | Port for the health and metrics endpoint. |
+
+## Exposed ports
+
+The following ports must be exposed and available on the machine.
+
+| Port | Service |
+| --- | --- |
+| `8080` | Health and metrics endpoint (`/metrics`) and registration (`/registration-app`). |
+| `9171` | DefraDB P2P. |
+| `9181` | DefraDB GraphQL API. |
+| `9182` | GraphQL Playground (mapped to `444` in the VM deployment). |
+
+## Registration
+
+To participate in the Shinzo Network, you must register your Host. Registration identifies your node so it can replicate data and earn rewards. An unregistered Host will not be recognized by the network. There are two ways to register.
+
+### Option A: Register with the GUI
+
+1. Start your Host.
+1. Add the Shinzo Devnet to your browser wallet with the following values:
+    - Network name: `Shinzo`
+    - Default RPC URL: `http://rpc.devnet.shinzo.network:8545`
+    - Chain ID: `91273002`
+    - Currency symbol: `SHNZ`
+1. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
+
+    :::info
+    If your Host is running on a remote server (such as Hetzner, DigitalOcean, GCP, or AWS), use SSH local port forwarding to access the registration page.
+
+    1. On your local machine, run `ssh -L 8080:localhost:8080 user@your-server-ip`.
+    1. Open `http://localhost:8080/registration-app` in your browser.
+    :::
+
+1. On the registration page, click **Register** and select **Host** as your role.
+1. Submit your registration, then confirm the transaction in your browser wallet. You should see a successful registration notification.
+
+### Option B: Register with the CLI
+
+You can also register your Host by submitting the registration transaction directly with Foundry's `cast` CLI.
+
+```shell
+cast send "0x0000000000000000000000000000000000000211" \
+  "register(bytes,bytes,bytes,bytes,bytes,uint8)" \
+  "<public_key>" \
+  "<public_key_signedMessage>" \
+  "<peer_id>" \
+  "<peer_id_signedMessage>" \
+  "<signed_message>" \
+  "1" \
+  --rpc-url "http://rpc.devnet.shinzo.network:8545" \
+  --from "<your_address>" \
+  --private-key "<your_private_key>" \
+  --gas-limit 100000
+```
+
+Replace each placeholder with your actual registration values.
+
+:::warning
+Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
+:::
+
+Your Host is now registered and authorized to participate in the Shinzo Network.
+
+## Troubleshooting
+
+### Permission denied on `.defra/keys`
+
+The data directories are owned by root but the container runs as UID 1001. Stop the container, fix the ownership, then start it again:
+
+```shell
+docker-compose -f ~/docker-compose.yml stop
+chown -R 1001:1001 ~/data/defradb ~/data/lens
+docker-compose -f ~/docker-compose.yml start
+```
+
+### Failed to load existing DefraDB identity
+
+`defradb.keyring_secret` has changed since the first run. Restore the original value in your config and restart.
+
+### Port already in use
+
+The Indexer and Host both use DefraDB and P2P ports. If you run them on the same machine, follow [Running an Indexer and Host on the same machine](#running-an-indexer-and-host-on-the-same-machine) to move the Host onto different ports.
+
+## Need help
+
+If you run into issues installing or running the Shinzo Host, open a GitHub issue [here](https://github.com/shinzonetwork/shinzo-host-client/issues).
+
+## Next steps
+
+Your Host can now receive and serve Views. See the [Examples](./examples) page for GraphQL queries to run against it, or read the [Host overview](./overview) and [Architecture overview](/reference/architecture-overview/) for more on how the Host fits into the stack.
