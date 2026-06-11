@@ -180,6 +180,11 @@ const config: Config = {
           label: "Guides",
         },
         {
+          to: "/guides/configuring-event-filters-on-a-shinzo-host",
+          position: "left",
+          label: "Guides",
+        },
+        {
           to: "/reference/architecture-overview",
           position: "left",
           label: "Reference",
