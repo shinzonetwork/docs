@@ -35,9 +35,9 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Hosts",
       items: [
-        "hosts/overview", 
-        "hosts/quickstart", 
-        "hosts/examples"
+        "hosts/overview/index", 
+        "hosts/install/index", 
+        "hosts/faqs/index"
       ],
     },
     {
