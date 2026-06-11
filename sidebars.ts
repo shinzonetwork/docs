@@ -37,6 +37,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "hosts/overview/index",
         "hosts/install/index",
+        "hosts/register/index",
         "hosts/faqs/index"
       ],
     },

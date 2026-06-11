@@ -1,12 +1,11 @@
 ---
 title: Install
-sidebar_position: 2
 description: Install and run a Shinzo Host, either locally from source or on a VM with Docker.
 ---
 
 # Running a Shinzo Host
 
-This page covers installing a Shinzo Host locally from source or on a virtual machine with Docker. A Host turns indexed blockchain data into structured [Views](/views/overview) and produces [Attestation Records](/reference/components/host-client) that help secure the network. To complete a Host setup, you must also register it with the Shinzo Network (see [Registration](#registration)).
+This page covers installing a Shinzo Host locally from source or on a virtual machine with Docker. A Host turns indexed blockchain data into structured [Views](/views/overview) and produces [Attestation Records](/reference/components/host-client) that help secure the network. To complete a Host setup, you must also [register it with the Shinzo Network](/hosts/register).
 
 ## Hardware recommendations
 
@@ -23,9 +22,9 @@ Run the Host Client directly on your machine for development and testing. For pr
 
 ### Prerequisites
 
-- Go 1.25 or later.
-- Git.
-- A browser wallet (such as MetaMask) with a wallet setup. This wallet does not need to hold any funds.
+- Make
+- Git
+- A browser wallet (such as MetaMask). The wallet does not need to hold any funds.
 
 ### Steps
 
@@ -36,19 +35,13 @@ Run the Host Client directly on your machine for development and testing. For pr
     cd shinzo-host-client
     ```
 
-1. Set the keyring secret. The Host Client reads from [`config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml), which ships with working defaults. The only field you need to set is `defradb.keyring_secret`. Set it as an environment variable to avoid storing it in plaintext:
+1. Set the keyring secret:
 
     ```shell
     export DEFRA_KEYRING_SECRET=<make-a-password>
     ```
 
-1. Run the Host.
-
-    ```shell
-    go run cmd/main.go
-    ```
-
-    Alternatively, build the binary first and then run it:
+1. Build and run the binary:
 
     ```shell
     make build
@@ -121,7 +114,7 @@ query GetLatestLogs {
 }
 ```
 
-More query examples are available on the [Examples](./examples) page.
+More query examples are available on the [Examples](/hosts/examples) page.
 
 ## VM deployment
 
@@ -130,16 +123,10 @@ This is the recommended approach for production and devnet participation. It use
 ### Prerequisites
 
 - A virtual machine running Ubuntu 24.04 or later.
-- Port `444` open in your firewall or security group.
+- Docker, including the `docker compose` plugin.
+- Ports `443` (HTTPS) and `9171` (P2P) open in your firewall or security group.
 
 ### Steps
-
-1. Install the system dependencies.
-
-    ```shell
-    sudo apt-get update
-    sudo apt-get install -y docker.io docker-compose nginx
-    ```
 
 1. Create the data directory. The container runs as UID `1001`, so the directories must be owned by that user.
 
@@ -159,7 +146,7 @@ This is the recommended approach for production and devnet participation. It use
     sudo rm /tmp/nginx.csr
     ```
 
-1. Write the configuration file. Create `~/config.yaml`. The production config enables performance tuning, peer reconnection, pruning, and optional event filtering. The only value you must change is `defradb.keyring_secret`. See the [Configuration reference](#configuration-reference) for details on the other fields.
+1. Write the configuration file. Create `~/config.yaml`. The only value you must change is `defradb.keyring_secret`. See the [Configuration reference](#configuration-reference) for the other fields.
 
     ```yaml
     defradb:
@@ -184,7 +171,7 @@ This is the recommended approach for production and devnet participation. It use
       health_server_port: 8080
     ```
 
-1. Write the Nginx config. Create `~/nginx.conf`.
+1. Write the Nginx config. Create `~/nginx.conf`. Nginx terminates TLS using the certificates generated above and proxies to the Host container.
 
     ```nginx
     events { worker_connections 1024; }
@@ -196,8 +183,12 @@ This is the recommended approach for production and devnet participation. It use
       }
 
       server {
-        listen 8080;
+        listen 443 ssl;
         server_name _;
+
+        ssl_certificate     /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
+        ssl_protocols       TLSv1.2 TLSv1.3;
 
         add_header 'Access-Control-Allow-Origin' $cors_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
@@ -244,8 +235,8 @@ This is the recommended approach for production and devnet participation. It use
         networks:
           - shinzo-net
         ports:
-          - "9181:9181"   # DefraDB API
-          - "444:9182"    # GraphQL Playground
+          - "8080:8080"   # Health, metrics, and registration endpoint
+          - "9181:9181"   # DefraDB API (proxied by Nginx in production)
           - "9171:9171"   # P2P networking
         volumes:
           - ~/data/defradb:/app/.defra/data
@@ -267,9 +258,10 @@ This is the recommended approach for production and devnet participation. It use
       nginx:
         image: nginx:alpine
         ports:
-          - "8080:8080"
+          - "443:443"
         volumes:
-          - ./nginx.conf:/etc/nginx/nginx.conf:ro
+          - ~/nginx.conf:/etc/nginx/nginx.conf:ro
+          - ~/ssl:/etc/nginx/ssl:ro
         depends_on:
           - shinzo-host
         networks:
@@ -285,13 +277,13 @@ This is the recommended approach for production and devnet participation. It use
 
 ### Monitoring
 
-The health check endpoint is available at:
+The metrics endpoint is reachable through Nginx at:
 
 ```shell
-http://<VM_IP>:8080/metrics
+https://<VM_IP>/metrics
 ```
 
-The container health check polls this endpoint every 15 seconds. To check the container status and logs:
+The container health check polls `http://localhost:8080/metrics` inside the container every 15 seconds. To check the container status and logs from the VM:
 
 ```shell
 docker ps
@@ -325,65 +317,19 @@ The Host Client reads from [`config.yaml`](https://github.com/shinzonetwork/shin
 
 ## Exposed ports
 
-The following ports must be exposed and available on the machine.
+The following ports are used by the Host. In the VM deployment, only `443` and `9171` need to be open in your firewall; the rest are bound to the VM and reached through Nginx or an SSH tunnel.
 
-| Port | Service |
-| --- | --- |
-| `8080` | Health and metrics endpoint (`/metrics`) and registration (`/registration-app`). |
-| `9171` | DefraDB P2P. |
-| `9181` | DefraDB GraphQL API. |
-| `9182` | GraphQL Playground (mapped to `444` in the VM deployment). |
+| Port | Service | Public in VM deployment |
+| --- | --- | --- |
+| `443` | HTTPS endpoint served by Nginx (proxies `/`, `/metrics`, `/api/v0/graphql` to the Host). | Yes |
+| `9171` | DefraDB P2P. | Yes |
+| `8080` | Health and metrics endpoint (`/metrics`) and registration (`/registration-app`). Reach via SSH tunnel for registration. | No |
+| `9181` | DefraDB GraphQL API. Proxied by Nginx in production. | No |
+| `9182` | Optional GraphQL Playground (local dev only, requires `make build-playground`). | No |
 
 ## Registration
 
-To participate in the Shinzo Network, you must register your Host. Registration identifies your node so it can replicate data and earn rewards. An unregistered Host will not be recognized by the network. There are two ways to register.
-
-### Option A: Register with the GUI
-
-1. Start your Host.
-1. Add the Shinzo Devnet to your browser wallet with the following values:
-    - Network name: `Shinzo`
-    - Default RPC URL: `http://rpc.devnet.shinzo.network:8545`
-    - Chain ID: `91273002`
-    - Currency symbol: `SHNZ`
-1. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
-
-    :::info
-    If your Host is running on a remote server (such as Hetzner, DigitalOcean, GCP, or AWS), use SSH local port forwarding to access the registration page.
-
-    1. On your local machine, run `ssh -L 8080:localhost:8080 user@your-server-ip`.
-    1. Open `http://localhost:8080/registration-app` in your browser.
-    :::
-
-1. On the registration page, click **Register** and select **Host** as your role.
-1. Submit your registration, then confirm the transaction in your browser wallet. You should see a successful registration notification.
-
-### Option B: Register with the CLI
-
-You can also register your Host by submitting the registration transaction directly with Foundry's `cast` CLI.
-
-```shell
-cast send "0x0000000000000000000000000000000000000211" \
-  "register(bytes,bytes,bytes,bytes,bytes,uint8)" \
-  "<public_key>" \
-  "<public_key_signedMessage>" \
-  "<peer_id>" \
-  "<peer_id_signedMessage>" \
-  "<signed_message>" \
-  "1" \
-  --rpc-url "http://rpc.devnet.shinzo.network:8545" \
-  --from "<your_address>" \
-  --private-key "<your_private_key>" \
-  --gas-limit 100000
-```
-
-Replace each placeholder with your actual registration values.
-
-:::warning
-Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
-:::
-
-Your Host is now registered and authorized to participate in the Shinzo Network.
+Once your Host is running, register it with the Shinzo Network so it can replicate data and earn rewards. See the [Registration guide](/hosts/register) for the GUI and CLI flows.
 
 ## Troubleshooting
 
@@ -411,4 +357,4 @@ If you run into issues installing or running the Shinzo Host, open a GitHub issu
 
 ## Next steps
 
-Your Host can now receive and serve Views. See the [Examples](./examples) page for GraphQL queries to run against it, or read the [Host overview](./overview) and [Architecture overview](/reference/architecture-overview/) for more on how the Host fits into the stack.
+Your Host can now receive and serve Views. See the [Examples](/hosts/examples) page for GraphQL queries to run against it, or read the [Host overview](/hosts/overview) and [Architecture overview](/reference/architecture-overview/) for more on how the Host fits into the stack.

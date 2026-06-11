@@ -1,0 +1,68 @@
+---
+title: Register
+sidebar_position: 3
+description: Register your Shinzo Host with the network so it can replicate data and earn rewards.
+---
+
+# Registering a Shinzo Host
+
+To participate in the Shinzo Network, you must register your Host. Registration identifies your node so it can replicate data and earn rewards. An unregistered Host will not be recognized by the network. There are two ways to register.
+
+## Option A: Register with the GUI
+
+1. Start your Host. See the [Install guide](/hosts/install) if you haven't already.
+1. Add the Shinzo Devnet to your browser wallet with the following values:
+    - Network name: `Shinzo`
+    - Default RPC URL: `http://rpc.devnet.shinzo.network:8545`
+    - Chain ID: `91273002`
+    - Currency symbol: `SHNZ`
+1. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
+
+    :::info
+    If your Host is running on a remote server (such as Hetzner, DigitalOcean, GCP, or AWS), use SSH local port forwarding to access the registration page.
+
+    1. On your local machine, run `ssh -L 8080:localhost:8080 user@your-server-ip`.
+    1. Open `http://localhost:8080/registration-app` in your browser.
+    :::
+
+1. On the registration page, click **Register** and select **Host** as your role.
+1. Submit your registration, then confirm the transaction in your browser wallet. You should see a successful registration notification.
+
+## Option B: Register with the CLI
+
+You can also register your Host by submitting the registration transaction directly with Foundry's `cast` CLI.
+
+```shell
+cast send "0x0000000000000000000000000000000000000211" \
+  "register(bytes,bytes,bytes,bytes,bytes,uint8)" \
+  "<public_key>" \
+  "<public_key_signedMessage>" \
+  "<peer_id>" \
+  "<peer_id_signedMessage>" \
+  "<signed_message>" \
+  "1" \
+  --rpc-url "http://rpc.devnet.shinzo.network:8545" \
+  --from "<your_address>" \
+  --private-key "<your_private_key>" \
+  --gas-limit 100000
+```
+
+Replace each placeholder with your actual registration values.
+
+:::warning
+Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
+:::
+
+Your Host is now registered and authorized to participate in the Shinzo Network.
+
+## Backup your node identity key
+
+This key defines your Host's identity on the network. Persisting it ensures your node can be restored without losing identity.
+
+- Store a secure backup of the key.
+- In a recovery scenario, place it back into the same path (for example, `~/.defra/keys`).
+- Use the same keyring secret you set during install.
+
+:::warning
+If this key is lost and there is no backup, you will be unable to restore your Host with the same identity.
+:::
