@@ -37,12 +37,6 @@ This key encrypts the local DefraDB instance. Use a strong secret value before r
 
 ### Connecting to the Shinzo Network
 
-```yaml
-shinzo:
-  hub_base_url: rpc.develop.devnet.shinzo.network:26657
-  start_height: 0
-```
-
 Views can be published to and discovered through ShinzoHub. Once you’ve created a view, connect it to ShinzoHub to make it available across the network and enable other builders to access and use it. See the documentation for more details [here](https://docs.shinzo.network/reference/components/shinzohub/)
 
 ### Pruning
