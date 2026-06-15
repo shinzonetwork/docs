@@ -15,27 +15,27 @@ A Shinzo Host subscribes to a stream of blockchain data and writes it to a local
 - Git
 - Basic familiarity with YAML
 
-## 1. Clone the repository
+## Clone the repository
 
 ```bash
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
 ```
 
-## 2. Configure the host
+## Configure the host
 
 Open `config/config.yaml`. The sections below are the ones you need to understand.
 
-### Database key
+### Securing Your Local Database
 
 ```yaml
 defradb:
   keyring_secret: "your-secret-here"
 ```
 
-This key encrypts the local DefraDB store. Set it to something secret before running in production.
+This key encrypts the local DefraDB instance. Use a strong secret value before running a host in production.
 
-### Chain connection
+### Connecting to the Shinzo Network
 
 ```yaml
 shinzo:
@@ -43,7 +43,7 @@ shinzo:
   start_height: 0
 ```
 
-`start_height: 0` means start from the current chain head. Set it to a specific block number to begin indexing from a point in the past.
+Views can be published to and discovered through ShinzoHub. Once you’ve created a view, connect it to ShinzoHub to make it available across the network and enable other builders to access and use it. See the documentation for more details [here](https://docs.shinzo.network/reference/components/shinzohub/)
 
 ### Pruning
 
@@ -56,7 +56,7 @@ pruner:
 
 The pruner deletes data for blocks older than `max_blocks`. At roughly 12 seconds per Ethereum block, 2000 blocks is about 6–7 hours of history. Increase this if you need more, keeping in mind the storage implications.
 
-### Event filter
+### Filtering Blockchain Events
 
 This is what controls what gets stored. Without a filter, everything is written to disk.
 
@@ -136,7 +136,9 @@ p2p:
 
 These are the addresses of the peers your host connects to for data. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for updated peer lists; these change when the network is updated.
 
-## 3. Mount your config in Docker
+## Running the Host
+
+### Mount your Configuration
 
 In `docker-compose.yml`, uncomment the volumes entry so Docker uses your config file:
 
@@ -145,13 +147,13 @@ volumes:
   - ./config/config.yaml:/app/config.yaml:ro
 ```
 
-## 4. Start the host
+### Start the Host
 
 ```bash
 docker compose up -d
 ```
 
-Verify it's running:
+### Confirm Containers Are Healthy
 
 ```bash
 docker ps
@@ -160,7 +162,7 @@ docker ps
 Both `shinzo-host` and `shinzo-host-client-nginx-1` should show status `Up` and `(healthy)`.
 
 
-## 5. Verify data is being collected
+## Verifying Data Ingestion
 
 ### Health
 
@@ -214,10 +216,13 @@ The `topics` array maps directly to `topic0`–`topic3`. For a Transfer event: `
 ## Troubleshooting
 
 **Container restarts immediately**
-Run `docker logs shinzo-host | tail -50`. A YAML parse error (indentation, missing quotes) or unset `keyring_secret` are the most common causes. Validate your config at `https://www.yamllint.com/`.
+
+Run `docker logs shinzo-host | tail -50`. A YAML parse error (indentation, missing quotes) or unset `keyring_secret` are the most common causes. Validate your config at https://www.yamllint.com/.
 
 **Cannot connect to health endpoint**
-Check the container is actually running (`docker ps`), then check if port 8080 is already in use on your machine.
 
-**P2P connection warnings (`peer id mismatch`)**
+* Verify the container is running with `docker ps`. If the container is healthy but the endpoint is still unreachable, check whether another application is already using port 8080.
+
+**P2P connection warnings (peer id mismatch)**
+
 Your `bootstrap_peers` list is stale. Replace it with current peers from the Shinzo docs.
