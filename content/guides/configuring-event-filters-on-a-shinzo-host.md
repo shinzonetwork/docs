@@ -15,7 +15,13 @@ A Shinzo Host subscribes to a stream of blockchain data and writes it to a local
 ```bash
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
-```
+## Setup
+
+First, let's check that the prerequisites are properly installed and get the project set up properly:
+
+1. Check that Docker and Git are installed:
+
+    
 
 ## Configure the host
 
@@ -32,7 +38,7 @@ This key encrypts the local DefraDB instance. Use a strong secret value before r
 
 ### Connecting to the Shinzo Network
 
-Views can be published to and discovered through ShinzoHub. Once you’ve created a view, connect it to ShinzoHub to make it available across the network and enable other builders to access and use it. See the documentation for more details [here](https://docs.shinzo.network/reference/components/shinzohub/)
+Views can be published to and discovered through ShinzoHub. Once you’ve created a view, connect it to ShinzoHub to make it available across the network and enable other builders to access and use it. [See the documentation for more details.](/reference/components/shinzohub/).
 
 ### Pruning
 
@@ -70,10 +76,10 @@ event_filter:
 
 **How it works:**
 
-- `mode: "allowlist"` — only events matching a group are stored. Use `"blocklist"` to invert this.
-- `contracts.address` — the on-chain address of the contract you want to watch.
-- `contracts.types: ["log"]` — EVM event logs. This is where token transfers live.
-- `topics.topic0` — the keccak256 hash of the event signature. For `Transfer(address,address,uint256)` this is always `0xddf252ad...`. This is what distinguishes a Transfer log from any other log emitted by the same contract.
+- `mode: "allowlist"`: only events matching a group are stored. Use `"blocklist"` to invert this.
+- `contracts.address`: the on-chain address of the contract you want to watch.
+- `contracts.types: ["log"]`: EVM event logs. This is where token transfers live.
+- `topics.topic0`: the keccak256 hash of the event signature. For `Transfer(address,address,uint256)` this is always `0xddf252ad...`. This is what distinguishes a Transfer log from any other log emitted by the same contract.
 
 **To track a different token**, replace the contract `address` with the one you want. Contract addresses are available on Etherscan.
 
@@ -110,7 +116,7 @@ const { ethers } = require("ethers");
 console.log(ethers.utils.id("Transfer(address,address,uint256)"));
 ```
 
-Or use an online keccak256 tool at `https://emn178.github.io/online-tools/keccak_256.html`.
+Or use an [online keccak256 tool](https://emn178.github.io/online-tools/keccak_256.html).
 
 ### P2P peers
 
@@ -142,9 +148,6 @@ volumes:
 
 ### Start the Host
 
-```bash
-docker compose up -d
-```
 
 ### Confirm Containers Are Healthy
 
@@ -201,11 +204,11 @@ The `topics` array maps directly to `topic0`–`topic3`. For a Transfer event: `
 
 **Container restarts immediately**
 
-Run `docker logs shinzo-host | tail -50`. A YAML parse error (indentation, missing quotes) or unset `keyring_secret` are the most common causes. Validate your config at https://www.yamllint.com/.
+Run `docker logs shinzo-host | tail -50`. A YAML parse error (indentation, missing quotes) or unset `keyring_secret` are the most common causes. Use a [YAML validator](https://www.yamllint.com/) to make sure your config is correct.
 
 **Cannot connect to health endpoint**
 
-* Verify the container is running with `docker ps`. If the container is healthy but the endpoint is still unreachable, check whether another application is already using port 8080.
+Verify the container is running with `docker ps`. If the container is healthy but the endpoint is still unreachable, check whether another application is already using port 8080.
 
 **P2P connection warnings (peer id mismatch)**
 
