@@ -7,7 +7,7 @@ A Shinzo Host subscribes to a stream of blockchain data and writes it to a local
 
 ## Prerequisites
 
-- Docker Desktop installed and running
+- Docker installed and running
 - Git
 
 ## Clone the repository
