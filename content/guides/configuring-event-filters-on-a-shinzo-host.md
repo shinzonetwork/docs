@@ -1,19 +1,14 @@
 ---
 title: Configuring Event Filters on a Shinzo Host
-sidebar_label: Configuring Event Filters on a Shinzo Host
-sidebar_position: 1
-description: Configuring Event Filters on a Shinzo Host
+description: "Shinzo hosts will store absolutely everything it is given from an Indexer by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
 ---
 
-## Overview
-
-A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default it stores everything. This guide configures it to store only specific contract events using USDT ERC-20 transfers as the example and prune old data automatically.
+A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default the Host stores everything, but they can be configured to only store specific data. As an example, this guide configures the Host client to only store USDT ERC-20 transfer events.
 
 ## Prerequisites
 
 - Docker Desktop installed and running
 - Git
-- Basic familiarity with YAML
 
 ## Clone the repository
 
@@ -132,6 +127,10 @@ These are the addresses of the peers your host connects to for data. Check the [
 
 ## Running the Host
 
+1. In `docker-compose.yml`, uncomment the volumes entry so Docker uses your config file:
+
+    
+
 ### Mount your Configuration
 
 In `docker-compose.yml`, uncomment the volumes entry so Docker uses your config file:
@@ -160,15 +159,6 @@ Both `shinzo-host` and `shinzo-host-client-nginx-1` should show status `Up` and 
 
 ### Health
 
-```bash
-curl http://localhost:8080/health
-```
-
-Expected response:
-
-```json
-{ "status": "healthy", "defradb_connected": true }
-```
 
 ### Processing metrics
 
@@ -184,7 +174,7 @@ Key fields:
 | `logs_processed` | Events captured matching your filter |
 | `attestations_created` | Data integrity records written |
 
-If `logs_processed` stays at 0 but `blocks_processed` is climbing, either no matching events have occurred in the blocks being indexed, or the connected indexer is not providing full transaction data (only block headers). If `transactions_processed` is also 0, contact the Shinzo team for access to a full-data indexer.
+If `logs_processed` stays at 0 but `blocks_processed` is climbing, either no matching events have occurred in the blocks being indexed, or the connected indexer is not providing full transaction data (only block headers). If `transactions_processed` is also 0, contact the [Shinzo team](https://discord.shinzo.network/) for access to a full-data indexer.
 
 ### Query stored logs
 
