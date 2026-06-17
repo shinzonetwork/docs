@@ -15,13 +15,7 @@ A Shinzo Host subscribes to a stream of blockchain data and writes it to a local
 ```bash
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
 cd shinzo-host-client
-## Setup
-
-First, let's check that the prerequisites are properly installed and get the project set up properly:
-
-1. Check that Docker and Git are installed:
-
-    
+```
 
 ## Configure the host
 
@@ -74,16 +68,17 @@ event_filter:
           topic0: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ```
 
-**How it works:**
+#### How event filtering works
 
 - `mode: "allowlist"`: only events matching a group are stored. Use `"blocklist"` to invert this.
 - `contracts.address`: the on-chain address of the contract you want to watch.
 - `contracts.types: ["log"]`: EVM event logs. This is where token transfers live.
 - `topics.topic0`: the keccak256 hash of the event signature. For `Transfer(address,address,uint256)` this is always `0xddf252ad...`. This is what distinguishes a Transfer log from any other log emitted by the same contract.
 
-**To track a different token**, replace the contract `address` with the one you want. Contract addresses are available on Etherscan.
+#### Tracking different tokens
 
-**To track multiple tokens**, add another group under `groups`:
+- To track another token, replace the contract `address` with the one you want. Contract addresses are available on Etherscan.
+- To track multiple tokens, add another group under `groups`:
 
 ```yaml
   - name: "usdc-transfers"
@@ -99,7 +94,9 @@ event_filter:
 
 The `topic0` for ERC-20 Transfer is the same across all tokens — it's derived from the function signature, not the contract.
 
-**To filter by sender or receiver**, use `topic1` and `topic2`. Indexed event parameters are exposed as topics. For ERC-20 Transfer: `topic1` is the sender, `topic2` is the receiver. Addresses must be zero-padded to 32 bytes:
+#### Filtering by sender and receiver
+
+To filter by sender or receiver, use `topic1` and `topic2`. Indexed event parameters are exposed as topics. For ERC-20 Transfer: `topic1` is the sender, `topic2` is the receiver. Addresses must be zero-padded to 32 bytes:
 
 ```yaml
 topics:
