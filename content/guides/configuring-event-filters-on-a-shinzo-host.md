@@ -130,10 +130,6 @@ These are the addresses of the peers your host connects to for data. Check the [
 
 ## Running the Host
 
-1. In `docker-compose.yml`, uncomment the volumes entry so Docker uses your config file:
-
-    
-
 ### Mount your Configuration
 
 In `docker-compose.yml`, uncomment the volumes entry so Docker uses your config file:
@@ -143,9 +139,6 @@ volumes:
   - ./config/config.yaml:/app/config.yaml:ro
 ```
 
-### Start the Host
-
-
 ### Confirm Containers Are Healthy
 
 ```bash
@@ -154,11 +147,19 @@ docker ps
 
 Both `shinzo-host` and `shinzo-host-client-nginx-1` should show status `Up` and `(healthy)`.
 
-
 ## Verifying Data Ingestion
 
 ### Health
 
+```bash
+curl http://localhost:8080/health
+```
+
+Expected response:
+
+```json
+{ "status": "healthy", "defradb_connected": true }
+```
 
 ### Processing metrics
 
