@@ -53,7 +53,7 @@ const sidebars: SidebarsConfig = {
       label: "Guides",
       items: [
         "guides/building-apps-with-shinzo",
-        "guides/configuring-event-filters-on-a-shinzo-host"
+        "guides/configuring-event-filters-on-a-shinzo-host/index"
       ],
     },
     {
