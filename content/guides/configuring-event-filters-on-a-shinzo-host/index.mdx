@@ -3,12 +3,12 @@ title: Configuring Event Filters on a Shinzo Host
 description: "Shinzo hosts will store absolutely everything it is given from an Indexer by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
 ---
 
-A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default the Host stores everything, but they can be configured to only store specific data. As an example, this guide configures the Host client to only store USDT ERC-20 transfer events.
+A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default the Host stores everything, but it can be configured to only store specific data. This guide configures the Host client to only store USDT ERC-20 transfer events.
 
 ## Prerequisites
 
-- Docker installed and running
-- Git
+- Docker installed and running.
+- Git.
 
 ## Clone the repository
 
@@ -32,7 +32,7 @@ This key encrypts the local DefraDB instance. Use a strong secret value before r
 
 ### Connecting to the Shinzo network
 
-Views can be published to and discovered through ShinzoHub. Once you've created a view, connect it to ShinzoHub to make it available across the network and enable other builders to access and use it. [See the documentation for more details.](/reference/components/shinzohub/).
+Views can be published to and discovered through ShinzoHub. Once you've created a view, connect it to ShinzoHub to make it available across the network for other builders to use. [See the documentation for more details.](/reference/components/shinzohub/).
 
 ### Pruning
 
@@ -78,7 +78,7 @@ event_filter:
 #### Tracking different tokens
 
 - To track another token, replace the contract `address` with the one you want. Contract addresses are available on Etherscan.
-- To track multiple tokens, add another group under `groups`:
+- To track multiple tokens, add another group under `groups`.
 
 ```yaml
   - name: "usdc-transfers"
@@ -92,7 +92,7 @@ event_filter:
         topic0: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ```
 
-The `topic0` for ERC-20 Transfer is the same across all tokens — it's derived from the function signature, not the contract.
+The `topic0` for ERC-20 Transfer is the same across all tokens, derived from the function signature rather than the contract.
 
 #### Filtering by sender and receiver
 
