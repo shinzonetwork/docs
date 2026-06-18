@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Running a Shinzo indexer
 
-This page covers installing a Shinzo Indexer with Docker or from source. To complete an indexer setup, you must also register it with the Shinzo Network (see [Registration](./register)).
+Installing a Shinzo Indexer with Docker or from source. To complete the setup, you also need to register with the Shinzo Network (see [Registration](./register)).
 
 ## Hardware recommendations
 
@@ -18,23 +18,23 @@ This page covers installing a Shinzo Indexer with Docker or from source. To comp
 
 ## Using Docker 
 
-These steps use Docker to run the Shinzo Indexer. To build the indexer from source, see [Building from source](#building-from-source) below.
+To build from source instead, see [Building from source](#building-from-source) below.
 
 ### Prerequisites
 
 - Docker.
 - Access to an Ethereum execution node that exposes JSON-RPC and WebSocket. The indexer does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
-- A browser wallet setup. This wallet does not need to hold any funds.
+- A browser wallet. It does not need to hold any funds.
 
 ### Steps
 
-1. Pull the pre-built indexer image from the Shinzo container registry.
+1. Pull the indexer image from the Shinzo container registry.
 
     ```shell
     docker pull ghcr.io/shinzonetwork/shinzo-indexer-client:standard
     ```
 
-    ```output
+    ```plaintext
     standard: Pulling from shinzonetwork/shinzo-indexer-client
     2521f1b70bf8: Pull complete
     2c845527b24c: Pull complete
@@ -47,17 +47,18 @@ These steps use Docker to run the Shinzo Indexer. To build the indexer from sour
 
 1. Gather your Geth node's:
 
-    - RPC URL
-    - WebSocket URL
-    - API key ([if set](#do-you-need-an-api-key))
+    - RPC URL.
+    - WebSocket URL.
+    - API key ([if needed](#do-you-need-an-api-key)).
 
-1. Start the indexer by filling in your details and running:
+1. Fill in your details and run:
 
     ```shell
     docker run --rm \
       -e GETH_RPC_URL={{ YOUR RPC URL }}\
       -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
       -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
+      -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
       -e INDEXER_START_HEIGHT=0 \
       -e DEFRADB_KEYRING_SECRET=devnet-secret \
       -e DEFRADB_PLAYGROUND=true \
@@ -70,9 +71,9 @@ These steps use Docker to run the Shinzo Indexer. To build the indexer from sour
       ghcr.io/shinzonetwork/shinzo-indexer-client:standard
     ```
 
-You should see the indexer connect to Geth and start collecting and committing blocks:
+The indexer connects to Geth and starts committing blocks:
 
-```output
+```plaintext
 2026-05-11T10:59:54.762Z	INFO	Committed block 25071330 (ID: bae-235bbc36-32ff-5fb0-8361-6c4dc3d6aeb9)
 2026-05-11T10:59:54.902Z	DEBUG	HTTP response: 200 OK (Content-Length: )
 2026-05-11T10:59:54.902Z	DEBUG	HTTP request successful, status: 200 OK
@@ -83,9 +84,9 @@ You should see the indexer connect to Geth and start collecting and committing b
 2026-05-11T10:59:55.409Z	DEBUG	HTTP request successful, status: 200 OK
 ```
 
-Eventually your indexer will catch up with the validator node and start waiting for new blocks rather than pulling historical data:
+Once it catches up with the chain tip, it waits for new blocks instead of pulling historical data:
 
-```output
+```plaintext
 2026-05-11T11:05:09.338Z	DEBUG	HTTP response: 200 OK (Content-Length: )
 2026-05-11T11:05:09.338Z	DEBUG	HTTP request successful, status: 200 OK
 2026-05-11T11:05:09.338Z	INFO	Block 25071451 not available yet, waiting...
@@ -93,11 +94,9 @@ Eventually your indexer will catch up with the validator node and start waiting 
 
 ### Registration
 
-Once the indexer is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Register the indexer with the Shinzo Network. See [Registration](./register) for details.
 
 ## Building from source
-
-You can also build the indexer binary from source instead of using Docker.
 
 ### Prerequisites
 
@@ -122,6 +121,7 @@ You can also build the indexer binary from source instead of using Docker.
     GETH_RPC_URL=<your-rpc-url>
     GETH_WS_URL=<your-ws-url>
     GETH_API_KEY=<your-api-key>
+    GETH_API_KEY_TYPE=<header-name, e.g. x-goog-api-key or x-api-key>
 
     DEFRADB_KEYRING_SECRET=<your-keyring-secret>
     DEFRADB_PLAYGROUND=true
@@ -133,7 +133,7 @@ You can also build the indexer binary from source instead of using Docker.
     EOF
     ```
 
-    You [may not need to enter a Geth API key](#do-you-need-an-api-key).
+    You [may not need a Geth API key](#do-you-need-an-api-key).
 
 1. Build the binary.
 
@@ -153,7 +153,7 @@ The included `config.yaml` works for most local development. You typically only 
 
 ### Registration
 
-Once your indexer is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Register the indexer with the Shinzo Network. See [Registration](./register) for details.
 
 ## Do you need an API key?
 
@@ -161,16 +161,19 @@ It depends on where your Geth node is.
 
 If the indexer and the Geth node are on the same private network (both on VMs in the same VPC, for example) you probably don't need one. Geth has no authentication by default. Leave `GETH_API_KEY` empty and point `GETH_RPC_URL` at the node's internal IP or hostname.
 
-If you are connecting to an externally hosted node, authentication is almost always required. Two common cases:
+For an externally hosted node, authentication is almost always required. Two common cases:
 
-- GCP Blockchain Node Engine (`blockchainnodeengine.com`) expects the API key in the `X-goog-api-key` header.
-- A self-hosted node behind a reverse proxy (e.g. nginx) uses whatever header the operator configures. `X-Api-Key` is common.
+- GCP Blockchain Node Engine (`blockchainnodeengine.com`) expects the key in the `x-goog-api-key` header.
+- A self-hosted node behind a reverse proxy (e.g. nginx) uses whatever header the operator configures. `x-api-key` is common.
 
-The indexer picks the right header automatically based on the URL.
+Set `GETH_API_KEY_TYPE` to the header name your provider expects. There is no automatic detection.
+
+| Provider | `GETH_API_KEY_TYPE` value |
+| --- | --- |
+| GCP Blockchain Node Engine | `x-goog-api-key` |
+| Self-hosted / most others | `x-api-key` |
 
 ## Exposed ports
-
-The following ports must be exposed and available on the machine.
 
 | Port | Service |
 | --- | --- |
