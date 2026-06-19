@@ -11,6 +11,10 @@ overrides:
   ws: ">=8.20.1"
   shell-quote: ">=1.8.4"
 
+minimumReleaseAgeExclude:
+  - wrangler
+  - miniflare
+
 peerDependencyRules:
   allowedVersions:
     "docusaurus-plugin-glossary>react": "^19.0.0"
