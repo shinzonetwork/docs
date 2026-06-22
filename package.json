@@ -49,35 +49,5 @@
   },
   "engines": {
     "node": ">=24.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "mermaid": ">=11.15.0",
-      "serialize-javascript": "^7.0.3",
-      "react": "19.2.5",
-      "react-dom": "19.2.5",
-      "follow-redirects": "1.16.0",
-      "uuid": "14.0.0",
-      "postcss": "^8.5.10",
-      "qs": ">=6.15.2",
-      "webpack-dev-server": ">=5.2.4",
-      "ws": ">=8.20.1",
-      "shell-quote": ">=1.8.4"
-    },
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "docusaurus-plugin-glossary>react": "^19.0.0",
-        "docusaurus-plugin-glossary>react-dom": "^19.0.0"
-      }
-    },
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "@swc/core",
-      "core-js",
-      "core-js-pure",
-      "esbuild",
-      "sharp",
-      "workerd"
-    ]
   }
 }
