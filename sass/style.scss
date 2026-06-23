@@ -410,7 +410,6 @@ p {
   top: calc(var(--navbar-height) + 1rem);
   max-height: calc(100vh - var(--navbar-height) - 2rem);
   overflow-y: auto;
-  border-left: 1px solid var(--szo-border);
   padding-left: 1rem;
 }
 
