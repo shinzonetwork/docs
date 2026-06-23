@@ -40,13 +40,13 @@
         {% if page.lower or page.higher %}
         <nav class="pagination-nav" aria-label="Docs pages">
           {% if page.lower %}
-          <a class="pagination-nav__link pagination-nav__link--prev" href="{{ page.lower.permalink }}">
+          <a class="pagination-nav__link pagination-nav__link--prev" href="{{ page.lower.permalink | replace(from=config.base_url, to='') }}">
             <div class="pagination-nav__sublabel">Previous</div>
             <div class="pagination-nav__label">{{ page.lower.title }}</div>
           </a>
           {% else %}<span></span>{% endif %}
           {% if page.higher %}
-          <a class="pagination-nav__link pagination-nav__link--next" href="{{ page.higher.permalink }}">
+          <a class="pagination-nav__link pagination-nav__link--next" href="{{ page.higher.permalink | replace(from=config.base_url, to='') }}">
             <div class="pagination-nav__sublabel">Next</div>
             <div class="pagination-nav__label">{{ page.higher.title }}</div>
           </a>
@@ -65,11 +65,11 @@
         <ul class="toc__list">
           {% for h1 in page.toc %}
           <li class="toc__item">
-            <a class="toc__link" href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
+            <a class="toc__link" href="#{{ h1.id | safe }}">{{ h1.title }}</a>
             {% if h1.children %}
             <ul class="toc__list toc__list--nested">
               {% for h2 in h1.children %}
-              <li class="toc__item"><a class="toc__link" href="{{ h2.permalink | safe }}">{{ h2.title }}</a></li>
+              <li class="toc__item"><a class="toc__link" href="#{{ h2.id | safe }}">{{ h2.title }}</a></li>
               {% endfor %}
             </ul>
             {% endif %}

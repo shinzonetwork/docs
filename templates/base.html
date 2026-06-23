@@ -20,9 +20,9 @@
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="stylesheet" href="{{ get_url(path='style.css') | safe }}" />
-  <link rel="stylesheet" href="{{ get_url(path='giallo.css') | safe }}" />
-  <link rel="stylesheet" href="{{ get_url(path='css/code-theme.css') | safe }}" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/giallo.css" />
+  <link rel="stylesheet" href="/css/code-theme.css" />
 
   {# Plausible analytics (migrated from docusaurus.config scripts) #}
   <script defer data-domain="{{ config.extra.plausible_domain }}" src="{{ config.extra.plausible_src }}"></script>
@@ -53,7 +53,7 @@
         <span class="navbar__hamburger-bar"></span>
       </button>
 
-      <a class="navbar__brand navbar__logo" href="{{ get_url(path='/') }}" aria-label="Shinzo Network Documentation">
+      <a class="navbar__brand navbar__logo" href="/" aria-label="Shinzo Network Documentation">
         <img src="/img/shinzo-logo.svg" alt="Shinzo Network Documentation" />
       </a>
 
@@ -102,18 +102,18 @@
 </div>
 
 {# Search index + library (Zola sets window.searchIndex) #}
-<script src="{{ get_url(path='search_index.en.js') | safe }}"></script>
-<script src="{{ get_url(path='elasticlunr.min.js') | safe }}"></script>
-<script src="{{ get_url(path='js/search.js') | safe }}"></script>
+<script src="/search_index.en.js"></script>
+<script src="/elasticlunr.min.js"></script>
+<script src="/js/search.js"></script>
 
 {# Table-of-contents scroll-spy (no-ops when there is no TOC) #}
-<script src="{{ get_url(path='js/toc-scrollspy.js') | safe }}" defer></script>
+<script src="/js/toc-scrollspy.js" defer></script>
 
 {# Copy-to-clipboard buttons on non-output code blocks #}
-<script src="{{ get_url(path='js/copy-code.js') | safe }}" defer></script>
+<script src="/js/copy-code.js" defer></script>
 
 {# Mobile hamburger navigation drawer #}
-<script src="{{ get_url(path='js/mobile-menu.js') | safe }}" defer></script>
+<script src="/js/mobile-menu.js" defer></script>
 
 {% block scripts %}{% endblock scripts %}
 </body>

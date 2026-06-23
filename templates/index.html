@@ -29,11 +29,11 @@
         <ul class="toc__list">
           {% for h1 in section.toc %}
           <li class="toc__item">
-            <a class="toc__link" href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
+            <a class="toc__link" href="#{{ h1.id | safe }}">{{ h1.title }}</a>
             {% if h1.children %}
             <ul class="toc__list toc__list--nested">
               {% for h2 in h1.children %}
-              <li class="toc__item"><a class="toc__link" href="{{ h2.permalink | safe }}">{{ h2.title }}</a></li>
+              <li class="toc__item"><a class="toc__link" href="#{{ h2.id | safe }}">{{ h2.title }}</a></li>
               {% endfor %}
             </ul>
             {% endif %}
