@@ -65,6 +65,12 @@ const config: Config = {
         theme: {
           customCss: "./src/css/custom.scss",
         },
+        sitemap: {
+          lastmod: "date",
+          changefreq: "weekly",
+          priority: 0.5,
+          filename: "sitemap.xml",
+        },
       } satisfies Preset.Options,
     ],
   ],
@@ -176,6 +182,11 @@ const config: Config = {
         },
         {
           to: "/guides/building-apps-with-shinzo",
+          position: "left",
+          label: "Guides",
+        },
+        {
+          to: "/guides/configuring-event-filters-on-a-shinzo-host",
           position: "left",
           label: "Guides",
         },
