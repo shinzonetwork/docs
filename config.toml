@@ -1,0 +1,53 @@
+# Shinzō Developer Portal — Zola configuration
+# Migrated from the Docusaurus site at ../docs
+
+base_url = "https://docs.shinzo.network"
+title = "Shinzō Developer Portal"
+description = "Build the Read Layer of Truth"
+
+# Docs are served at the site root (Docusaurus had routeBasePath: "/").
+compile_sass = true
+build_search_index = true
+minify_html = false
+
+# Generate redirect/alias pages, taxonomy-free.
+generate_feeds = false
+
+# Excalidraw source files are co-located with diagrams but not served.
+ignored_content = ["*.excalidraw"]
+
+# Don't fail the build on internal link issues during migration; warn instead.
+# (Zola validates internal links only when this is true.)
+[link_checker]
+internal_level = "warn"
+external_level = "warn"
+
+[markdown]
+smart_punctuation = false
+# No visible anchor links on headings. Heading ids are still generated, so the
+# in-page table of contents continues to work.
+insert_anchor_links = "none"
+# Open external links in a new tab so the external-link icon CSS applies.
+external_links_target_blank = true
+
+# Syntax highlighting: emit CSS classes (.z-*) so our brand code colors in
+# static/css/code-theme.css take effect. A base theme is still required by Zola.
+[markdown.highlighting]
+style = "class"
+theme = "github-light"
+
+[search]
+# Mirrors @easyops-cn/docusaurus-search-local (local, client-side search).
+include_title = true
+include_description = true
+include_path = true
+include_content = true
+
+[extra]
+tagline = "Build the Read Layer of Truth"
+github_url = "https://github.com/shinzonetwork/"
+og_image = "/img/shinzo-opengraph.png"
+favicon = "/img/favicon.png"
+# Plausible analytics (was injected via docusaurus.config scripts)
+plausible_domain = "docs.shinzo.network"
+plausible_src = "https://plausible.source.network/js/script.js"
