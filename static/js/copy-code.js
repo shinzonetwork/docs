@@ -73,6 +73,7 @@
     var pres = document.querySelectorAll(".markdown pre");
     Array.prototype.forEach.call(pres, function (pre) {
       if (pre.closest(".code-output")) return;
+      if (pre.closest(".mermaid-container")) return;
       addButton(pre);
     });
   }
