@@ -59,6 +59,7 @@ These steps use Docker to run the Shinzo Indexer. To build the indexer from sour
       -e GETH_RPC_URL={{ YOUR RPC URL }}\
       -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
       -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
+      -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
       -e INDEXER_START_HEIGHT=0 \
       -e DEFRADB_KEYRING_SECRET=devnet-secret \
       -e DEFRADB_PLAYGROUND=true \
@@ -127,6 +128,7 @@ You can also build the indexer binary from source instead of using Docker.
     GETH_RPC_URL=<your-rpc-url>
     GETH_WS_URL=<your-ws-url>
     GETH_API_KEY=<your-api-key>
+    GETH_API_KEY_TYPE=<header-name, e.g. x-goog-api-key or x-api-key>
 
     DEFRADB_KEYRING_SECRET=<your-keyring-secret>
     DEFRADB_PLAYGROUND=true
@@ -166,12 +168,17 @@ It depends on where your Geth node is.
 
 If the indexer and the Geth node are on the same private network (both on VMs in the same VPC, for example) you probably don't need one. Geth has no authentication by default. Leave `GETH_API_KEY` empty and point `GETH_RPC_URL` at the node's internal IP or hostname.
 
-If you are connecting to an externally hosted node, authentication is almost always required. Two common cases:
+For an externally hosted node, authentication is almost always required. Two common cases:
 
-- GCP Blockchain Node Engine (`blockchainnodeengine.com`) expects the API key in the `X-goog-api-key` header.
-- A self-hosted node behind a reverse proxy (e.g. nginx) uses whatever header the operator configures. `X-Api-Key` is common.
+- GCP Blockchain Node Engine (`blockchainnodeengine.com`) expects the key in the `x-goog-api-key` header.
+- A self-hosted node behind a reverse proxy (e.g. nginx) uses whatever header the operator configures. `x-api-key` is common.
 
-The indexer picks the right header automatically based on the URL.
+Set `GETH_API_KEY_TYPE` to the header name your provider expects.
+
+| Provider | `GETH_API_KEY_TYPE` value |
+| --- | --- |
+| GCP Blockchain Node Engine | `x-goog-api-key` |
+| Self-hosted / most others | `x-api-key` |
 
 ## Exposed ports
 
