@@ -18,16 +18,16 @@ If you are a validator on a source chain, registration may also prompt you to su
    - Currency symbol: `SHNZ`
 1. Go to [localhost:8080](http://localhost:8080/registration-app) and select **Connect** to connect your wallet.
 
-{% admonition(type="info") %}
-If your Indexer is running on a remote server (like Hetzner, DigialOcean, GCP, AWS, etc), you can use SSH local port forwarding to access the registration page.
+    {% admonition(type="info") %}
+    If your Indexer is running on a remote server (like Hetzner, DigialOcean, GCP, AWS, etc), you can use SSH local port forwarding to access the registration page.
 
 1. On your local machine, run `ssh -L 8080:localhost:8080 user@your-hetzner-ip`.
 1. Open `http://localhost:8080/registration-app` in your browser.
-{% end %}
+    {% end %}
 
 1. Share your wallet address in the [Shinzo Discord](https://discord.com/channels/1444411399882408011/1444411402239344802) channel to request allowlisting as an Indexer.
 
-It may take ~24 hours for your address to be added to the allowlist. Once your address has been added:
+    It may take ~24 hours for your address to be added to the allowlist. Once your address has been added:
 
 1. Return to the [registration page](http://localhost:8080/registration-app), click **Register**, and select **Indexer** as your role.
 1. Submit your registration and then confirm the transaction in your browser wallet. You should see a successful registration notification.

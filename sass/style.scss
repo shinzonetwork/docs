@@ -502,14 +502,6 @@ p {
     margin: 0 0 1rem;
   }
 
-  // Nested lists (a list that is a direct child of a list item) get no vertical
-  // margin, so sub-items sit flush against their parent item without an extra
-  // gap below the sub-list and the next item in the parent list.
-  li > ul,
-  li > ol {
-    margin: 0;
-  }
-
   blockquote {
     margin: 1rem 0;
     padding: 0.25rem 1rem;
