@@ -32,7 +32,7 @@
   --color-primary-lighter: #e0323a;
   --color-primary-lightest: #e55258;
 
-  --color-info-contrast-background: #ffe9e9;
+  --color-info-contrast-background: #e8f0fe;
   --alert-border-radius: 0;
 
   --color-content: var(--foreground);
@@ -657,8 +657,6 @@ pre {
   border-left-width: 4px;
   padding: 1rem 1rem 0.25rem;
   margin: 1rem 0;
-  background: var(--color-info-contrast-background);
-  border-left-color: var(--color-primary);
 
   &__title {
     font-family: var(--font-family-monospace);
@@ -667,7 +665,14 @@ pre {
     font-size: 0.75rem;
     letter-spacing: 0.04em;
     margin-bottom: 0.25rem;
-    color: var(--color-primary);
+  }
+
+  &--info {
+    background: var(--color-info-contrast-background);
+    border-left-color: #1a6fbb;
+    .admonition__title {
+      color: #1a6fbb;
+    }
   }
 
   &--note {
