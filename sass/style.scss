@@ -495,12 +495,19 @@ p {
   }
 
   // Lists get the same trailing margin as paragraphs (p has margin 0 0 1rem),
-  // so a list (including a nested one ending a list item) followed by more
-  // content is spaced consistently.
+  // so a list followed by more content is spaced consistently.
   ul,
   ol {
     padding-left: 1.5rem;
     margin: 0 0 1rem;
+  }
+
+  // Nested lists (a list that is a direct child of a list item) get no vertical
+  // margin, so sub-items sit flush against their parent item without an extra
+  // gap below the sub-list and the next item in the parent list.
+  li > ul,
+  li > ol {
+    margin: 0;
   }
 
   blockquote {
