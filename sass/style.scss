@@ -1,13 +1,6 @@
-// Shinzō Developer Portal — ported theme (light mode only).
-// Ported from docs/src/css/custom.scss + docs/src/theme/Footer/styles.module.css.
-// Infima is not present in Zola, so layout primitives that Docusaurus relied on
-// (navbar bar, sidebar grid, content column, breadcrumbs, admonitions, code
-// blocks) are reimplemented here using the original brand variables.
-
 @import "fonts";
 
-/* ─── Theme variables (light only; dark vars from the original kept for
-   reference but the toggle is disabled, matching production) ─────────── */
+/* Theme variables (light only; dark vars from the original kept for reference but the toggle is disabled). */
 :root {
   --background: #fff;
   --foreground: #353535;
@@ -18,7 +11,7 @@
   --root-wrapper-width: 90rem;
   --menu-indicator-color: #ccc;
 
-  --heading-font-family: "Geist Mono", sans-serif;
+  --heading-font-family: sans-serif;
   --heading-font-weight: 500;
   --heading-line-height: 1.1;
 
@@ -36,8 +29,8 @@
   --alert-border-radius: 0;
 
   --color-content: var(--foreground);
-  --font-family-base: "Geist", sans-serif;
-  --font-family-monospace: "Geist Mono", monospace;
+  --font-family-base: sans-serif;
+  --font-family-monospace: monospace;
   --menu-color: var(--foreground);
 
   --spacing-horizontal: 1rem;
