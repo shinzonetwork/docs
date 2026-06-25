@@ -1,0 +1,11 @@
+{# Usage: {% admonition(type="info", title="Note") %} ... {% end %} #}
+{%- set kind = type | default(value="info") -%}
+{%- set heading = title | default(value=kind | title) -%}
+<div class="admonition admonition--{{ kind }}">
+  <div class="admonition__title">{{ heading }}</div>
+  <div class="admonition__content">
+
+{{ body | markdown | safe }}
+
+  </div>
+</div>

@@ -1,0 +1,104 @@
+{# Sidebar navigation, mirroring docs/sidebars.ts.
+   Each entry is a category with a label and a list of [title, path] items.
+   Paths are site-root-relative (docs are served at "/"). #}
+
+{% macro link(title, path, current) %}
+  {% if current == path %}
+    <a class="menu__link menu__link--active" href="{{ path }}">{{ title }}</a>
+  {% else %}
+    <a class="menu__link" href="{{ path }}">{{ title }}</a>
+  {% endif %}
+{% endmacro link %}
+
+{% macro render(current) %}
+<nav class="menu" aria-label="Docs sidebar">
+  <ul class="menu__list">
+
+    {# Introduction #}
+    <li class="menu__list-item">
+      <div class="menu__list-item-collapsible">
+        <span class="menu__link menu__link--category">Introduction</span>
+      </div>
+      <ul class="menu__list">
+        <li class="menu__list-item">{{ self::link(title="What is Shinzō?", path="/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="How it works", path="/introduction/how-it-works/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Core concepts", path="/introduction/core-concepts/", current=current) }}</li>
+      </ul>
+    </li>
+
+    {# Indexers #}
+    <li class="menu__list-item">
+      <div class="menu__list-item-collapsible">
+        <span class="menu__link menu__link--category">Indexers</span>
+      </div>
+      <ul class="menu__list">
+        <li class="menu__list-item">{{ self::link(title="Overview", path="/indexers/overview/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Install", path="/indexers/install/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Register", path="/indexers/register/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Frequently Asked Questions", path="/indexers/faq/", current=current) }}</li>
+      </ul>
+    </li>
+
+    {# Hosts #}
+    <li class="menu__list-item">
+      <div class="menu__list-item-collapsible">
+        <span class="menu__link menu__link--category">Hosts</span>
+      </div>
+      <ul class="menu__list">
+        <li class="menu__list-item">{{ self::link(title="Overview", path="/hosts/overview/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Quick Start", path="/hosts/quickstart/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Query Examples", path="/hosts/examples/", current=current) }}</li>
+      </ul>
+    </li>
+
+    {# Views #}
+    <li class="menu__list-item">
+      <div class="menu__list-item-collapsible">
+        <span class="menu__link menu__link--category">Views</span>
+      </div>
+      <ul class="menu__list">
+        <li class="menu__list-item">{{ self::link(title="Overview", path="/views/overview/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Quick Start", path="/views/quickstart/", current=current) }}</li>
+      </ul>
+    </li>
+
+    {# Guides #}
+    <li class="menu__list-item">
+      <div class="menu__list-item-collapsible">
+        <span class="menu__link menu__link--category">Guides</span>
+      </div>
+      <ul class="menu__list">
+        <li class="menu__list-item">{{ self::link(title="Building apps with Shinzō", path="/guides/building-apps-with-shinzo/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Configuring event filters on a Shinzō Host", path="/guides/configuring-event-filters-on-a-shinzo-host/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Operator Quickstart", path="/guides/operator-quickstart/", current=current) }}</li>
+      </ul>
+    </li>
+
+    {# Reference #}
+    <li class="menu__list-item">
+      <div class="menu__list-item-collapsible">
+        <span class="menu__link menu__link--category">Reference</span>
+      </div>
+      <ul class="menu__list">
+        <li class="menu__list-item">{{ self::link(title="Architecture overview", path="/reference/architecture-overview/", current=current) }}</li>
+        <li class="menu__list-item">{{ self::link(title="Tools", path="/reference/tools/", current=current) }}</li>
+        <li class="menu__list-item">
+          <div class="menu__list-item-collapsible">
+            <span class="menu__link menu__link--category">Components</span>
+          </div>
+          <ul class="menu__list">
+            <li class="menu__list-item">{{ self::link(title="Host client", path="/reference/components/host-client/", current=current) }}</li>
+            <li class="menu__list-item">{{ self::link(title="Indexer client", path="/reference/components/indexer-client/", current=current) }}</li>
+            <li class="menu__list-item">{{ self::link(title="Outpost", path="/reference/components/outpost/", current=current) }}</li>
+            <li class="menu__list-item">{{ self::link(title="Relayer", path="/reference/components/relayer/", current=current) }}</li>
+            <li class="menu__list-item">{{ self::link(title="ShinzoHub", path="/reference/components/shinzohub/", current=current) }}</li>
+            <li class="menu__list-item">{{ self::link(title="Viewkit", path="/reference/components/viewkit/", current=current) }}</li>
+          </ul>
+        </li>
+        <li class="menu__list-item">{{ self::link(title="Glossary", path="/reference/glossary/", current=current) }}</li>
+      </ul>
+    </li>
+
+  </ul>
+</nav>
+{% endmacro render %}

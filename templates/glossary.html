@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% import "macros/sidebar.html" as sidebar %}
+
+{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
+
+{% block body %}
+{% set data = load_data(path="data/glossary.json") %}
+<main class="main-wrapper">
+  <div class="docs-layout">
+    <aside class="theme-doc-sidebar-container">
+      {{ sidebar::render(current=page.path) }}
+    </aside>
+
+    <div class="docs-content">
+      <article class="docItemCol markdown">
+        <ul class="breadcrumbs">
+          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Home</a></li>
+          <li class="breadcrumbs__item"><span class="breadcrumbs__link">Reference</span></li>
+          <li class="breadcrumbs__item"><span class="breadcrumbs__link">Glossary</span></li>
+        </ul>
+
+        <h1 class="doc-title">{{ page.title }}</h1>
+        {% if data.description %}<p>{{ data.description }}</p>{% endif %}
+
+        <dl class="glossary">
+        {% for term in data.terms %}
+          {% set anchor = term.term | slugify %}
+          <dt id="{{ anchor }}" class="glossary__term">
+            <a href="#{{ anchor }}">{{ term.term }}</a>
+            {% if term.abbreviation %}<span class="glossary__abbr"> — {{ term.abbreviation }}</span>{% endif %}
+          </dt>
+          <dd class="glossary__definition">
+            {% if term.definition %}{{ term.definition | markdown(inline=true) | safe }}{% endif %}
+            {% if term.relatedTerms %}
+              <div class="glossary__related">
+                <span class="glossary__related-label">Related:</span>
+                {% for rel in term.relatedTerms %}<a href="#{{ rel | slugify }}">{{ rel }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+              </div>
+            {% endif %}
+          </dd>
+        {% endfor %}
+        </dl>
+      </article>
+    </div>
+  </div>
+</main>
+{% endblock body %}
+
+{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}

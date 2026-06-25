@@ -1,0 +1,120 @@
+{% import "macros/footer.html" as footer_macro %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  {% block title %}
+  <title>{{ config.title }}</title>
+  {% endblock title %}
+
+  <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}" />
+
+  <link rel="icon" href="{{ config.extra.favicon }}" />
+
+  {# Open Graph #}
+  <meta property="og:title" content="{% block og_title %}{{ config.title }}{% endblock og_title %}" />
+  <meta property="og:description" content="{{ config.description }}" />
+  <meta property="og:image" content="{{ get_url(path=config.extra.og_image) }}" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/giallo.css" />
+  <link rel="stylesheet" href="/css/code-theme.css" />
+
+  {# Plausible analytics (migrated from docusaurus.config scripts) #}
+  <script defer data-domain="{{ config.extra.plausible_domain }}" src="{{ config.extra.plausible_src }}"></script>
+</head>
+<body>
+<div class="layout">
+
+  {# ─── Navbar ─── #}
+  {# Determine the active top-level section from the current path so the matching
+     nav item can be highlighted. The Introduction section lives at the site
+     root ("/") and under "/introduction/". #}
+  {%- if page %}{% set cur_path = page.path %}
+  {%- elif section %}{% set cur_path = section.path %}
+  {%- else %}{% set cur_path = "/" %}{% endif -%}
+  {%- set trimmed = cur_path | trim_start_matches(pat="/") -%}
+  {%- if trimmed == "" or trimmed is starting_with("introduction/") %}{% set nav_section = "introduction" %}
+  {%- elif trimmed is starting_with("indexers/") %}{% set nav_section = "indexers" %}
+  {%- elif trimmed is starting_with("hosts/") %}{% set nav_section = "hosts" %}
+  {%- elif trimmed is starting_with("views/") %}{% set nav_section = "views" %}
+  {%- elif trimmed is starting_with("guides/") %}{% set nav_section = "guides" %}
+  {%- elif trimmed is starting_with("reference/") %}{% set nav_section = "reference" %}
+  {%- else %}{% set nav_section = "" %}{% endif -%}
+  <header class="navbar">
+    <div class="navbar__inner">
+      <button type="button" class="navbar__hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="navbar__hamburger-bar"></span>
+        <span class="navbar__hamburger-bar"></span>
+        <span class="navbar__hamburger-bar"></span>
+      </button>
+
+      <a class="navbar__brand navbar__logo" href="/" aria-label="Shinzo Network Documentation">
+        <img src="/img/shinzo-logo.svg" alt="Shinzo Network Documentation" />
+      </a>
+
+      <ul class="navbar__items navbar__items--left">
+        <li><a class="navbar__link{% if nav_section == 'introduction' %} navbar__link--active{% endif %}" href="/">Introduction</a></li>
+        <li><a class="navbar__link{% if nav_section == 'indexers' %} navbar__link--active{% endif %}" href="/indexers/overview/">Indexers</a></li>
+        <li><a class="navbar__link{% if nav_section == 'hosts' %} navbar__link--active{% endif %}" href="/hosts/overview/">Hosts</a></li>
+        <li><a class="navbar__link{% if nav_section == 'views' %} navbar__link--active{% endif %}" href="/views/overview/">Views</a></li>
+        <li><a class="navbar__link{% if nav_section == 'guides' %} navbar__link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a></li>
+        <li><a class="navbar__link{% if nav_section == 'reference' %} navbar__link--active{% endif %}" href="/reference/architecture-overview/">Reference</a></li>
+      </ul>
+
+      <div class="navbar__items navbar__items--right">
+        <div class="search-box">
+          <input type="text" id="search-input" class="search-input" placeholder="Search docs…" autocomplete="off" aria-label="Search" />
+          <div id="search-results" class="search-results"></div>
+        </div>
+        <a class="header-github-link" href="{{ config.extra.github_url }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository"></a>
+      </div>
+    </div>
+  </header>
+
+  {# ─── Mobile navigation drawer ─── #}
+  <div class="mobile-menu-backdrop" hidden></div>
+  <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
+    <nav class="mobile-menu__top" aria-label="Sections">
+      <a class="mobile-menu__top-link{% if nav_section == 'introduction' %} mobile-menu__top-link--active{% endif %}" href="/">Introduction</a>
+      <a class="mobile-menu__top-link{% if nav_section == 'indexers' %} mobile-menu__top-link--active{% endif %}" href="/indexers/overview/">Indexers</a>
+      <a class="mobile-menu__top-link{% if nav_section == 'hosts' %} mobile-menu__top-link--active{% endif %}" href="/hosts/overview/">Hosts</a>
+      <a class="mobile-menu__top-link{% if nav_section == 'views' %} mobile-menu__top-link--active{% endif %}" href="/views/overview/">Views</a>
+      <a class="mobile-menu__top-link{% if nav_section == 'guides' %} mobile-menu__top-link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a>
+      <a class="mobile-menu__top-link{% if nav_section == 'reference' %} mobile-menu__top-link--active{% endif %}" href="/reference/architecture-overview/">Reference</a>
+    </nav>
+    <div class="mobile-menu__divider"></div>
+    {# Child templates inject the shared sidebar nav here (they import the
+       sidebar macro themselves, so its internal self:: refs resolve). #}
+    {% block mobile_sidebar %}{% endblock mobile_sidebar %}
+  </aside>
+
+  {# ─── Body ─── #}
+  {% block body %}{% endblock body %}
+
+  {# ─── Footer ─── #}
+  {{ footer_macro::render() }}
+
+</div>
+
+{# Search index + library (Zola sets window.searchIndex) #}
+<script src="/search_index.en.js"></script>
+<script src="/elasticlunr.min.js"></script>
+<script src="/js/search.js"></script>
+
+{# Table-of-contents scroll-spy (no-ops when there is no TOC) #}
+<script src="/js/toc-scrollspy.js" defer></script>
+
+{# Copy-to-clipboard buttons on non-output code blocks #}
+<script src="/js/copy-code.js" defer></script>
+
+{# Mobile hamburger navigation drawer #}
+<script src="/js/mobile-menu.js" defer></script>
+
+{% block scripts %}{% endblock scripts %}
+</body>
+</html>

@@ -1,0 +1,86 @@
+/*
+ * Brand code colours, mapped onto Giallo's class output (.z-*), matching
+ * docs/src/code-theme.ts. Loaded AFTER giallo.css so these win.
+ */
+
+/* Structural classes required by Giallo's class output. */
+.giallo-l {
+  display: inline-block;
+  min-height: 1lh;
+  width: 100%;
+}
+.giallo-ln {
+  display: inline-block;
+  user-select: none;
+  margin-right: 0.4em;
+  padding: 0.4em;
+  min-width: 3ch;
+  text-align: right;
+  opacity: 0.8;
+}
+
+/* Code block surface — use the brand code background/foreground. */
+pre.giallo,
+pre.z-code {
+  color: var(--code-foreground) !important;
+  background-color: var(--code-background) !important;
+}
+
+.z-hl {
+  background-color: var(--code-highlight-color) !important;
+}
+
+/* Token colours (brand palette). */
+.z-comment {
+  color: var(--code-token-comment) !important;
+  font-style: italic;
+}
+.z-keyword,
+.z-storage {
+  color: var(--code-token-keyword) !important;
+}
+.z-constant,
+.z-constant.z-numeric,
+.z-constant.z-language {
+  color: var(--code-token-constant) !important;
+}
+.z-string {
+  color: var(--code-token-string) !important;
+}
+.z-entity.z-name.z-function,
+.z-support.z-function {
+  color: var(--code-token-function) !important;
+}
+.z-variable {
+  color: var(--code-token-parameter) !important;
+}
+.z-entity.z-name.z-tag {
+  color: var(--code-token-keyword) !important;
+}
+.z-entity.z-other.z-attribute-name,
+.z-support.z-type,
+.z-support.z-class,
+.z-entity.z-name.z-class,
+.z-entity.z-name.z-type,
+.z-meta.z-property-name,
+.z-support.z-constant {
+  color: var(--code-token-property) !important;
+}
+.z-keyword.z-operator,
+.z-punctuation {
+  color: var(--code-token-punctuation) !important;
+}
+.z-markup.z-underline.z-link {
+  color: var(--code-token-link) !important;
+  text-decoration: underline;
+}
+.z-markup.z-bold {
+  font-weight: bold;
+}
+.z-markup.z-italic {
+  font-style: italic;
+}
+.z-invalid,
+.z-markup.z-deleted {
+  color: var(--code-token-constant) !important;
+}

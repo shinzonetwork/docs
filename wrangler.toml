@@ -1,0 +1,8 @@
+# Cloudflare Pages configuration
+# https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+
+name = "shinzo-docs"
+pages_build_output_dir = "public"
+
+[vars]
+ZOLA_VERSION = "0.19.2"
