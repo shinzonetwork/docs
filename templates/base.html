@@ -20,6 +20,10 @@
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
+  {# Warm up connections to third-party origins (analytics + Mermaid CDN). #}
+  <link rel="preconnect" href="https://plausible.source.network" crossorigin />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/giallo.css" />
   <link rel="stylesheet" href="/css/code-theme.css" />
@@ -101,10 +105,44 @@
 
 </div>
 
-{# Search index + library (Zola sets window.searchIndex) #}
-<script src="/search_index.en.js"></script>
-<script src="/elasticlunr.min.js"></script>
-<script src="/js/search.js"></script>
+{# Search assets load on first interaction with the search box, keeping them off
+   the critical render path. Order is preserved: index → elasticlunr → search.js
+   (search.js depends on window.searchIndex and the elasticlunr global). #}
+<script>
+(function () {
+  var input = document.getElementById("search-input");
+  if (!input) return;
+
+  var loaded = false;
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = src;
+      s.defer = true;            // safety net
+      s.onload = resolve;
+      s.onerror = reject;
+      document.body.appendChild(s);
+    });
+  }
+
+  function loadSearch() {
+    if (loaded) return;
+    loaded = true;
+    loadScript("/search_index.en.js")
+      .then(function () { return loadScript("/elasticlunr.min.js"); })
+      .then(function () { return loadScript("/js/search.js"); })
+      .then(function () {
+        // search.js initialized late; re-fire so the in-progress
+        // interaction (focus + any typed text) takes effect.
+        input.dispatchEvent(new Event("input"));
+      })
+      .catch(function () { loaded = false; }); // allow retry on failure
+  }
+
+  input.addEventListener("focus", loadSearch, { once: true });
+  input.addEventListener("click", loadSearch, { once: true });
+})();
+</script>
 
 {# Table-of-contents scroll-spy (no-ops when there is no TOC) #}
 <script src="/js/toc-scrollspy.js" defer></script>
