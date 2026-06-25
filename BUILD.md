@@ -2,27 +2,31 @@
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) >= 20
-- [pnpm](https://pnpm.io/)
+- [Zola](https://www.getzola.org/)
 
 ## Steps
 
-```shell
-git clone git@github.com:shinzonetwork/docs.git
-cd docs
-pnpm install
-pnpm build
-```
+1. Clone the repo and move inside:
 
-The build goes into `./build`, funnily enough.
+    ```shell
+    git clone git@github.com:shinzonetwork/docs.git
+    cd docs
+    ```
+
+1. Start the local server:
+
+    ```shell
+    zola build
+    ```
+
+The build goes into `./public`.
 
 ## Useful commands
 
 | Command | What it does |
 | --- | --- |
-| `pnpm start` | Start a local dev server with hot reload. |
-| `pnpm build` | Generate a production build into `./build`. |
-| `pnpm serve` | Serve the production build locally. |
-| `pnpm typecheck` | Run TypeScript type checking. |
-| `pnpm clear` | Clear the Docusaurus cache. |
-| `sudo shutdown now` | Turns off your machine so you can go outside. |
+| `zola build` | Deletes the output directory if there is one and builds the site. |
+| `zola serve` | Serve the site. Rebuild and reload on change automatically. |
+| `zola check` | Try to build the project without rendering it. Checks links. |
+| `zola completion` | Generate shell completion. |
+| `zola help` | Print this message or the help of the given subcommand(s). |
