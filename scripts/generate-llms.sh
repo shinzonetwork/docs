@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-DOCS_DIR="$(cd "$(dirname "$0")" && pwd)"
+DOCS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CONTENT_DIR="$DOCS_DIR/content"
 DATA_DIR="$DOCS_DIR/data"
 OUTPUT_DIR="$DOCS_DIR/public"
