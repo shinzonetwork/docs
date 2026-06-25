@@ -8,7 +8,7 @@ description = "Build the Read Layer of Truth"
 # Docs are served at the site root (Docusaurus had routeBasePath: "/").
 compile_sass = true
 build_search_index = true
-minify_html = false
+minify_html = true
 
 # Generate redirect/alias pages, taxonomy-free.
 generate_feeds = false
