@@ -9,7 +9,7 @@ mermaid = true
 
 A Shinzo Host is a service that turns indexed blockchain data into Views that applications can query over GraphQL. It receives signed data from one or more Generator clients over a peer-to-peer network, verifies it, runs WebAssembly transforms over it, and stores the results in a local DefraDB instance.
 
-A Host client is not an Generator client. It does not talk to a source-chain execution client and does not pull blocks from Geth, Reth, or the equivalent node on other supported chains. Instead, the Host client consumes primitive documents that Generator clients have already produced and signed (blocks, transactions, logs, and chain-specific extras like EIP-2930 access list entries on Ethereum). The Host client then verifies those documents, runs the transformations defined by registered Views, and makes the results available to applications.
+A Host client is not a Generator client. It does not talk to a source-chain execution client and does not pull blocks from Geth, Reth, or the equivalent node on other supported chains. Instead, the Host client consumes primitive documents that Generator clients have already produced and signed (blocks, transactions, logs, and chain-specific extras like EIP-2930 access list entries on Ethereum). The Host client then verifies those documents, runs the transformations defined by registered Views, and makes the results available to applications.
 
 ## Purpose and role in the stack
 

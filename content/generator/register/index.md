@@ -25,7 +25,7 @@ If you are a validator on a source chain, registration may also prompt you to su
 1. Open `http://localhost:8080/registration-app` in your browser.
     {% end %}
 
-1. Share your wallet address in the [Shinzo Discord](https://discord.com/channels/1444411399882408011/1444411402239344802) channel to request allowlisting as an Generator client.
+1. Share your wallet address in the [Shinzo Discord](https://discord.com/channels/1444411399882408011/1444411402239344802) channel to request allowlisting as a Generator client.
 
     It may take ~24 hours for your address to be added to the allowlist. Once your address has been added:
 

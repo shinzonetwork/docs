@@ -29,7 +29,7 @@
     },
     {
       "term": "Assertion",
-      "definition": "A cryptographic proof, produced on a source chain, that a validator is who they claim to be. It ties the validator's consensus identity to an operator key. Without a valid assertion, a validator cannot register as an generator on ShinzoHub.",
+      "definition": "A cryptographic proof, produced on a source chain, that a validator is who they claim to be. It ties the validator's consensus identity to an operator key. Without a valid assertion, a validator cannot register as a generator on ShinzoHub.",
       "relatedTerms": [
         "Outpost",
         "Operator Key",
@@ -295,7 +295,7 @@
     },
     {
       "term": "Generator Registry",
-      "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered generator. An generator cannot register here directly — it must first complete an assertion via an outpost contract. The registry verifies the stored assertion before accepting registration.",
+      "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered generator. A generator cannot register here directly — it must first complete an assertion via an outpost contract. The registry verifies the stored assertion before accepting registration.",
       "relatedTerms": [
         "Generator",
         "Precompile",
@@ -441,7 +441,7 @@
     },
     {
       "term": "Operator Key",
-      "definition": "Also called the delegate key. Generated locally by an generator operator and bound to a validator's identity through an assertion. The generator uses it to sign ShinzoHub registrations and protocol actions.",
+      "definition": "Also called the delegate key. Generated locally by a generator operator and bound to a validator's identity through an assertion. The generator uses it to sign ShinzoHub registrations and protocol actions.",
       "relatedTerms": [
         "Generator",
         "Validator",

@@ -17,7 +17,7 @@ Outposts also handle payments. Users on external chains should be able to pay in
 
 ## Validator assertions
 
-An assertion is a cryptographic proof that a validator on an external chain is who they claim to be. This is a prerequisite for becoming an Generator. A validator cannot register a Generator client directly on ShinzoHub; they must go through the assertion process on their source chain first.
+An assertion is a cryptographic proof that a validator on an external chain is who they claim to be. This is a prerequisite for becoming a Generator. A validator cannot register a Generator client directly on ShinzoHub; they must go through the assertion process on their source chain first.
 
 The flow:
 

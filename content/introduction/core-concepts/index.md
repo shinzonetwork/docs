@@ -44,7 +44,7 @@ Attestation answers that question.
 
 ### How it works
 
-When a Host client receives a document from an Generator client, it checks the signature and creates (or updates) an attestation record for that document. The record tracks which Generators client signed off and maintains a running vote count.
+When a Host client receives a document from a Generator client, it checks the signature and creates (or updates) an attestation record for that document. The record tracks which Generators client signed off and maintains a running vote count.
 
 ```graphql
 type Ethereum__Mainnet__AttestationRecord {
@@ -81,7 +81,7 @@ DefraDB is an open-source document database built by Source Network. It stores d
 
 ### How it connects the network
 
-When an Generator client writes a block to its local DefraDB, DefraDB gossips a digest to subscribed peers over libp2p. Those peers (Hosts) request the full document, verify its CID, and store it locally. No broker is involved.
+When a Generator client writes a block to its local DefraDB, DefraDB gossips a digest to subscribed peers over libp2p. Those peers (Hosts) request the full document, verify its CID, and store it locally. No broker is involved.
 
 The same thing happens at the other end. When a Host produces View documents for a subscriber, DefraDB replicates them directly to the subscriber's embedded instance. The app queries its local database. No API call, no round trip.
 

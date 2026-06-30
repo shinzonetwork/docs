@@ -1,7 +1,7 @@
 +++
 title = "Configuring Event Filters on a Shinzo Host"
 weight = 2
-description = "Shinzo hosts will store absolutely everything it is given from an Generator client by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
+description = "Shinzo hosts will store absolutely everything it is given from a Generator client by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
 +++
 
 A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default the Host stores everything, but it can be configured to only store specific data. This guide configures the Host client to only store USDT ERC-20 transfer events.
