@@ -189,10 +189,10 @@ add_page "/introduction/core-concepts/"  "$CONTENT_DIR/introduction/core-concept
 
 # Indexers
 section_header "Indexers"
-add_page "/indexers/overview/"  "$CONTENT_DIR/indexers/overview/index.md"
-add_page "/indexers/install/"   "$CONTENT_DIR/indexers/install/index.md"
-add_page "/indexers/register/"  "$CONTENT_DIR/indexers/register/index.md"
-add_page "/indexers/faq/"       "$CONTENT_DIR/indexers/faq/index.md"
+add_page "/generator/overview/"  "$CONTENT_DIR/generator/overview/index.md"
+add_page "/generator/install/"   "$CONTENT_DIR/generator/install/index.md"
+add_page "/generator/register/"  "$CONTENT_DIR/generator/register/index.md"
+add_page "/generator/faq/"       "$CONTENT_DIR/generator/faq/index.md"
 
 # Hosts
 section_header "Hosts"
@@ -216,7 +216,7 @@ section_header "Reference"
 add_page "/reference/architecture-overview/"      "$CONTENT_DIR/reference/architecture-overview/index.md"
 add_page "/reference/tools/"                      "$CONTENT_DIR/reference/tools/index.md"
 add_page "/reference/components/host-client/"     "$CONTENT_DIR/reference/components/host-client/index.md"
-add_page "/reference/components/indexer-client/"  "$CONTENT_DIR/reference/components/indexer-client/index.md"
+add_page "/reference/components/generator-client/"  "$CONTENT_DIR/reference/components/generator-client/index.md"
 add_page "/reference/components/outpost/"         "$CONTENT_DIR/reference/components/outpost/index.md"
 add_page "/reference/components/relayer/"         "$CONTENT_DIR/reference/components/relayer/index.md"
 add_page "/reference/components/shinzohub/"       "$CONTENT_DIR/reference/components/shinzohub/index.md"

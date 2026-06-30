@@ -1,16 +1,16 @@
 +++
 title = "Operator Quickstart"
-description = "Bring up an Indexer and a Host on one machine, peer them over libp2p, and query the result."
+description = "Bring up an Generator and a Host on one machine, peer them over libp2p, and query the result."
 weight = 3
 [extra]
 mermaid = true
 +++
 
-Run a Shinzo Indexer and a Host on the same machine, peer them over libp2p, and query indexed Ethereum data through the Host's GraphQL API. If your Geth node is already reachable, the whole thing takes about ten minutes.
+Run a Shinzo Generator and a Host on the same machine, peer them over libp2p, and query indexed Ethereum data through the Host's GraphQL API. If your Geth node is already reachable, the whole thing takes about ten minutes.
 
 When you're done you'll have:
 
-- A running Indexer pulling blocks from a Geth node and signing them.
+- A running Generator pulling blocks from a Geth node and signing them.
 - A running Host receiving those blocks over P2P and serving them.
 - A GraphQL query returning real Ethereum data through the Host.
 - A understanding of how the two main Shinzo infrastructure pieces fit together.
@@ -19,20 +19,20 @@ When you're done you'll have:
 
 {% mermaid() %}
 flowchart LR
-  Geth["Geth (your node)"] -->|RPC + WS| Indexer
-  Indexer -->|libp2p| Host
+  Geth["Geth (your node)"] -->|RPC + WS| Generator
+  Generator -->|libp2p| Host
   Host -->|GraphQL| You["You (curl)"]
 {% end %}
 
-Two containers through one shared Docker bridge. Both containers run on the same VM. The Host dials the Indexer's libp2p port directly over the bridge using the Indexer's published Peer ID.
+Two containers through one shared Docker bridge. Both containers run on the same VM. The Host dials the Generator's libp2p port directly over the bridge using the Generator's published Peer ID.
 
 ## Prerequisites
 
 - Docker. 
 - Both `curl` and `jq`.
-- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Indexer reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Indexer install guide's notes on API keys](/indexers/install#do-you-need-an-api-key).
+- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator install guide's notes on API keys](/generator/install#do-you-need-an-api-key).
 
-You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Indexer registration](/indexers/register) and [Host registration](/hosts/quickstart#shinzohub-registration) pages.
+You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/generator/register) and [Host registration](/hosts/quickstart#shinzohub-registration) pages.
 
 ## Set your Geth endpoint
 
@@ -45,26 +45,26 @@ export GETH_API_KEY="<your-api-key>"   # leave empty if your node has no auth
 ```
 
 {% admonition(type="tip") %}
-The Indexer auto-detects the right header (`X-goog-api-key` for GCP Blockchain Node Engine, `X-Api-Key` for most self-hosted Nginx setups) based on the URL. If the node is on your private network and unauthenticated, leave `GETH_API_KEY` empty.
+The Generator auto-detects the right header (`X-goog-api-key` for GCP Blockchain Node Engine, `X-Api-Key` for most self-hosted Nginx setups) based on the URL. If the node is on your private network and unauthenticated, leave `GETH_API_KEY` empty.
 {% end %}
 
-## Start the Indexer
+## Start the Generator
 
-The Indexer sits next to a blockchain node, subscribes to new blocks, and turns them into signed structured documents. Run it as a single container with three ports exposed:
+The Generator sits next to a blockchain node, subscribes to new blocks, and turns them into signed structured documents. Run it as a single container with three ports exposed:
 
 | Host port | Container port | What it is |
 | --- | --- | --- |
 | `9181` | `9181` | DefraDB GraphQL API. The query interface for raw indexed data. |
-| `9171` | `9171` | libp2p P2P port. How Hosts subscribe to this Indexer. |
+| `9171` | `9171` | libp2p P2P port. How Hosts subscribe to this Generator. |
 | `8080` | `8080` | Health, metrics, and registration endpoints. |
 
 Run everything with:
 
 ```shell
-docker pull ghcr.io/shinzonetwork/shinzo-indexer-client:standard
+docker pull ghcr.io/shinzonetwork/shinzo-generator-client:standard
 
 docker run -d \
-  --name shinzo-indexer \
+  --name shinzo-generator \
   -e GETH_RPC_URL="$GETH_RPC_URL" \
   -e GETH_WS_URL="$GETH_WS_URL" \
   -e GETH_API_KEY="$GETH_API_KEY" \
@@ -77,10 +77,10 @@ docker run -d \
   -p 9181:9181 \
   -p 9171:9171 \
   -p 8080:8080 \
-  ghcr.io/shinzonetwork/shinzo-indexer-client:standard
+  ghcr.io/shinzonetwork/shinzo-generator-client:standard
 ```
 
-`DEFRADB_KEYRING_SECRET` is the password that protects the Indexer's signing key. The Indexer uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Indexer. The `devnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
+`DEFRADB_KEYRING_SECRET` is the password that protects the Generator's signing key. The Generator uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator. The `devnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
@@ -88,14 +88,14 @@ docker run -d \
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
-## Read the Indexer's P2P address
+## Read the Generator's P2P address
 
 The Host needs two things to connect: 
 
-1. The Indexer's libp2p Peer ID.
+1. The Generator's libp2p Peer ID.
 1. A multiaddr it can dial.
 
-Both come from the Indexer's `/health` endpoint once it finishes starting up.
+Both come from the Generator's `/health` endpoint once it finishes starting up.
 
 ```shell
 curl -s http://localhost:8080/health | jq '.p2p.self'
@@ -114,9 +114,9 @@ curl -s http://localhost:8080/health | jq '.p2p.self'
 ```
 {% end %}
 
-`id` is the Indexer's libp2p Peer ID, derived from its keyring secret. It's stable across restarts as long as the secret stays the same.
+`id` is the Generator's libp2p Peer ID, derived from its keyring secret. It's stable across restarts as long as the secret stays the same.
 
-`addresses` are the multiaddrs the Indexer is actually listening on. The first one (`127.0.0.1`) is loopback and useless to other containers. The second (`172.17.0.2` here) is the Indexer container's IP on the Docker bridge. That's the one the Host will dial.
+`addresses` are the multiaddrs the Generator is actually listening on. The first one (`127.0.0.1`) is loopback and useless to other containers. The second (`172.17.0.2` here) is the Generator container's IP on the Docker bridge. That's the one the Host will dial.
 
 Capture both into shell variables:
 
@@ -169,14 +169,14 @@ host:
 
 There are a few things in here worth calling out:
 
-- `defradb.url: localhost:9181` is the Host's _internal_ DefraDB API, not the Indexer's. Inside the Host container, DefraDB binds to `9181` on `localhost`. The Indexer's API happens to use the same number because they're both DefraDB; we'll remap the published ports in the next step so they don't collide.
-- `bootstrap_peers` is the only Indexer-specific value. The Host learns everything else (schemas, signed data) from the Indexer over P2P once it connects.
-- `minimum_attestations: 1` means the Host will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Indexers. See the [Host overview](/hosts/overview) for more on attestations.
+- `defradb.url: localhost:9181` is the Host's _internal_ DefraDB API, not the Generator's. Inside the Host container, DefraDB binds to `9181` on `localhost`. The Generator's API happens to use the same number because they're both DefraDB; we'll remap the published ports in the next step so they don't collide.
+- `bootstrap_peers` is the only Generator-specific value. The Host learns everything else (schemas, signed data) from the Generator over P2P once it connects.
+- `minimum_attestations: 1` means the Host will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generators. See the [Host overview](/hosts/overview) for more on attestations.
 - `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host expects the field to be present.
 
 ## Start the Host
 
-The Indexer is already occupying `9181`, `9171`, and `8080` on the host machine, so the Host container's ports get bumped by one.
+The Generator is already occupying `9181`, `9171`, and `8080` on the host machine, so the Host container's ports get bumped by one.
 
 | Host port | Container port | What it is |
 | --- | --- | --- |
@@ -199,7 +199,7 @@ docker run -d \
 
 ## Verify the peering
 
-The Host's `/health` lists the peers it's connected to. Once the Indexer's Peer ID appears there, the connection is live.
+The Host's `/health` lists the peers it's connected to. Once the Generator's Peer ID appears there, the connection is live.
 
 ```shell
 curl -s http://localhost:8081/health | jq '{status, current_block, p2p: {self: .p2p.self.id, peers: [.p2p.peers[].id]}}'
@@ -220,7 +220,7 @@ curl -s http://localhost:8081/health | jq '{status, current_block, p2p: {self: .
 ```
 {% end %}
 
-Check the Indexer's side too. Its peer list should now contain the Host:
+Check the Generator's side too. Its peer list should now contain the Host:
 
 ```shell
 curl -s http://localhost:8080/health | jq '[.p2p.peers[].id]'
@@ -234,7 +234,7 @@ curl -s http://localhost:8080/health | jq '[.p2p.peers[].id]'
 ```
 {% end %}
 
-If both list each other, libp2p is connected and DefraDB is replicating between them! Data from the Indexer lands in the Host within a few seconds.
+If both list each other, libp2p is connected and DefraDB is replicating between them! Data from the Generator lands in the Host within a few seconds.
 
 ## Query the Host
 
@@ -268,30 +268,30 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 ```
 {% end %}
 
-The rows that come back were originally just logs on Ethereum, then pulled in by the Indexer over the Geth WebSocket, signed, gossiped over libp2p to the Host, and are now being served back to you over GraphQL. More queries are on the [Host examples](/hosts/examples) page.
+The rows that come back were originally just logs on Ethereum, then pulled in by the Generator over the Geth WebSocket, signed, gossiped over libp2p to the Host, and are now being served back to you over GraphQL. More queries are on the [Host examples](/hosts/examples) page.
 
 ## Undo everything
 
 If you want to burn everything down and start again, just run:
 
 ```shell
-docker rm -f shinzo-indexer shinzo-host
+docker rm -f shinzo-generator shinzo-host
 rm ~/host-config.yaml
 ```
 
 ## Troubleshooting
 
-### The Indexer's `/health` never returns a Peer ID
+### The Generator's `/health` never returns a Peer ID
 
 ```shell
-docker logs --tail 50 shinzo-indexer
+docker logs --tail 50 shinzo-generator
 ```
 
-The most common cause is the Indexer can't reach Geth. Confirm `GETH_RPC_URL` and `GETH_WS_URL` are correct and reachable from the container, and that the API key (if any) is right. The Indexer can fall back to HTTP-only mode if WebSocket is unavailable, and will log that it did.
+The most common cause is the Generator can't reach Geth. Confirm `GETH_RPC_URL` and `GETH_WS_URL` are correct and reachable from the container, and that the API key (if any) is right. The Generator can fall back to HTTP-only mode if WebSocket is unavailable, and will log that it did.
 
-### The Host never lists the Indexer as a peer
+### The Host never lists the Generator as a peer
 
-Confirm the bootstrap peer multiaddr in the config uses the Indexer's non-loopback container IP, not `127.0.0.1`. From inside the Host container, the Indexer's loopback is unreachable. Verify with:
+Confirm the bootstrap peer multiaddr in the config uses the Generator's non-loopback container IP, not `127.0.0.1`. From inside the Host container, the Generator's loopback is unreachable. Verify with:
 
 ```shell
 docker exec shinzo-host getent hosts $(echo "$BOOTSTRAP_PEER" | grep -oP '/ip4/\K[0-9.]+')
@@ -305,4 +305,4 @@ The container runs as UID `1001`. If you mounted a host directory for persistenc
 
 ### Port already in use
 
-The Indexer or the Host is colliding with something else on the machine. Change the published ports in the `docker run` commands. Container-side ports stay the same.
+The Generator or the Host is colliding with something else on the machine. Change the published ports in the `docker run` commands. Container-side ports stay the same.

@@ -12,7 +12,7 @@ A View is a developer-defined data product. It describes what raw blockchain dat
 
 Every View is a versioned bundle with three parts:
 
-- A query that specifies which primitive data to pull from the Indexer layer. Today that means blocks, transactions, logs, and access list entries from Ethereum Mainnet.
+- A query that specifies which primitive data to pull from the Generator layer. Today that means blocks, transactions, logs, and access list entries from Ethereum Mainnet.
 - A schema, a GraphQL SDL type definition describing the shape of the output. This is what subscribers see and query against.
 - One or more Lens transforms, WebAssembly modules that do the actual filtering, decoding, and reshaping work.
 
@@ -26,7 +26,7 @@ You deploy Views through `viewkit` to ShinzoHub, which validates and registers t
 
 Views fall into three categories depending on what data they touch:
 
-- Primary: derived directly from Indexer primitives (e.g. decoded ERC-20 transfers from raw logs).
+- Primary: derived directly from Generator primitives (e.g. decoded ERC-20 transfers from raw logs).
 - Secondary: derived from other Views (e.g. a portfolio view built on top of multiple token transfer Views).
 - Tertiary: aggregated or computed across multiple secondary sources.
 
@@ -38,13 +38,13 @@ Attestation is how Shinzo tracks how much of the network has independently agree
 
 ### The problem it solves
 
-With a centralized indexer, you trust the provider because you have no other option. You can't verify[^1] the data you got matches what's actually on chain. In Shinzo, Indexers cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Indexers saw the same thing.
+With a centralized generator, you trust the provider because you have no other option. You can't verify[^1] the data you got matches what's actually on chain. In Shinzo, Generators cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Generators saw the same thing.
 
 Attestation answers that question.
 
 ### How it works
 
-When a Host receives a document from an Indexer, it checks the signature and creates (or updates) an attestation record for that document. The record tracks which Indexers signed off and maintains a running vote count.
+When a Host receives a document from an Generator, it checks the signature and creates (or updates) an attestation record for that document. The record tracks which Generators signed off and maintains a running vote count.
 
 ```graphql
 type Ethereum__Mainnet__AttestationRecord {
@@ -56,7 +56,7 @@ type Ethereum__Mainnet__AttestationRecord {
 }
 ```
 
-The `vote_count` field is a CRDT P-counter: it only ever increments, and multiple Hosts merging their counts never produce conflicts. If three Indexers all sign the same block, the attestation record for that block has a vote count of three.
+The `vote_count` field is a CRDT P-counter: it only ever increments, and multiple Hosts merging their counts never produce conflicts. If three Generators all sign the same block, the attestation record for that block has a vote count of three.
 
 ### What applications do with it
 
@@ -64,24 +64,24 @@ Apps set their own attestation threshold depending on how much they care about c
 
 ### Batch signatures
 
-Rather than signing every document individually, Indexers produce a `BatchSignature` per block: a single document committing to a Merkle root that covers every primitive in that block (transactions, logs, access list entries, and the block itself). A Host can then create a single attestation covering the entire block in one step.
+Rather than signing every document individually, Generators produce a `BatchSignature` per block: a single document committing to a Merkle root that covers every primitive in that block (transactions, logs, access list entries, and the block itself). A Host can then create a single attestation covering the entire block in one step.
 
 ## DefraDB
 
-[DefraDB](https://github.com/sourcenetwork/defradb) is the database embedded in every component of the Shinzo stack. Indexers, Hosts, and application clients each run their own instance. It's what makes the network peer-to-peer rather than client-server.
+[DefraDB](https://github.com/sourcenetwork/defradb) is the database embedded in every component of the Shinzo stack. Generators, Hosts, and application clients each run their own instance. It's what makes the network peer-to-peer rather than client-server.
 
 ### What it is
 
 DefraDB is an open-source document database built by Source Network. It stores data as content-addressed documents, exposes a GraphQL query interface, handles schema definition, and ships with a libp2p networking layer for replication between nodes. A few properties make it a good fit for Shinzo in particular:
 
-- Schema enforcement: primitive documents have defined types that Indexers write into and Hosts read from.
+- Schema enforcement: primitive documents have defined types that Generators write into and Hosts read from.
 - P2P replication: documents gossiped between instances are verified by CID before being accepted.
 - DID-based access control: read access to any collection can be gated by a DID, which is how subscription access is enforced.
 - CRDT support: conflict-free merge semantics for types like the P-counter in Attestation Records.
 
 ### How it connects the network
 
-When an Indexer writes a block to its local DefraDB, DefraDB gossips a digest to subscribed peers over libp2p. Those peers (Hosts) request the full document, verify its CID, and store it locally. No broker is involved.
+When an Generator writes a block to its local DefraDB, DefraDB gossips a digest to subscribed peers over libp2p. Those peers (Hosts) request the full document, verify its CID, and store it locally. No broker is involved.
 
 The same thing happens at the other end. When a Host produces View documents for a subscriber, DefraDB replicates them directly to the subscriber's embedded instance. The app queries its local database. No API call, no round trip.
 

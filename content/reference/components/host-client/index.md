@@ -6,24 +6,24 @@ weight = 1
 mermaid = true
 +++
 
-The host client receives indexed blockchain data from multiple indexers over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
+The host client receives indexed blockchain data from multiple generator over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
 
-If indexers are data producers, hosts are consumers and servers. The separation lets you scale serving independently from indexing.
+If generator are data producers, hosts are consumers and servers. The separation lets you scale serving independently from indexing.
 
 ## Architecture
 
 {% mermaid() %}
 flowchart LR
-  subgraph Indexers["Indexers"]
+  subgraph Generators["Generators"]
     direction TB
     subgraph VM1["Validator machine 1"]
-      I1["Indexer client"]
+      I1["Generator client"]
     end
     subgraph VM2["Validator machine 2"]
-      I2["Indexer client"]
+      I2["Generator client"]
     end
     subgraph VM3["Validator machine 3"]
-      I3["Indexer client"]
+      I3["Generator client"]
     end
   end
 
@@ -45,14 +45,14 @@ flowchart LR
     Pipeline --> Ports
   end
 
-  Indexers -- "P2P (DefraDB)" --> HOST
+  Generators -- "P2P (DefraDB)" --> HOST
 {% end %}
 
 ### Components
 
 | Component | What it does |
 | --- | --- |
-| ShinzoHub Listener | Subscribes to ShinzoHub events over a CometBFT WebSocket. Watches for `Registered` (new views) and `EntityRegistered` (new indexers/hosts). |
+| ShinzoHub Listener | Subscribes to ShinzoHub events over a CometBFT WebSocket. Watches for `Registered` (new views) and `EntityRegistered` (new generator/hosts). |
 | DefraDB | Embedded database. Handles storage, P2P replication, content addressing, CRDT merging, and query serving. |
 | Attestation Handler | Listens to DefraDB's event bus for new BlockSignature documents. Verifies signatures and creates AttestationRecords with P-counter vote counts. |
 | View Processor | Downloads WASM lens binaries, runs Lens transforms on primitives, writes view documents. |
@@ -79,13 +79,13 @@ cancel, channel, err := shinzohub.StartEventSubscription(wsURL)
 This subscribes to two query filters:
 
 - `"tm.event='Tx' AND Registered.key EXISTS"`: view registration events.
-- `"tm.event='Tx' AND EntityRegistered.key EXISTS"`: new indexers or hosts joining.
+- `"tm.event='Tx' AND EntityRegistered.key EXISTS"`: new generator or hosts joining.
 
 Events arrive on the returned channel. The host's main loop reads from this channel and dispatches to the view processor or network handler as appropriate.
 
 ## Attestation system
 
-When a host receives data from multiple indexers for the same block, it creates an `AttestationRecord` using a P-counter CRDT.
+When a host receives data from multiple generator for the same block, it creates an `AttestationRecord` using a P-counter CRDT.
 
 ### AttestationRecord schema
 
@@ -102,8 +102,8 @@ type Ethereum__Mainnet__AttestationRecord {
 The `@crdt(type: pcounter)` annotation tells DefraDB to use a Positive Counter merge strategy. Each node tracks its own increments separately, and merges are deterministic:
 
 ```plaintext
-Host A: {A: 1, B: 0}    (saw 1 indexer)
-Host B: {A: 0, B: 1}    (saw 1 indexer)
+Host A: {A: 1, B: 0}    (saw 1 generator)
+Host B: {A: 0, B: 1}    (saw 1 generator)
 Merge:  {A: 1, B: 1} -> total = 2
 ```
 
@@ -111,8 +111,8 @@ Merge:  {A: 1, B: 1} -> total = 2
 
 {% mermaid() %}
 sequenceDiagram
-  participant IA as Indexer A
-  participant IB as Indexer B
+  participant IA as Generator A
+  participant IB as Generator B
   participant H as Host
   participant H2 as Other hosts
 
@@ -152,14 +152,14 @@ When multiple hosts create AttestationRecords for the same document but with dif
 
 ### Re-org handling
 
-When a blockchain re-org happens, different indexers may briefly have different versions of the same block:
+When a blockchain re-org happens, different generator may briefly have different versions of the same block:
 
 ```plaintext
-Indexer A: Block #1000 with hash 0xaaa (pre-reorg)
-Indexer B: Block #1000 with hash 0xbbb (post-reorg)
+Generator A: Block #1000 with hash 0xaaa (pre-reorg)
+Generator B: Block #1000 with hash 0xbbb (post-reorg)
 ```
 
-These produce separate documents (different CIDs), each with its own AttestationRecord. The post-reorg version accumulates more votes as indexers converge, and applications pick the one with higher consensus.
+These produce separate documents (different CIDs), each with its own AttestationRecord. The post-reorg version accumulates more votes as generator converge, and applications pick the one with higher consensus.
 
 ## View discovery
 
@@ -188,7 +188,7 @@ The host runs LensVM (`source-gh/lens`) to execute WASM modules that transform p
 
 {% mermaid() %}
 flowchart LR
-  In["Raw Log documents<br/>(from indexers)"]
+  In["Raw Log documents<br/>(from generator)"]
   Lens["<b>WASM Lens</b><br/>filter address · ABI-decode<br/>· map to view schema"]
   Out["View documents<br/>(USDCTransfer, …)"]
 

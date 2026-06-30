@@ -21,7 +21,7 @@ A reference list of web interfaces and endpoints for the Shinzo network.
 ## Developer Tools
 
 - [Shinzo Studio](https://studio.shinzo.network/) (deploy and manage views via UI).
-- [Registration app](https://registration.shinzo.network/) (register as a Host or Indexer on ShinzoHub).
+- [Registration app](https://registration.shinzo.network/) (register as a Host or Generator on ShinzoHub).
 
 ## Designs
 
