@@ -43,7 +43,7 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 - `defradb.url`: API endpoint of your local DefraDB node. Defaults work for most setups.
 - `defradb.keyring_secret`: Requires a secret to generate your private keys.
-- `p2p.bootstrap_peers`: Generator peers for receiving indexed data. Defaults include a reliable bootstrap peer.
+- `p2p.bootstrap_peers`: Generator client peers for receiving indexed data. Defaults include a reliable bootstrap peer.
 - `p2p.listen_addr`: Default is suitable for local runs. Override when containerizing.
 - `store.path`: Directory where local DefraDB data is stored.
 - `shinzo.web_socket_url`: Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
@@ -54,25 +54,25 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups.
 {% end %}
 
-### Running Generator and Host on the Same Machine
+### Running a Generator client and a Host client on the same machine
 
-If you are running your own generator, you can connect your Host to this generator by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the registration endpoint:
+If you are running your own Generator client, you can connect your Host to this Generator client by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the registration endpoint:
 
 ```shell
 curl http://localhost:8080/registration
 ```
 
-From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in `p2p.bootstrap_peers` with your generator peer.
+From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in `p2p.bootstrap_peers` with your Generator client's peer.
 
-If you are running both Generator and Host on the same machine, apply the following changes to the [Host's `config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
+If you are running a Generator client and a Host client on the same machine, apply the following changes to the [Host client's `config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
 
-The Generator is likely already using port `9181`, so update the `defradb.url` field:
+The Generator client is likely already using port `9181`, so update the `defradb.url` field:
 
 ```shell
 url: "localhost:9182"
 ```
 
-Also update the [P2P settings](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml#L4) to use localhost and a different port so the Host doesn't clash with the Generator:
+Also update the [P2P settings](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml#L4) to use localhost and a different port so the Host doesn't clash with the Generator client:
 
 
 ```shell
