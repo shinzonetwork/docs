@@ -6,7 +6,6 @@ A reference list of web interfaces and endpoints for the Shinzo network.
 
 ## Explorers
 
-- [Blockscout](https://blockscout.shinzo.network/)
 - [Explorer](https://explorer.shinzo.network/)
 
 ## Faucets
