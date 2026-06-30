@@ -5,7 +5,7 @@ weight = 3
 mermaid = true
 +++
 
-An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as generator, and lets users pay for view access without interacting with ShinzoHub directly.
+An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as Generator, and lets users pay for view access without interacting with ShinzoHub directly.
 
 Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](../relayer) bridge the results to [ShinzoHub](../shinzohub).
 

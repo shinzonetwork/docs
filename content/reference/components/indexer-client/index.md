@@ -180,7 +180,7 @@ The signing flow:
 1. At startup, the Generator client loads a persistent identity from the DefraDB keyring using `GetIdentityContext()`.
 1. The identity is injected into the Go context via `node.ContextWithBlockSigning(ctx, collector)`, which enables CID collection.
 1. As the block handler writes documents, DefraDB collects the CID of each document written.
-1. After all documents for a block are written, the generator calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.
+1. After all documents for a block are written, the Generator client calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.
 1. Each individual document also gets a `_version` entry with identity and signature:
 
 ```json
@@ -205,7 +205,7 @@ The pruner removes old data to keep storage bounded. It uses a queue-based syste
 Two queue implementations exist:
 
 - GeneratorQueue: tracks document IDs at creation time. When it prunes, it removes entire blocks at once (Block + all its Transactions, Logs, AccessListEntries, and BlockSignature).
-- EventQueue: FIFO queue for P2P replication events. Drains documents as they arrive. Used by hosts, not generator.
+- EventQueue: FIFO queue for P2P replication events. Drains documents as they arrive. Used by Host clients, not Generator clients.
 
 If the queue is empty (first run or after restart with no persisted state), the pruner falls back to filter-based pruning, querying DefraDB directly for old documents.
 
@@ -224,15 +224,15 @@ Environment variables: `SNAPSHOT_ENABLED`, `SNAPSHOT_BLOCKS_PER_FILE`, `SNAPSHOT
 
 ## P2P data distribution
 
-The generator does not manage P2P connections directly. DefraDB handles all of that through libp2p:
+The Generator client does not manage P2P connections directly. DefraDB handles all of that through libp2p:
 
-1. The generator writes a document.
+1. The Generator client writes a document.
 1. DefraDB computes a content digest.
 1. DefraDB gossips the digest to connected peers.
 1. A peer that wants the document requests its full content.
 1. DefraDB sends the full document.
 
-This is unidirectional. The replication filter in `pkg/generator/replication_filter.go` rejects all inbound documents. Generators only push.
+This is unidirectional. The replication filter in `pkg/generator/replication_filter.go` rejects all inbound documents. Generator clients only push.
 
 Bootstrap peers are configured in the DefraDB config. Peers are also discovered through `EntityRegistered` events from ShinzoHub.
 
