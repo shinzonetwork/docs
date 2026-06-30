@@ -3,7 +3,7 @@ title = "Install"
 weight = 2
 +++
 
-This page covers installing a Shinzo Generator with Docker or from source. To complete an generator setup, you must also register it with the Shinzo Network (see [Registration](./register)).
+This page covers installing a Shinzo Generator client with Docker or from source. To complete an generator setup, you must also register it with the Shinzo Network (see [Registration](./register)).
 
 ## Hardware recommendations
 
@@ -16,17 +16,17 @@ This page covers installing a Shinzo Generator with Docker or from source. To co
 
 ## Using Docker 
 
-These steps use Docker to run the Shinzo Generator. To build the generator from source, see [Building from source](#building-from-source) below.
+These steps use Docker to run the Shinzo Generator client. To build the Generator client from source, see [Building from source](#building-from-source) below.
 
 ### Prerequisites
 
 - Docker.
-- Access to an Ethereum execution node that exposes JSON-RPC and WebSocket. The generator does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
+- Access to an Ethereum execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
 - A browser wallet setup. This wallet does not need to hold any funds.
 
 ### Steps
 
-1. Pull the pre-built generator image from the Shinzo container registry.
+1. Pull the pre-built Generator client image from the Shinzo container registry.
 
     ```shell
     docker pull ghcr.io/shinzonetwork/shinzo-generator-client:standard
@@ -52,7 +52,7 @@ These steps use Docker to run the Shinzo Generator. To build the generator from 
     - WebSocket URL
     - API key ([if set](#do-you-need-an-api-key))
 
-1. Start the generator by filling in your details and running:
+1. Start the Generator client by filling in your details and running:
 
     ```shell
     docker run --rm \
@@ -72,7 +72,7 @@ These steps use Docker to run the Shinzo Generator. To build the generator from 
       ghcr.io/shinzonetwork/shinzo-generator-client:standard
     ```
 
-You should see the generator connect to Geth and start collecting and committing blocks:
+You should see the Generator client connect to Geth and start collecting and committing blocks:
 
 {% output() %}
 ```
@@ -87,7 +87,7 @@ You should see the generator connect to Geth and start collecting and committing
 ```
 {% end %}
 
-Eventually your generator will catch up with the validator node and start waiting for new blocks rather than pulling historical data:
+Eventually your Generator client will catch up with the validator node and start waiting for new blocks rather than pulling historical data:
 
 {% output() %}
 ```
@@ -99,11 +99,11 @@ Eventually your generator will catch up with the validator node and start waitin
 
 ### Registration
 
-Once the generator is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Once the Generator client is running, register it with the Shinzo Network. See [Registration](./register) for details.
 
 ## Building from source
 
-You can also build the generator binary from source instead of using Docker.
+You can also build the Generator client binary from source instead of using Docker.
 
 ### Prerequisites
 
@@ -121,7 +121,7 @@ You can also build the generator binary from source instead of using Docker.
     go mod download
     ```
 
-1. Create a `.env` file with your node details and generator settings.
+1. Create a `.env` file with your node details and Generator client settings.
 
     ```shell
     cat > .env << EOF
@@ -148,7 +148,7 @@ You can also build the generator binary from source instead of using Docker.
     make build
     ```
 
-1. Run the generator.
+1. Run the Generator client.
 
     ```shell
     make start
@@ -160,13 +160,13 @@ The included `config.yaml` works for most local development. You typically only 
 
 ### Registration
 
-Once your generator is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Once your Generator client is running, register it with the Shinzo Network. See [Registration](./register) for details.
 
 ## Do you need an API key?
 
 It depends on where your Geth node is.
 
-If the generator and the Geth node are on the same private network (both on VMs in the same VPC, for example) you probably don't need one. Geth has no authentication by default. Leave `GETH_API_KEY` empty and point `GETH_RPC_URL` at the node's internal IP or hostname.
+If the Generator client and the Geth node are on the same private network (both on VMs in the same VPC, for example) you probably don't need one. Geth has no authentication by default. Leave `GETH_API_KEY` empty and point `GETH_RPC_URL` at the node's internal IP or hostname.
 
 For an externally hosted node, authentication is almost always required. Two common cases:
 
@@ -208,4 +208,4 @@ docker-compose -f ~/docker-compose.yml start
 
 ### WebSocket unavailable, will use HTTP-only mode
 
-The generator falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.
+The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.

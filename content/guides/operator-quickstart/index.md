@@ -1,16 +1,16 @@
 +++
 title = "Operator Quickstart"
-description = "Bring up an Generator and a Host on one machine, peer them over libp2p, and query the result."
+description = "Bring up a Generator client and a Host on one machine, peer them over libp2p, and query the result."
 weight = 3
 [extra]
 mermaid = true
 +++
 
-Run a Shinzo Generator and a Host on the same machine, peer them over libp2p, and query indexed Ethereum data through the Host's GraphQL API. If your Geth node is already reachable, the whole thing takes about ten minutes.
+Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query indexed Ethereum data through the Host's GraphQL API. If your Geth node is already reachable, the whole thing takes about ten minutes.
 
 When you're done you'll have:
 
-- A running Generator pulling blocks from a Geth node and signing them.
+- A running Generator client pulling blocks from a Geth node and signing them.
 - A running Host receiving those blocks over P2P and serving them.
 - A GraphQL query returning real Ethereum data through the Host.
 - A understanding of how the two main Shinzo infrastructure pieces fit together.
@@ -19,18 +19,18 @@ When you're done you'll have:
 
 {% mermaid() %}
 flowchart LR
-  Geth["Geth (your node)"] -->|RPC + WS| Generator
-  Generator -->|libp2p| Host
+  Geth["Geth (your node)"] -->|RPC + WS| Generator client
+  Generator client -->|libp2p| Host
   Host -->|GraphQL| You["You (curl)"]
 {% end %}
 
-Two containers through one shared Docker bridge. Both containers run on the same VM. The Host dials the Generator's libp2p port directly over the bridge using the Generator's published Peer ID.
+Two containers through one shared Docker bridge. Both containers run on the same VM. The Host dials the Generator client's libp2p port directly over the bridge using the Generator client's published Peer ID.
 
 ## Prerequisites
 
 - Docker. 
 - Both `curl` and `jq`.
-- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator install guide's notes on API keys](/generator/install#do-you-need-an-api-key).
+- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/generator/install#do-you-need-an-api-key).
 
 You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/generator/register) and [Host registration](/hosts/quickstart#shinzohub-registration) pages.
 
@@ -45,12 +45,12 @@ export GETH_API_KEY="<your-api-key>"   # leave empty if your node has no auth
 ```
 
 {% admonition(type="tip") %}
-The Generator auto-detects the right header (`X-goog-api-key` for GCP Blockchain Node Engine, `X-Api-Key` for most self-hosted Nginx setups) based on the URL. If the node is on your private network and unauthenticated, leave `GETH_API_KEY` empty.
+The Generator client auto-detects the right header (`X-goog-api-key` for GCP Blockchain Node Engine, `X-Api-Key` for most self-hosted Nginx setups) based on the URL. If the node is on your private network and unauthenticated, leave `GETH_API_KEY` empty.
 {% end %}
 
-## Start the Generator
+## Start the Generator client
 
-The Generator sits next to a blockchain node, subscribes to new blocks, and turns them into signed structured documents. Run it as a single container with three ports exposed:
+The Generator client sits next to a blockchain node, subscribes to new blocks, and turns them into signed structured documents. Run it as a single container with three ports exposed:
 
 | Host port | Container port | What it is |
 | --- | --- | --- |

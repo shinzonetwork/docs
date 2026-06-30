@@ -3,14 +3,14 @@ title = "Register"
 weight = 3
 +++
 
-To participate in the Shinzo Network, you must register your Generator. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your Generator will not be recognized by the network. To register in ShinzoHub, follow the steps below.
+To participate in the Shinzo Network, you must register your Generator client. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your Generator client will not be recognized by the network. To register in ShinzoHub, follow the steps below.
 
 {% admonition(type="info") %}
 If you are a validator on a source chain, registration may also prompt you to submit an [assertion](/reference/components/outpost#validator-assertions). Assertions require your **consensus public key** for the chain you validate on. See [Consensus public key](/reference/components/outpost#consensus-public-key) for what that is and how to retrieve it.
 {% end %}
 
 
-1. Start your Generator.
+1. Start your Generator client.
 1. Add the Shinzo Devnet to your browser wallet with the following values:
    - Network name: `Shinzo`
    - Default RPC URL: `http://rpc.devnet.shinzo.network:8545`
@@ -19,29 +19,29 @@ If you are a validator on a source chain, registration may also prompt you to su
 1. Go to [localhost:8080](http://localhost:8080/registration-app) and select **Connect** to connect your wallet.
 
     {% admonition(type="info") %}
-    If your Generator is running on a remote server (like Hetzner, DigialOcean, GCP, AWS, etc), you can use SSH local port forwarding to access the registration page.
+    If your Generator client is running on a remote server (like Hetzner, DigialOcean, GCP, AWS, etc), you can use SSH local port forwarding to access the registration page.
 
 1. On your local machine, run `ssh -L 8080:localhost:8080 user@your-hetzner-ip`.
 1. Open `http://localhost:8080/registration-app` in your browser.
     {% end %}
 
-1. Share your wallet address in the [Shinzo Discord](https://discord.com/channels/1444411399882408011/1444411402239344802) channel to request allowlisting as an Generator.
+1. Share your wallet address in the [Shinzo Discord](https://discord.com/channels/1444411399882408011/1444411402239344802) channel to request allowlisting as an Generator client.
 
     It may take ~24 hours for your address to be added to the allowlist. Once your address has been added:
 
 1. Return to the [registration page](http://localhost:8080/registration-app), click **Register**, and select **Generator** as your role.
 1. Submit your registration and then confirm the transaction in your browser wallet. You should see a successful registration notification.
 
-Your Generator is now registered and authorized to participate in the Shinzo Network.
+Your Generator client is now registered and authorized to participate in the Shinzo Network.
 
 ## Backup your node identity key
 
-This key defines your Generator’s identity on the network. Persisting it ensures your node can be restored without losing identity.
+This key defines your Generator client’s identity on the network. Persisting it ensures your node can be restored without losing identity.
 
 - Store a secure backup of the key.
 - In a recovery scenario, place it back into the same path (e.g. `/defra/keys`).
 - Use the same keyring/secret configuration.
 
 {% admonition(type="warning") %}
-If this key is lost, and there is no backup available, you will be unable to restore your Generator with the same identity.
+If this key is lost, and there is no backup available, you will be unable to restore your Generator client with the same identity.
 {% end %}
