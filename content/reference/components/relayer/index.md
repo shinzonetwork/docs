@@ -22,7 +22,7 @@ When a signed assertion is detected on the source chain, the relayer:
 1. Packages everything into a `MsgGeneratorAssertion`.
 1. Broadcasts the message to ShinzoHub.
 
-After ShinzoHub processes the message, the validator can register as an generator in the Generator Registry (`0x0212`).
+After ShinzoHub processes the message, the Validator can register as an Generator in the Generator Registry (`0x0212`).
 
 ### What gets relayed
 

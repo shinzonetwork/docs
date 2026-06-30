@@ -3,7 +3,7 @@ title = "ShinzoHub"
 weight = 5
 +++
 
-ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, hosts, generator, and the economic layer (staking, funding, pricing, earnings) all live here.
+ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, hosts, Generator, and the economic layer (staking, funding, pricing, earnings) all live here.
 
 ShinzoHub does not store or serve blockchain data. It is only a coordination layer.
 
@@ -111,7 +111,7 @@ Generators cannot self-register. They must go through the outpost + relayer asse
 
 1. Validator proves identity on source chain via outpost contract.
 1. Relayer delivers `MsgGeneratorAssertion` to ShinzoHub.
-1. ShinzoHub's generator module stores the assertion.
+1. ShinzoHub's Generator module stores the assertion.
 1. Operator calls `register()`, registry verifies stored assertion, derives DID/PID, sends ICA to SourceHub.
 
 Key files: `app/precompiles/generatorregistry/methods.go`
@@ -133,7 +133,7 @@ Other events:
 | `GeneratorAsserted` | Generator module msg_server |
 | `AccessRequestSuccess` | SourceHub module msg_server |
 
-There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches Generator Registry events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
+There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches any Generator Registry events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
 
 Some older docs reference `DataPurchased`, `AccessRevoked`, and `AccessRequestPayment`. These event names do not exist in the codebase.
 

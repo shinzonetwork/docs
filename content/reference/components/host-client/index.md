@@ -6,9 +6,9 @@ weight = 1
 mermaid = true
 +++
 
-The host client receives indexed blockchain data from multiple generator over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
+The Host client receives indexed blockchain data from multiple Generator clients over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
 
-If generator are data producers, hosts are consumers and servers. The separation lets you scale serving independently from indexing.
+If Generator clients are data producers, Host clients are consumers and servers. The separation lets you scale serving independently from indexing.
 
 ## Architecture
 
@@ -79,13 +79,13 @@ cancel, channel, err := shinzohub.StartEventSubscription(wsURL)
 This subscribes to two query filters:
 
 - `"tm.event='Tx' AND Registered.key EXISTS"`: view registration events.
-- `"tm.event='Tx' AND EntityRegistered.key EXISTS"`: new generator or hosts joining.
+- `"tm.event='Tx' AND EntityRegistered.key EXISTS"`: new Generator or Host joining.
 
 Events arrive on the returned channel. The host's main loop reads from this channel and dispatches to the view processor or network handler as appropriate.
 
 ## Attestation system
 
-When a host receives data from multiple generator for the same block, it creates an `AttestationRecord` using a P-counter CRDT.
+When a host receives data from multiple Generator clients for the same block, it creates an `AttestationRecord` using a P-counter CRDT.
 
 ### AttestationRecord schema
 
@@ -152,14 +152,14 @@ When multiple hosts create AttestationRecords for the same document but with dif
 
 ### Re-org handling
 
-When a blockchain re-org happens, different generator may briefly have different versions of the same block:
+When a blockchain re-org happens, different Generator clients may briefly have different versions of the same block:
 
 ```plaintext
 Generator A: Block #1000 with hash 0xaaa (pre-reorg)
 Generator B: Block #1000 with hash 0xbbb (post-reorg)
 ```
 
-These produce separate documents (different CIDs), each with its own AttestationRecord. The post-reorg version accumulates more votes as generator converge, and applications pick the one with higher consensus.
+These produce separate documents (different CIDs), each with its own AttestationRecord. The post-reorg version accumulates more votes as Generator clients converge, and applications pick the one with higher consensus.
 
 ## View discovery
 

@@ -23,15 +23,15 @@ Somewhere on the network, an Ethereum validator's node produces or receives the 
 
 ### The Generator structures and signs it
 
-Sitting next to the Ethereum node is the Shinzo Generator (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Generator pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
+Sitting next to the Ethereum node is the Shinzo Generator client (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Generator client pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
 
-Those documents land in the Generator's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
+Those documents land in the Generator client's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
 
 ![](./images/data-journey-2.svg)
 
 ### Hosts pick it up over P2P
 
-Hosts subscribe to the primitive collection topics they care about (blocks, transactions, logs, access lists). When the Generator's DefraDB gossips the new log document, subscribed Hosts receive it, verify the signature, and update an attestation record for it (essentially just a running tally of how many distinct Generators have signed off on this exact piece of data). If three Generators all wrote the same log, the attestation record has three votes. Apps can later use those votes to set their own trust thresholds.
+Hosts subscribe to the primitive collection topics they care about (blocks, transactions, logs, access lists). When the Generator client's DefraDB gossips the new log document, subscribed Hosts receive it, verify the signature, and update an attestation record for it (essentially just a running tally of how many distinct Generator clients have signed off on this exact piece of data). If three Generator clients all wrote the same log, the attestation record has three votes. Apps can later use those votes to set their own trust thresholds.
 
 ![](./images/data-journey-3.svg)
 
@@ -51,9 +51,9 @@ On the app side, things look (surprisingly) normal. The app embeds DefraDB using
 
 ## The four participants
 
-#### Generators
+#### Generator clients
 
-Generators are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off. The component reference has the [full Generator spec](#).
+Generator clients are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
 
 #### Hosts
 
@@ -87,7 +87,7 @@ Validators already run full nodes, already have the block data the moment it's p
 
 ### Indexing and transformation are separate jobs
 
-Generators ingest, Hosts transform and serve. That split means Generators can stay small and cheap (so validators will actually run them), while Hosts can specialize. One Host might process every DeFi View on the network, another might focus on NFTs. It also means scaling consumer demand is a matter of adding Hosts, not Generators.
+Generator clients ingest, Host clients transform and serve. That split means Generator clients can stay small and cheap (so validators will actually run them), while Host clients can specialize. One Host might process every DeFi View on the network, another might focus on NFTs. It also means scaling consumer demand is a matter of adding more Host clients, not Generator clients.
 
 ### Apps query local data, not remote APIs
 

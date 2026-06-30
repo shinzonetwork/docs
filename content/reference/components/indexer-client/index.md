@@ -7,7 +7,7 @@ mermaid = true
 
 The Generator client is a standalone Go process that runs as a sidecar alongside an Ethereum validator node. It connects to the validator's Geth node, fetches every new block (with transactions, receipts, and logs), structures them into DefraDB documents, signs the batch, and publishes everything over P2P.
 
-Generators are write-only data producers. They push data out and reject all incoming replication.
+Generator clients are write-only data producers. They push data out and reject all incoming replication.
 
 ## Architecture
 
@@ -30,7 +30,7 @@ flowchart LR
   DB -- "P2P (libp2p)" --> Hosts
 {% end %}
 
-The generator connects to Geth over two channels:
+The Generator client connects to Geth over two channels:
 
 - WebSocket (port 8546): subscribes to new block headers for real-time feed.
 - HTTP JSON-RPC (port 8545): fetches full block details, fills gaps on restart, handles historical ranges. This is a backup connection.
@@ -42,13 +42,13 @@ Each block goes through six stages:
 1. Receive: a new block header arrives over the WebSocket subscription.
 1. Fetch: the full block is pulled over JSON-RPC, including the header, transactions, receipts, logs, and access lists.
 1. Structure: raw data is transformed into the six document types.
-1. Sign: a Merkle root is computed over all document CIDs and signed with the generator's identity key.
+1. Sign: a Merkle root is computed over all document CIDs and signed with the Generator client's identity key.
 1. Store: documents are written to the local embedded DefraDB.
 1. Publish: DefraDB's P2P layer broadcasts to subscribed peers (hosts).
 
 ## Document types
 
-The generator produces six document types per block. The first four come directly from on-chain data. The last two are metadata that the generator itself produces.
+The Generator client produces six document types per block. The first four come directly from on-chain data. The last two are metadata that the Generator client itself produces.
 
 Collection names use a chain prefix: `Ethereum__Mainnet__Block`, `Optimism__Mainnet__Block`, etc. Schema definitions live in `pkg/schema/schema_standard.graphql`. There are two schema variants:
 
@@ -136,7 +136,7 @@ type Ethereum__Mainnet__AccessListEntry {
 
 ### BlockSignature
 
-Created after all documents for a block are written. Contains a Merkle root computed over all document CIDs for that block, signed with the generator's identity key.
+Created after all documents for a block are written. Contains a Merkle root computed over all document CIDs for that block, signed with the Generator client's identity key.
 
 ```graphql
 type Ethereum__Mainnet__BlockSignature {
@@ -173,11 +173,11 @@ type Ethereum__Mainnet__SnapshotSignature {
 
 ## Document signing
 
-Signing is opt-in and configured by the generator operator. Hosts disable it with `--no-signing`.
+Signing is opt-in and configured by the Generator operator. Hosts can disable it with `--no-signing`.
 
 The signing flow:
 
-1. At startup, the generator loads a persistent identity from the DefraDB keyring using `GetIdentityContext()`.
+1. At startup, the Generator client loads a persistent identity from the DefraDB keyring using `GetIdentityContext()`.
 1. The identity is injected into the Go context via `node.ContextWithBlockSigning(ctx, collector)`, which enables CID collection.
 1. As the block handler writes documents, DefraDB collects the CID of each document written.
 1. After all documents for a block are written, the generator calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.

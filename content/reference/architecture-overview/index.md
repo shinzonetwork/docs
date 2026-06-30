@@ -48,7 +48,7 @@ flowchart LR
   User -. "pay / subscribe" .-> SH
 {% end %}
 
-The scheduler and gateway are coordination services. They match generator to hosts and route user queries to the right host. They never touch the actual data.
+The scheduler and gateway are coordination services. They match the Generator client to Host clients and route user queries to the right host. They never touch the actual data.
 
 ## Component inventory
 
@@ -79,7 +79,7 @@ ShinzoHub maintains three EVM precompile registries:
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views, deploys SVS-1 contracts. |
 | `0x0211` | Host Registry | Tracks registered hosts. |
-| `0x0212` | Generator Registry | Tracks registered generator. |
+| `0x0212` | Generator Registry | Tracks registered Generator clients. |
 
 These precompiles are implemented in Go, not Solidity bytecode. They have direct access to Cosmos SDK keepers, which is how EVM transactions trigger cross-chain ICA calls to SourceHub.
 
@@ -114,7 +114,7 @@ Permission checks evaluate whether a chain of tuples grants a specific action. P
 
 SourceHub manages two independent policy domains:
 
-1. Protocol participation: which DIDs are registered as hosts or generator (`group:host`, `group:generator`).
+1. Protocol participation: which DIDs are registered as Host clients or Generator clients (`group:host`, `group:generator`).
 1. View access: which DIDs can read which views (`view:0xABC#subscriber`).
 
 Users never interact with SourceHub directly. ShinzoHub sends commands to it via ICA.
@@ -157,7 +157,7 @@ Two components connect external blockchains (Ethereum, Cosmos chains, etc.) to S
 
 Outpost contracts are deployed on each source chain. They handle two things:
 
-- Validator assertions: a validator proves their identity using chain-native mechanisms and authorises an operator (delegate) key to act as their generator. On Ethereum, the validator's withdrawal key signs an EIP-712 message on the outpost contract that names the validator (consensus public key) and the operator pubkey. The contract verifies the signature, checks validator status, and emits an `AssertionSigned` event.
+- Validator assertions: a validator proves their identity using chain-native mechanisms and authorises an operator (delegate) key to act as their Generator. On Ethereum, the validator's withdrawal key signs an EIP-712 message on the outpost contract that names the validator (consensus public key) and the operator pubkey. The contract verifies the signature, checks validator status, and emits an `AssertionSigned` event.
 - Payments: Users call `payment()` on the outpost. The contract stores a receipt and emits a `PaymentCreated` event.
 
 The outpost design is chain agnostic. Each chain gets its own implementation using whatever verification mechanism is native to that chain. The only requirement is that the output is a signed assertion that a relayer can deliver to ShinzoHub.
@@ -179,7 +179,7 @@ The EVM relayer and the Hermes IBC relayer are completely different systems. The
 
 ### DefraDB
 
-DefraDB is the peer-to-peer document database embedded in every generator and host. Three separate DefraDB instances exist in the system (one per generator, one per host for primitives, one per host for view data).
+DefraDB is the peer-to-peer document database embedded in every Generator client and Host client. Three separate DefraDB instances exist in the system (one per Generator, one per Host for primitives, one per Host for view data).
 
 DefraDB uses MerkleCRDTs, a combination of Merkle DAGs and CRDTs. Document updates are stored as a Merkle DAG where each node is a CRDT operation. CRDTs give you conflict resolution without coordination. The Merkle DAG gives you verifiable history. And because nodes can diff DAGs, sync only transfers the missing pieces.
 
@@ -189,29 +189,29 @@ Documents are content-addressed using CIDs (Content Identifiers). The CID is a h
 
 Data replication uses libp2p, managed internally by DefraDB. The flow for a new document:
 
-1. Generator writes document to its local DefraDB.
+1. Generator client writes document to its local DefraDB.
 1. DefraDB computes a content digest.
 1. DefraDB gossips the digest to connected peers.
 1. Peers that want the document request the full content.
 1. DefraDB sends the full document.
 
-Generators are write-only. They publish documents and reject all incoming replication (enforced by a replication filter in the Generator client). Hosts accept incoming documents from generator and replicate attestation records between each other.
+Generator clients are write-only. They publish documents and reject all incoming replication (enforced by a replication filter in the Generator client). Host clients accept incoming documents from generator and replicate attestation records between each other.
 
-Peers discover each other through bootstrap peers configured in DefraDB and through `EntityRegistered` events from ShinzoHub (when new generator or hosts join the network).
+Peers discover each other through bootstrap peers configured in DefraDB and through `EntityRegistered` events from ShinzoHub (when a new Generator client or Host client joins the network).
 
 ### Signing and attestation
 
-Each generator signs every block batch it produces. After writing all documents for a block (Block, Transaction, Log, AccessListEntry), the generator computes a Merkle root over all document CIDs, signs it with its identity key, and writes a `BlockSignature` document. 
+Each Generator client signs every block batch it produces. After writing all documents for a block (Block, Transaction, Log, AccessListEntry), the Generator client computes a Merkle root over all document CIDs, signs it with its identity key, and writes a `BlockSignature` document. 
 
-Hosts verify the signature included in the `blockSignature` against the CID for that document. They can then create an `AttestationRecord` (document) for that block to track how many independent generator produced the same data. The `vote_count` field uses a P-counter CRDT, which tracks the number of generator which produced that block. 
+Hosts verify the signature included in the `blockSignature` against the CID for that document. They can then create an `AttestationRecord` (document) for that block to track how many independent Generator clients produced the same data. The `vote_count` field uses a P-counter CRDT, which tracks the number of Generator clients which produced that block. 
 
-Snapshots bundle multiple blocks into signed files for faster initial sync. The generator periodically creates `SnapshotSignature` documents whose Merkle root is computed over the per-block `BlockSignature` roots within the range. So you get a two-level Merkle tree: document CIDs roll up into per-block roots, which roll up into per-snapshot roots.
+Snapshots bundle multiple blocks into signed files for faster initial sync. The Generator client periodically creates `SnapshotSignature` documents whose Merkle root is computed over the per-block `BlockSignature` roots within the range. So you get a two-level Merkle tree: document CIDs roll up into per-block roots, which roll up into per-snapshot roots.
 
 ## Registration flows
 
 ### Generator registration
 
-Spans two chains and a relayer. The generator cannot register on ShinzoHub until the validator has signed an assertion that ties the generator's operator key to the validator's identity.
+Spans two chains and a relayer. The Generator cannot register on ShinzoHub until the validator has signed an assertion that ties the Generator client's operator key to the validator's identity.
 
 {% mermaid() %}
 sequenceDiagram

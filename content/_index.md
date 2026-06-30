@@ -10,13 +10,13 @@ mermaid = true
 
 Shinzo is a decentralized indexing network for blockchains. It takes raw on-chain data and turns it into structured datasets that any application can query, without having to go through a centralized indexing service to get them.
 
-If you've built any kind web3 app before, you know the usual pattern: you pick a hosted generator, pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that index the chain at the source and share the results peer to peer.
+If you've built any kind web3 app before, you know the usual pattern: you pick a hosted indexer, pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that index the chain at the source and share the results peer to peer.
 
 ## The problem Shinzo solves
 
 Blockchains are good at writing data and bad at reading it. If you want to show a user all their previous transactions, or count token transfers for a given contract, you can't just ask the chain. The raw data isn't organized for questions like that. So the industry bolted centralized indexing services onto the side of every chain, and those services now sit in the trust path between your app and the data.
 
-This setup is expensive and fragile. The generator's DNS might fail, or the cloud service hosting it might go down. And there's no way to verify that the data you're receiving is accurate until _after_ you've received (and paid) for it.
+This setup is expensive and fragile. The indexer's DNS might fail, or the cloud service hosting it might go down. And there's no way to verify that the data you're receiving is accurate until _after_ you've received (and paid) for it.
 
 The goal of Shinzo is to make reading blockchain data as decentralized and verifiable as writing to it.
 

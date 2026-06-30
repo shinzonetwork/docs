@@ -17,15 +17,15 @@ Outposts also handle payments. Users on external chains should be able to pay in
 
 ## Validator assertions
 
-An assertion is a cryptographic proof that a validator on an external chain is who they claim to be. This is a prerequisite for becoming an generator. A validator cannot register as an generator directly on ShinzoHub; they must go through the assertion process on their source chain first.
+An assertion is a cryptographic proof that a validator on an external chain is who they claim to be. This is a prerequisite for becoming an Generator. A validator cannot register a Generator client directly on ShinzoHub; they must go through the assertion process on their source chain first.
 
 The flow:
 
-1. The generator generates an operator (delegate) key locally.
+1. The Generator client generates an operator (delegate) key locally.
 1. The validator's withdrawal key calls the outpost, providing their consensus public key and the operator pubkey, and signs the assertion digest.
 1. Outpost verifies the validator using the chain's native mechanism, stores the signed assertion, and emits an `AssertionSigned` event.
 1. A [relayer](../relayer) picks up the event and broadcasts `MsgGeneratorAssertion` to ShinzoHub.
-1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The generator can now register in the Generator Registry (`0x0212`), signing the registration with its operator key.
+1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The Generator can now register in the Generator Registry (`0x0212`), signing the registration with its operator key.
 
 ### Consensus public key
 
