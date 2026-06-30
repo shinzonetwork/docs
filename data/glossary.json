@@ -16,7 +16,7 @@
       "definition": "A document type produced by the generator for EIP-2930 access list entries attached to Ethereum transactions. Most transactions have no access list, so this collection is usually sparse.",
       "relatedTerms": [
         "EIP-2930",
-        "Indexer"
+        "Generator"
       ]
     },
     {
@@ -35,7 +35,7 @@
         "Operator Key",
         "Withdrawal Key",
         "Consensus Public Key",
-        "Indexer"
+        "Generator"
       ]
     },
     {
@@ -67,7 +67,7 @@
       "term": "Block Data",
       "definition": "Raw blockchain data: blocks, transactions, and logs. The generator fetches this from source chains such as Ethereum and structures it into defraDB documents.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "Indexing",
         "Epoch"
       ]
@@ -76,7 +76,7 @@
       "term": "BlockSignature",
       "definition": "A document the generator writes after it finishes processing a block. It contains a Merkle root over all document CIDs for that block, signed with the generator's identity key. Hosts check it to verify the batch came from a known generator.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "Merkle Tree",
         "AttestationRecord",
         "SnapshotSignature"
@@ -226,7 +226,7 @@
       "term": "Geth",
       "definition": "Go-Ethereum, the Go implementation of an Ethereum node. Each generator runs alongside a Geth node and connects over WebSocket (port 8546) and JSON-RPC (port 8545) to fetch block data.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "Validator"
       ]
     },
@@ -283,8 +283,8 @@
       ]
     },
     {
-      "term": "Indexer",
-      "definition": "A node that reads blockchain data from a source chain, parses it into structured documents, and writes them to defraDB. Indexers are write-only: they push data out over P2P and reject all incoming replication.",
+      "term": "Generator",
+      "definition": "A node that reads blockchain data from a source chain, parses it into structured documents, and writes them to defraDB. Generator are write-only: they push data out over P2P and reject all incoming replication.",
       "relatedTerms": [
         "Indexing",
         "defraDB",
@@ -294,10 +294,10 @@
       ]
     },
     {
-      "term": "Indexer Registry",
+      "term": "Generator Registry",
       "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered generator. An generator cannot register here directly — it must first complete an assertion via an outpost contract. The registry verifies the stored assertion before accepting registration.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "Precompile",
         "Assertion",
         "Outpost"
@@ -307,7 +307,7 @@
       "term": "Indexing",
       "definition": "The process of parsing blockchain data and storing it as structured, schema-compliant documents in defraDB.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "defraDB",
         "Block Data"
       ]
@@ -364,7 +364,7 @@
       "term": "Log",
       "definition": "A document type the generator produces for event logs emitted during transaction execution. `topics` holds the indexed parameters and `data` holds the non-indexed ones, both as raw hex. ABI decoding happens later, in a lens.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "Lens",
         "ABI"
       ]
@@ -443,7 +443,7 @@
       "term": "Operator Key",
       "definition": "Also called the delegate key. Generated locally by an generator operator and bound to a validator's identity through an assertion. The generator uses it to sign ShinzoHub registrations and protocol actions.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "Validator",
         "Assertion",
         "Withdrawal Key"
@@ -497,27 +497,27 @@
     },
     {
       "term": "Precompile",
-      "definition": "A contract at a fixed EVM address implemented in native Go rather than Solidity bytecode. ShinzoHub's three registries (View `0x0210`, Host `0x0211`, Indexer `0x0212`) are precompiles so they can call Cosmos SDK keepers directly and trigger ICA packets.",
+      "definition": "A contract at a fixed EVM address implemented in native Go rather than Solidity bytecode. ShinzoHub's three registries (View `0x0210`, Host `0x0211`, Generator `0x0212`) are precompiles so they can call Cosmos SDK keepers directly and trigger ICA packets.",
       "relatedTerms": [
         "EVM",
         "Keeper",
         "View Registry",
         "Host Registry",
-        "Indexer Registry"
+        "Generator Registry"
       ]
     },
     {
       "term": "Primitive Prefix",
       "definition": "A prefix added to document collection names to namespace them by chain and network (e.g., `Ethereum__Mainnet__Block`). Keeps documents from different chains separate in the same defraDB instance.",
       "relatedTerms": [
-        "Indexer"
+        "Generator"
       ]
     },
     {
       "term": "Re-org",
       "definition": "Short for chain reorganization: the canonical block at a given height changes. When this happens, different generator may briefly hold different versions of the same block. Hosts store each version as a separate document; applications pick the one with more attestation votes.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "AttestationRecord"
       ]
     },
@@ -535,7 +535,7 @@
       "definition": "A coordination service that reads registrations from ShinzoHub and matches generator to hosts. Like the gateway, it never handles actual data.",
       "relatedTerms": [
         "Network Gateway",
-        "Indexer",
+        "Generator",
         "Host"
       ]
     },
@@ -580,7 +580,7 @@
       "definition": "A document that seals a contiguous range of blocks into a single signed file for faster initial sync. Its Merkle root covers the per-block `BlockSignature` roots within the range, forming a two-level tree: document CIDs roll up to block roots, which roll up to the snapshot root.",
       "relatedTerms": [
         "BlockSignature",
-        "Indexer",
+        "Generator",
         "Merkle Tree"
       ]
     },
@@ -589,7 +589,7 @@
       "definition": "Any external blockchain that Shinzo indexes — Ethereum, an L2, a Cosmos chain, etc. A source chain hosts an outpost contract and is read by generator.",
       "relatedTerms": [
         "Outpost",
-        "Indexer",
+        "Generator",
         "Relayer"
       ]
     },
@@ -641,7 +641,7 @@
       "term": "Validator",
       "definition": "An entity that participates in a chain's consensus. On Ethereum, a validator's withdrawal key signs an EIP-712 message on the outpost to authorize an operator key as its generator.",
       "relatedTerms": [
-        "Indexer",
+        "Generator",
         "Assertion",
         "Withdrawal Key",
         "Operator Key",
