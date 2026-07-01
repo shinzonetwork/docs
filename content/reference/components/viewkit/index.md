@@ -211,7 +211,7 @@ sequenceDiagram
   Host->>User: view documents
 {% end %}
 
-Indexers are not involved in the view lifecycle. By the time a view is created and applied, indexers have already delivered raw data to hosts over P2P.
+Generator clients are not involved in the View lifecycle. By the time a View is created and applied, the Generator client has already delivered raw data to the Host clients over P2P.
 
 ## Key files
 

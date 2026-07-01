@@ -5,7 +5,7 @@ weight = 3
 mermaid = true
 +++
 
-An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as indexers, and lets users pay for view access without interacting with ShinzoHub directly.
+An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as Generator, and lets users pay for view access without interacting with ShinzoHub directly.
 
 Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](../relayer) bridge the results to [ShinzoHub](../shinzohub).
 
@@ -17,15 +17,15 @@ Outposts also handle payments. Users on external chains should be able to pay in
 
 ## Validator assertions
 
-An assertion is a cryptographic proof that a validator on an external chain is who they claim to be. This is a prerequisite for becoming an indexer. A validator cannot register as an indexer directly on ShinzoHub; they must go through the assertion process on their source chain first.
+An assertion is a cryptographic proof that a validator on an external chain is who they claim to be. This is a prerequisite for becoming a Generator. A validator cannot register a Generator client directly on ShinzoHub; they must go through the assertion process on their source chain first.
 
 The flow:
 
-1. The indexer generates an operator (delegate) key locally.
+1. The Generator client generates an operator (delegate) key locally.
 1. The validator's withdrawal key calls the outpost, providing their consensus public key and the operator pubkey, and signs the assertion digest.
 1. Outpost verifies the validator using the chain's native mechanism, stores the signed assertion, and emits an `AssertionSigned` event.
-1. A [relayer](../relayer) picks up the event and broadcasts `MsgIndexerAssertion` to ShinzoHub.
-1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The indexer can now register in the Indexer Registry (`0x0212`), signing the registration with its operator key.
+1. A [relayer](../relayer) picks up the event and broadcasts `MsgGeneratorAssertion` to ShinzoHub.
+1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The Generator can now register in the Generator Registry (`0x0212`), signing the registration with its operator key.
 
 ### Consensus public key
 
@@ -45,12 +45,12 @@ How the digest is computed depends on the implementation. Different chains have 
 
 ### EVM implementation
 
-On Ethereum, the outpost contract (`IndexerAssertion`) uses EIP-712 typed data signatures. The validator opens an assertion with `createAssertion`, then submits the withdrawal-key signature with `submitAssertionSignature`. The contract emits `AssertionSigned`, which the relayer subscribes to:
+On Ethereum, the outpost contract (`GeneratorAssertion`) uses EIP-712 typed data signatures. The validator opens an assertion with `createAssertion`, then submits the withdrawal-key signature with `submitAssertionSignature`. The contract emits `AssertionSigned`, which the relayer subscribes to:
 
 {% mermaid() %}
 sequenceDiagram
   participant V as Validator<br/>(withdrawal key)
-  participant C as IndexerAssertion<br/>contract
+  participant C as GeneratorAssertion<br/>contract
   participant R as EVM relayer
 
   V->>C: createAssertion(<br/>consensusPubKey, delegateKey)

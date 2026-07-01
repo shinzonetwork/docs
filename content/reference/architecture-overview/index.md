@@ -18,7 +18,7 @@ flowchart LR
 
   subgraph OffChain["Off-chain data layer"]
     direction TB
-    Idx["Indexer<br/>(Geth + indexer client)"]
+    Idx["Generator<br/>(Geth + Generator client)"]
     Host["Host<br/>(host client + DefraDB)"]
     Idx -- "signed blocks" --> Host
   end
@@ -48,14 +48,14 @@ flowchart LR
   User -. "pay / subscribe" .-> SH
 {% end %}
 
-The scheduler and gateway are coordination services. They match indexers to hosts and route user queries to the right host. They never touch the actual data.
+The scheduler and gateway are coordination services. They match the Generator client to Host clients and route user queries to the right host. They never touch the actual data.
 
 ## Component inventory
 
 | Component | Layer | Language | Repo | Touches data? |
 | --- | --- | --- | --- | --- |
 | Geth (source chain node) | Off-chain | Go | [go-ethereum](https://github.com/ethereum/go-ethereum) | Yes |
-| Indexer client | Off-chain | Go | [shinzo-indexer-client](https://github.com/shinzonetwork/shinzo-indexer-client/) | Yes |
+| Generator client | Off-chain | Go | [shinzo-generator-client](https://github.com/shinzonetwork/shinzo-generator-client/) | Yes |
 | Host client | Off-chain | Go | [shinzo-host-client](https://github.com/shinzonetwork/shinzo-host-client/) | Yes |
 | Scheduler | Off-chain | Go | [shinzo-scheduler-service](https://github.com/shinzonetwork/shinzo-scheduler-service) | No |
 | Network gateway | Off-chain | Go | [shinzo-network-gateway](https://github.com/shinzonetwork/shinzo-network-gateway) | No |
@@ -79,11 +79,11 @@ ShinzoHub maintains three EVM precompile registries:
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views, deploys SVS-1 contracts. |
 | `0x0211` | Host Registry | Tracks registered hosts. |
-| `0x0212` | Indexer Registry | Tracks registered indexers. |
+| `0x0212` | Generator Registry | Tracks registered Generator clients. |
 
 These precompiles are implemented in Go, not Solidity bytecode. They have direct access to Cosmos SDK keepers, which is how EVM transactions trigger cross-chain ICA calls to SourceHub.
 
-ShinzoHub also runs five custom Cosmos modules: `x/admin`, `x/sourcehub` (ICA controller), `x/host`, `x/indexer`, and `x/view`. These run alongside the standard Cosmos modules (auth, bank, staking, etc.).
+ShinzoHub also runs five custom Cosmos modules: `x/admin`, `x/sourcehub` (ICA controller), `x/host`, `x/generator`, and `x/view`. These run alongside the standard Cosmos modules (auth, bank, staking, etc.).
 
 #### Chain IDs
 
@@ -114,7 +114,7 @@ Permission checks evaluate whether a chain of tuples grants a specific action. P
 
 SourceHub manages two independent policy domains:
 
-1. Protocol participation: which DIDs are registered as hosts or indexers (`group:host`, `group:indexer`).
+1. Protocol participation: which DIDs are registered as Host clients or Generator clients (`group:host`, `group:generator`).
 1. View access: which DIDs can read which views (`view:0xABC#subscriber`).
 
 Users never interact with SourceHub directly. ShinzoHub sends commands to it via ICA.
@@ -157,7 +157,7 @@ Two components connect external blockchains (Ethereum, Cosmos chains, etc.) to S
 
 Outpost contracts are deployed on each source chain. They handle two things:
 
-- Validator assertions: a validator proves their identity using chain-native mechanisms and authorises an operator (delegate) key to act as their indexer. On Ethereum, the validator's withdrawal key signs an EIP-712 message on the outpost contract that names the validator (consensus public key) and the operator pubkey. The contract verifies the signature, checks validator status, and emits an `AssertionSigned` event.
+- Validator assertions: a validator proves their identity using chain-native mechanisms and authorises an operator (delegate) key to act as their Generator. On Ethereum, the validator's withdrawal key signs an EIP-712 message on the outpost contract that names the validator (consensus public key) and the operator pubkey. The contract verifies the signature, checks validator status, and emits an `AssertionSigned` event.
 - Payments: Users call `payment()` on the outpost. The contract stores a receipt and emits a `PaymentCreated` event.
 
 The outpost design is chain agnostic. Each chain gets its own implementation using whatever verification mechanism is native to that chain. The only requirement is that the output is a signed assertion that a relayer can deliver to ShinzoHub.
@@ -166,7 +166,7 @@ The outpost design is chain agnostic. Each chain gets its own implementation usi
 
 The EVM relayer is a Go process with two pipelines:
 
-1. The assertion pipeline subscribes to `AssertionSigned` events on the outpost's `IndexerAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts `MsgIndexerAssertion` to ShinzoHub. No block scanning and no dependency on who built the block.
+1. The assertion pipeline subscribes to `AssertionSigned` events on the outpost's `GeneratorAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts `MsgGeneratorAssertion` to ShinzoHub. No block scanning and no dependency on who built the block.
 1. The payment pipeline subscribes to `PaymentCreated` log events from the outpost, extracts user `DID` and payment amount, and broadcasts `MsgRequestStreamAccess` to ShinzoHub.
 
 The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for gas.
@@ -179,7 +179,7 @@ The EVM relayer and the Hermes IBC relayer are completely different systems. The
 
 ### DefraDB
 
-DefraDB is the peer-to-peer document database embedded in every indexer and host. Three separate DefraDB instances exist in the system (one per indexer, one per host for primitives, one per host for view data).
+DefraDB is the peer-to-peer document database embedded in every Generator client and Host client. Three separate DefraDB instances exist in the system (one per Generator, one per Host for primitives, one per Host for view data).
 
 DefraDB uses MerkleCRDTs, a combination of Merkle DAGs and CRDTs. Document updates are stored as a Merkle DAG where each node is a CRDT operation. CRDTs give you conflict resolution without coordination. The Merkle DAG gives you verifiable history. And because nodes can diff DAGs, sync only transfers the missing pieces.
 
@@ -189,49 +189,49 @@ Documents are content-addressed using CIDs (Content Identifiers). The CID is a h
 
 Data replication uses libp2p, managed internally by DefraDB. The flow for a new document:
 
-1. Indexer writes document to its local DefraDB.
+1. Generator client writes document to its local DefraDB.
 1. DefraDB computes a content digest.
 1. DefraDB gossips the digest to connected peers.
 1. Peers that want the document request the full content.
 1. DefraDB sends the full document.
 
-Indexers are write-only. They publish documents and reject all incoming replication (enforced by a replication filter in the indexer client). Hosts accept incoming documents from indexers and replicate attestation records between each other.
+Generator clients are write-only. They publish documents and reject all incoming replication (enforced by a replication filter in the Generator client). Host clients accept incoming documents from generator and replicate attestation records between each other.
 
-Peers discover each other through bootstrap peers configured in DefraDB and through `EntityRegistered` events from ShinzoHub (when new indexers or hosts join the network).
+Peers discover each other through bootstrap peers configured in DefraDB and through `EntityRegistered` events from ShinzoHub (when a new Generator client or Host client joins the network).
 
 ### Signing and attestation
 
-Each indexer signs every block batch it produces. After writing all documents for a block (Block, Transaction, Log, AccessListEntry), the indexer computes a Merkle root over all document CIDs, signs it with its identity key, and writes a `BlockSignature` document. 
+Each Generator client signs every block batch it produces. After writing all documents for a block (Block, Transaction, Log, AccessListEntry), the Generator client computes a Merkle root over all document CIDs, signs it with its identity key, and writes a `BlockSignature` document. 
 
-Hosts verify the signature included in the `blockSignature` against the CID for that document. They can then create an `AttestationRecord` (document) for that block to track how many independent indexers produced the same data. The `vote_count` field uses a P-counter CRDT, which tracks the number of indexers which produced that block. 
+Hosts verify the signature included in the `blockSignature` against the CID for that document. They can then create an `AttestationRecord` (document) for that block to track how many independent Generator clients produced the same data. The `vote_count` field uses a P-counter CRDT, which tracks the number of Generator clients which produced that block. 
 
-Snapshots bundle multiple blocks into signed files for faster initial sync. The indexer periodically creates `SnapshotSignature` documents whose Merkle root is computed over the per-block `BlockSignature` roots within the range. So you get a two-level Merkle tree: document CIDs roll up into per-block roots, which roll up into per-snapshot roots.
+Snapshots bundle multiple blocks into signed files for faster initial sync. The Generator client periodically creates `SnapshotSignature` documents whose Merkle root is computed over the per-block `BlockSignature` roots within the range. So you get a two-level Merkle tree: document CIDs roll up into per-block roots, which roll up into per-snapshot roots.
 
 ## Registration flows
 
-### Indexer registration
+### Generator registration
 
-Spans two chains and a relayer. The indexer cannot register on ShinzoHub until the validator has signed an assertion that ties the indexer's operator key to the validator's identity.
+Spans two chains and a relayer. The Generator cannot register on ShinzoHub until the validator has signed an assertion that ties the Generator client's operator key to the validator's identity.
 
 {% mermaid() %}
 sequenceDiagram
-  participant Idx as Indexer<br/>(operator key)
+  participant Idx as Generator<br/>(operator key)
   participant Wd as Validator<br/>(withdrawal key)
-  participant Out as Outpost<br/>(IndexerAssertion contract)
+  participant Out as Outpost<br/>(GeneratorAssertion contract)
   participant Rel as EVM relayer
-  participant SH as ShinzoHub<br/>(Indexer Registry 0x0212)
+  participant SH as ShinzoHub<br/>(Generator Registry 0x0212)
   participant Source as SourceHub
 
   Idx->>Idx: generate operator/delegate<br/>key locally
   Wd->>Out: createAssertion + EIP-712 sig<br/>(withdrawal addr, operator pubkey,<br/>consensus key)
   Out->>Out: verify validator status<br/>and signature
   Out-->>Rel: emit AssertionSigned event
-  Rel->>SH: MsgIndexerAssertion
+  Rel->>SH: MsgGeneratorAssertion
   SH->>SH: record assertion slip<br/>for operator pubkey
   Idx->>SH: register() on 0x0212<br/>(signed by operator key)
   SH->>SH: derive DID from<br/>operator pubkey
   SH->>Source: ICA RegisterObject
-  Source->>Source: ACP adds DID<br/>to indexer group
+  Source->>Source: ACP adds DID<br/>to generator group
 {% end %}
 
 ### Host registration
@@ -289,4 +289,4 @@ The precompile emits both a Solidity EVM log and a Cosmos SDK event. The event n
 | --- | --- | --- |
 | View Registry (0x0210) | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
 | Host Registry (0x0211) | `Registered(address,string)` | `"HostRegistered"` |
-| Indexer Registry (0x0212) | `Registered(address,string)` | `"Registered"` |
+| Generator Registry (0x0212) | `Registered(address,string)` | `"Registered"` |

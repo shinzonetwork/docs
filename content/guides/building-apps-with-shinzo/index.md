@@ -22,7 +22,7 @@ Shinzo leverages [DefraDB](https://github.com/sourcenetwork/defradb) for a numbe
 
 Let's propose a simple app as an example to illustrate how Shinzo works. This application will simply display a counter for the current number of instances of a specified ERC20 token, let's say USDC on Ethereum mainnet. Let's also say, for arguments sake, that there does not exist a method on the contract where we can query to get the current supply of USDC - instead, the only way to determine this is to parse through the mint and burn events emitted by the contract.
 
-To do this, you would first create a View, describing how to transform primitive data (blocks, logs, transactions, etc.) into a format that works for you. In this case, you would filter logs based on those involving the USDC contract address, decode the logs into events using the contracts ABI, and finally filter for only mint and burn events. The Shinzo Hosts and Indexers will work together to get you the data you need. Your application client(s) will receive all the mint and burn events on that USDC contract. From here, you can make as many GraphQL queries against those events you've received in order to build your application. Your app client(s) won't receive the underlying primitives (blocks, transactions, logs, etc.), only the filtered and decoded events as described in your View.
+To do this, you would first create a View, describing how to transform primitive data (blocks, logs, transactions, etc.) into a format that works for you. In this case, you would filter logs based on those involving the USDC contract address, decode the logs into events using the contracts ABI, and finally filter for only mint and burn events. The Shinzo Hosts and Generator clients will work together to get you the data you need. Your application client(s) will receive all the mint and burn events on that USDC contract. From here, you can make as many GraphQL queries against those events you've received in order to build your application. Your app client(s) won't receive the underlying primitives (blocks, transactions, logs, etc.), only the filtered and decoded events as described in your View.
 
 ## Usage
 
@@ -162,9 +162,9 @@ results, err := defra.QueryArray[MyResultStruct](ctx, myNode, queryString)
 
 ### Attestations
 
-Perhaps one of the most unique features of Shinzo is that it allows you to validate your source info against multiple independent sources; instead of having one indexer/entity who provides all the source primitive data, Shinzo uses multiple and allows you to validate your source data through "attestation records" that are signed off by the various Shinzo Indexer's who wrote the data. 
+Perhaps one of the most unique features of Shinzo is that it allows you to validate your source info against multiple independent sources; instead of having one Generator who provides all the source primitive data, Shinzo uses multiple and allows you to validate your source data through "attestation records" that are signed off by the various Shinzo Generator's that wrote the data. 
 
-Using the app-sdk, you can filter out query results that do not meet your specified attestation threshold. For example, if you're dealing with high value transaction(s), you may want to filter out any query results where the underlying data was signed off by less than X Shinzo Indexers.
+Using the app-sdk, you can filter out query results that do not meet your specified attestation threshold. For example, if you're dealing with high value transaction(s), you may want to filter out any query results where the underlying data was signed off by less than X Shinzo Generator clients.
 
 Attestation Records, like Views, are pre-processed and pushed to your application client. Attestation Records are segmented based on the View (or Primitive) they are attesting to; this means that you can select which Views (or Primitives) you want to receive Attestation Records for. You will not receive Attestation Records for data you aren't interested in.
 

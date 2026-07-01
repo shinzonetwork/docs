@@ -4,7 +4,7 @@ weight = 2
 +++
 Shinzo has four kinds of moving parts: 
 
-1. **Indexers** that read the chain.
+1. **Generators** that read the chain.
 1. **Hosts** that transform and serve the data. 
 1. **Applications** that consume that data.
 1. **ShinzoHub**, a coordination layer that tells everyone what's going on. 
@@ -21,17 +21,17 @@ Somewhere on the network, an Ethereum validator's node produces or receives the 
 
 ![](./images/data-journey-1.svg)
 
-### The Indexer structures and signs it
+### The Generator structures and signs it
 
-Sitting next to the Ethereum node is the Shinzo Indexer (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Indexer pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
+Sitting next to the Ethereum node is the Shinzo Generator client (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Generator client pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
 
-Those documents land in the Indexer's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
+Those documents land in the Generator client's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
 
 ![](./images/data-journey-2.svg)
 
 ### Hosts pick it up over P2P
 
-Hosts subscribe to the primitive collection topics they care about (blocks, transactions, logs, access lists). When the Indexer's DefraDB gossips the new log document, subscribed Hosts receive it, verify the signature, and update an attestation record for it (essentially just a running tally of how many distinct Indexers have signed off on this exact piece of data). If three Indexers all wrote the same log, the attestation record has three votes. Apps can later use those votes to set their own trust thresholds.
+Hosts subscribe to the primitive collection topics they care about (blocks, transactions, logs, access lists). When the Generator client's DefraDB gossips the new log document, subscribed Hosts receive it, verify the signature, and update an attestation record for it (essentially just a running tally of how many distinct Generator clients have signed off on this exact piece of data). If three Generator clients all wrote the same log, the attestation record has three votes. Apps can later use those votes to set their own trust thresholds.
 
 ![](./images/data-journey-3.svg)
 
@@ -51,9 +51,9 @@ On the app side, things look (surprisingly) normal. The app embeds DefraDB using
 
 ## The four participants
 
-#### Indexers
+#### Generator clients
 
-Indexers are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off. The component reference has the [full Indexer spec](#).
+Generator clients are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
 
 #### Hosts
 
@@ -74,7 +74,7 @@ ShinzoHub is a Cosmos SDK chain that sits to the side of the data path. It doesn
 That means three things in practice: 
 
 1. **View registration**: When a developer deploys a View, ShinzoHub validates and registers it, then emits an event that Hosts listen for.
-1. **Participant tracking**: Indexers and Hosts register themselves on-chain so the rest of the network can discover them.
+1. **Participant tracking**: Generators and Hosts register themselves on-chain so the rest of the network can discover them.
 1. **Access control**: When a user pays for access to a View via the Outpost contract, ShinzoHub broadcasts that grant so Hosts know to start replicating data to that user. Access control is actually enforced through a separate chain called Sourcehub, connected to ShinzoHub via IBC.
 
 ## Why it's built this way
@@ -87,7 +87,7 @@ Validators already run full nodes, already have the block data the moment it's p
 
 ### Indexing and transformation are separate jobs
 
-Indexers ingest, Hosts transform and serve. That split means Indexers can stay small and cheap (so validators will actually run them), while Hosts can specialize. One Host might process every DeFi View on the network, another might focus on NFTs. It also means scaling consumer demand is a matter of adding Hosts, not Indexers.
+Generator clients ingest, Host clients transform and serve. That split means Generator clients can stay small and cheap (so validators will actually run them), while Host clients can specialize. One Host might process every DeFi View on the network, another might focus on NFTs. It also means scaling consumer demand is a matter of adding more Host clients, not Generator clients.
 
 ### Apps query local data, not remote APIs
 
