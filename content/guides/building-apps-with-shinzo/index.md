@@ -162,7 +162,7 @@ results, err := defra.QueryArray[MyResultStruct](ctx, myNode, queryString)
 
 ### Attestations
 
-Perhaps one of the most unique features of Shinzo is that it allows you to validate your source info against multiple independent sources; instead of having one Generator who provides all the source primitive data, Shinzo uses multiple and allows you to validate your source data through "attestation records" that are signed off by the various Shinzo Generator's that wrote the data. 
+Perhaps one of the most unique features of Shinzo is that it allows you to validate your source info against multiple independent sources; instead of having one Generator who provides all the source primitive data, Shinzo uses multiple and allows you to validate your source data through "attestation records" that are signed off by the various Shinzo Generators that wrote the data. 
 
 Using the app-sdk, you can filter out query results that do not meet your specified attestation threshold. For example, if you're dealing with high value transaction(s), you may want to filter out any query results where the underlying data was signed off by less than X Shinzo Generator clients.
 

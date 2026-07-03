@@ -52,7 +52,7 @@ flowchart LR
 
 | Component | What it does |
 | --- | --- |
-| ShinzoHub Listener | Subscribes to ShinzoHub events over a CometBFT WebSocket. Watches for `Registered` (new views) and `EntityRegistered` (new generator/hosts). |
+| ShinzoHub Listener | Subscribes to ShinzoHub events over a CometBFT WebSocket. Watches for `Registered` (new Views) and `EntityRegistered` (new Generator clients/Hosts). |
 | DefraDB | Embedded database. Handles storage, P2P replication, content addressing, CRDT merging, and query serving. |
 | Attestation Handler | Listens to DefraDB's event bus for new BlockSignature documents. Verifies signatures and creates AttestationRecords with P-counter vote counts. |
 | View Processor | Downloads WASM lens binaries, runs Lens transforms on primitives, writes view documents. |
@@ -81,7 +81,7 @@ This subscribes to two query filters:
 - `"tm.event='Tx' AND Registered.key EXISTS"`: view registration events.
 - `"tm.event='Tx' AND EntityRegistered.key EXISTS"`: new Generator or Host joining.
 
-Events arrive on the returned channel. The host's main loop reads from this channel and dispatches to the view processor or network handler as appropriate.
+Events arrive on the returned channel. The Host client's main loop reads from this channel and dispatches to the view processor or network handler as appropriate.
 
 ## Attestation system
 
@@ -138,7 +138,7 @@ mutation {
 
 ### View-specific attestation collections
 
-The host creates separate attestation collections per view:
+The Host client creates separate attestation collections per view:
 
 ```go
 collectionName := fmt.Sprintf("Ethereum__Mainnet__AttestationRecord_%s", viewName)
@@ -165,26 +165,26 @@ These produce separate documents (different CIDs), each with its own Attestation
 
 Hosts watch for view registrations through two paths.
 
-At startup, the host calls `FetchAllRegisteredViews()`, which queries CometBFT with `tx_search?query="Registered.key EXISTS"`, paginates through all historical registration transactions, and processes each view bundle.
+At startup, the Host client calls `FetchAllRegisteredViews()`, which queries CometBFT with `tx_search?query="Registered.key EXISTS"`, paginates through all historical registration transactions, and processes each view bundle.
 
-At runtime, the host subscribes to `tm.event='Tx' AND Registered.key EXISTS` over WebSocket. When a new event arrives, it extracts the `key`, `creator`, and `view` attributes and processes the bundle.
+At runtime, the Host client subscribes to `tm.event='Tx' AND Registered.key EXISTS` over WebSocket. When a new event arrives, it extracts the `key`, `creator`, and `view` attributes and processes the bundle.
 
-There is a known bug here: the View Registry precompile emits `"ViewRegistered"` with attributes `view_address`/`view_name`/`creator`/`data`, but the host subscribes to `"Registered"` and expects attributes `key`/`creator`/`view`. Neither event type nor attribute names match. Fixed in ShinzoHub v2.
+There is a known bug here: the View Registry precompile emits `"ViewRegistered"` with attributes `view_address`/`view_name`/`creator`/`data`, but the Host client subscribes to `"Registered"` and expects attributes `key`/`creator`/`view`. Neither event type nor attribute names match. Fixed in ShinzoHub v2.
 
 ## View processing pipeline
 
-When the host receives a view bundle (from either discovery path):
+When the Host client receives a view bundle (from either discovery path):
 
 1. `ProcessViewFromWireFormat()`: base64-decodes the wire bytes, parses VWL format, extracts the view name from SDL via regex.
 1. `PostWasmToFile()`: for each lens, base64-decodes the WASM bytes, validates the WASM magic number (`0x00 0x61 0x73 0x6D`), and writes to disk with a sha256-derived filename.
 1. `SetupLensInDefraDB()`: builds a LensConfig (source collection, destination, lens path, arguments) and calls `defraNode.DB.AddLens()` to register with LensVM.
 1. `ConfigureLens()`: calls `defraNode.DB.AddView()` with or without a transform CID, auto-corrects field names for schema compatibility.
 1. `SubscribeTo()`: enables P2P replication for the view's collection via `CreateP2PCollections()`.
-1. `SaveViewToRegistry()`: persists view metadata to `views.json` in the lens registry directory so the host can recover on restart.
+1. `SaveViewToRegistry()`: persists view metadata to `views.json` in the lens registry directory so the Host client can recover on restart.
 
 ## Lens transforms
 
-The host runs LensVM (`source-gh/lens`) to execute WASM modules that transform primitives into view documents.
+The Host client runs LensVM (`source-gh/lens`) to execute WASM modules that transform primitives into view documents.
 
 {% mermaid() %}
 flowchart LR
@@ -228,7 +228,7 @@ Example query:
 
 ## Earnings
 
-Hosts receive the Compute Factor component of view pricing. There is an immediate payment per query served, plus a potential bonus at epoch end if the host's coverage (uptime and data availability) exceeds the network average.
+Hosts receive the Compute Factor component of view pricing. There is an immediate payment per query served, plus a potential bonus at epoch end if the Host client's coverage (uptime and data availability) exceeds the network average.
 
 ## Document filtering
 

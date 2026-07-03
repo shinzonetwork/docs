@@ -6,13 +6,13 @@ weight = 3
 mermaid = true
 +++
 
-Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query indexed Ethereum data through the Host's GraphQL API. If your Geth node is already reachable, the whole thing takes about ten minutes.
+Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query indexed Ethereum data through the Host client's GraphQL API. If your Geth node is already reachable, the whole thing takes about ten minutes.
 
 When you're done you'll have:
 
 - A running Generator client pulling blocks from a Geth node and signing them.
-- A running Host receiving those blocks over P2P and serving them.
-- A GraphQL query returning real Ethereum data through the Host.
+- A running Host client receiving those blocks over P2P and serving them.
+- A GraphQL query returning real Ethereum data through the Host client.
 - A understanding of how the two main Shinzo infrastructure pieces fit together.
 
 ## What you're building
@@ -24,7 +24,7 @@ flowchart LR
   Host -->|GraphQL| You["You (curl)"]
 {% end %}
 
-Two containers through one shared Docker bridge. Both containers run on the same VM. The Host dials the Generator client's libp2p port directly over the bridge using the Generator client's published Peer ID.
+Two containers through one shared Docker bridge. Both containers run on the same VM. The Host client dials the Generator client's libp2p port directly over the bridge using the Generator client's published Peer ID.
 
 ## Prerequisites
 
@@ -90,7 +90,7 @@ docker run -d \
 
 ## Read the Generator client's P2P address
 
-The Host needs two things to connect: 
+The Host client needs two things to connect: 
 
 1. The Generator client's libp2p Peer ID.
 1. A multiaddr it can dial.
@@ -116,7 +116,7 @@ curl -s http://localhost:8080/health | jq '.p2p.self'
 
 `id` is the Generator client's libp2p Peer ID, derived from its keyring secret. It's stable across restarts as long as the secret stays the same.
 
-`addresses` are the multiaddrs the Generator client is actually listening on. The first one (`127.0.0.1`) is loopback and useless to other containers. The second (`172.17.0.2` here) is the Generator client container's IP on the Docker bridge. That's the one the Host will dial.
+`addresses` are the multiaddrs the Generator client is actually listening on. The first one (`127.0.0.1`) is loopback and useless to other containers. The second (`172.17.0.2` here) is the Generator client container's IP on the Docker bridge. That's the one the Host client will dial.
 
 Capture both into shell variables:
 
@@ -137,11 +137,11 @@ echo "$BOOTSTRAP_PEER"
 ```
 {% end %}
 
-`BOOTSTRAP_PEER` is a libp2p multiaddr that essentially says _"speak IPv4 to this address on this TCP port, then handshake with this Peer ID."_ If the Peer ID doesn't match, the Host refuses the connection. This is what makes the connection authenticated end to end.
+`BOOTSTRAP_PEER` is a libp2p multiaddr that essentially says _"speak IPv4 to this address on this TCP port, then handshake with this Peer ID."_ If the Peer ID doesn't match, the Host client refuses the connection. This is what makes the connection authenticated end to end.
 
-## Write the Host config
+## Write the Host client config
 
-The Host reads its configuration from a YAML file mounted into the container. The two values that matter here are the bootstrap peer (the multiaddr we just built) and the keyring secret. Create this file and save it as `~/host-config.yaml`:
+The Host client reads its configuration from a YAML file mounted into the container. The two values that matter here are the bootstrap peer (the multiaddr we just built) and the keyring secret. Create this file and save it as `~/host-config.yaml`:
 
 ```shell
 defradb:
@@ -169,18 +169,18 @@ host:
 
 There are a few things in here worth calling out:
 
-- `defradb.url: localhost:9181` is the Host's _internal_ DefraDB API, not the Generator client's. Inside the Host container, DefraDB binds to `9181` on `localhost`. The Generator client's API happens to use the same number because they're both DefraDB; we'll remap the published ports in the next step so they don't collide.
-- `bootstrap_peers` is the only Generator-specific value. The Host learns everything else (schemas, signed data) from the Generator client over P2P once it connects.
-- `minimum_attestations: 1` means the Host will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients. See the [Host overview](/hosts/overview) for more on attestations.
-- `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host expects the field to be present.
+- `defradb.url: localhost:9181` is the Host client's _internal_ DefraDB API, not the Generator client's. Inside the Host client container, DefraDB binds to `9181` on `localhost`. The Generator client's API happens to use the same number because they're both DefraDB; we'll remap the published ports in the next step so they don't collide.
+- `bootstrap_peers` is the only Generator-specific value. The Host client learns everything else (schemas, signed data) from the Generator client over P2P once it connects.
+- `minimum_attestations: 1` means the Host client will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients. See the [Host overview](/hosts/overview) for more on attestations.
+- `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host client expects the field to be present.
 
-## Start the Host
+## Start the Host client
 
 The Generator client is already occupying `9181`, `9171`, and `8080` on the host machine, so the Host container's ports get bumped by one.
 
 | Host port | Container port | What it is |
 | --- | --- | --- |
-| `9182` | `9181` | DefraDB GraphQL API (the Host's own copy of the data). |
+| `9182` | `9181` | DefraDB GraphQL API (the Host client's own copy of the data). |
 | `9172` | `9171` | libp2p. |
 | `8081` | `8080` | Health, metrics, registration. |
 
@@ -195,11 +195,11 @@ docker run -d \
   ghcr.io/shinzonetwork/shinzo-host-client:standard
 ```
 
-`BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host builds also read the env var, so we set both.
+`BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
 
 ## Verify the peering
 
-The Host's `/health` lists the peers it's connected to. Once the Generator client's Peer ID appears there, the connection is live.
+The Host client's `/health` lists the peers it's connected to. Once the Generator client's Peer ID appears there, the connection is live.
 
 ```shell
 curl -s http://localhost:8081/health | jq '{status, current_block, p2p: {self: .p2p.self.id, peers: [.p2p.peers[].id]}}'
@@ -220,7 +220,7 @@ curl -s http://localhost:8081/health | jq '{status, current_block, p2p: {self: .
 ```
 {% end %}
 
-Check the Generator client's side too. Its peer list should now contain the Host:
+Check the Generator client's side too. Its peer list should now contain the Host client:
 
 ```shell
 curl -s http://localhost:8080/health | jq '[.p2p.peers[].id]'
@@ -234,11 +234,11 @@ curl -s http://localhost:8080/health | jq '[.p2p.peers[].id]'
 ```
 {% end %}
 
-If both list each other, libp2p is connected and DefraDB is replicating between them! Data from the Generator client lands in the Host within a few seconds.
+If both list each other, libp2p is connected and DefraDB is replicating between them! Data from the Generator client lands in the Host client within a few seconds.
 
-## Query the Host
+## Query the Host client
 
-The Host runs an embedded DefraDB with a GraphQL API on the remapped port `9182`. Once `current_block` is non-zero on the Host's `/health`, query it:
+The Host client runs an embedded DefraDB with a GraphQL API on the remapped port `9182`. Once `current_block` is non-zero on the Host client's `/health`, query it:
 
 ```shell
 curl -s -X POST http://localhost:9182/api/v0/graphql \
@@ -268,7 +268,7 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 ```
 {% end %}
 
-The rows that come back were originally just logs on Ethereum, then pulled in by the Generator client over the Geth WebSocket, signed, gossiped over libp2p to the Host, and are now being served back to you over GraphQL. More queries are on the [Host examples](/hosts/examples) page.
+The rows that come back were originally just logs on Ethereum, then pulled in by the Generator client over the Geth WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. More queries are on the [Host examples](/hosts/examples) page.
 
 ## Undo everything
 
@@ -289,9 +289,9 @@ docker logs --tail 50 shinzo-generator
 
 The most common cause is the Generator client can't reach Geth. Confirm `GETH_RPC_URL` and `GETH_WS_URL` are correct and reachable from the container, and that the API key (if any) is right. The Generator client can fall back to HTTP-only mode if WebSocket is unavailable, and will log that it did.
 
-### The Host never lists the Generator as a peer
+### The Host client never lists the Generator client as a peer
 
-Confirm the bootstrap peer multiaddr in the config uses the Generator client's non-loopback container IP, not `127.0.0.1`. From inside the Host container, the Generator client's loopback is unreachable. Verify with:
+Confirm the bootstrap peer multiaddr in the config uses the Generator client's non-loopback container IP, not `127.0.0.1`. From inside the Host client container, the Generator client's loopback is unreachable. Verify with:
 
 ```shell
 docker exec shinzo-host getent hosts $(echo "$BOOTSTRAP_PEER" | grep -oP '/ip4/\K[0-9.]+')

@@ -56,7 +56,7 @@ The included `config.yaml` works for most local development. You typically only 
 
 ### Running a Generator client and a Host client on the same machine
 
-If you are running your own Generator client, you can connect your Host to this Generator client by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the registration endpoint:
+If you are running your own Generator client, you can connect your Host client to this Generator client by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the registration endpoint:
 
 ```shell
 curl http://localhost:8080/registration
@@ -98,20 +98,20 @@ make start
 
 ### (Optional) Enable the GraphQL Playground
 
-The host ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
+The Host client ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
 
 ```shell
 make build-playground
 make start
 ```
 
-This runs the Host and exposes a Playground GUI. Check the output logs for the address:
+This runs the Host client and exposes a Playground GUI. Check the output logs for the address:
 
 ```plaintext
 🧪 GraphQL Playground available at ...
 ```
 
-The playground lets you run GraphQL queries against primitive data and any Views your Host is serving. Try this query:
+The playground lets you run GraphQL queries against primitive data and any Views your Host client is serving. Try this query:
 
 ```graphql
 query GetLatestLogs {
@@ -296,7 +296,7 @@ services:
     restart: unless-stopped
 ```
 
-### Start the Host
+### Start the Host client
 
 ```shell
 docker-compose up -d
@@ -327,11 +327,11 @@ ghcr.io/shinzonetwork/shinzo-host-client:standard
 
 ## ShinzoHub Registration
 
-To participate in the Shinzo Network, you must register your host. Registration identifies your node so it can replicate data and earn rewards. An unregistered host will not be recognized by the network. There are two ways to register:
+To participate in the Shinzo Network, you must register your Host. Registration identifies your node so it can replicate data and earn rewards. An unregistered Host will not be recognized by the network. There are two ways to register:
 
 ### Option A: Register with the GUI
 
-1. Start your Host.
+1. Start your Host client.
 2. Add Shinzo Devnet to Metamask with the following values:
   - Network name: Shinzo
   - Default RPC URL: http://rpc.devnet.shinzo.network:8545
@@ -343,7 +343,7 @@ To participate in the Shinzo Network, you must register your host. Registration 
 
 ### Option B: Register with the CLI
 
-You can also register your host by submitting the registration transaction directly with Foundry’s `cast` CLI.
+You can also register your Host by submitting the registration transaction directly with Foundry’s `cast` CLI.
 
 ```shell
 cast send "0x0000000000000000000000000000000000000211" \
@@ -366,7 +366,7 @@ Replace each placeholder with your actual registration values.
 Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
 {% end %}
 
-Your host is now registered and authorized to participate in the Shinzo Network.
+Your Host is now registered and authorized to participate in the Shinzo Network.
 
 ## Need Help
 
@@ -374,4 +374,4 @@ If you run into issues installing or running the Shinzo Host, open a GitHub issu
 
 ## Next Steps
 
-Your host can now receive and serve Views. Try running queries against it through the playground GUI.
+Your Host can now receive and serve Views. Try running queries against it through the playground GUI.

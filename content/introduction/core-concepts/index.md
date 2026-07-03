@@ -18,7 +18,7 @@ Every View is a versioned bundle with three parts:
 
 ### Why it's designed this way
 
-The split between _what data_ (the query), _how to transform it_ (the Lens), and _what shape to expose_ (the schema) is intentional. It keeps the View portable: any compliant Host can pick it up, run the same deterministic transforms against the same input, and get the same output. Because Lens transforms are WASM and deterministic, any Host or auditor can re-run them to verify the result independently.
+The split between _what data_ (the query), _how to transform it_ (the Lens), and _what shape to expose_ (the schema) is intentional. It keeps the View portable: any compliant Host client can pick it up, run the same deterministic transforms against the same input, and get the same output. Because Lens transforms are WASM and deterministic, any Host client or auditor can re-run them to verify the result independently.
 
 You deploy Views through `viewkit` to ShinzoHub, which validates and registers them. Hosts watch for new View registrations and decide which ones to run.
 
@@ -38,7 +38,7 @@ Attestation is how Shinzo tracks how much of the network has independently agree
 
 ### The problem it solves
 
-With a centralized Indexer, you trust the provider because you have no other option. You can't verify[^1] the data you got matches what's actually on chain. In Shinzo, Generators cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Generators saw the same thing.
+With a centralized indexing service, you trust the provider because you have no other option. You can't verify[^1] the data you got matches what's actually on chain. In Shinzo, Generators cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Generators saw the same thing.
 
 Attestation answers that question.
 
@@ -64,7 +64,7 @@ Apps set their own attestation threshold depending on how much they care about c
 
 ### Batch signatures
 
-Rather than signing every document individually, Generator clients produce a `BatchSignature` per block: a single document committing to a Merkle root that covers every primitive in that block (transactions, logs, access list entries, and the block itself). A Host can then create a single attestation covering the entire block in one step.
+Rather than signing every document individually, Generator clients produce a `BatchSignature` per block: a single document committing to a Merkle root that covers every primitive in that block (transactions, logs, access list entries, and the block itself). A Host client can then create a single attestation covering the entire block in one step.
 
 ## DefraDB
 
@@ -83,7 +83,7 @@ DefraDB is an open-source document database built by Source Network. It stores d
 
 When a Generator client writes a block to its local DefraDB, DefraDB gossips a digest to subscribed peers over libp2p. Those peers (Hosts) request the full document, verify its CID, and store it locally. No broker is involved.
 
-The same thing happens at the other end. When a Host produces View documents for a subscriber, DefraDB replicates them directly to the subscriber's embedded instance. The app queries its local database. No API call, no round trip.
+The same thing happens at the other end. When a Host client produces View documents for a subscriber, DefraDB replicates them directly to the subscriber's embedded instance. The app queries its local database. No API call, no round trip.
 
 ### Why not a conventional database
 
@@ -96,7 +96,7 @@ SHNZ is the native token of ShinzoHub, the Cosmos SDK chain that coordinates the
 Confirmed so far:
 
 - Staking: any address can stake SHNZ on a View to signal demand. Stake feeds into the View's price.
-- Funding: consumers prepay SHNZ into a View's contract, tied to their DID. The balance sits there until a Host serves a query, at which point the current price is debited and credited to the creator's earnings.
+- Funding: consumers prepay SHNZ into a View's contract, tied to their DID. The balance sits there until a Host client serves a query, at which point the current price is debited and credited to the creator's earnings.
 - Protocol cut: a flat percentage comes off every consumption event. It's enforced in the SVS-1 contract standard and can't be bypassed with a custom pricing contract.
 
 The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out.

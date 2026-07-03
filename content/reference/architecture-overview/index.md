@@ -179,7 +179,7 @@ The EVM relayer and the Hermes IBC relayer are completely different systems. The
 
 ### DefraDB
 
-DefraDB is the peer-to-peer document database embedded in every Generator client and Host client. Three separate DefraDB instances exist in the system (one per Generator, one per Host for primitives, one per Host for view data).
+DefraDB is the peer-to-peer document database embedded in every Generator client and Host client. Three separate DefraDB instances exist in the system (one per Generator client, one per Host client for primitives, one per Host client for view data).
 
 DefraDB uses MerkleCRDTs, a combination of Merkle DAGs and CRDTs. Document updates are stored as a Merkle DAG where each node is a CRDT operation. CRDTs give you conflict resolution without coordination. The Merkle DAG gives you verifiable history. And because nodes can diff DAGs, sync only transfers the missing pieces.
 
@@ -195,7 +195,7 @@ Data replication uses libp2p, managed internally by DefraDB. The flow for a new 
 1. Peers that want the document request the full content.
 1. DefraDB sends the full document.
 
-Generator clients are write-only. They publish documents and reject all incoming replication (enforced by a replication filter in the Generator client). Host clients accept incoming documents from generator and replicate attestation records between each other.
+Generator clients are write-only. They publish documents and reject all incoming replication (enforced by a replication filter in the Generator client). Host clients accept incoming documents from Generator clients and replicate attestation records between each other.
 
 Peers discover each other through bootstrap peers configured in DefraDB and through `EntityRegistered` events from ShinzoHub (when a new Generator client or Host client joins the network).
 

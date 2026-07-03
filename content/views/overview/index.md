@@ -24,7 +24,7 @@ This separation enables:
 - Rapid iteration on data models without re-indexing chains
 - Deterministic, reproducible data APIs
 - Decoupling of data definition from execution and infrastructure
-- Portable views that can run on any compliant Host
+- Portable views that can run on any compliant Host client
 
 ## Core Concepts
 

@@ -33,7 +33,7 @@ This key encrypts the local DefraDB instance. Use a strong secret value before r
 
 ### Connecting to the Shinzo network
 
-Views can be published to and discovered through ShinzoHub. Once you've created a view, connect it to ShinzoHub to make it available across the network for other builders to use. [See the documentation for more details.](/reference/components/shinzohub/).
+Views can be published to and discovered through ShinzoHub. Once you've created a View, connect it to ShinzoHub to make it available across the network for other builders to use. [See the documentation for more details.](/reference/components/shinzohub/).
 
 ### Pruning
 
