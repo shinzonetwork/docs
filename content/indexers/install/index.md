@@ -3,7 +3,7 @@ title = "Install"
 weight = 2
 +++
 
-This page covers installing a Shinzo Indexer with Docker or from source. To complete an indexer setup, you must also register it with the Shinzo Network (see [Registration](./register)).
+This page covers installing a Shinzo Indexer with Docker or from source. To complete an indexer setup, you must also register it with the Shinzo Network (see [Registration](/indexers/register)).
 
 ## Hardware recommendations
 
