@@ -1,7 +1,7 @@
 +++
 title = "Configuring Event Filters on a Shinzo Host"
 weight = 2
-description = "Shinzo hosts will store absolutely everything it is given from an Indexer by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
+description = "Shinzo hosts will store absolutely everything it is given from a Generator client by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
 +++
 
 A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default the Host stores everything, but it can be configured to only store specific data. This guide configures the Host client to only store USDT ERC-20 transfer events.
@@ -33,7 +33,7 @@ This key encrypts the local DefraDB instance. Use a strong secret value before r
 
 ### Connecting to the Shinzo network
 
-Views can be published to and discovered through ShinzoHub. Once you've created a view, connect it to ShinzoHub to make it available across the network for other builders to use. [See the documentation for more details.](/reference/components/shinzohub/).
+Views can be published to and discovered through ShinzoHub. Once you've created a View, connect it to ShinzoHub to make it available across the network for other builders to use. [See the documentation for more details.](/reference/components/shinzohub/).
 
 ### Pruning
 
@@ -178,7 +178,7 @@ Key fields:
 | `logs_processed` | Events captured matching your filter |
 | `attestations_created` | Data integrity records written |
 
-If `logs_processed` stays at 0 but `blocks_processed` is climbing, either no matching events have occurred in the blocks being indexed, or the connected indexer is not providing full transaction data (only block headers). If `transactions_processed` is also 0, contact the [Shinzo team](https://discord.shinzo.network/) for access to a full-data indexer.
+If `logs_processed` stays at 0 but `blocks_processed` is climbing, either no matching events have occurred in the blocks being indexed, or the connected Generator client is not providing full transaction data (only block headers). If `transactions_processed` is also 0, contact the [Shinzo team](https://discord.shinzo.network/) for access to a full-data Generator.
 
 ### Query stored logs
 

@@ -1,13 +1,13 @@
 +++
-title = "Indexer client"
+title = "Generator client"
 weight = 2
 [extra]
 mermaid = true
 +++
 
-The indexer client is a standalone Go process that runs as a sidecar alongside an Ethereum validator node. It connects to the validator's Geth node, fetches every new block (with transactions, receipts, and logs), structures them into DefraDB documents, signs the batch, and publishes everything over P2P.
+The Generator client is a standalone Go process that runs as a sidecar alongside an Ethereum validator node. It connects to the validator's Geth node, fetches every new block (with transactions, receipts, and logs), structures them into DefraDB documents, signs the batch, and publishes everything over P2P.
 
-Indexers are write-only data producers. They push data out and reject all incoming replication.
+Generator clients are write-only data producers. They push data out and reject all incoming replication.
 
 ## Architecture
 
@@ -16,7 +16,7 @@ flowchart LR
   subgraph VM["Validator machine"]
     direction LR
     Geth["<b>Geth node</b><br/>:8545 HTTP<br/>:8546 WS"]
-    subgraph IC["Indexer client"]
+    subgraph IC["Generator client"]
       direction LR
       RPC["RPC client"] --> BH["Block handler"]
       BH --> Sig["Signing"]
@@ -30,7 +30,7 @@ flowchart LR
   DB -- "P2P (libp2p)" --> Hosts
 {% end %}
 
-The indexer connects to Geth over two channels:
+The Generator client connects to Geth over two channels:
 
 - WebSocket (port 8546): subscribes to new block headers for real-time feed.
 - HTTP JSON-RPC (port 8545): fetches full block details, fills gaps on restart, handles historical ranges. This is a backup connection.
@@ -42,13 +42,13 @@ Each block goes through six stages:
 1. Receive: a new block header arrives over the WebSocket subscription.
 1. Fetch: the full block is pulled over JSON-RPC, including the header, transactions, receipts, logs, and access lists.
 1. Structure: raw data is transformed into the six document types.
-1. Sign: a Merkle root is computed over all document CIDs and signed with the indexer's identity key.
+1. Sign: a Merkle root is computed over all document CIDs and signed with the Generator client's identity key.
 1. Store: documents are written to the local embedded DefraDB.
 1. Publish: DefraDB's P2P layer broadcasts to subscribed peers (hosts).
 
 ## Document types
 
-The indexer produces six document types per block. The first four come directly from on-chain data. The last two are metadata that the indexer itself produces.
+The Generator client produces six document types per block. The first four come directly from on-chain data. The last two are metadata that the Generator client itself produces.
 
 Collection names use a chain prefix: `Ethereum__Mainnet__Block`, `Optimism__Mainnet__Block`, etc. Schema definitions live in `pkg/schema/schema_standard.graphql`. There are two schema variants:
 
@@ -136,7 +136,7 @@ type Ethereum__Mainnet__AccessListEntry {
 
 ### BlockSignature
 
-Created after all documents for a block are written. Contains a Merkle root computed over all document CIDs for that block, signed with the indexer's identity key.
+Created after all documents for a block are written. Contains a Merkle root computed over all document CIDs for that block, signed with the Generator client's identity key.
 
 ```graphql
 type Ethereum__Mainnet__BlockSignature {
@@ -173,14 +173,14 @@ type Ethereum__Mainnet__SnapshotSignature {
 
 ## Document signing
 
-Signing is opt-in and configured by the indexer operator. Hosts disable it with `--no-signing`.
+Signing is opt-in and configured by the Generator operator. Hosts can disable it with `--no-signing`.
 
 The signing flow:
 
-1. At startup, the indexer loads a persistent identity from the DefraDB keyring using `GetIdentityContext()`.
+1. At startup, the Generator client loads a persistent identity from the DefraDB keyring using `GetIdentityContext()`.
 1. The identity is injected into the Go context via `node.ContextWithBlockSigning(ctx, collector)`, which enables CID collection.
 1. As the block handler writes documents, DefraDB collects the CID of each document written.
-1. After all documents for a block are written, the indexer calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.
+1. After all documents for a block are written, the Generator client calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.
 1. Each individual document also gets a `_version` entry with identity and signature:
 
 ```json
@@ -204,8 +204,8 @@ The pruner removes old data to keep storage bounded. It uses a queue-based syste
 
 Two queue implementations exist:
 
-- IndexerQueue: tracks document IDs at creation time. When it prunes, it removes entire blocks at once (Block + all its Transactions, Logs, AccessListEntries, and BlockSignature).
-- EventQueue: FIFO queue for P2P replication events. Drains documents as they arrive. Used by hosts, not indexers.
+- GeneratorQueue: tracks document IDs at creation time. When it prunes, it removes entire blocks at once (Block + all its Transactions, Logs, AccessListEntries, and BlockSignature).
+- EventQueue: FIFO queue for P2P replication events. Drains documents as they arrive. Used by Host clients, not Generator clients.
 
 If the queue is empty (first run or after restart with no persisted state), the pruner falls back to filter-based pruning, querying DefraDB directly for old documents.
 
@@ -224,15 +224,15 @@ Environment variables: `SNAPSHOT_ENABLED`, `SNAPSHOT_BLOCKS_PER_FILE`, `SNAPSHOT
 
 ## P2P data distribution
 
-The indexer does not manage P2P connections directly. DefraDB handles all of that through libp2p:
+The Generator client does not manage P2P connections directly. DefraDB handles all of that through libp2p:
 
-1. The indexer writes a document.
+1. The Generator client writes a document.
 1. DefraDB computes a content digest.
 1. DefraDB gossips the digest to connected peers.
 1. A peer that wants the document requests its full content.
 1. DefraDB sends the full document.
 
-This is unidirectional. The replication filter in `pkg/indexer/replication_filter.go` rejects all inbound documents. Indexers only push.
+This is unidirectional. The replication filter in `pkg/generator/replication_filter.go` rejects all inbound documents. Generator clients only push.
 
 Bootstrap peers are configured in the DefraDB config. Peers are also discovered through `EntityRegistered` events from ShinzoHub.
 
@@ -275,7 +275,7 @@ The codebase is being refactored from EVM-only to support multiple chains. The a
 | `cmd/block_poster/main.go` | Entry point |
 | `pkg/rpc/ethereum_client.go` | Geth RPC client (WebSocket + HTTP) |
 | `pkg/defra/block_handler.go` | Block processing and document creation |
-| `pkg/indexer/replication_filter.go` | Rejects all incoming P2P replication |
+| `pkg/generator/replication_filter.go` | Rejects all incoming P2P replication |
 | `pkg/snapshot/snapshot.go` | Snapshot signature creation |
 | `pkg/schema/schema_standard.graphql` | Collection schemas for the 6 doc types |
 | `pkg/constants/collections.go` | Collection name constants (chain-prefixed) |

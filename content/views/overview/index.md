@@ -11,11 +11,11 @@ At a high level, View Creator bridges the gap between indexed primitive data and
 
 ## Purpose and Role in the Stack
 
-Within the Shinzo ecosystem, View Creator sits above the Indexer and alongside Hosts:
+Within the Shinzo ecosystem, View Creator sits above the Generator client and alongside Host clients:
 
-- Indexer → produces normalized, deterministic primitive data
+- Generator clients → produces normalized, deterministic primitive data
 - View Creator → defines how that data should be queried, transformed, and exposed
-- Host → executes those definitions, serves results, and attests to correctness
+- Host clients → executes those definitions, serves results, and attests to correctness
 
 Using View Creator, developers write **Views** as versioned bundles that describe a complete data pipeline. These views are then deployed to a target environment (local, devnet, or future networks), where Hosts execute them deterministically against indexed data and serve the results to consumers.
 
@@ -24,7 +24,7 @@ This separation enables:
 - Rapid iteration on data models without re-indexing chains
 - Deterministic, reproducible data APIs
 - Decoupling of data definition from execution and infrastructure
-- Portable views that can run on any compliant Host
+- Portable views that can run on any compliant Host client
 
 ## Core Concepts
 

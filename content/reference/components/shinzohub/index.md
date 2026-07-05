@@ -3,7 +3,7 @@ title = "ShinzoHub"
 weight = 5
 +++
 
-ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, hosts, indexers, and the economic layer (staking, funding, pricing, earnings) all live here.
+ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, Hosts, Generators, and the economic layer (staking, funding, pricing, earnings) all live here.
 
 ShinzoHub does not store or serve blockchain data. It is only a coordination layer.
 
@@ -47,7 +47,7 @@ ShinzoHub extends the standard Cosmos SDK module set with five custom modules:
 | admin | `x/admin/` | Network administration, governance |
 | sourcehub | `x/sourcehub/` | ICA controller, sends messages to SourceHub |
 | host | `x/host/` | Host registration data |
-| indexer | `x/indexer/` | Indexer assertions and registrations |
+| generator | `x/generator/` | Generator assertions and registrations |
 | view | `x/view/` | View metadata after registration |
 
 These run alongside the standard Cosmos SDK modules (auth, bank, staking, mint, distribution, slashing, gov, etc.) and the EVM/ERC20 modules.
@@ -62,7 +62,7 @@ ShinzoHub uses EVM precompiled contracts to connect Cosmos module logic with the
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views, deploys SVS-1 contracts |
 | `0x0211` | Host Registry | Tracks registered hosts |
-| `0x0212` | Indexer Registry | Tracks registered indexers |
+| `0x0212` | Generator Registry | Tracks registered generator |
 
 ### View Registry (0x0210)
 
@@ -105,16 +105,16 @@ require(HOST_REGISTRY_CONTRACT.isRegistered(msg.sender), "caller is not a regist
 
 Key files: `app/precompiles/hostregistry/methods.go`
 
-### Indexer Registry (0x0212)
+### Generator Registry (0x0212)
 
-Indexers cannot self-register. They must go through the outpost + relayer assertion flow first:
+Generators cannot self-register. They must go through the outpost + relayer assertion flow first:
 
 1. Validator proves identity on source chain via outpost contract.
-1. Relayer delivers `MsgIndexerAssertion` to ShinzoHub.
-1. ShinzoHub's indexer module stores the assertion.
+1. Relayer delivers `MsgGeneratorAssertion` to ShinzoHub.
+1. ShinzoHub's Generator module stores the assertion.
 1. Operator calls `register()`, registry verifies stored assertion, derives DID/PID, sends ICA to SourceHub.
 
-Key files: `app/precompiles/indexerregistry/methods.go`
+Key files: `app/precompiles/generatorregistry/methods.go`
 
 ## Event names
 
@@ -124,16 +124,16 @@ Each precompile emits both a Solidity EVM log and a Cosmos SDK event. The names 
 | --- | --- | --- |
 | View Registry | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
 | Host Registry | `Registered(address,string)` | `"HostRegistered"` |
-| Indexer Registry | `Registered(address,string)` | `"Registered"` |
+| Generator Registry | `Registered(address,string)` | `"Registered"` |
 
 Other events:
 
 | Event | Emitted by |
 | --- | --- |
-| `IndexerAsserted` | Indexer module msg_server |
+| `GeneratorAsserted` | Generator module msg_server |
 | `AccessRequestSuccess` | SourceHub module msg_server |
 
-There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches Indexer Registry events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
+There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches any Generator Registry events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
 
 Some older docs reference `DataPurchased`, `AccessRevoked`, and `AccessRequestPayment`. These event names do not exist in the codebase.
 
