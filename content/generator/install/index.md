@@ -61,7 +61,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
       -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
       -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
       -e INDEXER_START_HEIGHT=0 \
-      -e DEFRADB_KEYRING_SECRET=devnet-secret \
+      -e DEFRADB_KEYRING_SECRET=testnet-secret \
       -e DEFRADB_PLAYGROUND=true \
       -e DEFRADB_P2P_ENABLED=true \
       -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \

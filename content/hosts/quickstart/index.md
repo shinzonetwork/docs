@@ -136,7 +136,7 @@ More query examples are available [here](/hosts/examples/).
 
 ## VM Deployment
 
-This is the recommended approach for production and devnet participation. It uses Docker, docker-compose, and Nginx on a virtual machine.
+This is the recommended approach for production and testnet participation. It uses Docker, docker-compose, and Nginx on a virtual machine.
 
 ### Prerequisites
 
@@ -185,7 +185,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: rpc.devnet.shinzo.network:26657
+  hub_base_url: rpc.testnet.shinzo.network:26657
   minimum_attestations: 1
 logger:
   development: false
@@ -332,9 +332,9 @@ To participate in the Shinzo Network, you must register your Host. Registration 
 ### Option A: Register with the GUI
 
 1. Start your Host client.
-2. Add Shinzo Devnet to Metamask with the following values:
+2. Add Shinzo testnet to Metamask with the following values:
   - Network name: Shinzo
-  - Default RPC URL: http://rpc.devnet.shinzo.network:8545
+  - Default RPC URL: http://rpc.testnet.shinzo.network:8545
   - Chain ID: 91273002
   - Currency symbol: SHNZ
 3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
@@ -354,7 +354,7 @@ cast send "0x0000000000000000000000000000000000000211" \
   "<peer_id_signedMessage>" \
   "<signed_message>" \
   "1" \
-  --rpc-url "http://rpc.devnet.shinzo.network:8545" \
+  --rpc-url "http://rpc.testnet.shinzo.network:8545" \
   --from "<your_address>" \
   --private-key "<your_private_key>" \
   --gas-limit 100000

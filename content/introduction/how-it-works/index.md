@@ -53,7 +53,7 @@ On the app side, things look (surprisingly) normal. The app embeds DefraDB using
 
 #### Generator clients
 
-Generator clients are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
+Generator clients are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on testnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
 
 #### Hosts
 

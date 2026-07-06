@@ -86,12 +86,18 @@ If you're a developer working on a dapp, wallet, or any kind of web3 app, Views 
 
 You build Views with `viewkit`, Shinzo's CLI, and deploy them to the network. Any Host client can then pick up the View, run it, and serve the results. Your application subscribes through the [app-sdk](https://github.com/shinzonetwork/app-sdk) and queries the resulting data locally.
 
+
 ## Where the project is today
 
-Shinzo is in active development on devnet. These core pieces work end to end:
+Shinzo's public testnet is now live. Anyone can join the network by running a Generator or Host and participate in validating the protocol before mainnet.
 
-- The Generator client ingests Ethereum Mainnet from a Geth node, signs documents, and replicates them over DefraDB's libp2p layer.
-- The Host client receives that data, builds attestation records, applies Lens transforms, and serves Views to subscribers.
-- Viewkit is usable for defining, packaging, and deploying Views to devnet today.
-- ShinzoHub (built on the Cosmos SDK) handles View registration and access control, and talks to Sourcehub over IBC to gate subscriptions behind payment.
-- The app-sdk lets Go applications embed DefraDB and run attestation-filtered queries against it.
+The current testnet includes:
+
+- The **Generator** client indexes Ethereum Mainnet from a Geth node, signs indexed data and replicates it across the network using DefraDB's libp2p-based replication layer.
+- The **Host** client receives replicated data from Generators, materializes registered Views using Lens transforms, and serves GraphQL queries to applications.
+- **Viewkit** allows developers to define, package and deploy custom Views to the network, making indexed datasets immediately available to participating Hosts.
+- **ShinzoHub** coordinates network participation, View registration, entity registration, and access control for the testnet.
+- The **Gateway** provides a unified GraphQL endpoint by routing requests across Hosts and validating responses through network consensus.
+- The **App SDK** enables Go applications to embed Shinzo components and query attestation-filtered data directly from the network.
+
+This testnet is intended to validate Shinzo's trustless indexing architecture under real-world conditions, gather feedback from operators and developers and harden the protocol ahead of mainnet.

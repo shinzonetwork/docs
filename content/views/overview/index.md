@@ -17,7 +17,7 @@ Within the Shinzo ecosystem, View Creator sits above the Generator client and al
 - View Creator → defines how that data should be queried, transformed, and exposed
 - Host clients → executes those definitions, serves results, and attests to correctness
 
-Using View Creator, developers write **Views** as versioned bundles that describe a complete data pipeline. These views are then deployed to a target environment (local, devnet, or future networks), where Hosts execute them deterministically against indexed data and serve the results to consumers.
+Using View Creator, developers write **Views** as versioned bundles that describe a complete data pipeline. These views are then deployed to a target environment (local, testnet, or future networks), where Hosts execute them deterministically against indexed data and serve the results to consumers.
 
 This separation enables:
 
@@ -47,7 +47,7 @@ View Creator is distributed as a CLI and is designed for local-first development
 - Incrementally adding queries, schemas, and lenses
 - Executing lenses locally for validation and preview
 - Deploying views to a local DefraDB instance with a GraphQL Playground
-- Signing and publishing views to shared networks like devnet
+- Signing and publishing views to shared networks like testnet
 
 By providing strong defaults, explicit versioning, and deterministic behavior, View Creator enables developers to focus on data semantics and transformations, while Shinzo handles execution, distribution, and verification.
 

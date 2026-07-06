@@ -69,7 +69,7 @@ docker run -d \
   -e GETH_WS_URL="$GETH_WS_URL" \
   -e GETH_API_KEY="$GETH_API_KEY" \
   -e INDEXER_START_HEIGHT=0 \
-  -e DEFRADB_KEYRING_SECRET=devnet-secret \
+  -e DEFRADB_KEYRING_SECRET=testnet-secret \
   -e DEFRADB_PLAYGROUND=true \
   -e DEFRADB_P2P_ENABLED=true \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
@@ -80,7 +80,7 @@ docker run -d \
   ghcr.io/shinzonetwork/shinzo-generator-client:standard
 ```
 
-`DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `devnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
+`DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `testnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
@@ -146,7 +146,7 @@ The Host client reads its configuration from a YAML file mounted into the contai
 ```shell
 defradb:
   url: "localhost:9181"
-  keyring_secret: "host-devnet-secret"
+  keyring_secret: "host-testnet-secret"
   p2p:
     enabled: true
     bootstrap_peers:
@@ -156,7 +156,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: rpc.devnet.shinzo.network:26657
+  hub_base_url: rpc.testnet.shinzo.network:26657
   minimum_attestations: 1
   start_height: 0
 logger:
