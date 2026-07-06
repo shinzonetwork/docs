@@ -242,9 +242,10 @@ Port 8080 exposes Prometheus metrics: block processing rates, attestation counts
 
 | Resource | Minimum | Recommended |
 | --- | --- | --- |
-| CPU | 2 cores | 4 cores |
-| RAM | 4 GB | 8 GB |
-| Storage | 100 GB | 500 GB (depends on number of views) |
+| CPU | 8 vCPUs | 16 vCPUs |
+| Memory (RAM) | 16 GB | 32–64 GB |
+| Storage | 3 TB NVMe | 4+ TB NVMe |
+| OS | Ubuntu 24.04 | Ubuntu 24.04 |
 | Network | 100 Mbps | 1 Gbps |
 
 ## Key files

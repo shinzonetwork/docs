@@ -240,9 +240,9 @@ Bootstrap peers are configured in the DefraDB config. Peers are also discovered 
 
 | Resource | Minimum | Recommended |
 | --- | --- | --- |
-| CPU | 2 cores | 4 cores |
-| RAM | 4 GB | 8 GB |
-| Storage | 50 GB (with pruning) | 100 GB (with pruning) |
+| CPU | ~4 cores | ~8 cores |
+| RAM | 8 GB | 16 GB |
+| Storage | 300 GB | 500 GB |
 | Network | 100 Mbps | 1 Gbps |
 
 ## Configuration

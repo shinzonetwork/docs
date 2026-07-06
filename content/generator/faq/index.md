@@ -17,10 +17,10 @@ Shinzo is lightweight on CPU, but storage performance and host stability matter 
 
 | Component | Minimum | Recommended |
 | --- | --- | --- |
-| CPU | 2 vCPUs | 16 vCPUs |
-| Memory (RAM) | 16 GB | 32–64 GB |
-| Storage | 3 TB NVMe | 4+ TB NVMe |
-| OS | Ubuntu 24.04 | Ubuntu 24.04 |
+| CPU | ~4 cores | ~8 cores |
+| Memory (RAM) | 8 GB | 16 GB |
+| Storage | 300 GB | 500 GB |
+| OS | Ubuntu 24.04 | Ubuntu 26.04 |
 
 ### Which RPC methods does the Generator client call on the upstream node?
 

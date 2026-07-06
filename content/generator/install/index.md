@@ -14,9 +14,9 @@ The Shinzo Generator binary is approximately **50 MB**. Storage requirements dep
 
 | Component | Minimum | Recommended |
 | --- | --- | --- |
-| CPU | 8 vCPUs | 16 vCPUs |
-| Memory (RAM) | 16 GB | 32–64 GB |
-| Storage | 3 TB NVMe | 4+ TB NVMe |
+| CPU | ~4 cores | ~8 cores |
+| Memory (RAM) | 8 GB | 16 GB |
+| Storage | 300 GB | 500 GB |
 | OS | Ubuntu 24.04 | Ubuntu 26.04 |
 
 ## Using Docker 

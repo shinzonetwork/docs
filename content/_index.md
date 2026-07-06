@@ -66,7 +66,7 @@ Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a
 
 ### Run a Generator client
 
-If you already operate an Ethereum node, adding a Generator client is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. Recommended extra resources are around 4 CPU cores, 8 GB of RAM, and 100 GB of storage with pruning on, on top of whatever the node itself needs.
+If you already operate an Ethereum node, adding a Generator client is straightforward. It’s a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, with support for additional execution clients and chains planned), reads blocks as they come in, signs them, and gossips them over the P2P network. For the current testnet, the minimum recommended hardware is approximately 4 CPU cores, 8 GB of RAM and 300 GB of SSD storage. For the best experience, we recommend around 8 CPU cores, 16 GB of RAM, and 500 GB of NVMe storage.
 
 ### Run a Host
 
