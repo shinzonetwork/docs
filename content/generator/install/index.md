@@ -7,6 +7,11 @@ This page covers installing a Shinzo Generator client with Docker or from source
 
 ## Hardware recommendations
 
+The Shinzo Generator binary is approximately **50 MB**. Storage requirements depend on your node configuration:
+
+- **Pruned mode (recommended):** 50–100 GB NVMe
+- **Archival mode:** 3+ TB NVMe
+
 | Component | Minimum | Recommended |
 | --- | --- | --- |
 | CPU | 8 vCPUs | 16 vCPUs |
