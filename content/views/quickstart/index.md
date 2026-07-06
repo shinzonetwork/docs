@@ -155,7 +155,7 @@ Viewkit revolves around **views**. Each view is a bundle that includes:
 - **SDL (GraphQL)** – how that data is modeled/exposed  
   (for example: `type FilteredAndDecodedLogs { transactionHash: String }`)
 - **Lenses (WASM)** – chained transforms that filter/decode/reshape data
-- **Wallet** – key used to sign deployments to a target network (`local`, `devnet`, etc.)
+- **Wallet** – key used to sign deployments to a target network (`local`, `testnet`, etc.)
 
 Think of the pipeline as:
 
@@ -172,7 +172,7 @@ We’ll walk end-to-end through an example view named **`testdeploy`**:
 5. Attach a lens
 6. Generate a wallet
 7. Deploy locally (with DefraDB Playground)
-8. Deploy to devnet
+8. Deploy to testnet
 
 > All commands assume `viewkit` is on your PATH.  
 > If not, replace `viewkit` with `./build/viewkit`.
@@ -279,7 +279,7 @@ If you see `libwasmer.dylib` / “image not found” errors, revisit the Wasmer 
 
 ## 7. Wallet: create a deployment key
 
-You need a wallet to sign deployments to `local` and `devnet`.
+You need a wallet to sign deployments to `local` and `testnet`.
 
 Generate one:
 
@@ -301,7 +301,7 @@ Treat it like any other wallet:
 
 ## 8. Deploy locally with `--target local`
 
-The recommended flow is to deploy **locally** first, verify the view in a Playground, then deploy to a shared network like `devnet`.
+The recommended flow is to deploy **locally** first, verify the view in a Playground, then deploy to a shared network like `testnet`.
 
 Deploy to local:
 
@@ -370,27 +370,27 @@ To iterate:
 
 - Refresh the Playground and test again.
 
-## 9. Deploy to devnet with `--target devnet`
+## 9. Deploy to testnet with `--target testnet`
 
-Once your view behaves correctly locally, you can deploy it to **devnet**.
+Once your view behaves correctly locally, you can deploy it to **testnet**.
 
 Make sure:
 
 - A wallet has been generated: `viewkit wallet generate`
-- Any required devnet config/credentials are set
+- Any required testnet config/credentials are set
 
 Then:
 
 ```bash
-viewkit view deploy testdeploy --target devnet --rpc http://shinzohub-rpc.infra.source.network:8545
+viewkit view deploy testdeploy --target testnet --rpc http://rpc.testnet.shinzo.network:8545
 ```
 
 Conceptually:
 
 1. Viewkit bundles the `testdeploy` view definition (queries, SDL, lenses, metadata).
 2. Signs a deployment transaction using your wallet.
-3. Sends it to the `devnet` network.
-4. Registers the view on devnet so it can be used and queried there.
+3. Sends it to the `testnet` network.
+4. Registers the view on testnet so it can be used and queried there.
 
 On success, you should see:
 
@@ -400,7 +400,7 @@ On success, you should see:
 If it fails:
 
 - Confirm your wallet is present and funded (if required)
-- Confirm `devnet` is a valid target
+- Confirm `testnet` is a valid target
 - Re-check the view definition with `viewkit view inspect testdeploy`
 
 ## 10. Full flow cheat sheet
@@ -446,8 +446,8 @@ viewkit view deploy testdeploy --target local
 # -> follow the printed URL (e.g. http://127.0.0.1:9181/) for the GraphQL Playground
 # -> press Ctrl+C in the terminal to stop
 
-# 8) once you're happy, deploy to devnet
-viewkit view deploy testdeploy --target devnet --rpc http://rpc.devnet.shinzo.network:8545
+# 8) once you're happy, deploy to testnet
+viewkit view deploy testdeploy --target testnet --rpc http://rpc.testnet.shinzo.network:8545
 ```
 
-This gives you a clean path from **GitHub clone** to a **locally tested view** and then to a **devnet deployment**.
+This gives you a clean path from **GitHub clone** to a **locally tested view** and then to a **testnet deployment**.

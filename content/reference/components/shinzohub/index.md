@@ -177,13 +177,14 @@ The path from user payment to access grant has four steps:
 
 ## Endpoints
 
-| Service | URL (devnet) |
+| Service | URL (testnet) |
 | --- | --- |
-| EVM JSON-RPC | `http://rpc.devnet.shinzo.network:8545` |
-| CometBFT RPC | `http://rpc.devnet.shinzo.network:26657` |
-| REST / LCD | `http://rpc.devnet.shinzo.network:1317` |
+| EVM JSON-RPC | `http://rpc.testnet.shinzo.network:8545` |
+| CometBFT RPC | `http://rpc.testnet.shinzo.network:26657` |
+| REST / LCD | `http://rpc.testnet.shinzo.network:1317` |
 | gRPC | port 9090 |
 
+<!--
 ## What is not implemented yet
 
 These appear in design docs but do not exist in any branch as of the current devnet:
@@ -194,3 +195,4 @@ These appear in design docs but do not exist in any branch as of the current dev
 - `GrantAccess` IBC message (actual mechanism uses ICA with ACP policy commands).
 - Direct outpost integration in ShinzoHub (the relayer bridges everything).
 - Hosts listening to SourceHub events (hosts listen to ShinzoHub CometBFT RPC, not SourceHub).
+-->
