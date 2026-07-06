@@ -3,7 +3,7 @@ title = "Install"
 weight = 2
 +++
 
-This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](./generator/register)).
+This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](./register)).
 
 ## Hardware recommendations
 
