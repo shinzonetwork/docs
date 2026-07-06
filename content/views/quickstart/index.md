@@ -410,8 +410,8 @@ Here is the entire flow summarized:
 ```bash
 # 0) clone + build
 cd ~/code
-git clone https://github.com/shinzonetwork/view-creator.git
-cd view-creator
+git clone https://github.com/shinzonetwork/shinzo-view-creator.git
+cd shinzo-view-creator
 make build
 export PATH="$PWD/build:$PATH"
 
