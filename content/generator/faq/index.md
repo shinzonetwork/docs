@@ -9,7 +9,7 @@ https://github.com/shinzonetwork/shinzo-generator-client
 
 ### Does the Generator client replace my Ethereum node?
 
-No. The Generator client is a sidecar that reads from an existing Ethereum execution node (Geth, Reth, Nethermind, Erigon, or a managed provider). It does not run an execution client, does not serve JSON-RPC, and is not a substitute for your validator's node. You point it at an upstream RPC and WebSocket endpoint, and it ingests block data from there into its local DefraDB.
+No. The Generator client is a sidecar that connects to an existing Ethereum execution node. It does not run an execution client, expose a JSON-RPC interface, or replace the execution node used by your validator. Instead, you configure it to connect to an upstream JSON-RPC and WebSocket endpoint (Geth is supported). The Generator client reads block data from that execution node and stores it in its local DefraDB instance.
 
 ### What hardware is recommended for deploying Shinzo?
 
