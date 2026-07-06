@@ -84,7 +84,7 @@ docker run -d \
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
-`INDEXER_START_HEIGHT=0` starts indexing from genesis. For Ethereum Mainnet that's a lot of history, but this quickstart only needs a few committed blocks to verify the pipeline. To start closer to head, set this to a recent block height.
+`INDEXER_START_HEIGHT=0` starts indexing at the current chain tip — no historical backfill. To sync from a specific point instead, set this to that block's height. On Ethereum Mainnet, a height far below tip means a lot of history to index, so use a recent block if you just want to confirm the pipeline works.
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
