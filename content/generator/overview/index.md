@@ -13,7 +13,7 @@ The Generator client is **not** an RPC node. It does not replace Geth, Reth, Net
 
 {% mermaid() %}
 flowchart LR
-  EC["Ethereum node<br/>(Geth, Reth, etc.)"]
+  EC["Ethereum node<br/>(Geth)"]
   GEN["Generator client"]
   DB[(DefraDB)]
   Host["Hosts / downstream services"]
@@ -27,7 +27,7 @@ The Generator client continuously pulls blocks, transactions, logs, and EIP-2930
 
 ## Supported chains
 
-The Generator client currently supports Ethereum Mainnet. It works with any execution client that exposes a standard Ethereum JSON-RPC and WebSocket interface (Geth, Reth, Nethermind, Erigon, or a managed provider). Supported chains can also be found at [shinzo.network/chains](https://shinzo.network/chains).
+The Generator client currently supports Ethereum Mainnet via Geth, exposing a standard Ethereum JSON-RPC and WebSocket interface. Other execution clients (Reth, Nethermind, Erigon) and managed providers may work but haven't been tested. Supported chains can also be found at [shinzo.network/chains](https://shinzo.network/chains).
 
 ## How it fits together
 
