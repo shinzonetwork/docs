@@ -14,12 +14,21 @@ Markdown content and web code for the Shinzo developer docs site at [docs.shinzo
 
 ## Getting started
 
-```shell
-git clone git@github.com:shinzonetwork/docs.git
-cd docs
-pnpm install
-pnpm start
-```
+1. Install [Zola](https://www.getzola.org/).
+1. Clone the repo and move inside:
+
+    ```shell
+    git clone git@github.com:shinzonetwork/docs.git
+    cd docs
+    ```
+
+1. Start the local server:
+
+    ```shell
+    zola serve
+    ```
+
+1. Visit the link output in the terminal to view the site.
 
 > [!TIP]
 > See [BUILD.md](./BUILD.md) to see how to build for production.

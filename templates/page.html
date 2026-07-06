@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% import "macros/sidebar.html" as sidebar %}
+{% import "macros/mermaid.html" as mermaid %}
+
+{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
+
+{% block body %}
+<main class="main-wrapper">
+  <div class="docs-layout">
+    <aside class="theme-doc-sidebar-container">
+      {{ sidebar::render(current=page.path) }}
+    </aside>
+
+    <div class="docs-content">
+      <article class="docItemCol markdown">
+
+        {# Breadcrumbs derived from the URL path components #}
+        {% set crumbs = page.path | trim_start_matches(pat="/") | trim_end_matches(pat="/") | split(pat="/") %}
+        <ul class="breadcrumbs">
+          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Home</a></li>
+          {% for crumb in crumbs %}
+            {% if not loop.last %}
+              <li class="breadcrumbs__item"><span class="breadcrumbs__link">{{ crumb | replace(from="-", to=" ") | title }}</span></li>
+            {% else %}
+              <li class="breadcrumbs__item"><span class="breadcrumbs__link">{{ page.title }}</span></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+
+        {# Page title from front-matter. Rendered here (outside page.content) so
+           it is NOT part of page.toc / the table of contents. #}
+        <h1 class="doc-title">{{ page.title }}</h1>
+
+        {{ page.content | safe }}
+
+        {# Prev / next navigation #}
+        {# (rendered below; TOC lives in the aside column) #}
+        {% if page.lower or page.higher %}
+        <nav class="pagination-nav" aria-label="Docs pages">
+          {% if page.lower %}
+          <a class="pagination-nav__link pagination-nav__link--prev" href="{{ page.lower.permalink | replace(from=config.base_url, to='') }}">
+            <div class="pagination-nav__sublabel">Previous</div>
+            <div class="pagination-nav__label">{{ page.lower.title }}</div>
+          </a>
+          {% else %}<span></span>{% endif %}
+          {% if page.higher %}
+          <a class="pagination-nav__link pagination-nav__link--next" href="{{ page.higher.permalink | replace(from=config.base_url, to='') }}">
+            <div class="pagination-nav__sublabel">Next</div>
+            <div class="pagination-nav__label">{{ page.higher.title }}</div>
+          </a>
+          {% else %}<span></span>{% endif %}
+        </nav>
+        {% endif %}
+
+      </article>
+    </div>
+
+    {# Table of contents (right column) #}
+    {% if page.toc %}
+    <aside class="toc-container">
+      <nav class="toc" aria-label="Table of contents">
+        <div class="toc__title">On this page</div>
+        <ul class="toc__list">
+          {% for h1 in page.toc %}
+          <li class="toc__item">
+            <a class="toc__link" href="#{{ h1.id | safe }}">{{ h1.title }}</a>
+            {% if h1.children %}
+            <ul class="toc__list toc__list--nested">
+              {% for h2 in h1.children %}
+              <li class="toc__item"><a class="toc__link" href="#{{ h2.id | safe }}">{{ h2.title }}</a></li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </aside>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock body %}
+
+{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
+
+{% block scripts %}
+{% if page.extra.mermaid %}{{ mermaid::script() }}{% endif %}
+{% endblock scripts %}

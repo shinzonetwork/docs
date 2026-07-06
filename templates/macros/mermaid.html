@@ -1,0 +1,25 @@
+{# Mermaid loader + brand theme, matching docusaurus.config themeVariables. #}
+{% macro script() %}
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    fontFamily: '"Geist", sans-serif',
+    themeVariables: {
+      primaryColor: '#ffe9e9', primaryTextColor: '#353535', primaryBorderColor: '#d01f27',
+      secondaryColor: '#f3f3f3', secondaryTextColor: '#353535', secondaryBorderColor: '#c7c7c7',
+      tertiaryColor: '#ffffff', tertiaryTextColor: '#353535', tertiaryBorderColor: '#c7c7c7',
+      lineColor: '#353535', textColor: '#353535', background: '#ffffff',
+      mainBkg: '#ffe9e9', secondBkg: '#f3f3f3',
+      noteBkgColor: '#fff8d6', noteTextColor: '#353535', noteBorderColor: '#c7c7c7',
+      actorBkg: '#ffe9e9', actorBorder: '#d01f27', actorTextColor: '#353535', actorLineColor: '#c7c7c7',
+      signalColor: '#353535', signalTextColor: '#353535',
+      labelBoxBkgColor: '#ffe9e9', labelBoxBorderColor: '#d01f27', labelTextColor: '#353535', loopTextColor: '#353535',
+      clusterBkg: '#fafafa', clusterBorder: '#c7c7c7', edgeLabelBackground: '#ffffff'
+    },
+    flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' }
+  });
+  await mermaid.run({ querySelector: '.mermaid' });
+</script>
+{% endmacro script %}
