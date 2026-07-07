@@ -719,6 +719,63 @@ pre {
   }
 }
 
+/* ─── Footnotes ──────────────────────────────────────────────────────── */
+// Zola (pulldown-cmark) emits, per footnote:
+//   <div class="footnote-definition" id="1">
+//     <sup class="footnote-definition-label">1</sup>
+//     <p>…</p>
+//   </div>
+// We turn each div into a flex row so the number sits beside the text,
+// and prepend a "Footnotes" label + rule above the FIRST one only.
+.markdown .footnote-definition {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 0.5rem;
+  margin: 0.5rem 0;
+
+  > .footnote-definition-label {
+    flex: 0 0 1.5rem;
+    font-family: var(--font-family-monospace);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    vertical-align: baseline;
+    color: color-mix(in srgb, var(--foreground) 60%, transparent);
+  }
+
+  > p {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  // Title + separator, only above the first footnote. The ::before is a
+  // full-width flex item (forces its own line via flex-wrap); the `~`
+  // selector removes it from every footnote that follows another.
+  &::before {
+    content: "Footnotes";
+    flex: 0 0 100%;
+    border-top: 1px solid var(--szo-border);
+    margin-top: 2rem;
+    padding-top: 1rem;
+    font-family: var(--font-family-monospace);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--foreground) 60%, transparent);
+  }
+
+  // "First of class" hack: any footnote preceded by another footnote is
+  // NOT the first, so drop its title/rule.
+  & ~ .footnote-definition::before {
+    content: none;
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
 /* ─── Pagination (prev / next) ───────────────────────────────────────── */
 .pagination-nav {
   display: flex;
