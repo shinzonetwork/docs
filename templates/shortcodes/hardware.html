@@ -1,0 +1,23 @@
+{# Usage: {{ hardware(component="generator") }} or {{ hardware(component="host") }} #}
+{%- set data = load_data(path="data/hardware.toml") -%}
+{%- set comp = data[component] -%}
+<div class="hardware-table">
+<table>
+  <thead>
+    <tr>
+      <th>Resource</th>
+      <th>Minimum</th>
+      <th>Recommended</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%- for row in comp.rows -%}
+    <tr>
+      <td>{{ row.resource }}</td>
+      <td>{{ row.minimum }}</td>
+      <td>{{ row.recommended }}</td>
+    </tr>
+    {%- endfor -%}
+  </tbody>
+</table>
+</div>
