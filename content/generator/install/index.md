@@ -7,12 +7,11 @@ This page covers installing a Shinzo Generator client with Docker or from source
 
 ## Hardware recommendations
 
-| Component | Minimum | Recommended |
-| --- | --- | --- |
-| CPU | 8 vCPUs | 16 vCPUs |
-| Memory (RAM) | 16 GB | 32–64 GB |
-| Storage | 3 TB NVMe | 4+ TB NVMe |
-| OS | Ubuntu 24.04 | Ubuntu 26.04 |
+The Generator client is a lightweight sidecar that runs next to an Ethereum execution node. The figures below are for the Generator client itself, on top of whatever the execution node needs.
+
+{{ hardware(component="generator") }}
+
+If you are running Geth on the same machine, size for Geth first. A snap-synced Geth full node needs over 650 GB of fast SSD storage and at least 16 GB of RAM by itself. See the [Geth hardware requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements) and the [hardware requirements page](../hardware-requirements/) for details.
 
 ## Using Docker 
 

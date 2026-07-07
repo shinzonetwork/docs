@@ -240,12 +240,7 @@ Port 8080 exposes Prometheus metrics: block processing rates, attestation counts
 
 ## Resource requirements
 
-| Resource | Minimum | Recommended |
-| --- | --- | --- |
-| CPU | 2 cores | 4 cores |
-| RAM | 4 GB | 8 GB |
-| Storage | 100 GB | 500 GB (depends on number of views) |
-| Network | 100 Mbps | 1 Gbps |
+See the [hardware requirements page](/hosts/hardware-requirements/) for current minimum and recommended specs. Host storage depends mainly on the number of Views served and whether pruning is enabled (the default).
 
 ## Key files
 

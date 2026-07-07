@@ -66,13 +66,13 @@ Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a
 
 ### Run a Generator client
 
-If you already operate an Ethereum node, adding a Generator client is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. Recommended extra resources are around 4 CPU cores, 8 GB of RAM, and 100 GB of storage with pruning on, on top of whatever the node itself needs.
+If you already operate an Ethereum node, adding a Generator client is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/generator/hardware-requirements/) for sizing; the short version is a few cores and a modest amount of disk on top of whatever the node itself needs.
 
 ### Run a Host
 
 Host clients sit between Generator clients and applications. They receive signed primitive data over P2P, apply your View's Lens transforms, build attestation records, and serve results to subscribers. Running one is a good way to support the network if you don't want to operate a blockchain node.
 
-You'll need a machine that stays online reliably. The rough recommended spec is 8 CPU cores, 16 GB of RAM, and 500 GB of SSD storage. A Host doesn't need to be close to a blockchain node, just a stable connection and enough disk for the Views it's serving.
+You'll need a machine that stays online reliably. A Host doesn't need to be close to a blockchain node, just a stable connection and enough disk for the Views it's serving. See the [hardware requirements](/hosts/hardware-requirements/) for sizing.
 
 Host clients are configured through a YAML file that lists which Views to subscribe to, the minimum number of Generator clients that must have signed a document before it's accepted, and where to listen for subscriber connections. New Views can be picked up and served without restarting.
 

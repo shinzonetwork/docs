@@ -8,12 +8,9 @@ Hosts turn raw blockchain data into structured **Views** and produce **Attestati
 
 ## Hardware Recommendations
 
-| Component | Minimum | Recommended |
-| --- | --- | --- |
-| CPU | 8 vCPUs | 16 vCPUs |
-| Memory (RAM) | 16 GB | 32–64 GB |
-| Storage | 3 TB NVMe | 4+ TB NVMe |
-| OS | Ubuntu 24.04 | Ubuntu 24.04 |
+The Host client does not run a blockchain node, so it does not need the large NVMe footprint of an execution client or Generator machine. See the [hardware requirements page](../hardware-requirements/) for details.
+
+{{ hardware(component="host") }}
 
 ## Local Deployment
 
