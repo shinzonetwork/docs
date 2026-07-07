@@ -19,8 +19,8 @@ When you're done you'll have:
 
 {% mermaid() %}
 flowchart LR
-  Geth["Geth (your node)"] -->|RPC + WS| Generator client
-  Generator client -->|libp2p| Host
+  Geth["Geth (your node)"] -->|RPC + WS| Generator["Generator client"]
+  Generator -->|libp2p| Host
   Host -->|GraphQL| You["You (curl)"]
 {% end %}
 
