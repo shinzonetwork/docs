@@ -5,18 +5,21 @@
 # 2. Run this script:
 #
 #   ```shell
-#   ./generate-llms.sh
+#   ./scripts/generate-llms.sh
 #   ```
 #
 # Output files are written to ./public/ or set OUTPUT_DIR to any other location. The page order mirrors the sidebar in templates/macros/sidebar.html.
 
 set -euo pipefail
 
-DOCS_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+DOCS_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 CONTENT_DIR="$DOCS_DIR/content"
 DATA_DIR="$DOCS_DIR/data"
-OUTPUT_DIR="$DOCS_DIR/public"
-BASE_URL="https://docs.shinzo.network"
+
+# Allow overrides for local/dev usage.
+OUTPUT_DIR="${OUTPUT_DIR:-$DOCS_DIR/public}"
+BASE_URL="${BASE_URL:-https://docs.shinzo.network}"
 
 LLMS_TXT="$OUTPUT_DIR/llms.txt"
 LLMS_FULL_TXT="$OUTPUT_DIR/llms-full.txt"
