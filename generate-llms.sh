@@ -159,11 +159,11 @@ write_header() {
 > on-chain data into structured datasets that any application can query,
 > without relying on a centralized indexing service.
 
-This documentation covers running Indexers and Hosts, building Views with
+This documentation covers running Generator and Hosts, building Views with
 Viewkit, querying data with the app-sdk, and the full architecture of the
 Shinzo network.
 
-- Indexers run alongside Ethereum nodes and produce signed, structured data.
+- Generator run alongside Ethereum nodes and produce signed, structured data.
 - Hosts receive that data over P2P, run WASM transforms (Views), and serve results over GraphQL.
 - Developers define Views with Viewkit and query results locally via DefraDB.
 - ShinzoHub (Cosmos SDK) handles on-chain coordination: view registration, participant tracking, and access control.
@@ -187,12 +187,12 @@ add_page "/"                             "$CONTENT_DIR/_index.md"               
 add_page "/introduction/how-it-works/"   "$CONTENT_DIR/introduction/how-it-works/index.md"
 add_page "/introduction/core-concepts/"  "$CONTENT_DIR/introduction/core-concepts/index.md"
 
-# Indexers
-section_header "Indexers"
-add_page "/indexers/overview/"  "$CONTENT_DIR/indexers/overview/index.md"
-add_page "/indexers/install/"   "$CONTENT_DIR/indexers/install/index.md"
-add_page "/indexers/register/"  "$CONTENT_DIR/indexers/register/index.md"
-add_page "/indexers/faq/"       "$CONTENT_DIR/indexers/faq/index.md"
+# Generator
+section_header "Generator"
+add_page "/generator/overview/"  "$CONTENT_DIR/generator/overview/index.md"
+add_page "/generator/install/"   "$CONTENT_DIR/generator/install/index.md"
+add_page "/generator/register/"  "$CONTENT_DIR/generator/register/index.md"
+add_page "/generator/faq/"       "$CONTENT_DIR/generator/faq/index.md"
 
 # Hosts
 section_header "Hosts"
@@ -216,7 +216,7 @@ section_header "Reference"
 add_page "/reference/architecture-overview/"      "$CONTENT_DIR/reference/architecture-overview/index.md"
 add_page "/reference/tools/"                      "$CONTENT_DIR/reference/tools/index.md"
 add_page "/reference/components/host-client/"     "$CONTENT_DIR/reference/components/host-client/index.md"
-add_page "/reference/components/indexer-client/"  "$CONTENT_DIR/reference/components/indexer-client/index.md"
+add_page "/reference/components/generator-client/"  "$CONTENT_DIR/reference/components/generator-client/index.md"
 add_page "/reference/components/outpost/"         "$CONTENT_DIR/reference/components/outpost/index.md"
 add_page "/reference/components/relayer/"         "$CONTENT_DIR/reference/components/relayer/index.md"
 add_page "/reference/components/shinzohub/"       "$CONTENT_DIR/reference/components/shinzohub/index.md"
