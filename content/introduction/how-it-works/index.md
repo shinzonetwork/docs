@@ -25,19 +25,19 @@ Somewhere on the network, an Ethereum validator's node produces or receives the 
 {% mermaid() %}
 flowchart LR
     ShinzoHub["ShinzoHub"]
-    Eth["[1] Ethereum Node"]
+    Eth["Ethereum Node"]
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
-        Indexer["Shinzo<br/>Indexer"]
+        Generator["Generator<br/>client"]
         Host["Shinzo Host"]
         App["Your App"]
 
-        Indexer --> Host
+        Generator --> Host
         Host -->|View| App
     end
 
-    Eth --> Indexer
+    Eth --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
@@ -59,21 +59,21 @@ flowchart LR
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
-        Indexer["[2] Shinzo<br/>Indexer"]
+        Generator["Generator<br/>client"]
         Host["Shinzo Host"]
         App["Your App"]
 
-        Indexer --> Host
+        Generator --> Host
         Host -->|View| App
     end
 
-    Eth --> Indexer
+    Eth --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
     classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
     class P2P dashed
-    class Indexer active
+    class Generator active
 {% end %}
 
 ### Hosts pick it up over P2P
@@ -87,15 +87,15 @@ flowchart LR
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
-        Indexer["Shinzo<br/>Indexer"]
-        Host["[3] Shinzo Host"]
+        Generator["Generator<br/>client"]
+        Host["Shinzo Host"]
         App["Your App"]
 
-        Indexer --> Host
+        Generator --> Host
         Host -->|View| App
     end
 
-    Eth --> Indexer
+    Eth --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
@@ -117,15 +117,15 @@ flowchart LR
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
-        Indexer["Shinzo<br/>Indexer"]
+        Generator["Generator<br/>client"]
         Host["Shinzo Host"]
         App["Your App"]
 
-        Indexer --> Host
-        Host -->|"[4] View"| App
+        Generator --> Host
+        Host -->|"View"| App
     end
 
-    Eth --> Indexer
+    Eth --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
@@ -139,26 +139,26 @@ On the app side, things look (surprisingly) normal. The app embeds DefraDB using
 
 {% mermaid() %}
 flowchart LR
-  ShinzoHub["ShinzoHub"]
-  Eth["Ethereum Node"]
+    ShinzoHub["ShinzoHub"]
+    Eth["Ethereum Node"]
 
-  subgraph P2P["P2P Network (DefraDB)"]
-      direction LR
-      Indexer["Shinzo<br/>Indexer"]
-      Host["Shinzo Host"]
-      App["[5] Your App"]
+    subgraph P2P["P2P Network (DefraDB)"]
+        direction LR
+        Generator["Generator<br/>client"]
+        Host["Shinzo Host"]
+        App["Your App"]
 
-      Indexer --> Host
-      Host -->|View| App
-  end
+        Generator --> Host
+        Host -->|View| App
+    end
 
-  Eth --> Indexer
-  ShinzoHub --> P2P
+    Eth --> Generator
+    ShinzoHub --> P2P
 
-  classDef dashed stroke-dasharray:5 5
-  classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
-  class P2P dashed
-  class App active
+    classDef dashed stroke-dasharray:5 5
+    classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
+    class P2P dashed
+    class App active
 {% end %}
 
 ## The four participants
