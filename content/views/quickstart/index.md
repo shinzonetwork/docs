@@ -1,28 +1,26 @@
 +++
 title = "Quick Start"
-description = "View Creator (**Viewkit**) is a CLI tool that helps you initialize, manage, and publish **Shinzo vie..."
+description = "View Creator (Viewkit) is a CLI tool that helps you initialize, manage, and publish Shinzo views."
 weight = 2
 +++
 
-# View Creator
+View Creator (Viewkit) is a CLI tool that helps you initialize, manage, and publish Shinzo views.
 
-View Creator (**Viewkit**) is a CLI tool that helps you initialize, manage, and publish **Shinzo views**.
+## Prerequisites
 
-## 1. Prerequisites
-
-**OS**
+#### OS
 
 - macOS on Apple Silicon (M1/M2/M3) or Linux (x86_64 / amd_64)
 
-**Tools**
+#### Tools
 
 - `git`
 - `make`
-- **Go** 1.23+ installed and on your PATH
+- Go 1.23+ installed and on your PATH
 
 Check Go:
 
-```bash
+```shell
 go version
 # expect something like: go version go1.23.x ...
 ```
@@ -32,98 +30,93 @@ Optional but helpful:
 - A code editor (VS Code, GoLand, etc.)
 - Basic comfortability running terminal commands
 
-## 2. Clone the repository
+## Clone the repository
 
 From the directory where you keep your projects:
 
-```bash
+```shell
 git clone https://github.com/shinzonetwork/shinzo-view-creator.git
 cd shinzo-view-creator
 ```
 
-## 3. Build the `viewkit` binary
+## Build the viewkit binary
 
 From the repo root:
 
-```bash
+```shell
 make build
 ```
 
 If the build is successful, you should see a `build` directory:
 
-```bash
+```shell
 ls build
 # viewkit  (plus any other build artifacts)
 ```
 
 You can now run Viewkit via:
 
-```bash
+```shell
 ./build/viewkit --help
 ```
 
-### Optional: add `viewkit` to your PATH
+### Optional: add viewkit to your PATH
 
-So you don’t have to type `./build` each time:
+So you don't have to type `./build` each time:
 
-```bash
+```shell
 echo 'export PATH="$PWD/build:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
 Then you can run:
 
-```bash
+```shell
 viewkit --help
 ```
 
-## 4. Wasmer runtime
+## Wasmer runtime
 
-Viewkit can execute WebAssembly **lenses** locally to validate and preview them.
+Viewkit can execute WebAssembly lenses locally to validate and preview them.
 
 Under the hood, it uses `wasmer-go`, which depends on a native dynamic library (`libwasmer.dylib`). If macOS cannot find that library, any command that touches lenses will fail with an error like:
 
-> image not found  
+> image not found
 > library not loaded: libwasmer.dylib
 
 This section explains how to set that up.
 
-### 4.1 Install the Wasmer Go module
+### Install the Wasmer Go module
 
 From the repo root:
 
-```bash
+```shell
 go get github.com/wasmerio/wasmer-go@v1.0.4
 ```
 
 This ensures `wasmer-go` and its packaged native libraries are present in your `GOPATH`.
 
-### 4.2 Environment variables
+### Environment variables
 
 We will use three environment variables:
 
-- `WASMER_ROOT`  
-  Points to the directory where  `libwasmer.dylib` lives.
+- `WASMER_ROOT`: points to the directory where `libwasmer.dylib` lives.
+- `WASMER_LIB_PATH`: used by `wasmer-go` to find the dynamic library.
+- `DYLD_LIBRARY_PATH`: macOS dynamic loader search path. We prepend `WASMER_ROOT` so the loader can find `libwasmer.dylib` when `viewkit` starts.
 
-- `WASMER_LIB_PATH`  
-  Used by `wasmer-go` to find the dynamic library.
+### Configure the env vars
 
-- `DYLD_LIBRARY_PATH`  
-  macOS dynamic loader search path. We prepend `WASMER_ROOT` so the loader can find `libwasmer.dylib` when `viewkit` starts.
+Append these lines to your `~/.zshrc` if on Apple Silicon:
 
-### 4.3 Configure the env vars
-
-Append these lines to your `~/.zshrc` if on **Apple Silicon**:
-
-```bash
+```shell
 echo 'export WASMER_ROOT="$(go env GOPATH)/pkg/mod/github.com/wasmerio/wasmer-go@v1.0.4/wasmer/packaged/lib/darwin-aarch64"' >> ~/.zshrc
 echo 'export WASMER_LIB_PATH="$WASMER_ROOT"' >> ~/.zshrc
 echo 'export DYLD_LIBRARY_PATH="$WASMER_ROOT:$DYLD_LIBRARY_PATH"' >> ~/.zshrc
 ```
 
-Otherwise append these lines to your `~/.zshrc` if on **Linux**:
+Otherwise append these lines to your `~/.zshrc` if on Linux:
 
-```bash
+```shell
 echo 'export WASMER_ROOT="$(go env GOPATH)/pkg/mod/github.com/wasmerio/wasmer-go@v1.0.4/wasmer/packaged/lib/linux-amd64"' >> ~/.zshrc
 echo 'export WASMER_LIB_PATH="$WASMER_ROOT"' >> ~/.zshrc
 echo 'export LD_LIBRARY_PATH="$WASMER_ROOT:$LD_LIBRARY_PATH"' >> ~/.zshrc
@@ -131,13 +124,13 @@ echo 'export LD_LIBRARY_PATH="$WASMER_ROOT:$LD_LIBRARY_PATH"' >> ~/.zshrc
 
 Reload your shell configuration:
 
-```bash
+```shell
 source ~/.zshrc
 ```
 
 Verify:
 
-```bash
+```shell
 echo "$WASMER_ROOT"
 ls "$WASMER_ROOT"
 # you should see libwasmer.dylib here
@@ -145,52 +138,51 @@ ls "$WASMER_ROOT"
 
 If `libwasmer.dylib` is missing, re-run the `go get` step and ensure `go env GOPATH` returns a valid path.
 
-## 5. Concepts: Views, queries, SDL, lenses, wallets
+## Concepts: views, queries, SDL, lenses, wallets
 
-Viewkit revolves around **views**. Each view is a bundle that includes:
+Viewkit revolves around views. Each view is a bundle that includes:
 
-- **Metadata** – name, version, target info
-- **Query** – the raw shape of data to ingest  
-  (for example: `Log { address topics data transactionHash blockNumber }`)
-- **SDL (GraphQL)** – how that data is modeled/exposed  
-  (for example: `type FilteredAndDecodedLogs { transactionHash: String }`)
-- **Lenses (WASM)** – chained transforms that filter/decode/reshape data
-- **Wallet** – key used to sign deployments to a target network (`local`, `testnet`, etc.)
+- Metadata: name, version, target info.
+- Query: the raw shape of data to ingest (for example: `Log { address topics data transactionHash blockNumber }`).
+- SDL (GraphQL): how that data is modeled/exposed (for example: `type FilteredAndDecodedLogs { transactionHash: String }`).
+- Lenses (WASM): chained transforms that filter/decode/reshape data.
+- Wallet: key used to sign deployments to a target network (`local`, `devnet`, etc.).
 
 Think of the pipeline as:
 
-**raw data → query → lenses (WASM) → GraphQL SDL → view stored + queryable**
+**raw data -> query -> lenses (WASM) -> GraphQL SDL -> view stored + queryable**
 
-## 6. Quickstart: create and deploy a view (`testdeploy`)
+## Quickstart: create and deploy a view
 
-We’ll walk end-to-end through an example view named **`testdeploy`**:
+We'll walk end-to-end through an example view named `testdeploy`:
 
-1. Initialize the view bundle
-2. Inspect it
-3. Add a query
-4. Add SDL
-5. Attach a lens
-6. Generate a wallet
-7. Deploy locally (with DefraDB Playground)
-8. Deploy to testnet
+1. Initialize the view bundle.
+1. Inspect it.
+1. Add a query.
+1. Add SDL.
+1. Attach a lens.
+1. Generate a wallet.
+1. Test the view locally.
+1. Deploy locally (with DefraDB Playground).
+1. Deploy to devnet.
 
-> All commands assume `viewkit` is on your PATH.  
+> All commands assume `viewkit` is on your PATH.
 > If not, replace `viewkit` with `./build/viewkit`.
 
-### 6.1 Initialize the view bundle
+### Initialize the view bundle
 
-```bash
+```shell
 viewkit view init testdeploy
 ```
 
 This:
 
-- Creates a new **view bundle** called `testdeploy` on disk
-- Registers internal metadata for queries, SDL, lenses, and versions
+- Creates a new view bundle called `testdeploy` on disk.
+- Registers internal metadata for queries, SDL, lenses, and versions.
 
-### 6.2 Inspect the bundle
+### Inspect the bundle
 
-```bash
+```shell
 viewkit view inspect testdeploy
 ```
 
@@ -203,11 +195,11 @@ You should see something like:
     - SDL
     - Lenses
 
-### 6.3 Add a query (raw ingest shape)
+### Add a query (raw ingest shape)
 
 Define the raw data shape to ingest, e.g. basic EVM logs:
 
-```bash
+```shell
 viewkit view add query \
   "Log {address topics data transactionHash blockNumber}" \
   --name testdeploy
@@ -217,16 +209,16 @@ This tells Viewkit that `testdeploy` will ingest `Log` objects with the specifie
 
 Check:
 
-```bash
+```shell
 viewkit view inspect testdeploy
 # now the query is attached to the view
 ```
 
-### 6.4 Add SDL (GraphQL schema)
+### Add SDL (GraphQL schema)
 
 Add SDL to describe how the data is modeled/exposed:
 
-```bash
+```shell
 viewkit view add sdl \
   "type FilteredAndDecodedLogs @materialized(if: false) {transactionHash: String}" \
   --name testdeploy
@@ -234,84 +226,92 @@ viewkit view add sdl \
 
 Notes:
 
-- `@materialized(if: false)`  
-  Treat this as a virtual type, not a persisted table.
-- `transactionHash: String`  
-  Minimal example field; real views will define more fields.
+- `@materialized(if: false)`: treat this as a virtual type, not a persisted table.
+- `transactionHash: String`: minimal example field; real views will define more fields.
 
 Inspect again:
 
-```bash
+```shell
 viewkit view inspect testdeploy
 # now shows both query and SDL
 ```
 
-### 6.5 Attach a lens (WASM transform)
+### Attach a lens (WASM transform)
 
-Attach a WebAssembly lens that filters logs by a specific address:
+Attach a WebAssembly lens that decodes event logs using an ABI:
 
-```bash
+```shell
 viewkit view add lens \
-  --args '{"src":"address", "value":"0x1e3aA9fE4Ef01D3cB3189c129a49E3C03126C636"}' \
-  --label "filter" \
-  --url "https://raw.githubusercontent.com/shinzonetwork/wasm-bucket/main/bucket/filter_transaction/filter_transaction.wasm" \
+  --args '{"abi":"[{\"type\":\"event\",\"name\":\"Transfer\",\"inputs\":[{\"type\":\"address\",\"name\":\"from\",\"indexed\":true},{\"type\":\"address\",\"name\":\"to\",\"indexed\":true},{\"type\":\"uint256\",\"name\":\"value\",\"indexed\":false}]}]"}' \
+  --label "decode" \
+  --url "https://raw.githubusercontent.com/shinzonetwork/wasm-bucket/main/bucket/decode_log/decode_log.wasm" \
   --name testdeploy
 ```
 
 Flags:
 
-- `--args` – JSON passed to the lens
-- `--label "filter"` – human-readable label for the lens
-- `--url` – remote URL of the `.wasm` binary
-- `--name testdeploy` – attaches this lens to the `testdeploy` view
+- `--args`: JSON passed to the lens (here, an ABI definition for the ERC-20 `Transfer` event).
+- `--label "decode"`: human-readable label for the lens.
+- `--url`: remote URL of the `.wasm` binary.
+- `--name testdeploy`: attaches this lens to the `testdeploy` view.
 
 Inspect:
 
-```bash
+```shell
 viewkit view inspect testdeploy
 # you should now see:
 # - query
 # - SDL
-# - lens "filter"
+# - lens "decode"
 ```
 
-If you see `libwasmer.dylib` / “image not found” errors, revisit the Wasmer setup.
+If you see `libwasmer.dylib` / "image not found" errors, revisit the Wasmer setup.
 
-## 7. Wallet: create a deployment key
+### Test the view locally
 
-You need a wallet to sign deployments to `local` and `testnet`.
+Before deploying, validate that your view builds and compiles successfully:
+
+```shell
+viewkit view test testdeploy
+```
+
+This spins up a temporary local DefraDB instance, applies your schema, runs the lens, and checks that everything compiles. If it passes, your view is ready to deploy.
+
+## Wallet: create a deployment key
+
+You need a wallet to sign deployments to `devnet`.
 
 Generate one:
 
-```bash
+```shell
 viewkit wallet generate
 ```
 
 This will:
 
-- Create a new keypair
-- Store it in the wallet directory used by Viewkit
-- Print details such as the address (and possibly a mnemonic/seed)
+- Create a new keypair.
+- Store it in the wallet directory used by Viewkit.
+- Print details such as the address (and possibly a mnemonic/seed).
 
 Treat it like any other wallet:
 
-- Do not commit it to Git
-- Do not paste the mnemonic in public places
-- Store it securely
+- Do not commit it to Git.
+- Do not paste the mnemonic in public places.
+- Store it securely.
 
-## 8. Deploy locally with `--target local`
+## Deploy locally
 
-The recommended flow is to deploy **locally** first, verify the view in a Playground, then deploy to a shared network like `testnet`.
+The recommended flow is to deploy locally first, verify the view in a Playground, then deploy to a shared network like devnet.
 
 Deploy to local:
 
-```bash
+```shell
 viewkit view deploy testdeploy --target local
 ```
 
-On success, you’ll see output similar to:
+On success, you'll see output similar to:
 
-```text
+```plaintext
 🚀 DefraDB is running on port 9181
 ⏳ Waiting for DefraDB to boot up...
 ✅ DefraDB booted up
@@ -325,22 +325,22 @@ On success, you’ll see output similar to:
 📦 Press Ctrl+C to stop...
 ```
 
-What’s happening:
+What's happening:
 
 1. A local DefraDB instance is started (port shown in the logs).
-2. Schemas for your view are applied.
-3. Any seed data (if configured) is inserted.
-4. The view is applied.
-5. A **DefraDB GraphQL Playground URL** is printed.
+1. Schemas for your view are applied.
+1. Any seed data (if configured) is inserted.
+1. The view is applied.
+1. A DefraDB GraphQL Playground URL is printed.
 
-### 8.1 Use the DefraDB GraphQL Playground
+### Use the DefraDB GraphQL Playground
 
 1. Open the displayed URL in your browser, e.g.:
 
     - `http://127.0.0.1:9181/`
 
-2. You should see a GraphQL Playground / explorer.
-3. You can:
+1. You should see a GraphQL Playground / explorer.
+1. You can:
     - Inspect the schema (e.g. see `FilteredAndDecodedLogs`).
     - Run test queries against your local view.
     - Verify that your lens is filtering logs as expected.
@@ -357,40 +357,42 @@ Example query (adjust to your SDL):
 
 While this process is running, `viewkit` will keep the local DefraDB instance alive. To stop it:
 
-- Go back to the terminal and press **Ctrl+C**.
+- Go back to the terminal and press Ctrl+C.
 
 To iterate:
 
 - Update your view (queries/SDL/lenses).
+- Use `view remove lens --label "decode" --name testdeploy` to detach a lens, then `view add lens` with new arguments to swap it.
+- Use `view rollback testdeploy` to revert to a previous version if an edit goes wrong.
 - Re-run:
 
-  ```bash
+  ```shell
   viewkit view deploy testdeploy --target local
   ```
 
 - Refresh the Playground and test again.
 
-## 9. Deploy to testnet with `--target testnet`
+## Deploy to devnet
 
-Once your view behaves correctly locally, you can deploy it to **testnet**.
+Once your view behaves correctly locally, you can deploy it to devnet.
 
 Make sure:
 
 - A wallet has been generated: `viewkit wallet generate`
-- Any required testnet config/credentials are set
+- Any required devnet config/credentials are set
 
 Then:
 
-```bash
-viewkit view deploy testdeploy --target testnet --rpc http://testnet.shinzo.network:8545
+```shell
+viewkit view deploy testdeploy --target devnet --rpc http://34.29.171.79:8545/
 ```
 
 Conceptually:
 
 1. Viewkit bundles the `testdeploy` view definition (queries, SDL, lenses, metadata).
-2. Signs a deployment transaction using your wallet.
-3. Sends it to the `testnet` network.
-4. Registers the view on testnet so it can be used and queried there.
+1. Signs a deployment transaction using your wallet.
+1. Sends it to the devnet network.
+1. Registers the view on devnet so it can be used and queried there.
 
 On success, you should see:
 
@@ -400,14 +402,14 @@ On success, you should see:
 If it fails:
 
 - Confirm your wallet is present and funded (if required)
-- Confirm `testnet` is a valid target
+- Confirm `devnet` is a valid target
 - Re-check the view definition with `viewkit view inspect testdeploy`
 
-## 10. Full flow cheat sheet
+## Full flow cheat sheet
 
 Here is the entire flow summarized:
 
-```bash
+```shell
 # 0) clone + build
 cd ~/code
 git clone https://github.com/shinzonetwork/shinzo-view-creator.git
@@ -431,23 +433,33 @@ viewkit view add sdl \
   "type FilteredAndDecodedLogs @materialized(if: false) {transactionHash: String}" \
   --name testdeploy
 
-# 5) attach a lens (WASM transform to filter by address)
+# 5) attach a lens (WASM transform to decode Transfer events)
 viewkit view add lens \
-  --args '{"src":"address", "value":"0x1e3aA9fE4Ef01D3cB3189c129a49E3C03126C636"}' \
-  --label "filter" \
-  --url "https://raw.githubusercontent.com/shinzonetwork/wasm-bucket/main/bucket/filter_transaction/filter_transaction.wasm" \
+  --args '{"abi":"[{\"type\":\"event\",\"name\":\"Transfer\",\"inputs\":[{\"type\":\"address\",\"name\":\"from\",\"indexed\":true},{\"type\":\"address\",\"name\":\"to\",\"indexed\":true},{\"type\":\"uint256\",\"name\":\"value\",\"indexed\":false}]}]"}' \
+  --label "decode" \
+  --url "https://raw.githubusercontent.com/shinzonetwork/wasm-bucket/main/bucket/decode_log/decode_log.wasm" \
   --name testdeploy
 
 # 6) create a wallet for deployments (one-time)
 viewkit wallet generate
 
-# 7) deploy locally and use the DefraDB Playground
+# 7) test the view locally (optional but recommended)
+viewkit view test testdeploy
+
+# 8) deploy locally and use the DefraDB Playground
 viewkit view deploy testdeploy --target local
 # -> follow the printed URL (e.g. http://127.0.0.1:9181/) for the GraphQL Playground
 # -> press Ctrl+C in the terminal to stop
 
-# 8) once you're happy, deploy to testnet
-viewkit view deploy testdeploy --target testnet --rpc http://testnet.shinzo.network:8545
+# 9) once you're happy, deploy to devnet
+viewkit view deploy testdeploy --target devnet --rpc http://34.29.171.79:8545/
 ```
 
-This gives you a clean path from **GitHub clone** to a **locally tested view** and then to a **testnet deployment**.
+This gives you a clean path from GitHub clone to a locally tested view and then to a devnet deployment.
+
+## Next steps
+
+- [Examples](/views/examples/): copy-pasteable views from minimal filters to multi-lens decode pipelines, including how to edit and update an existing view.
+- [Lenses](/views/lenses/): how WASM transforms work, available lenses, and how to chain them.
+- [FAQ](/views/faq/): troubleshooting, common errors, and tips.
+- [Building Apps With Shinzo](/guides/building-apps-with-shinzo/): how to query your deployed Views from an application using the app-sdk.
