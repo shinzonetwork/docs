@@ -66,3 +66,7 @@ This key defines your node's identity on the network. Persisting it ensures your
 {% admonition(type="warning") %}
 If this key is lost, and there is no backup available, you will be unable to restore your node with the same identity.
 {% end %}
+
+## Need Help
+
+{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}

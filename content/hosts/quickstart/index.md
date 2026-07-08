@@ -1,7 +1,7 @@
 +++
 title = "Quick Start"
 description = "Run a Shinzo Host to transform blockchain data into verifiable Views"
-weight = 2
+weight = 4
 +++
 
 Hosts turn raw blockchain data into structured **Views** and produce **Attestation Records** that help secure the network. This guide covers installing, configuring, and running the Shinzo Host Client.
@@ -370,7 +370,7 @@ Your Host is now registered and authorized to participate in the Shinzo Network.
 
 ## Need Help
 
-If you run into issues installing or running the Shinzo Host, open a GitHub issue [here](https://github.com/shinzonetwork/shinzo-host-client/issues).
+{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
 
 ## Next Steps
 

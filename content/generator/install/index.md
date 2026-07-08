@@ -209,3 +209,7 @@ docker-compose -f ~/docker-compose.yml start
 ### WebSocket unavailable, will use HTTP-only mode
 
 The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.
+
+## Need Help
+
+{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
