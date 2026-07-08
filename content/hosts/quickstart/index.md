@@ -185,7 +185,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: rpc.testnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network:26657
   minimum_attestations: 1
 logger:
   development: false
@@ -254,7 +254,7 @@ networks:
 
 services:
   shinzo-host:
-    image: ghcr.io/shinzonetwork/shinzo-host-client:standard
+    image: ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
     user: "1001:1001"
     mem_limit: 16g
     mem_reservation: 13g
@@ -322,7 +322,7 @@ docker logs shinzo-host
 The multi-stage Dockerfile builds the host binary (Go 1.25) along with the Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
 
 ```shell
-ghcr.io/shinzonetwork/shinzo-host-client:standard
+ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
 ```
 
 ## ShinzoHub Registration
@@ -334,8 +334,8 @@ To participate in the Shinzo Network, you must register your Host. Registration 
 1. Start your Host client.
 2. Add Shinzo testnet to Metamask with the following values:
   - Network name: Shinzo
-  - Default RPC URL: http://rpc.testnet.shinzo.network:8545
-  - Chain ID: 91273002
+  - Default RPC URL: http://testnet.shinzo.network:8545
+  - Chain ID: 91273001
   - Currency symbol: SHNZ
 3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
 4. On the registration page, click Register and select "Host" as your role to complete the process.
@@ -354,7 +354,7 @@ cast send "0x0000000000000000000000000000000000000211" \
   "<peer_id_signedMessage>" \
   "<signed_message>" \
   "1" \
-  --rpc-url "http://rpc.testnet.shinzo.network:8545" \
+  --rpc-url "http://testnet.shinzo.network:8545" \
   --from "<your_address>" \
   --private-key "<your_private_key>" \
   --gas-limit 100000

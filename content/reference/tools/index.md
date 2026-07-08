@@ -14,8 +14,8 @@ A reference list of web interfaces and endpoints for the Shinzo network.
 
 ## RPC Endpoints
 
-- `http://rpc.testnet.shinzo.network:8545/`
-- `wss://rpc.testnet.shinzo.network:8545/`
+- `http://testnet.shinzo.network:8545/ `
+- `wss://testnet.shinzo.network:8545/`
 
 ## Developer Tools
 

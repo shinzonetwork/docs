@@ -71,7 +71,7 @@ viewkit wallet generate
 # Deploy to testnet
 viewkit view deploy my-usdc-view \
   --target testnet \
-  --rpc http://rpc.testnet.shinzo.network:8545
+  --rpc http://testnet.shinzo.network:8545
 ```
 
 ## What happens during deploy

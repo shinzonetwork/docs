@@ -89,7 +89,7 @@ ShinzoHub also runs five custom Cosmos modules: `x/admin`, `x/sourcehub` (ICA co
 
 | Environment | Chain ID |
 | --- | --- |
-| Devnet | 91273002 |
+| Devnet | 91273001 |
 | Testnet | 91273001 |
 | Mainnet | 91273000 |
 

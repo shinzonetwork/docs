@@ -382,7 +382,7 @@ Make sure:
 Then:
 
 ```bash
-viewkit view deploy testdeploy --target testnet --rpc http://rpc.testnet.shinzo.network:8545
+viewkit view deploy testdeploy --target testnet --rpc http://testnet.shinzo.network:8545
 ```
 
 Conceptually:
@@ -447,7 +447,7 @@ viewkit view deploy testdeploy --target local
 # -> press Ctrl+C in the terminal to stop
 
 # 8) once you're happy, deploy to testnet
-viewkit view deploy testdeploy --target testnet --rpc http://rpc.testnet.shinzo.network:8545
+viewkit view deploy testdeploy --target testnet --rpc http://testnet.shinzo.network:8545
 ```
 
 This gives you a clean path from **GitHub clone** to a **locally tested view** and then to a **testnet deployment**.
