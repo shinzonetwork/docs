@@ -19,7 +19,7 @@ ignored_content = ["*.excalidraw"]
 # Don't fail the build on internal link issues during migration; warn instead.
 # (Zola validates internal links only when this is true.)
 [link_checker]
-internal_level = "warn"
+internal_level = "error"
 external_level = "warn"
 
 [markdown]
