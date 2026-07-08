@@ -356,8 +356,7 @@
       "term": "libp2p",
       "definition": "A peer-to-peer networking library. defraDB uses it for peer discovery and document replication between generator and hosts.",
       "relatedTerms": [
-        "defraDB",
-        "P2P"
+        "defraDB"
       ]
     },
     {

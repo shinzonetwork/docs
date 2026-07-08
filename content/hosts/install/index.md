@@ -12,7 +12,7 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
-- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A public Generator client you can point at is coming; this page will link it here once it's live. Until then, run your own. The [Operator Quickstart](/quickstart/) walks through standing up a Generator client and a Host client together.
+- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A public Generator client you can point at is coming; this page will link it here once it's live. Until then, run your own. The [Operator Quickstart](/hosts/quickstart/) walks through standing up a Generator client and a Host client together.
 - **Hardware** that meets the [recommendations](/hosts/overview/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
@@ -123,7 +123,7 @@ docker run -d \
 The container runs as UID/GID `1003:1006`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Host client can't write to the mounts and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
 {% end %}
 
-Production deployments also put an nginx reverse proxy in front for TLS and CORS; see [Production deployment](/hosts/deployment/). The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
+Production deployments also put an nginx reverse proxy in front for TLS and CORS. The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
 
 ## Build from source
 
