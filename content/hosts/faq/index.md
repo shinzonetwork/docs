@@ -73,7 +73,7 @@ Copy the directory somewhere safe:
 ```shell
 cp -r ~/.defra/keys /mnt/backup-drive/   # adjust the source path to match your setup
 ```
-See [Register](/hosts/register#backup-your-node-identity-key) for more.
+See [Register](/hosts/register#back-up-your-node-identity-key) for more.
 
 ### My Host client starts but connects to no peers. What's wrong?
 
@@ -83,4 +83,4 @@ The Host client is running but can't sync from a Generator client. Check `docker
 - `all dials failed` / `no route to host` / `i/o timeout` all mean that the address is unreachable. Confirm the Indexer is up and that outbound port `9171` is open from your machine.
 - `dial tcp4 ... i/o timeout` usually indicates that you're running the Host client on an IPv6-only machine. the IPv4 peers are unreachable. Run on a dual-stack host, or enable NAT64/DNS64.
 
-See [Install](/hosts/install#verify) for how to confirm a healthy connection.
+See [Install](/hosts/install#use-docker) for how to confirm a healthy connection.
