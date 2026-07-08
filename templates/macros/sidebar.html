@@ -1,6 +1,8 @@
-{# Sidebar navigation, mirroring docs/sidebars.ts.
-   Each entry is a category with a label and a list of [title, path] items.
-   Paths are site-root-relative (docs are served at "/"). #}
+{# Sidebar navigation. Links within each section are auto-generated from the
+   section's pages (sorted by weight), so adding a page to a content section
+   makes it appear here automatically. Top-level categories are listed
+   explicitly because not every content directory belongs in the sidebar
+   (e.g. changelog, images). #}
 
 {% macro link(title, path, current) %}
   {% if current == path %}
@@ -10,19 +12,40 @@
   {% endif %}
 {% endmacro link %}
 
+{# Auto-generate sidebar links for every page in a section (sorted by weight). #}
+{% macro section_links(section_path, current) %}
+  {% set sec = get_section(path=section_path) %}
+  {% for page in sec.pages %}
+    <li class="menu__list-item">{{ self::link(title=page.title, path=page.path, current=current) }}</li>
+  {% endfor %}
+{% endmacro section_links %}
+
+{# Render a subsection as a nested collapsible category with its pages. #}
+{% macro subsection(section_path, label, current) %}
+  <li class="menu__list-item">
+    <div class="menu__list-item-collapsible">
+      <span class="menu__link menu__link--category">{{ label }}</span>
+    </div>
+    <ul class="menu__list">
+      {{ self::section_links(section_path=section_path, current=current) }}
+    </ul>
+  </li>
+{% endmacro subsection %}
+
 {% macro render(current) %}
 <nav class="menu" aria-label="Docs sidebar">
   <ul class="menu__list">
 
-    {# Introduction #}
+    {# Introduction. The landing page lives at the site root (content/_index.md),
+       outside the introduction section, so it is linked explicitly. #}
     <li class="menu__list-item">
       <div class="menu__list-item-collapsible">
         <span class="menu__link menu__link--category">Introduction</span>
       </div>
       <ul class="menu__list">
-        <li class="menu__list-item">{{ self::link(title="What is Shinzō?", path="/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="How it works", path="/introduction/how-it-works/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Core concepts", path="/introduction/core-concepts/", current=current) }}</li>
+        {% set root = get_section(path="_index.md") %}
+        <li class="menu__list-item">{{ self::link(title=root.title, path="/", current=current) }}</li>
+        {{ self::section_links(section_path="introduction/_index.md", current=current) }}
       </ul>
     </li>
 
@@ -32,10 +55,7 @@
         <span class="menu__link menu__link--category">Generator</span>
       </div>
       <ul class="menu__list">
-        <li class="menu__list-item">{{ self::link(title="Overview", path="/generator/overview/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Install", path="/generator/install/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Register", path="/generator/register/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Frequently Asked Questions", path="/generator/faq/", current=current) }}</li>
+        {{ self::section_links(section_path="generator/_index.md", current=current) }}
       </ul>
     </li>
 
@@ -45,9 +65,7 @@
         <span class="menu__link menu__link--category">Hosts</span>
       </div>
       <ul class="menu__list">
-        <li class="menu__list-item">{{ self::link(title="Overview", path="/hosts/overview/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Quick Start", path="/hosts/quickstart/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Query Examples", path="/hosts/examples/", current=current) }}</li>
+        {{ self::section_links(section_path="hosts/_index.md", current=current) }}
       </ul>
     </li>
 
@@ -57,8 +75,7 @@
         <span class="menu__link menu__link--category">Views</span>
       </div>
       <ul class="menu__list">
-        <li class="menu__list-item">{{ self::link(title="Overview", path="/views/overview/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Quick Start", path="/views/quickstart/", current=current) }}</li>
+        {{ self::section_links(section_path="views/_index.md", current=current) }}
       </ul>
     </li>
 
@@ -68,34 +85,19 @@
         <span class="menu__link menu__link--category">Guides</span>
       </div>
       <ul class="menu__list">
-        <li class="menu__list-item">{{ self::link(title="Building apps with Shinzō", path="/guides/building-apps-with-shinzo/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Configuring event filters on a Shinzō Host", path="/guides/configuring-event-filters-on-a-shinzo-host/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Operator Quickstart", path="/guides/operator-quickstart/", current=current) }}</li>
+        {{ self::section_links(section_path="guides/_index.md", current=current) }}
       </ul>
     </li>
 
-    {# Reference #}
+    {# Reference. The Components subsection is rendered after the section's
+       pages; its child links are auto-generated the same way. #}
     <li class="menu__list-item">
       <div class="menu__list-item-collapsible">
         <span class="menu__link menu__link--category">Reference</span>
       </div>
       <ul class="menu__list">
-        <li class="menu__list-item">{{ self::link(title="Architecture overview", path="/reference/architecture-overview/", current=current) }}</li>
-        <li class="menu__list-item">{{ self::link(title="Tools", path="/reference/tools/", current=current) }}</li>
-        <li class="menu__list-item">
-          <div class="menu__list-item-collapsible">
-            <span class="menu__link menu__link--category">Components</span>
-          </div>
-          <ul class="menu__list">
-            <li class="menu__list-item">{{ self::link(title="Host client", path="/reference/components/host-client/", current=current) }}</li>
-            <li class="menu__list-item">{{ self::link(title="Generator client", path="/reference/components/generator-client/", current=current) }}</li>
-            <li class="menu__list-item">{{ self::link(title="Outpost", path="/reference/components/outpost/", current=current) }}</li>
-            <li class="menu__list-item">{{ self::link(title="Relayer", path="/reference/components/relayer/", current=current) }}</li>
-            <li class="menu__list-item">{{ self::link(title="ShinzoHub", path="/reference/components/shinzohub/", current=current) }}</li>
-            <li class="menu__list-item">{{ self::link(title="Viewkit", path="/reference/components/viewkit/", current=current) }}</li>
-          </ul>
-        </li>
-        <li class="menu__list-item">{{ self::link(title="Glossary", path="/reference/glossary/", current=current) }}</li>
+        {{ self::section_links(section_path="reference/_index.md", current=current) }}
+        {{ self::subsection(section_path="reference/components/_index.md", label="Components", current=current) }}
       </ul>
     </li>
 
