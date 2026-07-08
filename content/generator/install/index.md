@@ -7,7 +7,7 @@ This page covers installing a Shinzo Generator client with Docker or from source
 
 ## Hardware recommendations
 
-The Generator client is a lightweight sidecar that runs next to an Ethereum execution node. The figures below are for the Generator client itself, on top of whatever the execution node needs.
+The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an Ethereum execution node. The figures below are for the Generator client itself, on top of whatever the execution node needs.
 
 {{ hardware(component="generator") }}
 
