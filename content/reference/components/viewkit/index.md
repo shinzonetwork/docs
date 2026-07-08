@@ -44,12 +44,16 @@ Important: the `limit` parameter should be on the source query (e.g., `Log(limit
 
 ```shell
 # Initialize a new view
-viewkit view create my-usdc-view \
-  --query 'Ethereum__Mainnet__Log { address topics data transactionHash blockNumber }'
+viewkit view init my-usdc-view
+
+# Add a query (raw data shape)
+viewkit view add query \
+  'Ethereum__Mainnet__Log { address topics data transactionHash blockNumber }' \
+  --name my-usdc-view
 
 # Add GraphQL schema
 viewkit view add sdl \
-  'type USDCTransfer @materialized(if: true) { from: String to: String amount: String blockNumber: Int }' \
+  'type EthEvent @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }' \
   --name my-usdc-view
 
 # Add a WASM lens with arguments
@@ -65,13 +69,16 @@ viewkit view remove lens --label "decode_transfers" --name my-usdc-view
 # Inspect the bundle
 viewkit view inspect my-usdc-view
 
+# Test locally before deploying
+viewkit view test my-usdc-view
+
 # Generate a wallet for deployments
 viewkit wallet generate
 
-# Deploy to testnet
+# Deploy to devnet
 viewkit view deploy my-usdc-view \
-  --target testnet \
-  --rpc http://testnet.shinzo.network:8545
+  --target devnet \
+  --rpc http://34.29.171.79:8545/
 ```
 
 ## What happens during deploy
@@ -176,12 +183,16 @@ Smaller binaries mean less P2P overhead.
 
 ### Available lenses
 
-Stored in `shinzo-gh/wasm-bucket`. Currently available:
+Stored in the [`wasm-bucket`](https://github.com/shinzonetwork/wasm-bucket) repository. Currently available on `main`:
 
-| Lens | Purpose |
-| --- | --- |
-| `decode_log` | ABI-decodes EVM log events. Takes ABI JSON as argument. |
-| `filter_transaction` | Filters by contract address |
+| Lens | Purpose | Arguments |
+| --- | --- | --- |
+| `decode_log` | ABI-decodes EVM log events into structured output | `{"abi": "[...]"}` |
+| `decode_log_str` | Same as `decode_log` but `arguments` is a JSON string for `_like` filtering | `{"abi": "[...]"}` |
+| `decode_function_call` | ABI-decodes function calls from transaction `input` data | `{"function_abi": "[...]", "event_abi": "[...]"}` |
+| `decode_function_call_str` | Same as `decode_function_call` but `arguments` is a JSON string | `{"function_abi": "[...]", "event_abi": "[...]"}` |
+
+See the [Lenses guide](/views/lenses/) for details on each lens, output fields, and usage examples.
 
 ### Writing new lenses
 
@@ -202,7 +213,7 @@ sequenceDiagram
   participant Host as Host<br/>(host client)
   participant User as User<br/>(app SDK)
 
-  Note over Dev: 1. viewkit view create<br/>(define query, SDL, add lens)
+  Note over Dev: 1. viewkit view init + add<br/>(define query, SDL, add lens)
   Dev->>SH: 2. viewkit view deploy<br/>(encode VWL, send EVM tx)
   Note over SH: 3. validate bundle,<br/>RegisterObject (ICA),<br/>deploy SVS-1 contract
   SH-)Host: emit Registered event
