@@ -223,5 +223,9 @@ add_page "/reference/components/shinzohub/"       "$CONTENT_DIR/reference/compon
 add_page "/reference/components/viewkit/"         "$CONTENT_DIR/reference/components/viewkit/index.md"
 add_glossary_page "/reference/glossary/"
 
+# Changelog
+section_header "Changelog"
+add_page "/changelog/"  "$CONTENT_DIR/changelog/_index.md"
+
 echo "Written $(wc -l < "$LLMS_TXT") lines → $LLMS_TXT"
 echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"
