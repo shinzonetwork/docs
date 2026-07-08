@@ -29,7 +29,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
 1. Pull the pre-built Generator client image from the Shinzo container registry.
 
     ```shell
-    docker pull ghcr.io/shinzonetwork/shinzo-generator-client:standard
+    docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     ```
 
     {% output() %}
@@ -41,7 +41,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
     [...]
 
     Digest: sha256:a272b09607e6f3f07399d72d019f058919ba2854469835b80478fd75799fa0fd
-    Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-generator-client:standard
+    Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     
 ```
 {% end %}
@@ -69,7 +69,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
       -p 9181:9181 \
       -p 9171:9171 \
       -p 8080:8080 \
-      ghcr.io/shinzonetwork/shinzo-generator-client:standard
+      ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     ```
 
 You should see the Generator client connect to Geth and start collecting and committing blocks:
