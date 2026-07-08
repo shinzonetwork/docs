@@ -99,7 +99,7 @@ Eventually your Generator client will catch up with the validator node and start
 
 ### Registration
 
-Once the Generator client is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Once the Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
 
 ## Building from source
 
@@ -160,7 +160,7 @@ The included `config.yaml` works for most local development. You typically only 
 
 ### Registration
 
-Once your Generator client is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Once your Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
 
 ## Do you need an API key?
 
