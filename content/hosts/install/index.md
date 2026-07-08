@@ -14,7 +14,7 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
-- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own — you just need one you can reach and its libp2p multiaddr. A public Generator client you can point at is coming; this page will link it here once it's live. Until then, run your own. The [Operator Quickstart](/quickstart/) walks through standing up a Generator client and a Host client together.
+- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A public Generator client you can point at is coming; this page will link it here once it's live. Until then, run your own. The [Operator Quickstart](/quickstart/) walks through standing up a Generator client and a Host client together.
 - **Hardware** that meets the [recommendations](/hosts/overview/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
