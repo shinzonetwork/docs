@@ -1,6 +1,6 @@
 +++
 title = "Install"
-weight = 20
+weight = 2
 +++
 
 A Host client pulls primitive blockchain data from Generator clients, runs Lens WASM transforms, and serves the resulting Views to subscriber nodes over an embedded DefraDB instance. This page is for operators who want to **run** a Host client.
@@ -8,8 +8,6 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 {% admonition(type="info") %}
 **Only want to query Shinzo data?** You don't need to run your own Host client. Connect to a public Host client instead. See [Querying Views](/views/). Running your own Host client is for serving data to the network, not for reading it.
 {% end %}
-
----
 
 ## Prerequisites
 
@@ -175,3 +173,7 @@ go run cmd/main.go
 | `hostplayground` | Embeds the GraphQL Playground UI (served on port `9182`) |
 
 Ports, verification, and registration are the same as the Docker path above.
+
+## Need Help
+
+{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}

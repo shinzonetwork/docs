@@ -1,6 +1,6 @@
 +++
 title = "Frequently Asked Questions"
-weight = 5
+weight = 999
 +++
 
 ### What is the GitHub link for the Shinzo Host?

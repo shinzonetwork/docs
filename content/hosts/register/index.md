@@ -1,6 +1,6 @@
 +++
 title = "Register"
-weight = 4
+weight = 3
 +++
 
 To participate in the Shinzo Network and make your view publically available, you need to register your Host.
@@ -39,3 +39,7 @@ This key is your Host's identity on the network. If you lose it without a backup
 {% admonition(type="warning") %}
 If this key is lost with no backup available, you will need to spin up a new Host and re-register with a new identity.
 {% end %}
+
+## Need Help
+
+{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
