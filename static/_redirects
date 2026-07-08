@@ -4,9 +4,10 @@
 /host/*   /hosts/:splat
 /hosts    /hosts/overview
 
-/indexer      /indexers/overview
-/indexer/*    /indexers/:splat
-/indexers     /indexers/overview
+/indexer      /generator/overview
+/indexer/*    /generator/:splat
+/indexers     /generator/overview
+/indexers/*   /generator/:splat
 
 /introduction   /
 

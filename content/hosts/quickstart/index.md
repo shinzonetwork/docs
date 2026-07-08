@@ -43,7 +43,7 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 
 - `defradb.url`: API endpoint of your local DefraDB node. Defaults work for most setups.
 - `defradb.keyring_secret`: Requires a secret to generate your private keys.
-- `p2p.bootstrap_peers`: Indexer peers for receiving indexed data. Defaults include a reliable bootstrap peer.
+- `p2p.bootstrap_peers`: Generator client peers for receiving indexed data. Defaults include a reliable bootstrap peer.
 - `p2p.listen_addr`: Default is suitable for local runs. Override when containerizing.
 - `store.path`: Directory where local DefraDB data is stored.
 - `shinzo.web_socket_url`: Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
@@ -54,25 +54,25 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups.
 {% end %}
 
-### Running Indexer and Host on the Same Machine
+### Running a Generator client and a Host client on the same machine
 
-If you are running your own indexer, you can connect your Host to this indexer by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the registration endpoint:
+If you are running your own Generator client, you can connect your Host client to this Generator client by configuring `p2p.bootstrap_peers`. To get the required Peer ID, query the registration endpoint:
 
 ```shell
 curl http://localhost:8080/registration
 ```
 
-From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in `p2p.bootstrap_peers` with your indexer peer.
+From this information, assemble your peer connection info: `/ip4/<your-ip-here>/tcp/9171/p2p/<your-PeerID-here>`. Now replace the default peer in `p2p.bootstrap_peers` with your Generator client's peer.
 
-If you are running both Indexer and Host on the same machine, apply the following changes to the [Host's `config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
+If you are running a Generator client and a Host client on the same machine, apply the following changes to the [Host client's `config.yaml`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) to avoid port collisions.
 
-The Indexer is likely already using port `9181`, so update the `defradb.url` field:
+The Generator client is likely already using port `9181`, so update the `defradb.url` field:
 
 ```shell
 url: "localhost:9182"
 ```
 
-Also update the [P2P settings](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml#L4) to use localhost and a different port so the Host doesn't clash with the Indexer:
+Also update the [P2P settings](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml#L4) to use localhost and a different port so the Host doesn't clash with the Generator client:
 
 
 ```shell
@@ -98,20 +98,20 @@ make start
 
 ### (Optional) Enable the GraphQL Playground
 
-The host ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
+The Host client ships with an optional web-based GraphQL Playground for querying the embedded DefraDB instance.
 
 ```shell
 make build-playground
 make start
 ```
 
-This runs the Host and exposes a Playground GUI. Check the output logs for the address:
+This runs the Host client and exposes a Playground GUI. Check the output logs for the address:
 
 ```plaintext
 🧪 GraphQL Playground available at ...
 ```
 
-The playground lets you run GraphQL queries against primitive data and any Views your Host is serving. Try this query:
+The playground lets you run GraphQL queries against primitive data and any Views your Host client is serving. Try this query:
 
 ```graphql
 query GetLatestLogs {
@@ -136,7 +136,7 @@ More query examples are available [here](/hosts/examples/).
 
 ## VM Deployment
 
-This is the recommended approach for production and devnet participation. It uses Docker, docker-compose, and Nginx on a virtual machine.
+This is the recommended approach for production and testnet participation. It uses Docker, docker-compose, and Nginx on a virtual machine.
 
 ### Prerequisites
 
@@ -185,7 +185,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: rpc.devnet.shinzo.network:26657
+  hub_base_url: rpc.testnet.shinzo.network:26657
   minimum_attestations: 1
 logger:
   development: false
@@ -296,7 +296,7 @@ services:
     restart: unless-stopped
 ```
 
-### Start the Host
+### Start the Host client
 
 ```shell
 docker-compose up -d
@@ -327,14 +327,14 @@ ghcr.io/shinzonetwork/shinzo-host-client:standard
 
 ## ShinzoHub Registration
 
-To participate in the Shinzo Network, you must register your host. Registration identifies your node so it can replicate data and earn rewards. An unregistered host will not be recognized by the network. There are two ways to register:
+To participate in the Shinzo Network, you must register your Host. Registration identifies your node so it can replicate data and earn rewards. An unregistered Host will not be recognized by the network. There are two ways to register:
 
 ### Option A: Register with the GUI
 
-1. Start your Host.
-2. Add Shinzo Devnet to Metamask with the following values:
+1. Start your Host client.
+2. Add Shinzo testnet to Metamask with the following values:
   - Network name: Shinzo
-  - Default RPC URL: http://rpc.devnet.shinzo.network:8545
+  - Default RPC URL: http://rpc.testnet.shinzo.network:8545
   - Chain ID: 91273002
   - Currency symbol: SHNZ
 3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
@@ -343,7 +343,7 @@ To participate in the Shinzo Network, you must register your host. Registration 
 
 ### Option B: Register with the CLI
 
-You can also register your host by submitting the registration transaction directly with Foundry’s `cast` CLI.
+You can also register your Host by submitting the registration transaction directly with Foundry’s `cast` CLI.
 
 ```shell
 cast send "0x0000000000000000000000000000000000000211" \
@@ -354,7 +354,7 @@ cast send "0x0000000000000000000000000000000000000211" \
   "<peer_id_signedMessage>" \
   "<signed_message>" \
   "1" \
-  --rpc-url "http://rpc.devnet.shinzo.network:8545" \
+  --rpc-url "http://rpc.testnet.shinzo.network:8545" \
   --from "<your_address>" \
   --private-key "<your_private_key>" \
   --gas-limit 100000
@@ -366,7 +366,7 @@ Replace each placeholder with your actual registration values.
 Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
 {% end %}
 
-Your host is now registered and authorized to participate in the Shinzo Network.
+Your Host is now registered and authorized to participate in the Shinzo Network.
 
 ## Need Help
 
@@ -374,4 +374,4 @@ If you run into issues installing or running the Shinzo Host, open a GitHub issu
 
 ## Next Steps
 
-Your host can now receive and serve Views. Try running queries against it through the playground GUI.
+Your Host can now receive and serve Views. Try running queries against it through the playground GUI.

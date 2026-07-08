@@ -6,7 +6,6 @@ A reference list of web interfaces and endpoints for the Shinzo network.
 
 ## Explorers
 
-- [Blockscout](https://blockscout.shinzo.network/)
 - [Explorer](https://explorer.shinzo.network/)
 
 ## Faucets
@@ -15,13 +14,13 @@ A reference list of web interfaces and endpoints for the Shinzo network.
 
 ## RPC Endpoints
 
-- `https://rpc.develop.devnet.shinzo.network:8545/`
-- `wss://rpc.develop.devnet.shinzo.network:8545/`
+- `http://rpc.testnet.shinzo.network:8545/`
+- `wss://rpc.testnet.shinzo.network:8545/`
 
 ## Developer Tools
 
 - [Shinzo Studio](https://studio.shinzo.network/) (deploy and manage views via UI).
-- [Registration app](https://registration.shinzo.network/) (register as a Host or Indexer on ShinzoHub).
+- [Registration app](https://registration.shinzo.network/) (register as a Host or Generator on ShinzoHub).
 
 ## Designs
 

@@ -36,7 +36,7 @@ A view has three pieces:
 
 In the SDL, `@materialized(if: true)` tells DefraDB to pre-compute and store the view data. `@materialized(if: false)` computes it on query.
 
-`@materialized(if: true)` is recommended for now. Queries are faster because data is already materialized when the query arrives. The tradeoff is more storage on the host.
+`@materialized(if: true)` is recommended for now. Queries are faster because data is already materialized when the query arrives. The tradeoff is more storage on the Host client.
 
 Important: the `limit` parameter should be on the source query (e.g., `Log(limit: 100)`), not on the materialized view collection.
 
@@ -68,10 +68,10 @@ viewkit view inspect my-usdc-view
 # Generate a wallet for deployments
 viewkit wallet generate
 
-# Deploy to devnet
+# Deploy to testnet
 viewkit view deploy my-usdc-view \
-  --target devnet \
-  --rpc http://rpc.devnet.shinzo.network:8545
+  --target testnet \
+  --rpc http://rpc.testnet.shinzo.network:8545
 ```
 
 ## What happens during deploy
@@ -103,7 +103,7 @@ The bundle is a single byte stream written in the order below. Each section is a
 | 4 | Lens metadata | count (`u16`); for each lens: ID (`u32`), args length (`u32`), JSON args bytes |
 | 5 | Lens blob | codec byte (`0` = none, `1` = zstd), blob length (`u32`), WASM count (`u16`); for each WASM: length (`u32`) and bytes |
 
-WASM binaries can be 70-200+ KB each. zstd compression is applied before the bundle goes on chain. The host decompresses when applying.
+WASM binaries can be 70-200+ KB each. zstd compression is applied before the bundle goes on chain. The Host client decompresses when applying.
 
 Two implementations of the wire format exist:
 
@@ -125,7 +125,7 @@ header := viewbundle.DecodeHeader(encodedBytes)
 reEncoded := viewbundle.EncodeHeader(decodedValue)
 ```
 
-There is a known issue with v0.6.2 of the host client: it uses `viewbundle.UnbundleView()` with zstd decompression. Views registered before v0.6.2 may be stored in uncompressed format. If the host tries to decompress an uncompressed payload, it fails.
+There is a known issue with v0.6.2 of the Host client: it uses `viewbundle.UnbundleView()` with zstd decompression. Views registered before v0.6.2 may be stored in uncompressed format. If the Host client tries to decompress an uncompressed payload, it fails.
 
 ## View ID computation
 
@@ -161,7 +161,7 @@ fn transform(log: Log) -> Option<USDCTransfer> {
 }
 ```
 
-Lenses must be deterministic. Any host running the same lens on the same data should produce identical results.
+Lenses must be deterministic. Any Host client running the same lens on the same data should produce identical results.
 
 LensVM supports bidirectional transforms (the `inverse()` function in the WASM module), though most views use one-way transforms.
 
@@ -189,7 +189,7 @@ Stored in `shinzo-gh/wasm-bucket`. Currently available:
 - AssemblyScript example: `source-gh/lens/tests/modules/as_wasm32_simple/`.
 - WASM runtime paths: `source-gh/lens/host-go/runtimes/wasmtime/`, `wasmer/`, `wazero/`.
 
-AssemblyScript lenses follow the same interface as Rust lenses. The host runtime does not care what language produced the WASM.
+AssemblyScript lenses follow the same interface as Rust lenses. The Host client runtime does not care what language produced the WASM.
 
 ## The view lifecycle across repos
 
@@ -211,7 +211,7 @@ sequenceDiagram
   Host->>User: view documents
 {% end %}
 
-Indexers are not involved in the view lifecycle. By the time a view is created and applied, indexers have already delivered raw data to hosts over P2P.
+Generator clients are not involved in the View lifecycle. By the time a View is created and applied, the Generator client has already delivered raw data to the Host clients over P2P.
 
 ## Key files
 
