@@ -57,7 +57,7 @@ All blockchain data is indexed, including blocks, transactions, logs, and storag
 
 ### How much space do I need?
 
-With pruning enabled (the default), storage stays bounded at roughly 50–100 GB. The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history.
+With pruning enabled (the default), storage stays bounded at roughly 50 to 100 GB. The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history.
 
 ### How long does it take to sync?
 

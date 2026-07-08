@@ -6,7 +6,7 @@ weight = 2
 
 Hosts turn raw blockchain data into structured **Views** and produce **Attestation Records** that help secure the network. This guide covers installing, configuring, and running the Shinzo Host Client.
 
-## Hardware Recommendations
+## Hardware recommendations
 
 The Host client does not run a blockchain node, so it does not need the large NVMe footprint of an execution client or Generator machine. See the [hardware requirements page](../hardware-requirements/) for details.
 
