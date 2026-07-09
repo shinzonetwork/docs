@@ -8,72 +8,67 @@ View Creator (Viewkit) is a CLI tool that helps you initialize, manage, and publ
 
 ## Prerequisites
 
-#### OS
+- Git
+- Make
+- Go 1.25
 
-- macOS on Apple Silicon (M1/M2/M3) or Linux (x86_64 / amd_64)
+## Setup
 
-#### Tools
+1. Make sure you've got all the prerequisites installed properly:
 
-- `git`
-- `make`
-- Go 1.23+ installed and on your PATH
+    ```shell
+    git --version && make --version && go version
+    ```
 
-Check Go:
+    ```output
+    git version 2.43.0
+    GNU Make 4.3
+    [...]
+    go version go1.25.12 linux/arm64
+    ```
 
-```shell
-go version
-# expect something like: go version go1.23.x ...
-```
+1. Clone the repository:
 
-Optional but helpful:
+    ```shell
+    git clone https://github.com/shinzonetwork/shinzo-view-creator.git
+    cd shinzo-view-creator
+    ```
 
-- A code editor (VS Code, GoLand, etc.)
-- Basic comfortability running terminal commands
+1. Build the viewkit binary:
 
-## Clone the repository
+    ```shell
+    make build
+    ```
 
-From the directory where you keep your projects:
+    You should see a `build` directory:
 
-```shell
-git clone https://github.com/shinzonetwork/shinzo-view-creator.git
-cd shinzo-view-creator
-```
+1. Run Viewkit:
 
-## Build the viewkit binary
+    ```shell
+    ./build/viewkit --help
+    ```
 
-From the repo root:
+    ```output
+    Viewkit helps you initialize, manage, and publish Shinzo views through a simple CLI interface.
 
-```shell
-make build
-```
+    Usage:
+      viewkit [command]
 
-If the build is successful, you should see a `build` directory:
+    [...]
+    ```
 
-```shell
-ls build
-# viewkit  (plus any other build artifacts)
-```
+1. Move the `viewkit` executable somewhere resonable and (optional):
 
-You can now run Viewkit via:
+    ```shell
+    sudo mv ./build/viewkit /usr/local/bin
+    ```
 
-```shell
-./build/viewkit --help
-```
+    Then you can run `viewkit` from anywhere:
 
-### Optional: add viewkit to your PATH
-
-So you don't have to type `./build` each time:
-
-```shell
-echo 'export PATH="$PWD/build:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-```
-
-Then you can run:
-
-```shell
-viewkit --help
-```
+    ```shell
+    cd ~
+    viewkit --help
+    ```
 
 ## Wasmer runtime
 
