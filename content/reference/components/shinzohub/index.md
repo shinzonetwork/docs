@@ -20,7 +20,7 @@ ShinzoHub does not store or serve blockchain data. It is only a coordination lay
 
 | Environment | Chain ID | Status |
 | --- | --- | --- |
-| Devnet | 91273002 | Running |
+| Devnet | 91273001 | Running |
 | Testnet | 91273001 | Target: July 1, 2026 |
 | Mainnet | 91273000 | Future |
 | Local | 91273003 | Local development |
@@ -179,9 +179,9 @@ The path from user payment to access grant has four steps:
 
 | Service | URL (testnet) |
 | --- | --- |
-| EVM JSON-RPC | `http://rpc.testnet.shinzo.network:8545` |
-| CometBFT RPC | `http://rpc.testnet.shinzo.network:26657` |
-| REST / LCD | `http://rpc.testnet.shinzo.network:1317` |
+| EVM JSON-RPC | `http://testnet.shinzo.network:8545` |
+| CometBFT RPC | `http://testnet.shinzo.network:26657` |
+| REST / LCD | `http://testnet.shinzo.network:1317` |
 | gRPC | port 9090 |
 
 <!--

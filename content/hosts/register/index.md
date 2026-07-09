@@ -1,6 +1,6 @@
 +++
 title = "Register"
-weight = 4
+weight = 3
 +++
 
 To participate in the Shinzo Network and make your view publically available, you need to register your Host.
@@ -10,8 +10,8 @@ To participate in the Shinzo Network and make your view publically available, yo
 1. Start your Host with the health/registration port published (`-p 8080:8080`). The registration app is served on port `8080`, and the default command in [Install](/hosts/install) does not publish it.
 1. Add the Shinzo Testnet to your browser wallet with the following values:
    - Network name: `Shinzo`
-   - Default RPC URL: `http://rpc.testnet.shinzo.network:8545`
-   - Chain ID: `91273002`
+   - Default RPC URL: `http://testnet.shinzo.network:8545`
+   - Chain ID: `91273001`
    - Currency symbol: `SHNZ`
 1. Open the [registration page](http://localhost:8080/registration-app) and select **Connect** to connect your wallet.
 
@@ -39,3 +39,7 @@ This key is your Host's identity on the network. If you lose it without a backup
 {% admonition(type="warning") %}
 If this key is lost with no backup available, you will need to spin up a new Host and re-register with a new identity.
 {% end %}
+
+## Need Help
+
+{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}

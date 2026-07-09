@@ -12,8 +12,8 @@ If you are registering as a **Generator**, registration requires an [assertion](
 1. Start your Generator Client.
 1. Add the Shinzo Testnet to your browser wallet with the following values:
    - Network name: `Shinzo`
-   - Default RPC URL: `http://rpc.testnet.shinzo.network:8545`
-   - Chain ID: `91273002`
+   - Default RPC URL: `http://testnet.shinzo.network:8545`
+   - Chain ID: `91273001`
    - Currency symbol: `SHNZ`
 1. Go to the [Technical Registry](http://localhost:8080/registration-app) and connect your wallet using the button in the top-right corner.
 
@@ -66,3 +66,7 @@ This key defines your node's identity on the network. Persisting it ensures your
 {% admonition(type="warning") %}
 If this key is lost, and there is no backup available, you will be unable to restore your node with the same identity.
 {% end %}
+
+## Need Help
+
+{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}

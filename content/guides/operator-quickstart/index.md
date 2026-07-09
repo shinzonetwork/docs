@@ -61,7 +61,7 @@ The Generator client sits next to a blockchain node, subscribes to new blocks, a
 Run everything with:
 
 ```shell
-docker pull ghcr.io/shinzonetwork/shinzo-generator-client:standard
+docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 
 docker run -d \
   --name shinzo-generator \
@@ -77,7 +77,7 @@ docker run -d \
   -p 9181:9181 \
   -p 9171:9171 \
   -p 8080:8080 \
-  ghcr.io/shinzonetwork/shinzo-generator-client:standard
+  ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
 `DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `testnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
@@ -156,7 +156,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: rpc.testnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network:26657
   minimum_attestations: 1
   start_height: 0
 logger:
@@ -192,7 +192,7 @@ docker run -d \
   -p 9182:9181 \
   -p 9172:9171 \
   -p 8081:8080 \
-  ghcr.io/shinzonetwork/shinzo-host-client:standard
+  ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
 ```
 
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
