@@ -9,7 +9,7 @@ These requirements are for the Generator client itself. It runs as a sidecar nex
 
 {{ hardware(component="generator") }}
 
-Storage figures assume pruning is enabled. The Generator client prunes by default and retains roughly the last 1,000 blocks, which keeps disk usage bounded at roughly 50 to 100 GB. In archival mode (pruning disabled), storage grows linearly with chain history and can exceed 3 TB (see the [FAQ](../faq/) for details on growth rate).
+With pruning enabled (the default), the Generator retains roughly the last 1,000 blocks, so its own data stays bounded at roughly 50 to 100 GB. The 300–500 GB figures above are the recommended provisioned disk — the headroom covers growth, snapshot serving, and P2P replication. In archival mode (pruning disabled), storage grows linearly with chain history and can exceed 3 TB (see the [FAQ](../faq/) for details on growth rate).
 
 ## Sizing for Geth
 

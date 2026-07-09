@@ -7,18 +7,18 @@ component = "Generator client"
 
 [[generator.rows]]
 resource = "CPU"
-minimum = "2 vCPU"
-recommended = "4 vCPU"
+minimum = "4 cores"
+recommended = "8 cores"
 
 [[generator.rows]]
 resource = "Memory (RAM)"
-minimum = "4 GB"
+minimum = "8 GB"
 recommended = "16 GB"
 
 [[generator.rows]]
 resource = "Storage"
-minimum = "50 GB (with pruning)"
-recommended = "100 GB (with pruning)"
+minimum = "300 GB"
+recommended = "500 GB"
 
 [[generator.rows]]
 resource = "Network"
@@ -30,18 +30,18 @@ component = "Host client"
 
 [[host.rows]]
 resource = "CPU"
-minimum = "2 vCPU"
-recommended = "8 vCPU"
+minimum = "4 cores"
+recommended = "8 cores"
 
 [[host.rows]]
 resource = "Memory (RAM)"
-minimum = "4 GB"
+minimum = "8 GB"
 recommended = "16 GB"
 
 [[host.rows]]
 resource = "Storage"
-minimum = "100 GB"
-recommended = "500 GB (scales with number of views)"
+minimum = "300 GB"
+recommended = "500 GB"
 
 [[host.rows]]
 resource = "Network"

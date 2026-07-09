@@ -8,7 +8,7 @@ Hosts turn raw blockchain data into structured **Views** and produce **Attestati
 
 ## Hardware recommendations
 
-The Host client does not run a blockchain node, so it does not need the large NVMe footprint of an execution client or Generator machine. See the [hardware requirements page](../hardware-requirements/) for details.
+The Host client does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage of an execution client or archival Generator. See the [hardware requirements page](../hardware-requirements/) for details.
 
 {{ hardware(component="host") }}
 

@@ -3,7 +3,7 @@ title = "Hardware requirements"
 weight = 3
 +++
 
-These requirements are for the Host client. A Host does not run a blockchain node, so it does not need the large NVMe footprint that an execution client or Generator machine requires. It receives signed primitive data over P2P from Generator clients, applies Lens transforms, and serves Views to applications.
+These requirements are for the Host client. A Host does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage that an execution client or archival Generator requires. It receives signed primitive data over P2P from Generator clients, applies Lens transforms, and serves Views to applications.
 
 ## Recommended hardware
 
