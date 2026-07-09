@@ -40,46 +40,43 @@ In the SDL, `@materialized(if: true)` tells DefraDB to pre-compute and store the
 
 Important: the `limit` parameter should be on the source query (e.g., `Log(limit: 100)`), not on the materialized view collection.
 
-## CLI commands
+## Command reference
 
-```shell
-# Initialize a new view
-viewkit view init my-usdc-view
+| Command | Purpose |
+| --- | --- |
+| `viewkit view init <name>` | Create a new view bundle |
+| `viewkit view inspect <name>` | Show the current view definition |
+| `viewkit view inspect <name> --verbose` | Show full revision history |
+| `viewkit view add query '<q>' --name <name>` | Set or update the query |
+| `viewkit view add sdl '<sdl>' --name <name>` | Set or update the SDL |
+| `viewkit view add lens --label <l> --url <u> --args '<a>' --name <n>` | Attach a WASM lens |
+| `viewkit view remove query --name <name>` | Remove the query |
+| `viewkit view remove sdl --name <name>` | Remove the SDL |
+| `viewkit view remove lens --label <l> --name <n>` | Remove a lens by label |
+| `viewkit view test <name>` | Validate the view compiles locally |
+| `viewkit view deploy <name> --target local` | Deploy to a local DefraDB instance |
+| `viewkit view deploy <name> --target devnet --rpc <url>` | Deploy to devnet |
+| `viewkit view rollback <name>` | Revert to the previous version |
+| `viewkit view rollback <name> --version <N>` | Revert to a specific version |
+| `viewkit view delete <name>` | Delete the local view bundle |
+| `viewkit wallet generate` | Create a new signing wallet |
+| `viewkit wallet inspect` | Show the current wallet address |
+| `viewkit wallet import <mnemonic>` | Import a wallet from a mnemonic |
 
-# Add a query (raw data shape)
-viewkit view add query \
-  'Ethereum__Mainnet__Log { address topics data transactionHash blockNumber }' \
-  --name my-usdc-view
+## Filter operators
 
-# Add GraphQL schema
-viewkit view add sdl \
-  'type EthEvent @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }' \
-  --name my-usdc-view
+When querying a deployed view's output collection, DefraDB supports these filter operators:
 
-# Add a WASM lens with arguments
-viewkit view add lens \
-  --label "decode_transfers" \
-  --url "https://raw.githubusercontent.com/shinzonetwork/wasm-bucket/main/bucket/decode_log/decode_log.wasm" \
-  --args '{"abi":"[{\"type\":\"event\",\"name\":\"Transfer\",...}]"}' \
-  --name my-usdc-view
-
-# Remove a lens
-viewkit view remove lens --label "decode_transfers" --name my-usdc-view
-
-# Inspect the bundle
-viewkit view inspect my-usdc-view
-
-# Test locally before deploying
-viewkit view test my-usdc-view
-
-# Generate a wallet for deployments
-viewkit wallet generate
-
-# Deploy to devnet
-viewkit view deploy my-usdc-view \
-  --target devnet \
-  --rpc http://34.29.171.79:8545/
-```
+| Operator | Meaning | Example |
+| --- | --- | --- |
+| `_eq` | Equal | `{ logAddress: { _eq: "0x..." } }` |
+| `_ne` | Not equal | `{ event: { _ne: "Approval" } }` |
+| `_gt` / `_gte` | Greater than / greater than or equal | `{ blockNumber: { _gte: 19540000 } }` |
+| `_lt` / `_lte` | Less than / less than or equal | `{ blockNumber: { _lte: 19541000 } }` |
+| `_and` | Logical AND | `{ _and: [{ logAddress: { _eq: "0x..." } }, { event: { _eq: "Transfer" } }] }` |
+| `_or` | Logical OR | `{ _or: [{ from: { _eq: "0x..." } }, { to: { _eq: "0x..." } }] }` |
+| `_like` | Substring match (strings) | `{ arguments: { _like: "%0xAddress%" } }` |
+| `_any` | Any element in array matches | `{ topics: { _any: { _eq: "0xddf252..." } } }` |
 
 ## What happens during deploy
 
