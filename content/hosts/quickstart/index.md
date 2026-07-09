@@ -1,19 +1,16 @@
 +++
 title = "Quick Start"
 description = "Run a Shinzo Host to transform blockchain data into verifiable Views"
-weight = 4
+weight = 5
 +++
 
 Hosts turn raw blockchain data into structured **Views** and produce **Attestation Records** that help secure the network. This guide covers installing, configuring, and running the Shinzo Host Client.
 
-## Hardware Recommendations
+## Hardware recommendations
 
-| Component | Minimum | Recommended |
-| --- | --- | --- |
-| CPU | 8 vCPUs | 16 vCPUs |
-| Memory (RAM) | 16 GB | 32–64 GB |
-| Storage | 3 TB NVMe | 4+ TB NVMe |
-| OS | Ubuntu 24.04 | Ubuntu 24.04 |
+The Host client does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage of an execution client or archival Generator. See the [hardware requirements page](../hardware-requirements/) for details.
+
+{{ hardware(component="host") }}
 
 ## Local Deployment
 
