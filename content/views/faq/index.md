@@ -6,7 +6,7 @@ weight = 5
 
 ## Common errors
 
-### `image not found` / `library not loaded: libwasmer.dylib`
+### image not found / library not loaded: libwasmer.dylib
 
 Viewkit uses the Wasmer runtime to execute WASM lenses locally. If the native library can't be found, any command that touches lenses will fail.
 
@@ -107,7 +107,7 @@ No. Raw event data lives in the `Log` collection, where `topics` holds indexed p
 | `if: true` | At write time (pre-computed) | Fast | Higher |
 | `if: false` | At query time (on the fly) | Slower | Lower |
 
-Use `if: true` for frequently queried data like token transfers in a UI. Use `if: false` during development or for large datasets queried occasionally. See [Example 5](/views/examples/#example-5-materialized-vs-on-query) for details.
+Use `if: true` for frequently queried data like token transfers in a UI. Use `if: false` during development or for large datasets queried occasionally. See [Example 5](/views/examples/#materialized-vs-on-query) for details.
 
 ### Do I need to prefix my query with `Ethereum__Mainnet__`?
 
