@@ -40,39 +40,43 @@ In the SDL, `@materialized(if: true)` tells DefraDB to pre-compute and store the
 
 Important: the `limit` parameter should be on the source query (e.g., `Log(limit: 100)`), not on the materialized view collection.
 
-## CLI commands
+## Command reference
 
-```shell
-# Initialize a new view
-viewkit view create my-usdc-view \
-  --query 'Ethereum__Mainnet__Log { address topics data transactionHash blockNumber }'
+| Command | Purpose |
+| --- | --- |
+| `viewkit view init <name>` | Create a new view bundle |
+| `viewkit view inspect <name>` | Show the current view definition |
+| `viewkit view inspect <name> --verbose` | Show full revision history |
+| `viewkit view add query '<q>' --name <name>` | Set or update the query |
+| `viewkit view add sdl '<sdl>' --name <name>` | Set or update the SDL |
+| `viewkit view add lens --label <l> --url <u> --args '<a>' --name <n>` | Attach a WASM lens |
+| `viewkit view remove query --name <name>` | Remove the query |
+| `viewkit view remove sdl --name <name>` | Remove the SDL |
+| `viewkit view remove lens --label <l> --name <n>` | Remove a lens by label |
+| `viewkit view test <name>` | Validate the view compiles locally |
+| `viewkit view deploy <name> --target local` | Deploy to a local DefraDB instance |
+| `viewkit view deploy <name> --target devnet --rpc <url>` | Deploy to devnet |
+| `viewkit view rollback <name>` | Revert to the previous version |
+| `viewkit view rollback <name> --version <N>` | Revert to a specific version |
+| `viewkit view delete <name>` | Delete the local view bundle |
+| `viewkit wallet generate` | Create a new signing wallet |
+| `viewkit wallet inspect` | Show the current wallet address |
+| `viewkit wallet import <mnemonic>` | Import a wallet from a mnemonic |
 
-# Add GraphQL schema
-viewkit view add sdl \
-  'type USDCTransfer @materialized(if: true) { from: String to: String amount: String blockNumber: Int }' \
-  --name my-usdc-view
+## Filter operators
 
-# Add a WASM lens with arguments
-viewkit view add lens \
-  --label "decode_transfers" \
-  --url "https://raw.githubusercontent.com/shinzonetwork/wasm-bucket/main/bucket/decode_log/decode_log.wasm" \
-  --args '{"abi":"[{\"type\":\"event\",\"name\":\"Transfer\",...}]"}' \
-  --name my-usdc-view
+When querying a deployed view's output collection, DefraDB supports these filter operators:
 
-# Remove a lens
-viewkit view remove lens --label "decode_transfers" --name my-usdc-view
-
-# Inspect the bundle
-viewkit view inspect my-usdc-view
-
-# Generate a wallet for deployments
-viewkit wallet generate
-
-# Deploy to testnet
-viewkit view deploy my-usdc-view \
-  --target testnet \
-  --rpc http://testnet.shinzo.network:8545
-```
+| Operator | Meaning | Example |
+| --- | --- | --- |
+| `_eq` | Equal | `{ logAddress: { _eq: "0x..." } }` |
+| `_ne` | Not equal | `{ event: { _ne: "Approval" } }` |
+| `_gt` / `_gte` | Greater than / greater than or equal | `{ blockNumber: { _gte: 19540000 } }` |
+| `_lt` / `_lte` | Less than / less than or equal | `{ blockNumber: { _lte: 19541000 } }` |
+| `_and` | Logical AND | `{ _and: [{ logAddress: { _eq: "0x..." } }, { event: { _eq: "Transfer" } }] }` |
+| `_or` | Logical OR | `{ _or: [{ from: { _eq: "0x..." } }, { to: { _eq: "0x..." } }] }` |
+| `_like` | Substring match (strings) | `{ arguments: { _like: "%0xAddress%" } }` |
+| `_any` | Any element in array matches | `{ topics: { _any: { _eq: "0xddf252..." } } }` |
 
 ## What happens during deploy
 
@@ -176,12 +180,16 @@ Smaller binaries mean less P2P overhead.
 
 ### Available lenses
 
-Stored in `shinzo-gh/wasm-bucket`. Currently available:
+Stored in the [`wasm-bucket`](https://github.com/shinzonetwork/wasm-bucket) repository. Currently available on `main`:
 
-| Lens | Purpose |
-| --- | --- |
-| `decode_log` | ABI-decodes EVM log events. Takes ABI JSON as argument. |
-| `filter_transaction` | Filters by contract address |
+| Lens | Purpose | Arguments |
+| --- | --- | --- |
+| `decode_log` | ABI-decodes EVM log events into structured output | `{"abi": "[...]"}` |
+| `decode_log_str` | Same as `decode_log` but `arguments` is a JSON string for `_like` filtering | `{"abi": "[...]"}` |
+| `decode_function_call` | ABI-decodes function calls from transaction `input` data | `{"function_abi": "[...]", "event_abi": "[...]"}` |
+| `decode_function_call_str` | Same as `decode_function_call` but `arguments` is a JSON string | `{"function_abi": "[...]", "event_abi": "[...]"}` |
+
+See the [Lenses guide](/views/lenses/) for details on each lens, output fields, and usage examples.
 
 ### Writing new lenses
 
@@ -202,7 +210,7 @@ sequenceDiagram
   participant Host as Host<br/>(host client)
   participant User as User<br/>(app SDK)
 
-  Note over Dev: 1. viewkit view create<br/>(define query, SDL, add lens)
+  Note over Dev: 1. viewkit view init + add<br/>(define query, SDL, add lens)
   Dev->>SH: 2. viewkit view deploy<br/>(encode VWL, send EVM tx)
   Note over SH: 3. validate bundle,<br/>RegisterObject (ICA),<br/>deploy SVS-1 contract
   SH-)Host: emit Registered event
