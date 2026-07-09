@@ -4,6 +4,8 @@ description = "Compile and Install the View Creator (Viewkit) as an executable."
 weight = 2
 +++
 
+View Creator (also referred to as Viewkit) is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views. It provides a workflow for turning raw indexed blockchain data into reusable, versioned data APIs that can be executed and served by Hosts.
+
 ## Prerequisites
 
 - Git
