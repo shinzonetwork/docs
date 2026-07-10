@@ -1,5 +1,6 @@
 +++
-title = "Frequently Asked Questions"
+title = "FAQs"
+aliases = ["/hosts/frequently-asked-questions"]
 weight = 999
 +++
 
