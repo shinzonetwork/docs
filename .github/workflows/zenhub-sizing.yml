@@ -1,10 +1,30 @@
-name: Sync size label to Zenhub estimate
+name: Zenhub Sizing Sync
 
 on:
-  issues:
-    types: [labeled]
+  workflow_call:
+    secrets:
+      ZENHUB_API_KEY:
+        required: true
 
 jobs:
-  sync-estimate:
-    uses: shinzonetwork/docs/.github/workflows/zenhub-sizing.yml@main
-    secrets: inherit
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout central automation repo
+        uses: actions/checkout@v4
+        with:
+          repository: shinzonetwork/docs
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Sync size label to Zenhub estimate
+        env:
+          ZENHUB_API_KEY: ${{ secrets.ZENHUB_API_KEY }}
+          LABEL_NAME: ${{ github.event.label.name }}
+          REPO_GH_ID: ${{ github.event.repository.id }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: node scripts/set-zenhub-estimate.js
