@@ -105,7 +105,6 @@ The command above stores everything inside the container, so removing the contai
 
 ```shell
 mkdir -p ~/data/defradb ~/data/keys ~/data/lens
-sudo chown -R 1003:1006 ~/data/defradb ~/data/keys ~/data/lens
 
 docker run -d \
   --name shinzo-host \
@@ -118,10 +117,6 @@ docker run -d \
   -p 9171:9171 \
   ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
 ```
-
-{% admonition(type="warning") %}
-The container runs as UID/GID `1003:1006`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Host client can't write to the mounts and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
-{% end %}
 
 Production deployments also put an nginx reverse proxy in front for TLS and CORS. The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
 
