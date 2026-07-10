@@ -1,6 +1,7 @@
 +++
 title = "Install"
-weight = 2
+aliases = ["/generator/install"]
+weight = 20
 +++
 
 This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).

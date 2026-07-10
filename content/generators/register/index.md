@@ -1,6 +1,7 @@
 +++
 title = "Register"
-weight = 4
+aliases = ["/generator/register"]
+weight = 30
 +++
 
 To participate in the Shinzo Network, you must register your node in the **Technical Registry**. Registration identifies and authenticates your node so it can replicate data and earn rewards. Without this step, your node will not be recognized by the network. To register, follow the steps below.

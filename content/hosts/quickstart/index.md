@@ -1,7 +1,7 @@
 +++
 title = "Quick Start"
 description = "Run a Shinzo Host to transform blockchain data into verifiable Views"
-weight = 5
+weight = 40
 +++
 
 Hosts turn raw blockchain data into structured **Views** and produce **Attestation Records** that help secure the network. This guide covers installing, configuring, and running the Shinzo Host Client.

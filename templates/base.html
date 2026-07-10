@@ -39,7 +39,7 @@
   {%- else %}{% set cur_path = "/" %}{% endif -%}
   {%- set trimmed = cur_path | trim_start_matches(pat="/") -%}
   {%- if trimmed == "" or trimmed is starting_with("introduction/") %}{% set nav_section = "introduction" %}
-  {%- elif trimmed is starting_with("generator/") %}{% set nav_section = "generator" %}
+  {%- elif trimmed is starting_with("generators/") %}{% set nav_section = "generators" %}
   {%- elif trimmed is starting_with("hosts/") %}{% set nav_section = "hosts" %}
   {%- elif trimmed is starting_with("views/") %}{% set nav_section = "views" %}
   {%- elif trimmed is starting_with("guides/") %}{% set nav_section = "guides" %}
@@ -59,7 +59,7 @@
 
       <ul class="navbar__items navbar__items--left">
         <li><a class="navbar__link{% if nav_section == 'introduction' %} navbar__link--active{% endif %}" href="/">Introduction</a></li>
-        <li><a class="navbar__link{% if nav_section == 'generator' %} navbar__link--active{% endif %}" href="/generator/overview/">Generator</a></li>
+        <li><a class="navbar__link{% if nav_section == 'generators' %} navbar__link--active{% endif %}" href="/generators/overview/">Generators</a></li>
         <li><a class="navbar__link{% if nav_section == 'hosts' %} navbar__link--active{% endif %}" href="/hosts/overview/">Hosts</a></li>
         <li><a class="navbar__link{% if nav_section == 'views' %} navbar__link--active{% endif %}" href="/views/overview/">Views</a></li>
         <li><a class="navbar__link{% if nav_section == 'guides' %} navbar__link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a></li>
@@ -81,7 +81,7 @@
   <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
     <nav class="mobile-menu__top" aria-label="Sections">
       <a class="mobile-menu__top-link{% if nav_section == 'introduction' %} mobile-menu__top-link--active{% endif %}" href="/">Introduction</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'generator' %} mobile-menu__top-link--active{% endif %}" href="/generator/overview/">Generator</a>
+      <a class="mobile-menu__top-link{% if nav_section == 'generators' %} mobile-menu__top-link--active{% endif %}" href="/generators/overview/">Generators</a>
       <a class="mobile-menu__top-link{% if nav_section == 'hosts' %} mobile-menu__top-link--active{% endif %}" href="/hosts/overview/">Hosts</a>
       <a class="mobile-menu__top-link{% if nav_section == 'views' %} mobile-menu__top-link--active{% endif %}" href="/views/overview/">Views</a>
       <a class="mobile-menu__top-link{% if nav_section == 'guides' %} mobile-menu__top-link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a>

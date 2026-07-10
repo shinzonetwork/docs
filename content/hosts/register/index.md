@@ -1,6 +1,6 @@
 +++
 title = "Register"
-weight = 4
+weight = 30
 +++
 
 To participate in the Shinzo Network and make your view publically available, you need to register your Host.
