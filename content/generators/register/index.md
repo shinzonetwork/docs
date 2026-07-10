@@ -1,5 +1,6 @@
 +++
 title = "Register"
+aliases = ["/generator/register"]
 weight = 30
 +++
 

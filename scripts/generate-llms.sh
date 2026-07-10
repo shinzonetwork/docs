@@ -190,12 +190,12 @@ add_page "/"                             "$CONTENT_DIR/_index.md"               
 add_page "/introduction/how-it-works/"   "$CONTENT_DIR/introduction/how-it-works/index.md"
 add_page "/introduction/core-concepts/"  "$CONTENT_DIR/introduction/core-concepts/index.md"
 
-# Generator
-section_header "Generator"
-add_page "/generator/overview/"  "$CONTENT_DIR/generator/overview/index.md"
-add_page "/generator/install/"   "$CONTENT_DIR/generator/install/index.md"
-add_page "/generator/register/"  "$CONTENT_DIR/generator/register/index.md"
-add_page "/generator/faq/"       "$CONTENT_DIR/generator/faq/index.md"
+# Generators
+section_header "Generators"
+add_page "/generators/overview/"  "$CONTENT_DIR/generators/overview/index.md"
+add_page "/generators/install/"   "$CONTENT_DIR/generators/install/index.md"
+add_page "/generators/register/"  "$CONTENT_DIR/generators/register/index.md"
+add_page "/generators/faq/"       "$CONTENT_DIR/generators/faq/index.md"
 
 # Hosts
 section_header "Hosts"

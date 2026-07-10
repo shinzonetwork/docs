@@ -1,6 +1,6 @@
 +++
 title = "FAQs"
-aliases = ["/generators/frequently-asked-questions"]
+aliases = ["/generator/faq", "/generators/frequently-asked-questions"]
 weight = 999
 +++
 

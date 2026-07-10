@@ -66,7 +66,7 @@ Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a
 
 ### Run a Generator client
 
-If you already operate an Ethereum node, adding a Generator client is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/generator/hardware-requirements/) for sizing; the short version is a few cores and a modest amount of disk on top of whatever the node itself needs.
+If you already operate an Ethereum node, adding a Generator client is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/generators/hardware-requirements/) for sizing; the short version is a few cores and a modest amount of disk on top of whatever the node itself needs.
 
 ### Run a Host
 

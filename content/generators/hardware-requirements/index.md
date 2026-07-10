@@ -1,5 +1,6 @@
 +++
 title = "Hardware requirements"
+aliases = ["/generator/hardware-requirements"]
 weight = 10
 +++
 

@@ -1,5 +1,6 @@
 +++
 title = "Install"
+aliases = ["/generator/install"]
 weight = 20
 +++
 
