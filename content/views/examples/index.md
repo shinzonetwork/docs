@@ -1,7 +1,6 @@
 +++
 title = "Examples"
 description = "Copy-pasteable Shinzo View examples: decode event logs, filter by contract, decode multiple event types, edit and update views, and query the results."
-weight = 3
 +++
 
 Seven progressively more complex Views, from a basic event decode to a multi-event decoder with editing and updates. Each example shows the goal, the three View components (query, SDL, lens), the viewkit commands to build it, and the GraphQL query you run against the result.

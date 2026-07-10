@@ -1,6 +1,5 @@
 +++
 title = "Tools"
-weight = 2
 +++
 A reference list of web interfaces and endpoints for the Shinzo network.
 

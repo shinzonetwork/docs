@@ -1,6 +1,5 @@
 +++
 title = "Get help"
-weight = 4
 aliases = ["/help"]
 +++
 

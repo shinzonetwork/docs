@@ -58,12 +58,14 @@
       </a>
 
       <ul class="navbar__items navbar__items--left">
-        <li><a class="navbar__link{% if nav_section == 'introduction' %} navbar__link--active{% endif %}" href="/">Introduction</a></li>
-        <li><a class="navbar__link{% if nav_section == 'generators' %} navbar__link--active{% endif %}" href="/generators/overview/">Generators</a></li>
-        <li><a class="navbar__link{% if nav_section == 'hosts' %} navbar__link--active{% endif %}" href="/hosts/overview/">Hosts</a></li>
-        <li><a class="navbar__link{% if nav_section == 'views' %} navbar__link--active{% endif %}" href="/views/overview/">Views</a></li>
-        <li><a class="navbar__link{% if nav_section == 'guides' %} navbar__link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a></li>
-        <li><a class="navbar__link{% if nav_section == 'reference' %} navbar__link--active{% endif %}" href="/reference/architecture-overview/">Reference</a></li>
+        {# Top-nav categories and their landing links are derived from the same
+           config.extra.sidebar tree as the sidebar. The active section is
+           matched by the category label (lowercased) against nav_section. #}
+        {% for cat in config.extra.sidebar %}
+          {% if cat.root %}{% set nav_link = "/" %}
+          {% else %}{% set first_page = get_page(path=cat.pages[0]) %}{% set nav_link = first_page.path %}{% endif %}
+          <li><a class="navbar__link{% if nav_section == cat.label | lower %} navbar__link--active{% endif %}" href="{{ nav_link }}">{{ cat.label }}</a></li>
+        {% endfor %}
       </ul>
 
       <div class="navbar__items navbar__items--right">
@@ -80,12 +82,11 @@
   <div class="mobile-menu-backdrop" hidden></div>
   <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
     <nav class="mobile-menu__top" aria-label="Sections">
-      <a class="mobile-menu__top-link{% if nav_section == 'introduction' %} mobile-menu__top-link--active{% endif %}" href="/">Introduction</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'generators' %} mobile-menu__top-link--active{% endif %}" href="/generators/overview/">Generators</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'hosts' %} mobile-menu__top-link--active{% endif %}" href="/hosts/overview/">Hosts</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'views' %} mobile-menu__top-link--active{% endif %}" href="/views/overview/">Views</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'guides' %} mobile-menu__top-link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'reference' %} mobile-menu__top-link--active{% endif %}" href="/reference/architecture-overview/">Reference</a>
+      {% for cat in config.extra.sidebar %}
+        {% if cat.root %}{% set nav_link = "/" %}
+        {% else %}{% set first_page = get_page(path=cat.pages[0]) %}{% set nav_link = first_page.path %}{% endif %}
+        <a class="mobile-menu__top-link{% if nav_section == cat.label | lower %} mobile-menu__top-link--active{% endif %}" href="{{ nav_link }}">{{ cat.label }}</a>
+      {% endfor %}
     </nav>
     <div class="mobile-menu__divider"></div>
     {# Child templates inject the shared sidebar nav here (they import the

@@ -1,7 +1,6 @@
 +++
 title = "Quick Start"
 description = "View Creator (Viewkit) is a CLI tool that helps you initialize, manage, and publish Shinzo views."
-weight = 2
 +++
 
 View Creator (Viewkit) is a CLI tool that helps you initialize, manage, and publish Shinzo views. In this quickstart guide we're going to build and install the `viewkit` executable, create a view, and publish it to the testnet.

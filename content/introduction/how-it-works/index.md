@@ -1,6 +1,5 @@
 +++
 title = "How it works"
-weight = 2
 [extra]
 mermaid = true
 +++

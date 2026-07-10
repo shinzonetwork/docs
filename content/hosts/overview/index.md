@@ -2,7 +2,6 @@
 title = "Overview"
 aliases = ["/host", "/hosts"]
 description = "Introduction to the Shinzo Host, its role in the network, and how it fits into the Shinzo stack."
-weight = 1
 [extra]
 mermaid = true
 +++
