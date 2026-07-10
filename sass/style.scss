@@ -616,6 +616,66 @@ pre {
   }
 }
 
+/* ─── Code tabs ({% tab %}, grouped by tabs.js) ──────────────────────── */
+.tabs {
+  margin: 1rem 0;
+}
+
+.tabs__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 2px solid var(--code-border);
+}
+
+.tabs__button {
+  font-family: var(--font-family-monospace);
+  font-size: var(--code-font-size);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 0.4rem 0.85rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  color: color-mix(in srgb, var(--foreground) 65%, transparent);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: var(--foreground);
+  }
+
+  &--active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+// Sit the visible panel flush against the tab bar and let the .tabs wrapper
+// supply the outer spacing. Scoped under .tabs (created by JS) so a lone,
+// ungrouped panel renders as normal block content.
+.tabs .tabs__panel {
+  > *:first-child {
+    margin-top: 0;
+  }
+  > *:last-child {
+    margin-bottom: 0;
+  }
+  // copy-code.js wraps <pre> in .code-block-wrapper, whose <pre> keeps its own
+  // 1rem margins — zero those at the panel edges too.
+  > .code-block-wrapper:first-child > pre,
+  > .code-block-wrapper:last-child > pre {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
 /* ─── Output code blocks (```output) ─────────────────────────────────── */
 .code-output {
   position: relative;

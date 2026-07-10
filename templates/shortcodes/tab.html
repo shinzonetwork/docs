@@ -1,0 +1,14 @@
+{# Single tab panel. tabs.js groups consecutive panels into a tabbed widget.
+
+   IMPORTANT: separate consecutive {% tab %} calls with a blank line so
+   pulldown-cmark emits each panel as its own HTML block. Without it, the run
+   gets wrapped in a <p> (invalid: <div> inside <p>). Separate tab groups with
+   any other content (a paragraph, heading, etc.).
+
+   {% tab(label="npm") %} `npm install` {% end %}
+
+   {% tab(label="yarn") %} `yarn install` {% end %} #}
+{%- set tab_label = label | default(value="") -%}
+<div class="tabs__panel" data-tab-label="{{ tab_label }}">
+{{ body | markdown | safe }}
+</div>
