@@ -84,3 +84,165 @@ pre.z-code {
 .z-markup.z-deleted {
   color: var(--code-token-constant) !important;
 }
+
+/* ─── Tokens not covered above but emitted by giallo (github-light).
+   These were hardcoded light values in giallo.css; map them onto the same
+   brand variables so the dark palette (defined in style.scss) recolours
+   them automatically. Loaded AFTER giallo.css with !important to win. ── */
+
+/* Plain source wrapper + broad text — neutral foreground. */
+.z-source {
+  color: var(--code-token-string) !important;
+}
+
+/* Variable / parameter / storage-modifier text that giallo paints dark
+   (#24292E) — would be invisible on a dark surface. Use the foreground. */
+.z-variable.z-other,
+.z-variable.z-parameter.z-function,
+.z-storage.z-modifier.z-package,
+.z-storage.z-modifier.z-import,
+.z-storage.z-type.z-java {
+  color: var(--code-token-punctuation) !important;
+}
+
+/* Keywords giallo colours red (#D73A49): fn/let/struct/use/import — keep
+   them on the brand keyword (purple) like the other keywords. */
+.z-storage.z.type {
+  color: var(--code-token-keyword) !important;
+}
+
+/* Boolean / null / self language constants. */
+.z-variable.z-language {
+  color: var(--code-token-constant) !important;
+}
+
+/* Type / entity names giallo paints blue — use the brand property purple. */
+.z-entity.z-name,
+.z-entity.z-name.z-constant,
+.z-variable.z-other.z-constant,
+.z-variable.z-other.z-enummember {
+  color: var(--code-token-property) !important;
+}
+
+/* String punctuation, escape chars, regex, links. */
+.z-punctuation.z-definition.z-string,
+.z-string.z-regexp,
+.z-source.z-regexp,
+.z-string.z-other.z-link,
+.z-constant.z-other.z-reference.z-link,
+.z-string.z-regexp.z-character-class,
+.z-constant.z.character.z-escape,
+.z-source.z.ruby.z.embedded,
+.z-string.z.regexp.z-arbitrary-repitition {
+  color: var(--code-token-string) !important;
+}
+
+.z-constant.z-character.z-escape {
+  color: var(--code-token-function) !important;
+  font-weight: bold;
+}
+
+/* Markdown rendered inside code blocks. */
+.z-markup.z-heading {
+  color: var(--code-token-constant) !important;
+  font-weight: bold;
+}
+.z-markup.z-quote {
+  color: var(--code-token-function) !important;
+}
+.z-markup.z-italic {
+  color: var(--code-token-punctuation) !important;
+  font-style: italic;
+}
+.z-markup.z-bold {
+  color: var(--code-token-punctuation) !important;
+  font-weight: bold;
+}
+.z-markup.z-inline.z-raw {
+  color: var(--code-token-property) !important;
+}
+.z-punctuation.z-definition.z-list.z-begin.z-markdown {
+  color: var(--code-token-string-expression) !important;
+}
+.z-meta.z-output,
+.z-meta.z-separator {
+  color: var(--code-token-constant) !important;
+}
+.z-meta.z-separator {
+  font-weight: bold;
+}
+
+/* Bracket highlighter — dim grey. */
+.z-brackethighlighter.z-tag,
+.z-brackethighlighter.z-curly,
+.z-brackethighlighter.z-round,
+.z-brackethighlighter.z-square,
+.z-brackethighlighter.z-angle,
+.z-brackethighlighter.z-quote {
+  color: var(--code-token-comment) !important;
+}
+.z-brackethighlighter.z-unmatched {
+  color: var(--code-token-constant) !important;
+}
+
+/* Errors / invalid. */
+.z-invalid.z-broken,
+.z-invalid.z-deprecated,
+.z-invalid.z-illegal,
+.z-invalid.z-unimplemented,
+.z-message.z-error {
+  color: var(--code-token-constant) !important;
+  font-style: italic;
+}
+
+/* Diff markup — token colour + translucent brand-tinted background. */
+.z-markup.z-inserted,
+.z-punctuation.z-definition.z-inserted {
+  color: var(--code-token-function) !important;
+  background-color: var(--code-diff-inserted-bg) !important;
+}
+.z-markup.z-deleted,
+.z-punctuation.z-definition.z-deleted {
+  color: var(--code-token-constant) !important;
+  background-color: var(--code-diff-deleted-bg) !important;
+}
+.z-markup.z-changed,
+.z-punctuation.z-definition.z-changed {
+  color: var(--code-token-string-expression) !important;
+  background-color: var(--code-diff-changed-bg) !important;
+}
+.z-meta.z-diff.z-header.z-from-file {
+  color: var(--code-token-constant) !important;
+  background-color: var(--code-diff-deleted-bg) !important;
+}
+.z-meta.z-diff.z-header.z-to-file {
+  color: var(--code-token-function) !important;
+  background-color: var(--code-diff-inserted-bg) !important;
+}
+.z-meta.z-diff.z-range {
+  color: var(--code-token-keyword) !important;
+  font-weight: bold;
+}
+.z-meta.z-diff.z-header {
+  color: var(--code-token-constant) !important;
+}
+
+/* Ignored / untracked — neutral on a brand backdrop. */
+.z-markup.z-ignored,
+.z-markup.z-untracked {
+  color: var(--code-background) !important;
+  background-color: var(--code-token-keyword) !important;
+}
+
+/* Carriage return marker. */
+.z-carriage-return {
+  color: var(--code-background) !important;
+  background-color: var(--code-token-constant) !important;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+/* Line numbers — dim, theme-aware. */
+.giallo-ln {
+  color: color-mix(in srgb, var(--foreground) 40%, transparent) !important;
+}

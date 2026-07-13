@@ -1,25 +1,68 @@
-{# Mermaid loader + brand theme, matching docusaurus.config themeVariables. #}
+{# Mermaid loader + brand theme; renders in the active scheme and re-renders on themechange. #}
 {% macro script() %}
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({
+
+  var lightVars = {
+    primaryColor: '#ffe9e9', primaryTextColor: '#353535', primaryBorderColor: '#d01f27',
+    secondaryColor: '#f3f3f3', secondaryTextColor: '#353535', secondaryBorderColor: '#c7c7c7',
+    tertiaryColor: '#ffffff', tertiaryTextColor: '#353535', tertiaryBorderColor: '#c7c7c7',
+    lineColor: '#353535', textColor: '#353535', background: '#ffffff',
+    mainBkg: '#ffe9e9', secondBkg: '#f3f3f3',
+    noteBkgColor: '#fff8d6', noteTextColor: '#353535', noteBorderColor: '#c7c7c7',
+    actorBkg: '#ffe9e9', actorBorder: '#d01f27', actorTextColor: '#353535', actorLineColor: '#c7c7c7',
+    signalColor: '#353535', signalTextColor: '#353535',
+    labelBoxBkgColor: '#ffe9e9', labelBoxBorderColor: '#d01f27', labelTextColor: '#353535', loopTextColor: '#353535',
+    clusterBkg: '#fafafa', clusterBorder: '#c7c7c7', edgeLabelBackground: '#ffffff'
+  };
+
+  var darkVars = {
+    primaryColor: '#3a2326', primaryTextColor: '#e8e8e8', primaryBorderColor: '#e0323a',
+    secondaryColor: '#2a2a2a', secondaryTextColor: '#e8e8e8', secondaryBorderColor: '#3a3a3a',
+    tertiaryColor: '#232323', tertiaryTextColor: '#e8e8e8', tertiaryBorderColor: '#3a3a3a',
+    lineColor: '#e8e8e8', textColor: '#e8e8e8', background: '#1a1a1a',
+    mainBkg: '#3a2326', secondBkg: '#2a2a2a',
+    noteBkgColor: '#33291a', noteTextColor: '#e8e8e8', noteBorderColor: '#3a3a3a',
+    actorBkg: '#3a2326', actorBorder: '#e0323a', actorTextColor: '#e8e8e8', actorLineColor: '#3a3a3a',
+    signalColor: '#e8e8e8', signalTextColor: '#e8e8e8',
+    labelBoxBkgColor: '#3a2326', labelBoxBorderColor: '#e0323a', labelTextColor: '#e8e8e8', loopTextColor: '#e8e8e8',
+    clusterBkg: '#222222', clusterBorder: '#3a3a3a', edgeLabelBackground: '#232323'
+  };
+
+  var baseConfig = {
     startOnLoad: false,
     theme: 'base',
     fontFamily: '"Geist", sans-serif',
-    themeVariables: {
-      primaryColor: '#ffe9e9', primaryTextColor: '#353535', primaryBorderColor: '#d01f27',
-      secondaryColor: '#f3f3f3', secondaryTextColor: '#353535', secondaryBorderColor: '#c7c7c7',
-      tertiaryColor: '#ffffff', tertiaryTextColor: '#353535', tertiaryBorderColor: '#c7c7c7',
-      lineColor: '#353535', textColor: '#353535', background: '#ffffff',
-      mainBkg: '#ffe9e9', secondBkg: '#f3f3f3',
-      noteBkgColor: '#fff8d6', noteTextColor: '#353535', noteBorderColor: '#c7c7c7',
-      actorBkg: '#ffe9e9', actorBorder: '#d01f27', actorTextColor: '#353535', actorLineColor: '#c7c7c7',
-      signalColor: '#353535', signalTextColor: '#353535',
-      labelBoxBkgColor: '#ffe9e9', labelBoxBorderColor: '#d01f27', labelTextColor: '#353535', loopTextColor: '#353535',
-      clusterBkg: '#fafafa', clusterBorder: '#c7c7c7', edgeLabelBackground: '#ffffff'
-    },
     flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' }
+  };
+
+  function isDark() {
+    return document.documentElement.dataset.theme === 'dark';
+  }
+  function themeVars() {
+    return isDark() ? darkVars : lightVars;
+  }
+
+  // Capture each diagram's source text before Mermaid swaps it for an SVG,
+  // so we can restore + re-render when the theme changes.
+  var nodes = Array.prototype.slice.call(document.querySelectorAll('.mermaid'));
+  nodes.forEach(function (el) {
+    el.setAttribute('data-source', el.textContent);
   });
+
+  mermaid.initialize(Object.assign({}, baseConfig, { themeVariables: themeVars() }));
   await mermaid.run({ querySelector: '.mermaid' });
+
+  // Re-render existing diagrams in the newly active palette.
+  window.addEventListener('themechange', async function () {
+    nodes.forEach(function (el) {
+      var src = el.getAttribute('data-source');
+      if (src == null) return;
+      el.removeAttribute('data-processed');
+      el.textContent = src;
+    });
+    mermaid.initialize(Object.assign({}, baseConfig, { themeVariables: themeVars() }));
+    await mermaid.run({ querySelector: '.mermaid' });
+  });
 </script>
 {% endmacro script %}
