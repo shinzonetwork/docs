@@ -1,4 +1,4 @@
-# Shinzō Developer Portal Zola configuration
+# Shinzo Docs Zola configuration
 
 base_url = "https://docs.shinzo.network"
 title = "Shinzō Developer Portal"
@@ -44,13 +44,56 @@ favicon = "/img/favicon.png"
 plausible_domain = "docs.shinzo.network"
 plausible_src = "https://plausible.source.network/js/script.js"
 
-# Sidebar and top-navbar navigation tree (manual order).
-# Each [[extra.sidebar]] block is a top-level category, listed in display
-# order. `pages` holds content paths relative to content/; page titles are
-# resolved from front matter, so only the order and labels live here.
-# `root = true` (Introduction only) prepends the site landing page at "/".
-# `subsections` adds nested collapsible groups (only Reference uses one).
+
+
+# Top navigation bar
+# ------------------
+# - label: link text.
+# - href: landing-page URL (literal path, e.g. "/generators/overview/").
+# - section: path prefix for active highlighting: active when the current path starts with "/{section}/".
+# - root: optional; when true the entry is ALSO active at the site root ("/"). Used by Introduction (landing at "/", pages under "/introduction/").
+
+[[extra.navbar]]
+label = "Introduction"
+href = "/"
+section = "introduction"
+root = true
+
+[[extra.navbar]]
+label = "Generators"
+href = "/generators/overview/"
+section = "generators"
+
+[[extra.navbar]]
+label = "Hosts"
+href = "/hosts/overview/"
+section = "hosts"
+
+[[extra.navbar]]
+label = "Views"
+href = "/views/overview/"
+section = "views"
+
+[[extra.navbar]]
+label = "Guides"
+href = "/guides/building-apps-with-shinzo/"
+section = "guides"
+
+[[extra.navbar]]
+label = "Reference"
+href = "/reference/architecture-overview/"
+section = "reference"
+# ------------------
+
+
+
+# Sidebar navigation tree (manual order).
+# ---------------------------------------
+# Each [[extra.sidebar]] block is a top-level category, listed in display order. `pages` holds content paths relative to content/; page titles are resolved from front matter, so only the order and labels live here.
+# - `root = true` (Introduction only) prepends the site landing page at "/".
+# - `subsections` adds nested collapsible groups (only Reference uses one).
 # Pages are NOT auto-discovered: a new doc page must be listed here to appear.
+
 [[extra.sidebar]]
 label = "Introduction"
 root = true
@@ -118,3 +161,4 @@ subsections = [
     "reference/components/viewkit/index.md",
   ] },
 ]
+# ---------------------------------------
