@@ -6,8 +6,11 @@
 
 @import "fonts";
 
-/* ─── Theme variables (light only; dark vars from the original kept for
-   reference but the toggle is disabled, matching production) ─────────── */
+/* ─── Theme variables ──────────────────────────────────────────────────
+   Light defaults live on :root; the `[data-theme="dark"]` block below
+   overrides them. A tiny inline script in <head> sets data-theme before
+   paint (no FOUC), and the toggle button lets the user override the
+   system preference (persisted in localStorage). ─────────────────────── */
 :root {
   --background: #fff;
   --foreground: #353535;
@@ -66,9 +69,91 @@
   --code-token-property: rgb(105, 76, 156);
   --code-highlight-color: #1c1c1c;
 
+  // Diff markup backgrounds (used by code-theme.css overrides)
+  --code-diff-inserted-bg: #f0fff4;
+  --code-diff-deleted-bg: #ffeef0;
+  --code-diff-changed-bg: #ffebda;
+
+  // Admonition palettes (consumed by the &--info/--note/--tip/--warning
+  // blocks below so they re-tint in dark mode)
+  --admonition-info-bg: #e8f0fe;
+  --admonition-info-border: #1a6fbb;
+  --admonition-info-title: #1a6fbb;
+  --admonition-note-bg: #f3f3f3;
+  --admonition-note-border: var(--szo-border);
+  --admonition-note-title: var(--foreground);
+  --admonition-tip-bg: #ecfdf3;
+  --admonition-tip-border: #1a7032;
+  --admonition-tip-title: #1a7032;
+  --admonition-warning-bg: #fff8d6;
+  --admonition-warning-border: #f1a10d;
+  --admonition-warning-title: #92671a;
+
+  // Dropdown / popover shadow
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.12);
+
   @media (max-width: 996px) {
     --navbar-height: 4rem;
   }
+}
+
+/* ─── Dark theme overrides ──────────────────────────────────────────────
+   Brand-derived dark palette: same brand reds (lightened for contrast on
+   dark surfaces), code tokens retuned off the dark code surface, and
+   admonition tints darkened so they don't glow. ──────────────────────── */
+[data-theme="dark"] {
+  --background: #1a1a1a;
+  --foreground: #e8e8e8;
+
+  --szo-border: #3a3a3a;
+  --menu-indicator-color: #4a4a4a;
+
+  // Lighten the brand reds so links/primary stays AA on dark surfaces.
+  --color-primary: #e0323a;
+  --color-primary-dark: #df2830;
+  --color-primary-darker: #d01f27;
+  --color-primary-darkest: #bb1c23;
+  --color-primary-light: #e55258;
+  --color-primary-lighter: #e86b6f;
+  --color-primary-lightest: #f0999d;
+
+  --color-info-contrast-background: #1a2d4a;
+
+  --docs-menu-border: #2e2e2e;
+
+  // Code tokens — brand hues lifted for legibility on a dark surface.
+  --code-foreground: #e8e8e8;
+  --code-background: #232323;
+  --code-border: #3a3a3a;
+  --code-token-keyword: #b39ddb;
+  --code-token-constant: #ff6b6b;
+  --code-token-string: #e0b85c;
+  --code-token-comment: #8e8e8e;
+  --code-token-parameter: #c4a7e7;
+  --code-token-function: #7cc77c;
+  --code-token-string-expression: #f1c44d;
+  --code-token-punctuation: #b8b8b8;
+  --code-token-link: #b8b8b8;
+  --code-token-number: #b8b8b8;
+  --code-token-property: #c4a7e7;
+  --code-highlight-color: rgba(255, 255, 255, 0.12);
+
+  --code-diff-inserted-bg: rgba(124, 199, 124, 0.15);
+  --code-diff-deleted-bg: rgba(255, 107, 107, 0.15);
+  --code-diff-changed-bg: rgba(241, 196, 77, 0.15);
+
+  --admonition-info-bg: #1a2d4a;
+  --admonition-info-border: #5a9fe8;
+  --admonition-info-title: #5a9fe8;
+  --admonition-note-bg: #262626;
+  --admonition-tip-bg: #163024;
+  --admonition-tip-border: #5ec08a;
+  --admonition-tip-title: #5ec08a;
+  --admonition-warning-bg: #33291a;
+  --admonition-warning-border: #f1c44d;
+  --admonition-warning-title: #f1c44d;
+
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 /* ─── Base / reset ───────────────────────────────────────────────────── */
@@ -225,6 +310,18 @@ p {
   display: block;
 }
 
+// Theme-aware logo: show the matching variant. The dark (-w.svg) mark is
+// hidden by default and revealed only when [data-theme="dark"] is on :root.
+.navbar__logo .logo-dark {
+  display: none;
+}
+[data-theme="dark"] .navbar__logo .logo-light {
+  display: none;
+}
+[data-theme="dark"] .navbar__logo .logo-dark {
+  display: block;
+}
+
 .navbar__items {
   display: flex;
   align-items: center;
@@ -266,6 +363,51 @@ p {
     height: 24px;
     width: 24px;
   }
+}
+
+// White-fill GitHub mark for dark mode (selected via [data-theme="dark"] on :root).
+[data-theme="dark"] .header-github-link:before {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg fill='%23e8e8e8' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E");
+}
+
+/* ─── Theme toggle ───────────────────────────────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--foreground);
+  border-radius: 0.35rem;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--foreground) 6%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+}
+
+.theme-toggle__icon {
+  display: none;
+  width: 22px;
+  height: 22px;
+}
+
+// Moon in light mode (click → dark), sun in dark mode (click → light).
+:root:not([data-theme="dark"]) .theme-toggle__icon--moon {
+  display: block;
+}
+[data-theme="dark"] .theme-toggle__icon--sun {
+  display: block;
 }
 
 /* ─── Sidebar ────────────────────────────────────────────────────────── */
@@ -660,34 +802,34 @@ pre {
   }
 
   &--info {
-    background: var(--color-info-contrast-background);
-    border-left-color: #1a6fbb;
+    background: var(--admonition-info-bg);
+    border-left-color: var(--admonition-info-border);
     .admonition__title {
-      color: #1a6fbb;
+      color: var(--admonition-info-title);
     }
   }
 
   &--note {
-    background: #f3f3f3;
-    border-left-color: var(--szo-border);
+    background: var(--admonition-note-bg);
+    border-left-color: var(--admonition-note-border);
     .admonition__title {
-      color: var(--foreground);
+      color: var(--admonition-note-title);
     }
   }
 
   &--tip {
-    background: #ecfdf3;
-    border-left-color: #1a7032;
+    background: var(--admonition-tip-bg);
+    border-left-color: var(--admonition-tip-border);
     .admonition__title {
-      color: #1a7032;
+      color: var(--admonition-tip-title);
     }
   }
 
   &--warning {
-    background: #fff8d6;
-    border-left-color: #f1a10d;
+    background: var(--admonition-warning-bg);
+    border-left-color: var(--admonition-warning-border);
     .admonition__title {
-      color: #92671a;
+      color: var(--admonition-warning-title);
     }
   }
 }
@@ -837,7 +979,7 @@ pre {
   background: var(--background);
   border: 1px solid var(--szo-border);
   border-radius: 0.5rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-elevated);
   z-index: 300;
   display: none;
 }
@@ -1000,7 +1142,7 @@ pre {
   width: 100%;
   height: auto;
   margin-top: 0.5rem;
-  color: #000;
+  color: var(--foreground);
 }
 
 /* ─── Glossary ───────────────────────────────────────────────────────── */
