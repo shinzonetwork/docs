@@ -1,6 +1,5 @@
 +++
 title = "What is Shinzo?"
-sort_by = "weight"
 template = "index.html"
 page_template = "page.html"
 aliases = ["/introduction"]

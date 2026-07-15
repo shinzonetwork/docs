@@ -1,6 +1,5 @@
 +++
 title = "Viewkit"
-weight = 6
 [extra]
 mermaid = true
 +++

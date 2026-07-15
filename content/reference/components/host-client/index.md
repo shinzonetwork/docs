@@ -1,7 +1,6 @@
 +++
 title = "Host client"
 aliases = ["/reference/components"]
-weight = 1
 [extra]
 mermaid = true
 +++

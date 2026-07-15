@@ -1,6 +1,5 @@
 +++
 title = "ShinzoHub"
-weight = 5
 +++
 
 ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, Hosts, Generators, and the economic layer (staking, funding, pricing, earnings) all live here.

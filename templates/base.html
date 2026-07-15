@@ -1,4 +1,5 @@
 {% import "macros/footer.html" as footer_macro %}
+{% import "macros/navbar.html" as navbar %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +21,20 @@
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
+  {# Set the colour scheme before paint to avoid a flash of the wrong theme.
+     Honours a saved preference in localStorage, else the OS preference. #}
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    })();
+  </script>
+
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/giallo.css" />
   <link rel="stylesheet" href="/css/code-theme.css" />
@@ -31,20 +46,11 @@
 <div class="layout">
 
   {# ─── Navbar ─── #}
-  {# Determine the active top-level section from the current path so the matching
-     nav item can be highlighted. The Introduction section lives at the site
-     root ("/") and under "/introduction/". #}
+  {# Current path is used to highlight the active top-nav entry; active
+     matching itself is driven by config.extra.navbar (see macros/navbar.html). #}
   {%- if page %}{% set cur_path = page.path %}
   {%- elif section %}{% set cur_path = section.path %}
   {%- else %}{% set cur_path = "/" %}{% endif -%}
-  {%- set trimmed = cur_path | trim_start_matches(pat="/") -%}
-  {%- if trimmed == "" or trimmed is starting_with("introduction/") %}{% set nav_section = "introduction" %}
-  {%- elif trimmed is starting_with("generators/") %}{% set nav_section = "generators" %}
-  {%- elif trimmed is starting_with("hosts/") %}{% set nav_section = "hosts" %}
-  {%- elif trimmed is starting_with("views/") %}{% set nav_section = "views" %}
-  {%- elif trimmed is starting_with("guides/") %}{% set nav_section = "guides" %}
-  {%- elif trimmed is starting_with("reference/") %}{% set nav_section = "reference" %}
-  {%- else %}{% set nav_section = "" %}{% endif -%}
   <header class="navbar">
     <div class="navbar__inner">
       <button type="button" class="navbar__hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -54,16 +60,16 @@
       </button>
 
       <a class="navbar__brand navbar__logo" href="/" aria-label="Shinzo Network Documentation">
-        <img src="/img/shinzo-logo.svg" alt="Shinzo Network Documentation" />
+        <img class="logo-light" src="/img/shinzo-logo.svg" alt="Shinzo Network Documentation" />
+        <img class="logo-dark" src="/img/shinzo-logo-w.svg" alt="Shinzo Network Documentation" />
       </a>
 
       <ul class="navbar__items navbar__items--left">
-        <li><a class="navbar__link{% if nav_section == 'introduction' %} navbar__link--active{% endif %}" href="/">Introduction</a></li>
-        <li><a class="navbar__link{% if nav_section == 'generators' %} navbar__link--active{% endif %}" href="/generators/overview/">Generators</a></li>
-        <li><a class="navbar__link{% if nav_section == 'hosts' %} navbar__link--active{% endif %}" href="/hosts/overview/">Hosts</a></li>
-        <li><a class="navbar__link{% if nav_section == 'views' %} navbar__link--active{% endif %}" href="/views/overview/">Views</a></li>
-        <li><a class="navbar__link{% if nav_section == 'guides' %} navbar__link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a></li>
-        <li><a class="navbar__link{% if nav_section == 'reference' %} navbar__link--active{% endif %}" href="/reference/architecture-overview/">Reference</a></li>
+        {# Top-nav items, landing links, and active highlighting are all driven
+           by config.extra.navbar (independent from the sidebar). #}
+        {% for item in config.extra.navbar %}
+          <li>{{ navbar::link(item=item, cur_path=cur_path, base_class="navbar__link", active_class="navbar__link--active") }}</li>
+        {% endfor %}
       </ul>
 
       <div class="navbar__items navbar__items--right">
@@ -71,6 +77,10 @@
           <input type="text" id="search-input" class="search-input" placeholder="Search docs…" autocomplete="off" aria-label="Search" />
           <div id="search-results" class="search-results"></div>
         </div>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
         <a class="header-github-link" href="{{ config.extra.github_url }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository"></a>
       </div>
     </div>
@@ -80,12 +90,9 @@
   <div class="mobile-menu-backdrop" hidden></div>
   <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
     <nav class="mobile-menu__top" aria-label="Sections">
-      <a class="mobile-menu__top-link{% if nav_section == 'introduction' %} mobile-menu__top-link--active{% endif %}" href="/">Introduction</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'generators' %} mobile-menu__top-link--active{% endif %}" href="/generators/overview/">Generators</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'hosts' %} mobile-menu__top-link--active{% endif %}" href="/hosts/overview/">Hosts</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'views' %} mobile-menu__top-link--active{% endif %}" href="/views/overview/">Views</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'guides' %} mobile-menu__top-link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'reference' %} mobile-menu__top-link--active{% endif %}" href="/reference/architecture-overview/">Reference</a>
+      {% for item in config.extra.navbar %}
+        {{ navbar::link(item=item, cur_path=cur_path, base_class="mobile-menu__top-link", active_class="mobile-menu__top-link--active") }}
+      {% endfor %}
     </nav>
     <div class="mobile-menu__divider"></div>
     {# Child templates inject the shared sidebar nav here (they import the
@@ -114,6 +121,9 @@
 
 {# Mobile hamburger navigation drawer #}
 <script src="/js/mobile-menu.js" defer></script>
+
+{# Light/dark theme toggle (persists to localStorage; dispatches "themechange") #}
+<script src="/js/theme-toggle.js" defer></script>
 
 {% block scripts %}{% endblock scripts %}
 </body>

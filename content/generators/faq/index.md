@@ -1,7 +1,6 @@
 +++
 title = "FAQs"
 aliases = ["/generator/faq", "/generators/frequently-asked-questions"]
-weight = 999
 +++
 
 ### What is the GitHub link for the Shinzo Generator client?

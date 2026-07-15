@@ -2,7 +2,6 @@
 title = "Building Apps With Shinzo"
 aliases = ["/guides"]
 description = "Building dApps with Shinzo App SDK - local-first querying with embedded DefraDB integration"
-weight = 1
 +++
 Building an app with Shinzo is made easy using our [app-sdk](https://github.com/shinzonetwork/app-sdk)!
 

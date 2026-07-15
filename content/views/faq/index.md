@@ -1,7 +1,6 @@
 +++
 title = "FAQ"
 description = "Troubleshooting and frequently asked questions about Shinzo Views, Viewkit, lenses, and deployment."
-weight = 5
 +++
 
 ## Common errors
