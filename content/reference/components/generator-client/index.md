@@ -1,6 +1,5 @@
 +++
 title = "Generator client"
-weight = 2
 [extra]
 mermaid = true
 +++

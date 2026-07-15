@@ -1,7 +1,6 @@
 +++
 title = "Operator Quickstart"
 description = "Bring up a Generator client and a Host on one machine, peer them over libp2p, and query the result."
-weight = 3
 [extra]
 mermaid = true
 +++

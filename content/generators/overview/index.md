@@ -1,7 +1,6 @@
 +++
 title = "Overview"
 aliases = ["/generator", "/generator/overview", "/indexers", "/indexer"]
-weight = 1
 [extra]
 mermaid = true
 +++

@@ -1,6 +1,5 @@
 +++
 title = "Hardware requirements"
-weight = 10
 +++
 
 These requirements are for the Host client. A Host does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage that an execution client or archival Generator requires. It receives signed primitive data over P2P from Generator clients, applies Lens transforms, and serves Views to applications.

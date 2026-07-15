@@ -2,7 +2,6 @@
 title = "Overview"
 aliases = ["/view-creator", "/views"]
 description = "Introduction to the Shinzo View Creator"
-weight = 1
 [extra]
 mermaid = true
 +++

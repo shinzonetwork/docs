@@ -1,7 +1,6 @@
 +++
 title = "Lenses"
 description = "How WASM lens transforms work in Shinzo Views: available lenses, arguments, chaining, and authoring new ones."
-weight = 4
 +++
 
 Lenses are WebAssembly (WASM) modules that transform raw primitive data into structured View output. A lens takes a document in (e.g. a raw `Log` with `topics` and `data`) and produces a document out (e.g. an `EthEvent` with decoded `event`, `signature`, and `arguments` fields).
