@@ -1,4 +1,5 @@
 {% import "macros/footer.html" as footer_macro %}
+{% import "macros/navbar.html" as navbar %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,20 +46,11 @@
 <div class="layout">
 
   {# ─── Navbar ─── #}
-  {# Determine the active top-level section from the current path so the matching
-     nav item can be highlighted. The Introduction section lives at the site
-     root ("/") and under "/introduction/". #}
+  {# Current path is used to highlight the active top-nav entry; active
+     matching itself is driven by config.extra.navbar (see macros/navbar.html). #}
   {%- if page %}{% set cur_path = page.path %}
   {%- elif section %}{% set cur_path = section.path %}
   {%- else %}{% set cur_path = "/" %}{% endif -%}
-  {%- set trimmed = cur_path | trim_start_matches(pat="/") -%}
-  {%- if trimmed == "" or trimmed is starting_with("introduction/") %}{% set nav_section = "introduction" %}
-  {%- elif trimmed is starting_with("generators/") %}{% set nav_section = "generators" %}
-  {%- elif trimmed is starting_with("hosts/") %}{% set nav_section = "hosts" %}
-  {%- elif trimmed is starting_with("views/") %}{% set nav_section = "views" %}
-  {%- elif trimmed is starting_with("guides/") %}{% set nav_section = "guides" %}
-  {%- elif trimmed is starting_with("reference/") %}{% set nav_section = "reference" %}
-  {%- else %}{% set nav_section = "" %}{% endif -%}
   <header class="navbar">
     <div class="navbar__inner">
       <button type="button" class="navbar__hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -73,13 +65,10 @@
       </a>
 
       <ul class="navbar__items navbar__items--left">
-        {# Top-nav categories and their landing links are derived from the same
-           config.extra.sidebar tree as the sidebar. The active section is
-           matched by the category label (lowercased) against nav_section. #}
-        {% for cat in config.extra.sidebar %}
-          {% if cat.root %}{% set nav_link = "/" %}
-          {% else %}{% set first_page = get_page(path=cat.pages[0]) %}{% set nav_link = first_page.path %}{% endif %}
-          <li><a class="navbar__link{% if nav_section == cat.label | lower %} navbar__link--active{% endif %}" href="{{ nav_link }}">{{ cat.label }}</a></li>
+        {# Top-nav items, landing links, and active highlighting are all driven
+           by config.extra.navbar (independent from the sidebar). #}
+        {% for item in config.extra.navbar %}
+          <li>{{ navbar::link(item=item, cur_path=cur_path, base_class="navbar__link", active_class="navbar__link--active") }}</li>
         {% endfor %}
       </ul>
 
@@ -101,10 +90,8 @@
   <div class="mobile-menu-backdrop" hidden></div>
   <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
     <nav class="mobile-menu__top" aria-label="Sections">
-      {% for cat in config.extra.sidebar %}
-        {% if cat.root %}{% set nav_link = "/" %}
-        {% else %}{% set first_page = get_page(path=cat.pages[0]) %}{% set nav_link = first_page.path %}{% endif %}
-        <a class="mobile-menu__top-link{% if nav_section == cat.label | lower %} mobile-menu__top-link--active{% endif %}" href="{{ nav_link }}">{{ cat.label }}</a>
+      {% for item in config.extra.navbar %}
+        {{ navbar::link(item=item, cur_path=cur_path, base_class="mobile-menu__top-link", active_class="mobile-menu__top-link--active") }}
       {% endfor %}
     </nav>
     <div class="mobile-menu__divider"></div>
