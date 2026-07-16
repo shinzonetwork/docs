@@ -15,6 +15,8 @@ Identifies which EVM chain to index. Collection names are derived as `{name}__{n
 | `name` | string | `Ethereum` | no | `CHAIN_NAME` | Chain name. Also supports `Arbitrum`, `Optimism`, `Avalanche`, or any EVM chain. |
 | `network` | string | `Mainnet` | no | `CHAIN_NETWORK` | Network name, for example `Mainnet` or `Testnet`. |
 
+Ethereum is the only officially supported chain today. The shipped `config.yaml` lists Arbitrum, Optimism, and Avalanche as supported, and any EVM-compatible chain can likely be indexed by setting `chain.name` and `chain.network` to the correct values and pointing `geth.node_url` at a compatible RPC endpoint. The codebase is being refactored from EVM-only to a `Chain` interface with chain-specific Fetcher and Converter components, which will formalize multi-chain support. See [Chain abstraction](/reference/components/generator-client#chain-abstraction-in-progress) for the current state.
+
 ## defradb
 
 Embedded database configuration. DefraDB handles storage, P2P replication, content addressing, and query serving.

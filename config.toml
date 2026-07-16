@@ -113,6 +113,15 @@ pages = [
   "generators/config-reference/index.md",
   "generators/faq/index.md",
 ]
+subsections = [
+  { label = "Deployment examples", pages = [
+    "generators/deployment-examples/validator-local-geth/index.md",
+    "generators/deployment-examples/managed-node-gcp/index.md",
+    "generators/deployment-examples/nginx-tls-snapshots/index.md",
+    "generators/deployment-examples/high-throughput-tuning/index.md",
+    "generators/deployment-examples/archival-vs-pruned/index.md",
+  ] },
+]
 
 [[extra.sidebar]]
 label = "Hosts"
