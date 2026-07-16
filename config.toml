@@ -154,7 +154,9 @@ pages = [
 subsections = [
   { label = "Components", pages = [
     "reference/components/host-client/index.md",
+    "reference/components/host-client-config/index.md",
     "reference/components/generator-client/index.md",
+    "reference/components/generator-client-config/index.md",
     "reference/components/outpost/index.md",
     "reference/components/relayer/index.md",
     "reference/components/shinzohub/index.md",
