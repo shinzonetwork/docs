@@ -25,7 +25,7 @@ To do this, you would first create a View, describing how to transform primitive
 
 ## Usage
 
-Before using the app-sdk, you'll want to [use the view-creator to create the View(s)](/views/overview/) for your app.
+Before using the app-sdk, you'll want to [use Viewkit to create the View(s)](/views/overview/) for your app.
 
 Once you've created your Views, the next step is to configure your app.
 

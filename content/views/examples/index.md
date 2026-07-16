@@ -3,7 +3,7 @@ title = "Examples"
 description = "Copy-pasteable Shinzo View examples: decode event logs, filter by contract, decode multiple event types, edit and update views, and query the results."
 +++
 
-Seven progressively more complex Views, from a basic event decode to a multi-event decoder with editing and updates. Each example shows the goal, the three View components (query, SDL, lens), the viewkit commands to build it, and the GraphQL query you run against the result.
+Seven progressively more complex Views, from a basic event decode to a multi-event decoder with editing and updates. Each example shows the goal, the three View components (query, SDL, lens), the Viewkit commands to build it, and the GraphQL query you run against the result.
 
 ## Primitive data
 
@@ -615,8 +615,8 @@ GraphQL queries you can run against a deployed View's output collection. These e
 }
 ```
 
-For the full list of viewkit commands and GraphQL filter operators, see the [Viewkit reference](/reference/components/viewkit/). For a deeper dive on lenses, available modules, and how to chain them, see the [Lenses guide](/views/lenses/). For troubleshooting and common errors, see the [FAQ](/views/faq/).
+For the full list of Viewkit commands and GraphQL filter operators, see the [Viewkit reference](/reference/components/viewkit/). For a deeper dive on lenses, available modules, and how to chain them, see the [Lenses guide](/views/lenses/). For troubleshooting and common errors, see the [FAQ](/views/faq/).
 
 ## Need help
 
-{{ need_help(client="View Creator", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}
+{{ need_help(client="Viewkit", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}

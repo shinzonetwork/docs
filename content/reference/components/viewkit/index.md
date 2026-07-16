@@ -6,7 +6,7 @@ mermaid = true
 
 Viewkit is a CLI tool for creating, testing, and deploying views. It does not process or serve data (hosts do that). It packages a view into a binary bundle on your machine and submits a transaction to ShinzoHub.
 
-## What viewkit does and does not do
+## What Viewkit does and does not do
 
 What it does:
 
@@ -112,7 +112,7 @@ Two implementations of the wire format exist:
 
 | Implementation | Language | Side | Used by |
 | --- | --- | --- | --- |
-| viewbundle-go | Go | Server-side | viewkit, precompile |
+| viewbundle-go | Go | Server-side | Viewkit, precompile |
 | viewbundle | TypeScript | Client-side | Browser-based tooling |
 
 Key functions:
@@ -132,7 +132,7 @@ There is a known issue with v0.6.2 of the Host client: it uses `viewbundle.Unbun
 
 ## View ID computation
 
-View IDs are deterministic. The same computation runs on the client (viewkit) and on chain (precompile):
+View IDs are deterministic. The same computation runs on the client (Viewkit) and on chain (precompile):
 
 ```plaintext
 viewID = typeName + "_" + keccak256(senderAddress, wireBytes)

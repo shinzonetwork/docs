@@ -199,7 +199,7 @@ WASM runtimes in use:
 | Runtime | Language | Where |
 | --- | --- | --- |
 | Wasmtime | Rust | Primary runtime in production hosts |
-| Wasmer | Rust | viewkit local testing |
+| Wasmer | Rust | Viewkit local testing |
 | Wazero | Go | Pure Go alternative, no CGo dependency |
 
 Lens binary size varies by source language. AssemblyScript produces ~73 KB WASM. Rust produces ~200 KB.
