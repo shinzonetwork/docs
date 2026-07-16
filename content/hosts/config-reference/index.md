@@ -1,5 +1,5 @@
 +++
-title = "Host client config reference"
+title = "Config reference"
 +++
 
 The Host client loads configuration from a YAML file (default `config/config.yaml`). Unlike the Generator client, the Host applies only two environment variable overrides directly in `config/config.go`: `START_HEIGHT` and `BOOTSTRAP_PEERS`. A third env var, `DEFRA_KEYRING_SECRET`, is read separately in `pkg/defradb/defra.go`.

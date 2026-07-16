@@ -1,5 +1,5 @@
 +++
-title = "Generator client config reference"
+title = "Config reference"
 +++
 
 The Generator client loads configuration from a YAML file (default `config/config.yaml`) and then applies environment variable overrides on top. Fields left unset in both the YAML and env vars receive code defaults from `applyDefaults` in `config/config.go` and `SetDefaults` in `pkg/pruner/config.go` and `pkg/snapshot/snapshot.go`.
