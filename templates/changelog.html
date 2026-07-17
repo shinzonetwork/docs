@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% import "macros/changelog-sidebar.html" as changelog_sidebar %}
+{% import "macros/mermaid.html" as mermaid %}
+
+{% block title %}<title>{% if page %}{{ page.title }}{% elif section %}{{ section.title }}{% endif %} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{% if page and page.description %}{{ page.description }}{% elif section and section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{% if page %}{{ page.title }}{% elif section %}{{ section.title }}{% endif %} | {{ config.title }}{% endblock og_title %}
+
+{% block body %}
+<main class="main-wrapper">
+  <div class="docs-layout docs-layout--changelog">
+    <aside class="theme-doc-sidebar-container">
+      {{ changelog_sidebar::render(current=page.path | default(value=section.path)) }}
+    </aside>
+
+    <div class="docs-content">
+      <article class="docItemCol markdown changelog">
+
+        {% set cur_path = page.path | default(value=section.path) %}
+        {% set crumbs = cur_path | trim_start_matches(pat="/") | trim_end_matches(pat="/") | split(pat="/") %}
+        <ul class="breadcrumbs">
+          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Home</a></li>
+          {% for crumb in crumbs %}
+            {% if not loop.last %}
+              <li class="breadcrumbs__item"><span class="breadcrumbs__link">{{ crumb | replace(from="-", to=" ") | title }}</span></li>
+            {% else %}
+              <li class="breadcrumbs__item"><span class="breadcrumbs__link">{% if page %}{{ page.title }}{% else %}{{ section.title }}{% endif %}</span></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+
+        <h1 class="doc-title">{% if page %}{{ page.title }}{% else %}{{ section.title }}{% endif %}</h1>
+
+        {% if page %}
+          {{ page.content | safe }}
+        {% else %}
+          {{ section.content | safe }}
+        {% endif %}
+
+        {% if page and (page.lower or page.higher) %}
+        <nav class="pagination-nav" aria-label="Changelog pages">
+          {% if page.lower %}
+          <a class="pagination-nav__link pagination-nav__link--prev" href="{{ page.lower.permalink | replace(from=config.base_url, to='') }}">
+            <div class="pagination-nav__sublabel">Previous</div>
+            <div class="pagination-nav__label">{{ page.lower.title }}</div>
+          </a>
+          {% else %}<span></span>{% endif %}
+          {% if page.higher %}
+          <a class="pagination-nav__link pagination-nav__link--next" href="{{ page.higher.permalink | replace(from=config.base_url, to='') }}">
+            <div class="pagination-nav__sublabel">Next</div>
+            <div class="pagination-nav__label">{{ page.higher.title }}</div>
+          </a>
+          {% else %}<span></span>{% endif %}
+        </nav>
+        {% endif %}
+
+      </article>
+    </div>
+
+    {% set toc = page.toc | default(value=section.toc) %}
+    {% if toc %}
+    <aside class="toc-container">
+      <nav class="toc" aria-label="Table of contents">
+        <div class="toc__title">On this page</div>
+        <ul class="toc__list">
+          {% for h1 in toc %}
+          <li class="toc__item">
+            <a class="toc__link" href="#{{ h1.id | safe }}">{{ h1.title }}</a>
+            {% if h1.children %}
+            <ul class="toc__list toc__list--nested">
+              {% for h2 in h1.children %}
+              <li class="toc__item"><a class="toc__link" href="#{{ h2.id | safe }}">{{ h2.title }}</a></li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </aside>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock body %}
+
+{% block mobile_sidebar %}{{ changelog_sidebar::render(current=page.path | default(value=section.path)) }}{% endblock mobile_sidebar %}
+
+{% block scripts %}
+{% if page and page.extra.mermaid %}{{ mermaid::script() }}{% elif section.extra.mermaid %}{{ mermaid::script() }}{% endif %}
+{% endblock scripts %}

@@ -12,10 +12,15 @@
   {% endif %}
 {% endmacro link %}
 
-{# Resolve a content path to its page and render a sidebar link. #}
+{# Resolve a content path to its page or section and render a sidebar link. #}
 {% macro page_link(path, current) %}
-  {% set p = get_page(path=path) %}
-  <li class="menu__list-item">{{ self::link(title=p.title, path=p.path, current=current) }}</li>
+  {% if path is ending_with("_index.md") %}
+    {% set s = get_section(path=path) %}
+    <li class="menu__list-item">{{ self::link(title=s.title, path=s.path, current=current) }}</li>
+  {% else %}
+    {% set p = get_page(path=path) %}
+    <li class="menu__list-item">{{ self::link(title=p.title, path=p.path, current=current) }}</li>
+  {% endif %}
 {% endmacro page_link %}
 
 {% macro render(current) %}
