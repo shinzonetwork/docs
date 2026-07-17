@@ -99,6 +99,16 @@
       </ul>
     </li>
 
+    {# Changelog #}
+<li class="menu__list-item">
+  <div class="menu__list-item-collapsible">
+    <span class="menu__link menu__link--category">Changelog</span>
+  </div>
+  <ul class="menu__list">
+    <li class="menu__list-item">{{ self::link(title="All updates", path="/changelog/", current=current) }}</li>
+  </ul>
+</li>
+
   </ul>
 </nav>
 {% endmacro render %}

@@ -673,6 +673,33 @@ pre {
   }
 }
 
+.changelog-tag {
+  display: inline-block;
+  font-family: var(--font-family-monospace);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.15em 0.5em;
+  border-radius: 0.25rem;
+  margin-right: 0.35rem;
+  vertical-align: baseline;
+
+  &--storage {
+    background: #e8f0fe;
+    color: #1a6fbb;
+  }
+
+  &--generator {
+    background: #f0ebff;
+    color: #5a2cbc;
+  }
+
+  &--host {
+    background: #fde8ea;
+    color: var(--color-primary);
+  }
+}
+
 /* ─── Admonitions (:::info / :::warning / :::note / :::tip) ───────────── */
 .admonition {
   border: 1px solid var(--szo-border);
