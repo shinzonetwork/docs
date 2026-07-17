@@ -1,7 +1,9 @@
 +++
 title = "How it works"
-weight = 2
+[extra]
+mermaid = true
 +++
+
 Shinzo has four kinds of moving parts: 
 
 1. **Generators** that read the chain.
@@ -19,7 +21,29 @@ Here's a single USDC transfer on Ethereum Mainnet, from the moment it lands on-c
 
 Somewhere on the network, an Ethereum validator's node produces or receives the block containing the transfer. The validator is already running a full execution client (Geth, typically) and already has the data. Shinzo takes advantage of that.
 
-![](./images/data-journey-1.svg)
+{% mermaid() %}
+flowchart LR
+    ShinzoHub["ShinzoHub"]
+    Eth["Ethereum Node"]
+
+    subgraph P2P["P2P Network (DefraDB)"]
+        direction LR
+        Generator["Generator<br/>client"]
+        Host["Shinzo Host"]
+        App["Your App"]
+
+        Generator --> Host
+        Host -->|View| App
+    end
+
+    Eth --> Generator
+    ShinzoHub --> P2P
+
+    classDef dashed stroke-dasharray:5 5
+    classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
+    class P2P dashed
+    class Eth active
+{% end %}
 
 ### The Generator structures and signs it
 
@@ -27,13 +51,57 @@ Sitting next to the Ethereum node is the Shinzo Generator client (a lightweight 
 
 Those documents land in the Generator client's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
 
-![](./images/data-journey-2.svg)
+{% mermaid() %}
+flowchart LR
+    ShinzoHub["ShinzoHub"]
+    Eth["Ethereum Node"]
+
+    subgraph P2P["P2P Network (DefraDB)"]
+        direction LR
+        Generator["Generator<br/>client"]
+        Host["Shinzo Host"]
+        App["Your App"]
+
+        Generator --> Host
+        Host -->|View| App
+    end
+
+    Eth --> Generator
+    ShinzoHub --> P2P
+
+    classDef dashed stroke-dasharray:5 5
+    classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
+    class P2P dashed
+    class Generator active
+{% end %}
 
 ### Hosts pick it up over P2P
 
 Hosts subscribe to the primitive collection topics they care about (blocks, transactions, logs, access lists). When the Generator client's DefraDB gossips the new log document, subscribed Hosts receive it, verify the signature, and update an attestation record for it (essentially just a running tally of how many distinct Generator clients have signed off on this exact piece of data). If three Generator clients all wrote the same log, the attestation record has three votes. Apps can later use those votes to set their own trust thresholds.
 
-![](./images/data-journey-3.svg)
+{% mermaid() %}
+flowchart LR
+    ShinzoHub["ShinzoHub"]
+    Eth["Ethereum Node"]
+
+    subgraph P2P["P2P Network (DefraDB)"]
+        direction LR
+        Generator["Generator<br/>client"]
+        Host["Shinzo Host"]
+        App["Your App"]
+
+        Generator --> Host
+        Host -->|View| App
+    end
+
+    Eth --> Generator
+    ShinzoHub --> P2P
+
+    classDef dashed stroke-dasharray:5 5
+    classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
+    class P2P dashed
+    class Host active
+{% end %}
 
 ### A View transforms primitives into something useful
 
@@ -41,19 +109,62 @@ A Host client with thousands of raw log documents isn't doing much for an app de
 
 The filtering and decoding are implemented as _Lens transforms_, which are WASM modules the developer authors with `viewkit` and deploys to ShinzoHub. Host clients that choose to serve the View run those transforms against primitives as they arrive and produce view documents. Because Lens transforms are deterministic, any Host client (or auditor) running the same transform on the same input gets the same output.
 
-![](./images/data-journey-4.svg)
+{% mermaid() %}
+flowchart LR
+    ShinzoHub["ShinzoHub"]
+    Eth["Ethereum Node"]
+
+    subgraph P2P["P2P Network (DefraDB)"]
+        direction LR
+        Generator["Generator<br/>client"]
+        Host["Shinzo Host"]
+        App["Your App"]
+
+        Generator --> Host
+        Host -->|"View"| App
+    end
+
+    Eth --> Generator
+    ShinzoHub --> P2P
+
+    classDef dashed stroke-dasharray:5 5
+    class P2P dashed
+    linkStyle 1 stroke:#ffa94d,stroke-width:3px
+{% end %}
 
 ### The app queries locally
 
 On the app side, things look (surprisingly) normal. The app embeds DefraDB using the [app-sdk](https://github.com/shinzonetwork/app-sdk), subscribes to the `TokenTransfer` View, and from then on, Hosts push new view documents to it over P2P. The app queries them with GraphQL against its local database. No per-query API call, no network round trip, and an attestation filter available for any query that needs it.
 
-![](./images/data-journey-5.svg)
+{% mermaid() %}
+flowchart LR
+    ShinzoHub["ShinzoHub"]
+    Eth["Ethereum Node"]
+
+    subgraph P2P["P2P Network (DefraDB)"]
+        direction LR
+        Generator["Generator<br/>client"]
+        Host["Shinzo Host"]
+        App["Your App"]
+
+        Generator --> Host
+        Host -->|View| App
+    end
+
+    Eth --> Generator
+    ShinzoHub --> P2P
+
+    classDef dashed stroke-dasharray:5 5
+    classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
+    class P2P dashed
+    class App active
+{% end %}
 
 ## The four participants
 
 #### Generator clients
 
-Generator clients are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on devnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
+Generator clients are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on testnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
 
 #### Hosts
 

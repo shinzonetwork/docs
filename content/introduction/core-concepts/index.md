@@ -1,6 +1,5 @@
 +++
 title = "Core concepts"
-weight = 3
 +++
 Shinzo runs on four ideas that show up everywhere in the stack: Views, Attestation, DefraDB, and the SHNZ token. The [How it works](../how-it-works) page covers how they fit together end to end.
 
@@ -101,5 +100,4 @@ Confirmed so far:
 
 The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out.
 
-{/* Footnotes */}
 [^1]: Technically you can verify that the data you're getting is correct. But you'd have to sign up to multiple APIs, request the same data from each, work it into the same schema, and then compare between them. This is obviously a huge hassle, and incredibly costly.

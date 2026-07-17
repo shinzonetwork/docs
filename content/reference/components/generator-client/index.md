@@ -1,6 +1,5 @@
 +++
 title = "Generator client"
-weight = 2
 [extra]
 mermaid = true
 +++
@@ -238,12 +237,7 @@ Bootstrap peers are configured in the DefraDB config. Peers are also discovered 
 
 ## Resource requirements
 
-| Resource | Minimum | Recommended |
-| --- | --- | --- |
-| CPU | 2 cores | 4 cores |
-| RAM | 4 GB | 8 GB |
-| Storage | 50 GB (with pruning) | 100 GB (with pruning) |
-| Network | 100 Mbps | 1 Gbps |
+See the [hardware requirements page](/generators/hardware-requirements/) for current minimum and recommended specs.
 
 ## Configuration
 

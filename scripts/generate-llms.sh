@@ -5,18 +5,21 @@
 # 2. Run this script:
 #
 #   ```shell
-#   ./generate-llms.sh
+#   ./scripts/generate-llms.sh
 #   ```
 #
 # Output files are written to ./public/ or set OUTPUT_DIR to any other location. The page order mirrors the sidebar in templates/macros/sidebar.html.
 
 set -euo pipefail
 
-DOCS_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+DOCS_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 CONTENT_DIR="$DOCS_DIR/content"
 DATA_DIR="$DOCS_DIR/data"
-OUTPUT_DIR="$DOCS_DIR/public"
-BASE_URL="https://docs.shinzo.network"
+
+# Allow overrides for local/dev usage.
+OUTPUT_DIR="${OUTPUT_DIR:-$DOCS_DIR/public}"
+BASE_URL="${BASE_URL:-https://docs.shinzo.network}"
 
 LLMS_TXT="$OUTPUT_DIR/llms.txt"
 LLMS_FULL_TXT="$OUTPUT_DIR/llms-full.txt"
@@ -187,12 +190,12 @@ add_page "/"                             "$CONTENT_DIR/_index.md"               
 add_page "/introduction/how-it-works/"   "$CONTENT_DIR/introduction/how-it-works/index.md"
 add_page "/introduction/core-concepts/"  "$CONTENT_DIR/introduction/core-concepts/index.md"
 
-# Generator
-section_header "Generator"
-add_page "/generator/overview/"  "$CONTENT_DIR/generator/overview/index.md"
-add_page "/generator/install/"   "$CONTENT_DIR/generator/install/index.md"
-add_page "/generator/register/"  "$CONTENT_DIR/generator/register/index.md"
-add_page "/generator/faq/"       "$CONTENT_DIR/generator/faq/index.md"
+# Generators
+section_header "Generators"
+add_page "/generators/overview/"  "$CONTENT_DIR/generators/overview/index.md"
+add_page "/generators/install/"   "$CONTENT_DIR/generators/install/index.md"
+add_page "/generators/register/"  "$CONTENT_DIR/generators/register/index.md"
+add_page "/generators/faq/"       "$CONTENT_DIR/generators/faq/index.md"
 
 # Hosts
 section_header "Hosts"

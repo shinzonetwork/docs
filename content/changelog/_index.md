@@ -1,13 +1,13 @@
 +++
 title = "Changelog"
-description = "Developer updates for the Shinzo network, SDKs, tools, and documentation."
+description = "Developer updates for the Shinzo network, SDKs and tools"
 template = "changelog.html"
 sort_by = "date"
 weight = 7
 page_template = "changelog.html"
 +++
 
-Track what's new across the Shinzo developer platform: network releases, SDK changes, tooling updates, and documentation improvements.
+Track what's new across the Shinzo developer platform: network releases, SDK changes, tooling updates and documentation improvements.
 
 ## July 16, 2026 {#07-16-2026}
 

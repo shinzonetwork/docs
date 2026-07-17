@@ -1,18 +1,17 @@
 +++
 title = "Install"
-weight = 2
+aliases = ["/generator/install"]
 +++
 
-This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](./generator/register)).
+This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
 
 ## Hardware recommendations
 
-| Component | Minimum | Recommended |
-| --- | --- | --- |
-| CPU | 8 vCPUs | 16 vCPUs |
-| Memory (RAM) | 16 GB | 32–64 GB |
-| Storage | 3 TB NVMe | 4+ TB NVMe |
-| OS | Ubuntu 24.04 | Ubuntu 26.04 |
+The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an Ethereum execution node. The figures below are for the Generator client itself, on top of whatever the execution node needs.
+
+{{ hardware(component="generator") }}
+
+If you are running Geth on the same machine, size for Geth first. A snap-synced Geth full node needs over 650 GB of fast SSD storage and at least 16 GB of RAM by itself. See the [Geth hardware requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements) and the [hardware requirements page](../hardware-requirements/) for details.
 
 ## Using Docker 
 
@@ -29,7 +28,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
 1. Pull the pre-built Generator client image from the Shinzo container registry.
 
     ```shell
-    docker pull ghcr.io/shinzonetwork/shinzo-generator-client:standard
+    docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     ```
 
     {% output() %}
@@ -41,7 +40,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
     [...]
 
     Digest: sha256:a272b09607e6f3f07399d72d019f058919ba2854469835b80478fd75799fa0fd
-    Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-generator-client:standard
+    Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     
 ```
 {% end %}
@@ -61,7 +60,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
       -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
       -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
       -e INDEXER_START_HEIGHT=0 \
-      -e DEFRADB_KEYRING_SECRET=devnet-secret \
+      -e DEFRADB_KEYRING_SECRET=testnet-secret \
       -e DEFRADB_PLAYGROUND=true \
       -e DEFRADB_P2P_ENABLED=true \
       -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
@@ -69,7 +68,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
       -p 9181:9181 \
       -p 9171:9171 \
       -p 8080:8080 \
-      ghcr.io/shinzonetwork/shinzo-generator-client:standard
+      ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     ```
 
 You should see the Generator client connect to Geth and start collecting and committing blocks:
@@ -99,7 +98,7 @@ Eventually your Generator client will catch up with the validator node and start
 
 ### Registration
 
-Once the Generator client is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Once the Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
 
 ## Building from source
 
@@ -160,7 +159,7 @@ The included `config.yaml` works for most local development. You typically only 
 
 ### Registration
 
-Once your Generator client is running, register it with the Shinzo Network. See [Registration](./register) for details.
+Once your Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
 
 ## Do you need an API key?
 
@@ -209,3 +208,7 @@ docker-compose -f ~/docker-compose.yml start
 ### WebSocket unavailable, will use HTTP-only mode
 
 The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.
+
+## Need Help
+
+{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}

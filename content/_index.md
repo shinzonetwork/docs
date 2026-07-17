@@ -1,6 +1,5 @@
 +++
 title = "What is Shinzo?"
-sort_by = "weight"
 template = "index.html"
 page_template = "page.html"
 aliases = ["/introduction"]
@@ -66,13 +65,13 @@ Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a
 
 ### Run a Generator client
 
-If you already operate an Ethereum node, adding a Generator client is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. Recommended extra resources are around 4 CPU cores, 8 GB of RAM, and 100 GB of storage with pruning on, on top of whatever the node itself needs.
+If you already operate an Ethereum node, adding a Generator client is cheap. It's a sidecar, not a separate heavyweight service. It attaches to your existing execution client (currently only Geth, but support for other clients and chains is planned), reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/generators/hardware-requirements/) for sizing; the short version is a few cores and a modest amount of disk on top of whatever the node itself needs.
 
 ### Run a Host
 
 Host clients sit between Generator clients and applications. They receive signed primitive data over P2P, apply your View's Lens transforms, build attestation records, and serve results to subscribers. Running one is a good way to support the network if you don't want to operate a blockchain node.
 
-You'll need a machine that stays online reliably. The rough recommended spec is 8 CPU cores, 16 GB of RAM, and 500 GB of SSD storage. A Host doesn't need to be close to a blockchain node, just a stable connection and enough disk for the Views it's serving.
+You'll need a machine that stays online reliably. A Host doesn't need to be close to a blockchain node, just a stable connection and enough disk for the Views it's serving. See the [hardware requirements](/hosts/hardware-requirements/) for sizing.
 
 Host clients are configured through a YAML file that lists which Views to subscribe to, the minimum number of Generator clients that must have signed a document before it's accepted, and where to listen for subscriber connections. New Views can be picked up and served without restarting.
 
@@ -86,12 +85,18 @@ If you're a developer working on a dapp, wallet, or any kind of web3 app, Views 
 
 You build Views with `viewkit`, Shinzo's CLI, and deploy them to the network. Any Host client can then pick up the View, run it, and serve the results. Your application subscribes through the [app-sdk](https://github.com/shinzonetwork/app-sdk) and queries the resulting data locally.
 
+
 ## Where the project is today
 
-Shinzo is in active development on devnet. These core pieces work end to end:
+Shinzo's public testnet is now live. Anyone can join the network by running a Generator or Host and participate in validating the protocol before mainnet.
 
-- The Generator client ingests Ethereum Mainnet from a Geth node, signs documents, and replicates them over DefraDB's libp2p layer.
-- The Host client receives that data, builds attestation records, applies Lens transforms, and serves Views to subscribers.
-- Viewkit is usable for defining, packaging, and deploying Views to devnet today.
-- ShinzoHub (built on the Cosmos SDK) handles View registration and access control, and talks to Sourcehub over IBC to gate subscriptions behind payment.
-- The app-sdk lets Go applications embed DefraDB and run attestation-filtered queries against it.
+The current testnet includes:
+
+- The **Generator** client indexes Ethereum Mainnet from a Geth node, signs indexed data and replicates it across the network using DefraDB's libp2p-based replication layer.
+- The **Host** client receives replicated data from Generators, materializes registered Views using Lens transforms, and serves GraphQL queries to applications.
+- **Viewkit** allows developers to define, package and deploy custom Views to the network, making indexed datasets immediately available to participating Hosts.
+- **ShinzoHub** coordinates network participation, View registration, entity registration, and access control for the testnet.
+- The **Gateway** provides a unified GraphQL endpoint by routing requests across Hosts and validating responses through network consensus.
+- The **App SDK** enables Go applications to embed Shinzo components and query attestation-filtered data directly from the network.
+
+This testnet is intended to validate Shinzo's trustless indexing architecture under real-world conditions, gather feedback from operators and developers and harden the protocol ahead of mainnet.

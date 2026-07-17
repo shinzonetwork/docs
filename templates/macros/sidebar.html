@@ -1,6 +1,8 @@
-{# Sidebar navigation, mirroring docs/sidebars.ts.
-   Each entry is a category with a label and a list of [title, path] items.
-   Paths are site-root-relative (docs are served at "/"). #}
+{# Sidebar navigation. The entire tree (categories, pages, and the Reference
+   "Components" subsection) is read from config.toml ([extra.sidebar]). Page
+   titles are resolved from front matter via get_page, so only the order and
+   category labels are owned by the config. Pages are NOT auto-discovered:
+   adding a new doc page means listing it in config.toml. #}
 
 {% macro link(title, path, current) %}
   {% if current == path %}
@@ -10,9 +12,16 @@
   {% endif %}
 {% endmacro link %}
 
+{# Resolve a content path to its page and render a sidebar link. #}
+{% macro page_link(path, current) %}
+  {% set p = get_page(path=path) %}
+  <li class="menu__list-item">{{ self::link(title=p.title, path=p.path, current=current) }}</li>
+{% endmacro page_link %}
+
 {% macro render(current) %}
 <nav class="menu" aria-label="Docs sidebar">
   <ul class="menu__list">
+<<<<<<< HEAD
 
     {# Introduction #}
     <li class="menu__list-item">
@@ -109,6 +118,34 @@
   </ul>
 </li>
 
+=======
+    {% for cat in config.extra.sidebar %}
+      <li class="menu__list-item">
+        <div class="menu__list-item-collapsible">
+          <span class="menu__link menu__link--category">{{ cat.label }}</span>
+        </div>
+        <ul class="menu__list">
+          {% if cat.root %}
+            {% set root = get_section(path="_index.md") %}
+            <li class="menu__list-item">{{ self::link(title=root.title, path=root.path, current=current) }}</li>
+          {% endif %}
+          {% for p in cat.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
+          {% if cat.subsections %}
+            {% for sub in cat.subsections %}
+              <li class="menu__list-item">
+                <div class="menu__list-item-collapsible">
+                  <span class="menu__link menu__link--category">{{ sub.label }}</span>
+                </div>
+                <ul class="menu__list">
+                  {% for p in sub.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
+                </ul>
+              </li>
+            {% endfor %}
+          {% endif %}
+        </ul>
+      </li>
+    {% endfor %}
+>>>>>>> origin/main
   </ul>
 </nav>
 {% endmacro render %}

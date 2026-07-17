@@ -2,7 +2,6 @@
 title = "Building Apps With Shinzo"
 aliases = ["/guides"]
 description = "Building dApps with Shinzo App SDK - local-first querying with embedded DefraDB integration"
-weight = 1
 +++
 Building an app with Shinzo is made easy using our [app-sdk](https://github.com/shinzonetwork/app-sdk)!
 
@@ -26,7 +25,7 @@ To do this, you would first create a View, describing how to transform primitive
 
 ## Usage
 
-Before using the app-sdk, you'll want to [use the view-creator to create the View(s)](here would be a really great place to link to view-creator's documentation) for your app.
+Before using the app-sdk, you'll want to [use the view-creator to create the View(s)](/views/overview/) for your app.
 
 Once you've created your Views, the next step is to configure your app.
 

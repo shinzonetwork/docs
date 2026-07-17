@@ -13,13 +13,15 @@
     cd docs
     ```
 
-1. Start the local server:
+1. Build for production:
 
     ```shell
-    zola build
+    ./scripts/build.sh
     ```
 
 The build goes into `./public`.
+
+`./scripts/build.sh` runs `zola build` and then any post-build generators (for example `llms.txt`).
 
 ## Useful commands
 

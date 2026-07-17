@@ -1,6 +1,5 @@
 +++
 title = "Tools"
-weight = 2
 +++
 A reference list of web interfaces and endpoints for the Shinzo network.
 
@@ -14,8 +13,8 @@ A reference list of web interfaces and endpoints for the Shinzo network.
 
 ## RPC Endpoints
 
-- `https://rpc.develop.devnet.shinzo.network:8545/`
-- `wss://rpc.develop.devnet.shinzo.network:8545/`
+- `http://testnet.shinzo.network:8545/ `
+- `wss://testnet.shinzo.network:8545/`
 
 ## Developer Tools
 

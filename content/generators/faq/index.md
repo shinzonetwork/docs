@@ -1,6 +1,6 @@
 +++
-title = "Frequently Asked Questions"
-weight = 4
+title = "FAQs"
+aliases = ["/generator/faq", "/generators/frequently-asked-questions"]
 +++
 
 ### What is the GitHub link for the Shinzo Generator client?
@@ -9,18 +9,11 @@ https://github.com/shinzonetwork/shinzo-generator-client
 
 ### Does the Generator client replace my Ethereum node?
 
-No. The Generator client is a sidecar that reads from an existing Ethereum execution node (Geth, Reth, Nethermind, Erigon, or a managed provider). It does not run an execution client, does not serve JSON-RPC, and is not a substitute for your validator's node. You point it at an upstream RPC and WebSocket endpoint, and it ingests block data from there into its local DefraDB.
+No. The Generator client is a sidecar that connects to an existing Ethereum execution node. It does not run an execution client, expose a JSON-RPC interface, or replace the execution node used by your validator. Instead, you configure it to connect to an upstream JSON-RPC and WebSocket endpoint (Geth is supported). The Generator client reads block data from that execution node and stores it in its local DefraDB instance.
 
 ### What hardware is recommended for deploying Shinzo?
 
-Shinzo is lightweight on CPU, but storage performance and host stability matter for reliable operation. Based on current production usage:
-
-| Component | Minimum | Recommended |
-| --- | --- | --- |
-| CPU | 2 vCPUs | 16 vCPUs |
-| Memory (RAM) | 16 GB | 32–64 GB |
-| Storage | 3 TB NVMe | 4+ TB NVMe |
-| OS | Ubuntu 24.04 | Ubuntu 24.04 |
+The Generator client is lightweight on CPU, but storage performance and host stability matter for reliable operation. See the [hardware requirements page](../hardware-requirements/) for the full table.
 
 ### Which RPC methods does the Generator client call on the upstream node?
 
@@ -64,9 +57,7 @@ All blockchain data is indexed, including blocks, transactions, logs, and storag
 
 ### How much space do I need?
 
-Currently ~100 GB per 10,000 blocks. Storage usage depends on block size and chain activity.
-
-> Optimization improvements are in progress to reduce storage growth.
+With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB; we recommend provisioning 300–500 GB to leave headroom (see [hardware requirements](../hardware-requirements/)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history.
 
 ### How long does it take to sync?
 
@@ -82,6 +73,6 @@ The Generator client fetches blocks by block number from the upstream Ethereum n
 
 ### How does storage grow over time?
 
-Storage grows linearly at roughly 10GB/1K full blocks. The first 15M blocks of ethereum are significantly smaller than blocks after the POS migration, math has been done on recent blocks.
+Without pruning, storage grows linearly at roughly 10 GB per 1,000 full blocks. The first 15M blocks of Ethereum are significantly smaller than blocks after the proof-of-stake migration.
 
-You can passively prune documents that has already been gossiped, reducing long-term storage pressure and clearing up old blocks.
+With pruning enabled (the default), the pruner removes documents for blocks older than the configured retention window, keeping disk usage bounded. You can also passively prune documents that have already been gossiped, which clears up old blocks and reduces long-term storage pressure.

@@ -1,7 +1,6 @@
 +++
 title = "Operator Quickstart"
 description = "Bring up a Generator client and a Host on one machine, peer them over libp2p, and query the result."
-weight = 3
 [extra]
 mermaid = true
 +++
@@ -19,8 +18,8 @@ When you're done you'll have:
 
 {% mermaid() %}
 flowchart LR
-  Geth["Geth (your node)"] -->|RPC + WS| Generator client
-  Generator client -->|libp2p| Host
+  Geth["Geth (your node)"] -->|RPC + WS| Generator["Generator client"]
+  Generator -->|libp2p| Host
   Host -->|GraphQL| You["You (curl)"]
 {% end %}
 
@@ -30,9 +29,9 @@ Two containers through one shared Docker bridge. Both containers run on the same
 
 - Docker. 
 - Both `curl` and `jq`.
-- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/generator/install#do-you-need-an-api-key).
+- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/generators/install#do-you-need-an-api-key).
 
-You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/generator/register) and [Host registration](/hosts/quickstart#shinzohub-registration) pages.
+You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/generators/register) and [Host registration](/hosts/quickstart#shinzohub-registration) pages.
 
 ## Set your Geth endpoint
 
@@ -61,7 +60,7 @@ The Generator client sits next to a blockchain node, subscribes to new blocks, a
 Run everything with:
 
 ```shell
-docker pull ghcr.io/shinzonetwork/shinzo-generator-client:standard
+docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 
 docker run -d \
   --name shinzo-generator \
@@ -69,7 +68,7 @@ docker run -d \
   -e GETH_WS_URL="$GETH_WS_URL" \
   -e GETH_API_KEY="$GETH_API_KEY" \
   -e INDEXER_START_HEIGHT=0 \
-  -e DEFRADB_KEYRING_SECRET=devnet-secret \
+  -e DEFRADB_KEYRING_SECRET=testnet-secret \
   -e DEFRADB_PLAYGROUND=true \
   -e DEFRADB_P2P_ENABLED=true \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
@@ -77,14 +76,14 @@ docker run -d \
   -p 9181:9181 \
   -p 9171:9171 \
   -p 8080:8080 \
-  ghcr.io/shinzonetwork/shinzo-generator-client:standard
+  ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
-`DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `devnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
+`DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `testnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
-`INDEXER_START_HEIGHT=0` starts indexing from genesis. For Ethereum Mainnet that's a lot of history, but this quickstart only needs a few committed blocks to verify the pipeline. To start closer to head, set this to a recent block height.
+`INDEXER_START_HEIGHT=0` starts indexing at the current chain tip — no historical backfill. To sync from a specific point instead, set this to that block's height. On Ethereum Mainnet, a height far below tip means a lot of history to index, so use a recent block if you just want to confirm the pipeline works.
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
@@ -146,7 +145,7 @@ The Host client reads its configuration from a YAML file mounted into the contai
 ```shell
 defradb:
   url: "localhost:9181"
-  keyring_secret: "host-devnet-secret"
+  keyring_secret: "host-testnet-secret"
   p2p:
     enabled: true
     bootstrap_peers:
@@ -156,7 +155,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: rpc.devnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network:26657
   minimum_attestations: 1
   start_height: 0
 logger:
@@ -192,7 +191,7 @@ docker run -d \
   -p 9182:9181 \
   -p 9172:9171 \
   -p 8081:8080 \
-  ghcr.io/shinzonetwork/shinzo-host-client:standard
+  ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
 ```
 
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.

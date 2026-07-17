@@ -1,0 +1,49 @@
+# Single source of truth for Shinzo client hardware requirements.
+# Consumed by templates/shortcodes/hardware.html via load_data().
+# Edit this file to update every page that uses {% hardware(component="...") %}.
+
+[generator]
+component = "Generator client"
+
+[[generator.rows]]
+resource = "CPU"
+minimum = "4 cores"
+recommended = "8 cores"
+
+[[generator.rows]]
+resource = "Memory (RAM)"
+minimum = "8 GB"
+recommended = "16 GB"
+
+[[generator.rows]]
+resource = "Storage"
+minimum = "300 GB"
+recommended = "500 GB"
+
+[[generator.rows]]
+resource = "Network"
+minimum = "100 Mbps"
+recommended = "1 Gbps"
+
+[host]
+component = "Host client"
+
+[[host.rows]]
+resource = "CPU"
+minimum = "4 cores"
+recommended = "8 cores"
+
+[[host.rows]]
+resource = "Memory (RAM)"
+minimum = "8 GB"
+recommended = "16 GB"
+
+[[host.rows]]
+resource = "Storage"
+minimum = "300 GB"
+recommended = "500 GB"
+
+[[host.rows]]
+resource = "Network"
+minimum = "100 Mbps"
+recommended = "1 Gbps"
