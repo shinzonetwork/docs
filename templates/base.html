@@ -58,6 +58,7 @@
   {%- elif trimmed is starting_with("views/") %}{% set nav_section = "views" %}
   {%- elif trimmed is starting_with("guides/") %}{% set nav_section = "guides" %}
   {%- elif trimmed is starting_with("reference/") %}{% set nav_section = "reference" %}
+  {%- elif trimmed is starting_with("changelog/") %}{% set nav_section = "changelog" %}
   {%- else %}{% set nav_section = "" %}{% endif -%}
   <header class="navbar">
     <div class="navbar__inner">
@@ -79,6 +80,7 @@
         <li><a class="navbar__link{% if nav_section == 'views' %} navbar__link--active{% endif %}" href="/views/overview/">Views</a></li>
         <li><a class="navbar__link{% if nav_section == 'guides' %} navbar__link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a></li>
         <li><a class="navbar__link{% if nav_section == 'reference' %} navbar__link--active{% endif %}" href="/reference/architecture-overview/">Reference</a></li>
+        <li><a class="navbar__link{% if nav_section == 'changelog' %} navbar__link--active{% endif %}" href="/changelog/">Changelog</a></li>
       </ul>
 
       <div class="navbar__items navbar__items--right">
@@ -105,6 +107,7 @@
       <a class="mobile-menu__top-link{% if nav_section == 'views' %} mobile-menu__top-link--active{% endif %}" href="/views/overview/">Views</a>
       <a class="mobile-menu__top-link{% if nav_section == 'guides' %} mobile-menu__top-link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a>
       <a class="mobile-menu__top-link{% if nav_section == 'reference' %} mobile-menu__top-link--active{% endif %}" href="/reference/architecture-overview/">Reference</a>
+      <a class="mobile-menu__top-link{% if nav_section == 'changelog' %} mobile-menu__top-link--active{% endif %}" href="/changelog/">Changelog</a>
     </nav>
     <div class="mobile-menu__divider"></div>
     {# Child templates inject the shared sidebar nav here (they import the
