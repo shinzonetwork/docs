@@ -83,6 +83,11 @@ section = "guides"
 label = "Reference"
 href = "/reference/architecture-overview/"
 section = "reference"
+
+[[extra.navbar]]
+label = "Changelog"
+href = "/changelog/"
+section = "changelog"
 # ------------------
 
 
@@ -180,5 +185,11 @@ subsections = [
     "reference/components/shinzohub/index.md",
     "reference/components/viewkit/index.md",
   ] },
+]
+
+[[extra.sidebar]]
+label = "Changelog"
+pages = [
+  "changelog/_index.md",
 ]
 # ---------------------------------------

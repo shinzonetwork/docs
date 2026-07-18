@@ -784,6 +784,64 @@ pre {
   }
 }
 
+/* ─── Changelog ──────────────────────────────────────────────────────── */
+.changelog {
+  h2 {
+    margin-top: 2.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--szo-border);
+
+    &:first-of-type {
+      margin-top: 1.5rem;
+      border-top: none;
+      padding-top: 0;
+    }
+  }
+
+  h3 {
+    margin-top: 1.25rem;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  }
+
+  ul {
+    margin-bottom: 1.25rem;
+  }
+
+  li {
+    margin-bottom: 0.35rem;
+  }
+}
+
+.changelog-tag {
+  display: inline-block;
+  font-family: var(--font-family-monospace);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.15em 0.5em;
+  border-radius: 0.25rem;
+  margin-right: 0.35rem;
+  vertical-align: baseline;
+
+  &--storage {
+    background: #e8f0fe;
+    color: #1a6fbb;
+  }
+
+  &--generator {
+    background: #f0ebff;
+    color: #5a2cbc;
+  }
+
+  &--host {
+    background: #fde8ea;
+    color: var(--color-primary);
+  }
+}
+
 /* ─── Admonitions (:::info / :::warning / :::note / :::tip) ───────────── */
 .admonition {
   border: 1px solid var(--szo-border);
