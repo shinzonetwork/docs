@@ -1,4 +1,4 @@
-:Q+++
++++
 title = "Changelog"
 aliases = ["/changelog"]
 description = "Developer updates for the Shinzo network, SDKs and tools"
