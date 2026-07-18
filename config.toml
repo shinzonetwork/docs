@@ -135,6 +135,15 @@ pages = [
   "hosts/config-reference/index.md",
   "hosts/faq/index.md",
 ]
+subsections = [
+  { label = "Deployment examples", pages = [
+    "hosts/deployment-examples/event-filter-allowlist/index.md",
+    "hosts/deployment-examples/snapshot-bootstrap/index.md",
+    "hosts/deployment-examples/prod-vm-nginx-tls/index.md",
+    "hosts/deployment-examples/gcp-local-ssd-raid0/index.md",
+    "hosts/deployment-examples/watchtower-auto-deploy/index.md",
+  ] },
+]
 
 [[extra.sidebar]]
 label = "Views"
