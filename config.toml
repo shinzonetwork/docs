@@ -28,6 +28,10 @@ external_links_target_blank = true
 [markdown.highlighting]
 style = "class"
 theme = "github-light"
+# Register an "output" language so ```output fenced blocks keep a
+# data-lang="output" attribute we can target with CSS (see sass/style.scss).
+# The grammar itself does no highlighting; it just marks the text as plain.
+extra_grammars = ["grammars/output.json"]
 
 [search]
 include_title = true

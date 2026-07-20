@@ -759,15 +759,15 @@ pre {
 }
 
 /* ─── Output code blocks (```output) ─────────────────────────────────── */
-.code-output {
+// Rendered by Zola as <pre><code data-lang="output">...). The "output"
+// language is registered via extra_grammars (grammars/output.json) so Zola
+// keeps the data-lang attribute instead of folding it to "plain".
+.markdown pre:has(code[data-lang="output"]) {
   position: relative;
-  margin: 0 0 1rem;
+  background: color-mix(in srgb, var(--code-background) 80%, black);
 
-  pre {
-    background: color-mix(in srgb, var(--code-background) 80%, black);
-  }
-
-  &__label {
+  &::before {
+    content: "output";
     position: absolute;
     top: 0;
     right: 0;
@@ -782,6 +782,28 @@ pre {
     user-select: none;
     pointer-events: none;
   }
+}
+
+/* Collapse the gap between a code block and an immediately following output
+   block so they read as a single stacked unit. Handles both the raw
+   <pre>+<pre> case (before JS runs) and the .code-block-wrapper case (after
+   copy-code.js wraps the preceding <pre>). Output blocks preceded by anything
+   else (a <p>, a heading, etc.) keep their normal top margin. */
+
+// Raw <pre> directly followed by an output <pre> (no-JS / same-structure).
+.markdown pre:has(+ pre > code[data-lang="output"]) {
+  margin-bottom: 0;
+}
+.markdown pre + pre:has(code[data-lang="output"]) {
+  margin-top: 0;
+}
+
+// Wrapped code block followed by an output <pre> (post-JS).
+.markdown .code-block-wrapper:has(+ pre > code[data-lang="output"]) pre {
+  margin-bottom: 0;
+}
+.markdown .code-block-wrapper + pre:has(code[data-lang="output"]) {
+  margin-top: 0;
 }
 
 /* ─── Changelog ──────────────────────────────────────────────────────── */
