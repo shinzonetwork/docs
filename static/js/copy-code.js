@@ -68,11 +68,12 @@
   }
 
   function init() {
-    // All <pre> code blocks inside rendered markdown, excluding those inside an
-    // output block (.code-output) which intentionally have no copy button.
+    // All <pre> code blocks inside rendered markdown, excluding output blocks
+    // (code[data-lang="output"]) which intentionally have no copy button.
     var pres = document.querySelectorAll(".markdown pre");
     Array.prototype.forEach.call(pres, function (pre) {
-      if (pre.closest(".code-output")) return;
+      var code = pre.querySelector("code");
+      if (code && code.getAttribute("data-lang") === "output") return;
       if (pre.closest(".mermaid-container")) return;
       addButton(pre);
     });

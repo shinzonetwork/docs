@@ -759,15 +759,15 @@ pre {
 }
 
 /* ─── Output code blocks (```output) ─────────────────────────────────── */
-.code-output {
+// Rendered by Zola as <pre><code data-lang="output">...). The "output"
+// language is registered via extra_grammars (grammars/output.json) so Zola
+// keeps the data-lang attribute instead of folding it to "plain".
+.markdown pre:has(code[data-lang="output"]) {
   position: relative;
-  margin: 0 0 1rem;
+  background: color-mix(in srgb, var(--code-background) 80%, black);
 
-  pre {
-    background: color-mix(in srgb, var(--code-background) 80%, black);
-  }
-
-  &__label {
+  &::before {
+    content: "output";
     position: absolute;
     top: 0;
     right: 0;
