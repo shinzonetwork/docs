@@ -23,7 +23,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
 1. Pull the image:
 
     ```shell
-    docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+    docker pull ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
     ```
 
 1. Generate a secure key for the `DEFRA_KEYRING_SECRET`:
@@ -54,7 +54,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
       -p 9181:9181 \
       -p 9182:9182 \
       -p 9171:9171 \
-      ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+      ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
     ```
 
     {% admonition(type="info") %}
@@ -115,7 +115,7 @@ docker run -d \
   -p 9181:9181 \
   -p 9182:9182 \
   -p 9171:9171 \
-  ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+  ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 
 {% admonition(type="warning") %}
