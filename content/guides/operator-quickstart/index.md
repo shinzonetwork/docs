@@ -191,7 +191,7 @@ docker run -d \
   -p 9182:9181 \
   -p 9172:9171 \
   -p 8081:8080 \
-  ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+  ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
