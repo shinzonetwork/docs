@@ -1,7 +1,6 @@
 +++
 title = "Examples"
 description = "Ethereum Mainnet GraphQL Query Examples & Patterns"
-weight = 6
 +++
 
 This page lists common GraphQL query examples for Ethereum Mainnet. The examples focus on blocks, transactions, attestations, signatures, and document navigation using DocIDs and CIDs.

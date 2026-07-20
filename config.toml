@@ -1,11 +1,9 @@
-# Shinzō Developer Portal — Zola configuration
-# Migrated from the Docusaurus site at ../docs
+# Shinzo Docs Zola configuration
 
 base_url = "https://docs.shinzo.network"
 title = "Shinzō Developer Portal"
 description = "Build the Read Layer of Truth"
 
-# Docs are served at the site root (Docusaurus had routeBasePath: "/").
 compile_sass = true
 build_search_index = true
 minify_html = false
@@ -13,11 +11,6 @@ minify_html = false
 # Generate redirect/alias pages, taxonomy-free.
 generate_feeds = false
 
-# Excalidraw source files are co-located with diagrams but not served.
-ignored_content = ["*.excalidraw"]
-
-# Don't fail the build on internal link issues during migration; warn instead.
-# (Zola validates internal links only when this is true.)
 [link_checker]
 internal_level = "error"
 external_level = "warn"
@@ -31,13 +24,16 @@ insert_anchor_links = "none"
 external_links_target_blank = true
 
 # Syntax highlighting: emit CSS classes (.z-*) so our brand code colors in
-# static/css/code-theme.css take effect. A base theme is still required by Zola.
+# static/css/code-theme.css take effect.
 [markdown.highlighting]
 style = "class"
 theme = "github-light"
+# Register an "output" language so ```output fenced blocks keep a
+# data-lang="output" attribute we can target with CSS (see sass/style.scss).
+# The grammar itself does no highlighting; it just marks the text as plain.
+extra_grammars = ["grammars/output.json"]
 
 [search]
-# Mirrors @easyops-cn/docusaurus-search-local (local, client-side search).
 include_title = true
 include_description = true
 include_path = true
@@ -48,6 +44,126 @@ tagline = "Build the Read Layer of Truth"
 github_url = "https://github.com/shinzonetwork/"
 og_image = "/img/shinzo-opengraph.png"
 favicon = "/img/favicon.png"
-# Plausible analytics (was injected via docusaurus.config scripts)
+# Plausible analytics
 plausible_domain = "docs.shinzo.network"
 plausible_src = "https://plausible.source.network/js/script.js"
+
+
+
+# Top navigation bar
+# ------------------
+# - label: link text.
+# - href: landing-page URL (literal path, e.g. "/generators/overview/").
+# - section: path prefix for active highlighting: active when the current path starts with "/{section}/".
+# - root: optional; when true the entry is ALSO active at the site root ("/"). Used by Introduction (landing at "/", pages under "/introduction/").
+
+[[extra.navbar]]
+label = "Introduction"
+href = "/"
+section = "introduction"
+root = true
+
+[[extra.navbar]]
+label = "Generators"
+href = "/generators/overview/"
+section = "generators"
+
+[[extra.navbar]]
+label = "Hosts"
+href = "/hosts/overview/"
+section = "hosts"
+
+[[extra.navbar]]
+label = "Views"
+href = "/views/overview/"
+section = "views"
+
+[[extra.navbar]]
+label = "Guides"
+href = "/guides/building-apps-with-shinzo/"
+section = "guides"
+
+[[extra.navbar]]
+label = "Reference"
+href = "/reference/architecture-overview/"
+section = "reference"
+# ------------------
+
+
+
+# Sidebar navigation tree (manual order).
+# ---------------------------------------
+# Each [[extra.sidebar]] block is a top-level category, listed in display order. `pages` holds content paths relative to content/; page titles are resolved from front matter, so only the order and labels live here.
+# - `root = true` (Introduction only) prepends the site landing page at "/".
+# - `subsections` adds nested collapsible groups (only Reference uses one).
+# Pages are NOT auto-discovered: a new doc page must be listed here to appear.
+
+[[extra.sidebar]]
+label = "Introduction"
+root = true
+pages = [
+  "introduction/how-it-works/index.md",
+  "introduction/core-concepts/index.md",
+  "introduction/get-help/index.md",
+]
+
+[[extra.sidebar]]
+label = "Generators"
+pages = [
+  "generators/overview/index.md",
+  "generators/hardware-requirements/index.md",
+  "generators/install/index.md",
+  "generators/register/index.md",
+  "generators/faq/index.md",
+]
+
+[[extra.sidebar]]
+label = "Hosts"
+pages = [
+  "hosts/overview/index.md",
+  "hosts/hardware-requirements/index.md",
+  "hosts/install/index.md",
+  "hosts/register/index.md",
+  "hosts/quickstart/index.md",
+  "hosts/examples/index.md",
+  "hosts/faq/index.md",
+]
+
+[[extra.sidebar]]
+label = "Views"
+pages = [
+  "views/overview/index.md",
+  "views/install/index.md",
+  "views/examples/index.md",
+  "views/lenses/index.md",
+  "views/quickstart/index.md",
+  "views/faq/index.md",
+]
+
+[[extra.sidebar]]
+label = "Guides"
+pages = [
+  "guides/building-apps-with-shinzo/index.md",
+  "guides/configuring-event-filters-on-a-shinzo-host/index.md",
+  "guides/operator-quickstart/index.md",
+]
+
+[[extra.sidebar]]
+label = "Reference"
+pages = [
+  "reference/changelog/index.md",
+  "reference/architecture-overview/index.md",
+  "reference/tools/index.md",
+  "reference/glossary/index.md",
+]
+subsections = [
+  { label = "Components", pages = [
+    "reference/components/host-client/index.md",
+    "reference/components/generator-client/index.md",
+    "reference/components/outpost/index.md",
+    "reference/components/relayer/index.md",
+    "reference/components/shinzohub/index.md",
+    "reference/components/viewkit/index.md",
+  ] },
+]
+# ---------------------------------------

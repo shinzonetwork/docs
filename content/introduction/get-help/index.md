@@ -1,6 +1,5 @@
 +++
 title = "Get help"
-weight = 4
 aliases = ["/help"]
 +++
 
@@ -32,5 +31,5 @@ Include the following where it applies:
 
 Before opening an issue, check the existing FAQs:
 
-- [Generator FAQ](/generator/faq)
+- [Generator FAQ](/generators/faq)
 - [Host FAQ](/hosts/faq)

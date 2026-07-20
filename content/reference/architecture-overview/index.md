@@ -1,7 +1,6 @@
 +++
 title = "Architecture overview"
 aliases = ["/reference"]
-weight = 1
 [extra]
 mermaid = true
 +++

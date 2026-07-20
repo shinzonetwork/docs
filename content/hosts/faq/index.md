@@ -1,6 +1,6 @@
 +++
-title = "Frequently Asked Questions"
-weight = 999
+title = "FAQs"
+aliases = ["/hosts/frequently-asked-questions"]
 +++
 
 ### What is the GitHub link for the Shinzo Host?

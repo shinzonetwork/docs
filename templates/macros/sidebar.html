@@ -1,8 +1,8 @@
-{# Sidebar navigation. Links within each section are auto-generated from the
-   section's pages (sorted by weight), so adding a page to a content section
-   makes it appear here automatically. Top-level categories are listed
-   explicitly because not every content directory belongs in the sidebar
-   (e.g. changelog, images). #}
+{# Sidebar navigation. The entire tree (categories, pages, and the Reference
+   "Components" subsection) is read from config.toml ([extra.sidebar]). Page
+   titles are resolved from front matter via get_page, so only the order and
+   category labels are owned by the config. Pages are NOT auto-discovered:
+   adding a new doc page means listing it in config.toml. #}
 
 {% macro link(title, path, current) %}
   {% if current == path %}
@@ -12,95 +12,46 @@
   {% endif %}
 {% endmacro link %}
 
-{# Auto-generate sidebar links for every page in a section (sorted by weight). #}
-{% macro section_links(section_path, current) %}
-  {% set sec = get_section(path=section_path) %}
-  {% for page in sec.pages %}
-    <li class="menu__list-item">{{ self::link(title=page.title, path=page.path, current=current) }}</li>
-  {% endfor %}
-{% endmacro section_links %}
-
-{# Render a subsection as a nested collapsible category with its pages. #}
-{% macro subsection(section_path, label, current) %}
-  <li class="menu__list-item">
-    <div class="menu__list-item-collapsible">
-      <span class="menu__link menu__link--category">{{ label }}</span>
-    </div>
-    <ul class="menu__list">
-      {{ self::section_links(section_path=section_path, current=current) }}
-    </ul>
-  </li>
-{% endmacro subsection %}
+{# Resolve a content path to its page or section and render a sidebar link. #}
+{% macro page_link(path, current) %}
+  {% if path is ending_with("_index.md") %}
+    {% set s = get_section(path=path) %}
+    <li class="menu__list-item">{{ self::link(title=s.title, path=s.path, current=current) }}</li>
+  {% else %}
+    {% set p = get_page(path=path) %}
+    <li class="menu__list-item">{{ self::link(title=p.title, path=p.path, current=current) }}</li>
+  {% endif %}
+{% endmacro page_link %}
 
 {% macro render(current) %}
 <nav class="menu" aria-label="Docs sidebar">
   <ul class="menu__list">
-
-    {# Introduction. The landing page lives at the site root (content/_index.md),
-       outside the introduction section, so it is linked explicitly. #}
-    <li class="menu__list-item">
-      <div class="menu__list-item-collapsible">
-        <span class="menu__link menu__link--category">Introduction</span>
-      </div>
-      <ul class="menu__list">
-        {% set root = get_section(path="_index.md") %}
-        <li class="menu__list-item">{{ self::link(title=root.title, path="/", current=current) }}</li>
-        {{ self::section_links(section_path="introduction/_index.md", current=current) }}
-      </ul>
-    </li>
-
-    {# Generator #}
-    <li class="menu__list-item">
-      <div class="menu__list-item-collapsible">
-        <span class="menu__link menu__link--category">Generator</span>
-      </div>
-      <ul class="menu__list">
-        {{ self::section_links(section_path="generator/_index.md", current=current) }}
-      </ul>
-    </li>
-
-    {# Hosts #}
-    <li class="menu__list-item">
-      <div class="menu__list-item-collapsible">
-        <span class="menu__link menu__link--category">Hosts</span>
-      </div>
-      <ul class="menu__list">
-        {{ self::section_links(section_path="hosts/_index.md", current=current) }}
-      </ul>
-    </li>
-
-    {# Views #}
-    <li class="menu__list-item">
-      <div class="menu__list-item-collapsible">
-        <span class="menu__link menu__link--category">Views</span>
-      </div>
-      <ul class="menu__list">
-        {{ self::section_links(section_path="views/_index.md", current=current) }}
-      </ul>
-    </li>
-
-    {# Guides #}
-    <li class="menu__list-item">
-      <div class="menu__list-item-collapsible">
-        <span class="menu__link menu__link--category">Guides</span>
-      </div>
-      <ul class="menu__list">
-        {{ self::section_links(section_path="guides/_index.md", current=current) }}
-      </ul>
-    </li>
-
-    {# Reference. The Components subsection is rendered after the section's
-       pages; its child links are auto-generated the same way. #}
-    <li class="menu__list-item">
-      <div class="menu__list-item-collapsible">
-        <span class="menu__link menu__link--category">Reference</span>
-      </div>
-      <ul class="menu__list">
-        {{ self::section_links(section_path="reference/_index.md", current=current) }}
-        {{ self::subsection(section_path="reference/components/_index.md", label="Components", current=current) }}
-      </ul>
-    </li>
-
+    {% for cat in config.extra.sidebar %}
+      <li class="menu__list-item">
+        <div class="menu__list-item-collapsible">
+          <span class="menu__link menu__link--category">{{ cat.label }}</span>
+        </div>
+        <ul class="menu__list">
+          {% if cat.root %}
+            {% set root = get_section(path="_index.md") %}
+            <li class="menu__list-item">{{ self::link(title=root.title, path=root.path, current=current) }}</li>
+          {% endif %}
+          {% for p in cat.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
+          {% if cat.subsections %}
+            {% for sub in cat.subsections %}
+              <li class="menu__list-item">
+                <div class="menu__list-item-collapsible">
+                  <span class="menu__link menu__link--category">{{ sub.label }}</span>
+                </div>
+                <ul class="menu__list">
+                  {% for p in sub.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
+                </ul>
+              </li>
+            {% endfor %}
+          {% endif %}
+        </ul>
+      </li>
+    {% endfor %}
   </ul>
 </nav>
 {% endmacro render %}

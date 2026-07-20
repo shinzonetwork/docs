@@ -1,6 +1,5 @@
 +++
 title = "Install"
-weight = 2
 +++
 
 A Host client pulls primitive blockchain data from Generator clients, runs Lens WASM transforms, and serves the resulting Views to subscriber nodes over an embedded DefraDB instance. This page is for operators who want to **run** a Host client.

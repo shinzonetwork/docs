@@ -1,7 +1,6 @@
 +++
 title = "Operator Quickstart"
 description = "Bring up a Generator client and a Host on one machine, peer them over libp2p, and query the result."
-weight = 3
 [extra]
 mermaid = true
 +++
@@ -30,9 +29,9 @@ Two containers through one shared Docker bridge. Both containers run on the same
 
 - Docker. 
 - Both `curl` and `jq`.
-- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/generator/install#do-you-need-an-api-key).
+- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/generators/install#do-you-need-an-api-key).
 
-You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/generator/register) and [Host registration](/hosts/quickstart#shinzohub-registration) pages.
+You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/generators/register) and [Host registration](/hosts/quickstart#shinzohub-registration) pages.
 
 ## Set your Geth endpoint
 
@@ -101,8 +100,7 @@ Both come from the Generator client's `/health` endpoint once it finishes starti
 curl -s http://localhost:8080/health | jq '.p2p.self'
 ```
 
-{% output() %}
-```
+```output
 {
   "id": "12D3KooWK8zmiDmX91PwDV1PsqtgA1UUDuuyipVBVPEjrvwgoFJH",
   "addresses": [
@@ -112,7 +110,6 @@ curl -s http://localhost:8080/health | jq '.p2p.self'
   "public_key": "8a7f061eeaaec8b8130ce4b9d6e519bbe76b9a4bc038b7e6743a773ad3915e02"
 }
 ```
-{% end %}
 
 `id` is the Generator client's libp2p Peer ID, derived from its keyring secret. It's stable across restarts as long as the secret stays the same.
 
@@ -131,11 +128,9 @@ BOOTSTRAP_PEER="/ip4/${INDEXER_IP}/tcp/9171/p2p/${PEER_ID}"
 echo "$BOOTSTRAP_PEER"
 ```
 
-{% output() %}
-```
+```output
 /ip4/172.17.0.2/tcp/9171/p2p/12D3KooWK8zmiDmX91PwDV1PsqtgA1UUDuuyipVBVPEjrvwgoFJH
 ```
-{% end %}
 
 `BOOTSTRAP_PEER` is a libp2p multiaddr that essentially says _"speak IPv4 to this address on this TCP port, then handshake with this Peer ID."_ If the Peer ID doesn't match, the Host client refuses the connection. This is what makes the connection authenticated end to end.
 
@@ -205,8 +200,7 @@ The Host client's `/health` lists the peers it's connected to. Once the Generato
 curl -s http://localhost:8081/health | jq '{status, current_block, p2p: {self: .p2p.self.id, peers: [.p2p.peers[].id]}}'
 ```
 
-{% output() %}
-```
+```output
 {
   "status": "healthy",
   "current_block": 25303386,
@@ -218,7 +212,6 @@ curl -s http://localhost:8081/health | jq '{status, current_block, p2p: {self: .
   }
 }
 ```
-{% end %}
 
 Check the Generator client's side too. Its peer list should now contain the Host client:
 
@@ -226,13 +219,11 @@ Check the Generator client's side too. Its peer list should now contain the Host
 curl -s http://localhost:8080/health | jq '[.p2p.peers[].id]'
 ```
 
-{% output() %}
-```
+```output
 [
   "12D3KooWK76zTyFW73BSwoQRkuM45Aky7SNSCQGkzjGvxGy8Y76Z"
 ]
 ```
-{% end %}
 
 If both list each other, libp2p is connected and DefraDB is replicating between them! Data from the Generator client lands in the Host client within a few seconds.
 
@@ -247,8 +238,7 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
   | jq
 ```
 
-{% output() %}
-```
+```output
 {
   "data": {
     "Ethereum__Mainnet__Log": [
@@ -266,7 +256,6 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
   }
 }
 ```
-{% end %}
 
 The rows that come back were originally just logs on Ethereum, then pulled in by the Generator client over the Geth WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. More queries are on the [Host examples](/hosts/examples) page.
 

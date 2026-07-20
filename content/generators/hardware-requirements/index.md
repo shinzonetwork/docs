@@ -1,6 +1,6 @@
 +++
 title = "Hardware requirements"
-weight = 3
+aliases = ["/generator/hardware-requirements"]
 +++
 
 These requirements are for the Generator client itself. It runs as a sidecar next to an Ethereum execution node (currently Geth), so size the machine for the node first and add the Generator overhead on top.

@@ -1,6 +1,5 @@
 +++
 title = "Outpost"
-weight = 3
 [extra]
 mermaid = true
 +++

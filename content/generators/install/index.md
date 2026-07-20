@@ -1,6 +1,6 @@
 +++
 title = "Install"
-weight = 2
+aliases = ["/generator/install"]
 +++
 
 This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
@@ -31,19 +31,16 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
     docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     ```
 
-    {% output() %}
-```
+    ```output
     standard: Pulling from shinzonetwork/shinzo-generator-client
     2521f1b70bf8: Pull complete
     2c845527b24c: Pull complete
     
     [...]
-
+    
     Digest: sha256:a272b09607e6f3f07399d72d019f058919ba2854469835b80478fd75799fa0fd
     Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
-    
-```
-{% end %}
+    ```
 
 1. Gather your Geth node's:
 
@@ -73,8 +70,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
 
 You should see the Generator client connect to Geth and start collecting and committing blocks:
 
-{% output() %}
-```
+```output
 2026-05-11T10:59:54.762Z	INFO	Committed block 25071330 (ID: bae-235bbc36-32ff-5fb0-8361-6c4dc3d6aeb9)
 2026-05-11T10:59:54.902Z	DEBUG	HTTP response: 200 OK (Content-Length: )
 2026-05-11T10:59:54.902Z	DEBUG	HTTP request successful, status: 200 OK
@@ -84,17 +80,14 @@ You should see the Generator client connect to Geth and start collecting and com
 2026-05-11T10:59:55.409Z	DEBUG	HTTP response: 200 OK (Content-Length: )
 2026-05-11T10:59:55.409Z	DEBUG	HTTP request successful, status: 200 OK
 ```
-{% end %}
 
 Eventually your Generator client will catch up with the validator node and start waiting for new blocks rather than pulling historical data:
 
-{% output() %}
-```
+```output
 2026-05-11T11:05:09.338Z	DEBUG	HTTP response: 200 OK (Content-Length: )
 2026-05-11T11:05:09.338Z	DEBUG	HTTP request successful, status: 200 OK
 2026-05-11T11:05:09.338Z	INFO	Block 25071451 not available yet, waiting...
 ```
-{% end %}
 
 ### Registration
 

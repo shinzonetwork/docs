@@ -1,6 +1,5 @@
 +++
 title = "Configuring Event Filters on a Shinzo Host"
-weight = 2
 description = "Shinzo hosts will store absolutely everything it is given from a Generator client by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
 +++
 
