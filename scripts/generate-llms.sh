@@ -216,6 +216,7 @@ add_page "/guides/operator-quickstart/"                         "$CONTENT_DIR/gu
 
 # Reference
 section_header "Reference"
+add_page "/reference/changelog/"               "$CONTENT_DIR/reference/changelog/index.md"
 add_page "/reference/architecture-overview/"      "$CONTENT_DIR/reference/architecture-overview/index.md"
 add_page "/reference/tools/"                      "$CONTENT_DIR/reference/tools/index.md"
 add_page "/reference/components/host-client/"     "$CONTENT_DIR/reference/components/host-client/index.md"
@@ -225,10 +226,6 @@ add_page "/reference/components/relayer/"         "$CONTENT_DIR/reference/compon
 add_page "/reference/components/shinzohub/"       "$CONTENT_DIR/reference/components/shinzohub/index.md"
 add_page "/reference/components/viewkit/"         "$CONTENT_DIR/reference/components/viewkit/index.md"
 add_glossary_page "/reference/glossary/"
-
-# Changelog
-section_header "Changelog"
-add_page "/changelog/"  "$CONTENT_DIR/changelog/_index.md"
 
 echo "Written $(wc -l < "$LLMS_TXT") lines → $LLMS_TXT"
 echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"

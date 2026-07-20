@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "macros/changelog-sidebar.html" as changelog_sidebar %}
+{% import "macros/sidebar.html" as sidebar %}
 {% import "macros/mermaid.html" as mermaid %}
 
 {% block title %}<title>{% if page %}{{ page.title }}{% elif section %}{{ section.title }}{% endif %} | {{ config.title }}</title>{% endblock title %}
@@ -10,7 +10,7 @@
 <main class="main-wrapper">
   <div class="docs-layout docs-layout--changelog">
     <aside class="theme-doc-sidebar-container">
-      {{ changelog_sidebar::render(current=page.path | default(value=section.path)) }}
+      {{ sidebar::render(current=page.path | default(value=section.path)) }}
     </aside>
 
     <div class="docs-content">
@@ -84,7 +84,7 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ changelog_sidebar::render(current=page.path | default(value=section.path)) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{ sidebar::render(current=page.path | default(value=section.path)) }}{% endblock mobile_sidebar %}
 
 {% block scripts %}
 {% if page and page.extra.mermaid %}{{ mermaid::script() }}{% elif section.extra.mermaid %}{{ mermaid::script() }}{% endif %}
