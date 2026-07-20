@@ -79,18 +79,18 @@ listen_addr: "/ip4/0.0.0.0/tcp/9172"
 
 ### Build and Run
 
-**Option A: Run directly (no build step):**
-
+{% tab(label="Run directly") %}
 ```shell
 go run cmd/main.go
 ```
+{% end %}
 
-**Option B: Build then run:**
-
+{% tab(label="Build then run") %}
 ```shell
 make build
 make start
 ```
+{% end %}
 
 ### (Optional) Enable the GraphQL Playground
 
