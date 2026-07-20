@@ -1,5 +1,6 @@
 +++
 title = "Snapshot bootstrap from an indexer"
+description = "Bootstrap a Host with historical data on first startup by downloading signed snapshot files from an indexer over HTTPS, then receive live blocks over P2P."
 [extra]
 mermaid = true
 +++

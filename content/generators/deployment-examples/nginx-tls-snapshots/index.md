@@ -1,5 +1,6 @@
 +++
 title = "Nginx with TLS serving snapshots"
+description = "Run a production Generator behind nginx with TLS termination and serve signed snapshot files to Hosts for fast historical bootstrap."
 [extra]
 mermaid = true
 +++

@@ -1,5 +1,6 @@
 +++
 title = "Watchtower auto-deploy"
+description = "Auto-deploy Host updates on push to main: GitHub Actions builds and pushes the image to GHCR, and Watchtower on the VM pulls the new image and restarts the container."
 [extra]
 mermaid = true
 +++

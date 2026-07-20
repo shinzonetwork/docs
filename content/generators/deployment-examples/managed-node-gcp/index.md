@@ -1,5 +1,6 @@
 +++
 title = "Managed node on GCP Blockchain Node Engine"
+description = "Run the Generator client against GCP Blockchain Node Engine or another managed node provider that requires an API key header."
 [extra]
 mermaid = true
 +++
