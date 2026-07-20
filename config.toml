@@ -1,7 +1,7 @@
 # Shinzo Docs Zola configuration
 
 base_url = "https://docs.shinzo.network"
-title = "Shinzō Developer Portal"
+title = "Shinzo Developer Portal"
 description = "Build the Read Layer of Truth"
 
 compile_sass = true

@@ -162,4 +162,4 @@ Lens labels (`--label`) are how you identify and remove individual lenses in a c
 
 ## Need help
 
-{{ need_help(client="View Creator", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}
+{{ need_help(client="Viewkit", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}

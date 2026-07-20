@@ -677,7 +677,7 @@
     },
     {
       "term": "Viewkit",
-      "definition": "A CLI tool for creating, testing, and deploying views. It defines the SDL, attaches lenses, runs local validation using the Wasmer runtime, packages everything into a ViewBundle, and submits a deploy transaction to the View Registry.",
+      "definition": "A CLI tool for creating, testing, and deploying views. It defines the SDL, attaches lenses, runs local validation using the Wasmer runtime, packages everything into a ViewBundle, and submits a deploy transaction to the View Registry. It is also known as View Creator.",
       "relatedTerms": [
         "View",
         "ViewBundle",

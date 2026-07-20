@@ -156,7 +156,7 @@ PYEOF
 # ----------------------------------------
 write_header() {
     cat >> "$1" << 'EOF'
-# Shinzō Developer Portal
+# Shinzo Developer Portal
 
 > Shinzo is a decentralized indexing network for blockchains. It turns raw
 > on-chain data into structured datasets that any application can query,

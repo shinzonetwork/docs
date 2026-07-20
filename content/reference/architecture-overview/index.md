@@ -62,7 +62,7 @@ The scheduler and gateway are coordination services. They match the Generator cl
 | SourceHub | On-chain | Go (Cosmos SDK) | [sourcehub](https://github.com/sourcenetwork/sourcehub) | No |
 | EVM relayer | Off-chain | Go | [shinzo-evm-relayer](https://github.com/shinzonetwork/shinzo-evm-relayer) | No |
 | Outpost contract | On-chain | Solidity | [shinzo-outpost](https://github.com/shinzonetwork/shinzo-outpost-contract) | No |
-| View creator (viewkit) | Off-chain | Go | [shinzo-view-creator](https://github.com/shinzonetwork/shinzo-view-creator) | No |
+| Viewkit | Off-chain | Go | [shinzo-view-creator](https://github.com/shinzonetwork/shinzo-view-creator) | No |
 | DefraDB | Off-chain | Go | [defradb](https://github.com/sourcenetwork/defradb) | Yes |
 | Lens (LensVM) | Off-chain | Go/WASM | [lens](https://github.com/sourcenetwork/lens) | Yes |
 

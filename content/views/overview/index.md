@@ -1,24 +1,24 @@
 +++
 title = "Overview"
 aliases = ["/view-creator", "/views"]
-description = "Introduction to the Shinzo View Creator"
+description = "Introduction to Shinzo Viewkit"
 [extra]
 mermaid = true
 +++
 
-View Creator (also referred to as Viewkit) is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views. It provides a workflow for turning raw indexed blockchain data into reusable, versioned data APIs that can be executed and served by Hosts.
+Viewkit (also known as View Creator) is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views. It provides a workflow for turning raw indexed blockchain data into reusable, versioned data APIs that can be executed and served by Hosts.
 
-View Creator sits between indexed primitive data and application-ready data interfaces. It lets developers declaratively specify what data to ingest, how to transform it, and how to expose it, without managing infrastructure, execution environments, or deployment mechanics directly.
+Viewkit sits between indexed primitive data and application-ready data interfaces. It lets developers declaratively specify what data to ingest, how to transform it, and how to expose it, without managing infrastructure, execution environments, or deployment mechanics directly.
 
 ## Purpose and role in the stack
 
-Within the Shinzo ecosystem, View Creator sits above the Generator client and alongside Host clients:
+Within the Shinzo ecosystem, Viewkit sits above the Generator client and alongside Host clients:
 
 - Generator clients produce normalized, deterministic primitive data.
-- View Creator defines how that data should be queried, transformed, and exposed.
+- Viewkit defines how that data should be queried, transformed, and exposed.
 - Host clients execute those definitions, serve results, and attest to correctness.
 
-Using View Creator, developers write Views as versioned bundles that describe a complete data pipeline. These views are then deployed to a target environment (local or devnet, with mainnet support planned), where Hosts execute them deterministically against indexed data and serve the results to consumers.
+Using Viewkit, developers write Views as versioned bundles that describe a complete data pipeline. These views are then deployed to a target environment (local or devnet, with mainnet support planned), where Hosts execute them deterministically against indexed data and serve the results to consumers.
 
 This separation enables:
 
@@ -29,7 +29,7 @@ This separation enables:
 
 ## Core concepts
 
-A View is the fundamental unit produced by View Creator. Each view is a self-contained, versioned bundle that may include:
+A View is the fundamental unit produced by Viewkit. Each view is a self-contained, versioned bundle that may include:
 
 - Queries: declarative definitions of the raw data shape to ingest from indexed primitives.
 - SDL (GraphQL): schemas describing how data is modeled, materialized, or exposed to consumers.
@@ -76,7 +76,7 @@ The `Log` collection is the primary source for event-based Views. There is no `E
 
 ## Developer experience
 
-View Creator is distributed as a CLI and is designed for local-first development. It supports:
+Viewkit is distributed as a CLI and is designed for local-first development. It supports:
 
 - Initializing and inspecting view bundles.
 - Incrementally adding queries, schemas, and lenses.
@@ -86,7 +86,7 @@ View Creator is distributed as a CLI and is designed for local-first development
 - Deploying views to a local DefraDB instance with a GraphQL Playground.
 - Signing and publishing views to shared networks like devnet.
 
-View Creator provides strong defaults, explicit versioning, and deterministic behavior. Developers focus on data semantics and transformations; Shinzo handles execution, distribution, and verification.
+Viewkit provides strong defaults, explicit versioning, and deterministic behavior. Developers focus on data semantics and transformations; Shinzo handles execution, distribution, and verification.
 
 ## Where to go next
 
