@@ -168,7 +168,7 @@ Generator clients are the entry point. Reserved for Ethereum validators at mainn
 
 #### Hosts
 
-Hosts are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](#) for operational details and [Host Client reference](#) for internals.
+Hosts are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](../../hosts/overview/index.md) for operational details and [Host Client reference](../../reference/components/host-client/index.md) for internals.
 
 #### Developers
 
