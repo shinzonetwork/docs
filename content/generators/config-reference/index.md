@@ -78,11 +78,16 @@ Controls how the Generator fetches and processes blocks.
 | `start_height` | int | 0 | no | `INDEXER_START_HEIGHT` | Block number to start indexing from on first run with no existing data. 0 means auto-detect from chain tip. Must be 0 or higher. |
 | `concurrent_blocks` | int | 8 | no | `INDEXER_CONCURRENT_BLOCKS` | Number of blocks to process concurrently. Shipped `config.yaml` sets 1. |
 | `receipt_workers` | int | 16 | no | `INDEXER_RECEIPT_WORKERS` | Concurrent receipt fetchers per block. Shipped `config.yaml` sets 8. |
-| `max_docs_per_txn` | int | 1000 | no | `INDEXER_MAX_DOCS_PER_TXN` | Document threshold for single-transaction block creation. Shipped `config.yaml` sets 500. |
+| `max_docs_per_txn` | int | 1000 | no | `INDEXER_MAX_DOCS_PER_TXN` | Document threshold for single-transaction block creation. Shipped `config.yaml` sets 100. |
+| `max_tx_docs_per_batch` | int | 0 | no | `INDEXER_MAX_TX_DOCS` | Per-batch document size for transactions. 0 means use `max_docs_per_txn`. Shipped `config.yaml` sets 100. |
+| `max_log_docs_per_batch` | int | 0 | no | `INDEXER_MAX_LOG_DOCS` | Per-batch document size for logs. 0 means use `max_docs_per_txn`. Shipped `config.yaml` sets 125. |
+| `max_ale_docs_per_batch` | int | 0 | no | `INDEXER_MAX_ALE_DOCS` | Per-batch document size for access list entries. 0 means use `max_docs_per_txn`. Shipped `config.yaml` sets 500. |
 | `blocks_per_minute` | int | 0 | no | `INDEXER_BLOCKS_PER_MINUTE` | Block indexing rate limit. 0 means no limit. Shipped `config.yaml` sets 60. |
 | `health_server_port` | int | 8080 | no | `INDEXER_HEALTH_SERVER_PORT` | Health server port. Set to -1 to disable. |
 | `open_browser_on_start` | bool | false | no | (none) | Auto-open the health page in a browser on startup. |
 | `start_buffer` | int | 100 | no | `INDEXER_START_BUFFER` | Start this many blocks before chain tip when skipping ahead. |
+| `schema_auth_mode` | string | `token` | no | `SCHEMA_AUTH_MODE` | Auth mode for the `/api/v1/schema` endpoints. One of `none`, `token`, or `mtls`. Empty defaults to `token`. `mtls` is not yet implemented. Shipped `config.yaml` sets `${SCHEMA_AUTH_MODE}` (env-substituted). |
+| `schema_api_keys` | string array | empty | yes if `schema_auth_mode` is `token` | `SCHEMA_API_KEYS` | Bearer tokens accepted for `/api/v1/schema` endpoints when mode is `token`. Comma-separated. Not settable in `config.yaml` (the field uses `yaml:"-"`); provide via `SCHEMA_API_KEYS` or every schema request returns 503. |
 
 ## pruner
 
@@ -114,9 +119,9 @@ Logging configuration. The logger is zap-based. The log level is controlled by `
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `development` | bool | false | no | `LOGGER_DEBUG` | Enable development mode logging. When true, shows debug and test-level output. When false, shows info level and above. |
+| `development` | bool | false | no | `LOGGER_DEBUG` | Enable development mode logging. When true, shows debug and test-level output. When false, shows info level and above. Shipped `config.yaml` sets true. |
 
-The shipped `config.yaml` also sets `logger.level: "error"`. This field is not in the `LoggerConfig` struct and has no effect. The log level is determined entirely by `development`.
+The shipped `config.yaml` also sets `logger.level: "info"`. This field is not in the `LoggerConfig` struct and has no effect. The log level is determined entirely by `development`.
 
 ## Environment variables
 
@@ -134,9 +139,14 @@ The table below lists every environment variable the Generator client reads, the
 | `INDEXER_CONCURRENT_BLOCKS` | `indexer.concurrent_blocks` | `config/config.go` |
 | `INDEXER_RECEIPT_WORKERS` | `indexer.receipt_workers` | `config/config.go` |
 | `INDEXER_MAX_DOCS_PER_TXN` | `indexer.max_docs_per_txn` | `config/config.go` |
+| `INDEXER_MAX_TX_DOCS` | `indexer.max_tx_docs_per_batch` | `config/config.go` |
+| `INDEXER_MAX_LOG_DOCS` | `indexer.max_log_docs_per_batch` | `config/config.go` |
+| `INDEXER_MAX_ALE_DOCS` | `indexer.max_ale_docs_per_batch` | `config/config.go` |
 | `INDEXER_BLOCKS_PER_MINUTE` | `indexer.blocks_per_minute` | `config/config.go` |
 | `INDEXER_HEALTH_SERVER_PORT` | `indexer.health_server_port` | `config/config.go` |
 | `INDEXER_START_BUFFER` | `indexer.start_buffer` | `config/config.go` |
+| `SCHEMA_AUTH_MODE` | `indexer.schema_auth_mode` | `config/config.go` |
+| `SCHEMA_API_KEYS` | `indexer.schema_api_keys` | `config/config.go` |
 | `DEFRADB_URL` | `defradb.url` | `config/config.go` |
 | `DEFRADB_HOST` | `defradb.url` | `config/config.go` (combined with `DEFRADB_PORT`) |
 | `DEFRADB_PORT` | `defradb.url` | `config/config.go` (combined with `DEFRADB_HOST`) |

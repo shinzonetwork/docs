@@ -40,8 +40,9 @@ defradb:
   p2p:
     enabled: true
     bootstrap_peers:
-      - '/ip4/34.63.13.57/tcp/9171/p2p/12D3KooWJGCSs1tkiDif4rgQMS7uNqTNA8BKNsNhW62NXbUN5Au3'
-      - '/ip4/35.208.241.78/tcp/9171/p2p/12D3KooWSwrdPrfgm79Zne51hpihmfeZgGGpNqcim2LSoEDRquvr'
+      - '/ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT'
+      - '/ip4/34.57.239.57/tcp/9171/p2p/12D3KooWBAgCEJHYqzuCFEXzjsw2CnV9JqvqMgTKYDww58aCxwW5'
+      - '/ip4/34.134.119.63/tcp/9171/p2p/12D3KooWQQTuSQaz4HfuvnJHakkQy3PhWbKBBbS3RkmBw4ZsFkyT'
     listen_addr: "/ip4/0.0.0.0/tcp/9171"
     max_retries: 5
     retry_base_delay_ms: 1000
@@ -57,7 +58,7 @@ defradb:
 
 shinzo:
   start_height: 0
-  hub_base_url: rpc.develop.devnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network:26657
   cache_queue_size: 50000
   batch_writer_count: 8
   batch_size: 500
@@ -100,7 +101,7 @@ pruner:
   prune_history: false
 
 logger:
-  development: false
+  development: true
 
 host:
   lens_registry_path: "./.defra/lens"
@@ -181,7 +182,7 @@ For a step-by-step walkthrough of configuring a single USDT Transfer filter, see
 - `cascade_filters: true` means a `transaction` type filter on a contract address also filters logs and access-list entries from that address. If you want strict per-type matching, set it to false.
 - The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from this config. See [no-op keys](/hosts/config-reference#no-op-keys) for the full list.
 - The `topic0` for ERC-20 Transfer is the same across all tokens because it is derived from the function signature `Transfer(address,address,uint256)`, not from the contract address. To filter a different event, compute its keccak256 hash from the canonical signature.
-- The bootstrap peer IDs in this config are from the shipped `config.yaml` and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
+- The bootstrap peer IDs in this config are the three indexer peers from the shipped `config.yaml` and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
 
 ## Need help
 

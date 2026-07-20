@@ -77,7 +77,7 @@ docker run -d \
   -p 9181:9181 \
   -p 9182:9182 \
   -p 9171:9171 \
-  -v $(pwd)/data/defradb:/app/.defra/data \
+  -v $(pwd)/data/defradb:/app/.defra \
   -v $(pwd)/data/lens:/app/.lens \
   -v $(pwd)/config.yaml:/app/config.yaml:ro \
   -e DEFRA_URL=0.0.0.0:9181 \
@@ -144,7 +144,7 @@ docker run -d \
   -p 9181:9181 \
   -p 9182:9182 \
   -p 9171:9171 \
-  -v $(pwd)/data/defradb:/app/.defra/data \
+  -v $(pwd)/data/defradb:/app/.defra \
   -v $(pwd)/data/lens:/app/.lens \
   -v $(pwd)/config.yaml:/app/config.yaml:ro \
   -e DEFRA_URL=0.0.0.0:9181 \
@@ -159,8 +159,8 @@ Replace `sha-abc1234` with the actual commit SHA tag you want to roll back to.
 ## Gotchas
 
 - The container must have the `com.centurylinklabs.watchtower.enable=true` label or Watchtower will ignore it. Verify with `docker inspect shinzo-host | grep watchtower`.
-- `DEFRA_URL`, `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` in the `docker run` commands are not read by the Host client. They are kept here because they are in the original DEPLOYMENT.md, but they have no effect. See [env vars that are not read](/hosts/config-reference#env-vars-that-are-not-read).
-- The Host image tag `:latest` is used here. The [prod VM scenario](../prod-vm-nginx-tls/) uses `:standard`, and the [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`. If you use Watchtower with `:latest`, you get automatic updates. If you pin a specific tag, Watchtower will not detect new images.
+- `DEFRA_URL` in the `docker run` commands overrides `defradb.url` and is read by the Host client (`config/config.go`), binding the DefraDB API to `0.0.0.0:9181`. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` are also kept from the original DEPLOYMENT.md but are not read by the Host client and have no effect. See [env vars that are not read](/hosts/config-reference#env-vars-that-are-not-read).
+- The Host image tag `:latest` is used here. The [prod VM scenario](../prod-vm-nginx-tls/) uses `:v0.6.5-ethereum-mainnet`, and the [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`. If you use Watchtower with `:latest`, you get automatic updates. If you pin a specific tag, Watchtower will not detect new images.
 - Watchtower preserves the container's configuration (ports, volumes, env vars, labels) across restarts. It only replaces the image. If you need to change the container configuration, stop and remove it manually, then start a new container with the updated configuration.
 - The `DEFRA_KEYRING_SECRET` GitHub secret is used for tests in the CI pipeline, not for runtime. The runtime keyring secret comes from your `config.yaml` on the VM. See [defradb config](/hosts/config-reference#defradb).
 - There is a 5-minute delay between the image push and the container restart, controlled by `WATCHTOWER_POLL_INTERVAL=300`. To reduce this, lower the interval. To increase it, raise the interval. Lower intervals mean more frequent GHCR API calls.

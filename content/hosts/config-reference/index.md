@@ -3,7 +3,7 @@ title = "Config reference"
 description = "Every Host client config field with its YAML key, default, env var override, and notes on which keys are silently ignored."
 +++
 
-The Host client loads configuration from a YAML file (default `config/config.yaml`). Unlike the Generator client, the Host applies only two environment variable overrides directly in `config/config.go`: `START_HEIGHT` and `BOOTSTRAP_PEERS`. A third env var, `DEFRA_KEYRING_SECRET`, is read separately in `pkg/defradb/defra.go`.
+The Host client loads configuration from a YAML file (default `config/config.yaml`). Environment variable overrides are applied in `config/config.go` for `START_HEIGHT`, `BOOTSTRAP_PEERS`, `DEFRA_URL`, `INDEXER_SCHEMA_ENDPOINT`, and `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN`. A sixth env var, `DEFRA_KEYRING_SECRET`, is read separately in `pkg/defradb/defra.go`.
 
 The Host has no `applyDefaults` function. Unset numeric fields stay at Go zero values (0, false, empty string) unless the shipped `config.yaml` sets them. The pruner is the one exception: `cfg.Pruner.SetDefaults()` is called in `pkg/host/host.go` when pruning is enabled, filling in defaults for `max_blocks`, `docs_per_block`, and `interval_seconds`. Several P2P fields also receive defaults inside `pkg/defradb/network_handler.go` and `pkg/defradb/defra.go` at startup.
 
@@ -15,7 +15,7 @@ Embedded database configuration. DefraDB handles storage, P2P replication, conte
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `url` | string | `http://localhost:9181` | no | (none) | DefraDB API URL. Used for the playground address and health endpoint. The `DEFRA_URL` env var is not read. Shipped `config.yaml` sets `localhost:9181`. |
+| `url` | string | `http://localhost:9181` | no | `DEFRA_URL` | DefraDB API URL. Used for the playground address and health endpoint. `DEFRA_URL` overrides this value at runtime (read in `config/config.go`), so deployment artifacts can pick a different bind address such as `0.0.0.0:9181` without editing the YAML. Shipped `config.yaml` sets `localhost:9181`. |
 | `keyring_secret` | string | from `DEFRA_KEYRING_SECRET` | no | `DEFRA_KEYRING_SECRET` | Encryption secret for the DefraDB keyring. Read in `pkg/defradb/defra.go`, not in `config.go`. Shipped `config.yaml` sets `pingpong`. |
 
 The Host uses the env var name `DEFRA_KEYRING_SECRET` (with `DEFRA_` prefix). The Generator client uses `DEFRADB_KEYRING_SECRET` (with `DEFRADB_` prefix). The two clients use different env var names for the same concept.
@@ -26,12 +26,12 @@ P2P networking configuration. The Host receives data from Generator clients over
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `enabled` | bool | true | no | (none) | Enable P2P networking. |
-| `bootstrap_peers` | string array | empty | no | `BOOTSTRAP_PEERS` | P2P bootstrap peer multiaddrs. Env var is comma-separated. Shipped `config.yaml` lists two indexer peers. |
+| `enabled` | bool | true | no | (none) | Enable P2P networking. Shipped `config.yaml` sets true. |
+| `bootstrap_peers` | string array | empty | no | `BOOTSTRAP_PEERS` | P2P bootstrap peer multiaddrs. Env var is comma-separated. Shipped `config.yaml` lists three indexer peers. |
 | `listen_addr` | string | `/ip4/127.0.0.1/tcp/9171` | no | (none) | Multiaddr to listen on for P2P connections. Applied as a fallback in `StartDefraInstance` when empty. Shipped `config.yaml` sets `/ip4/0.0.0.0/tcp/9171`. |
 | `max_retries` | int | 5 | no | (none) | Connection attempts before marking a peer as failed. Default applied in `network_handler.go`. |
 | `retry_base_delay_ms` | int | 1000 | no | (none) | Base delay in milliseconds for exponential backoff. Default applied in `network_handler.go`. |
-| `reconnect_interval_ms` | int | 60000 | no | (none) | Interval in milliseconds to check for disconnected peers. |
+| `reconnect_interval_ms` | int | 60000 | no | (none) | Interval in milliseconds to check for disconnected peers. Default applied in `network_handler.go`. |
 | `enable_auto_reconnect` | bool | true | no | (none) | Automatically reconnect to failed or disconnected peers. |
 | `peer_discovery_timeout_ms` | int | 10000 | no | (none) | Timeout in milliseconds for auto-discovering peer IDs. When 0, falls back to 10 seconds via `DefaultPeerDiscoveryTimeout` in `peer_discovery.go`. |
 
@@ -57,7 +57,7 @@ Shinzo-specific host configuration: attestation processing, view management, doc
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
 | `minimum_attestations` | int | 1 | no | (none) | Loaded from YAML but not consumed in the host startup path. Shipped `config.yaml` sets 1. |
-| `hub_base_url` | string | empty | no | (none) | ShinzoHub CometBFT RPC URL. Used to construct the RPC, WebSocket, and LCD endpoints. Shipped `config.yaml` sets `rpc.develop.devnet.shinzo.network:26657`. |
+| `hub_base_url` | string | empty | no | (none) | ShinzoHub CometBFT RPC URL. Used to construct the RPC, WebSocket, and LCD endpoints. Shipped `config.yaml` sets `testnet.shinzo.network:26657`. |
 | `start_height` | uint64 | 0 | no | `START_HEIGHT` | Block number to start from. 0 means auto-detect from chain tip. |
 | `cache_queue_size` | int | 50000 | no | (none) | Job queue size for document processing. Shipped `config.yaml` sets 50000. |
 | `batch_writer_count` | int | 8 | no | (none) | Number of batch writers for attestation processing. Shipped `config.yaml` sets 8. |
@@ -150,6 +150,16 @@ Downloads historical data from an indexer on first startup for fast initial sync
 | `start` | int64 | 0 | no | (none) | Start block number, inclusive. |
 | `end` | int64 | 0 | no | (none) | End block number, inclusive. |
 
+## schema
+
+Dynamic schema fetching from an indexer. The Host fetches the indexer's schema on startup so its collection definitions match the Generator's.
+
+| Key | Type | Default | Required | Env var | Description |
+| --- | --- | --- | --- | --- | --- |
+| `indexer_schema_endpoint` | string | `/api/v1/schema` | no | `INDEXER_SCHEMA_ENDPOINT` | HTTP endpoint path on the indexer for fetching the schema. Defaults to `DefaultIndexerSchemaEndpoint` in `config/config.go` when empty. Shipped `config.yaml` sets `/api/v1/schema`. |
+| `http_client_timeout_secs` | int | 30 | no | (none) | HTTP client timeout in seconds for schema fetches. Must be non-negative and cannot exceed 300 (`MaxSchemaHTTPClientTimeout`); 0 defaults to 30 (`DefaultSchemaHTTPClientTimeout`). Shipped `config.yaml` sets 30. |
+| `auth_token` | string | empty | yes if the indexer uses `SCHEMA_AUTH_MODE=token` | `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN` | Bearer token used to authenticate schema fetches against indexers with `SCHEMA_AUTH_MODE=token` (the Generator's default). Not settable in `config.yaml` (the field uses `yaml:"-"`); provide via `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN` or schema fetches receive 401/503 and fall back to the embedded schema. |
+
 ## pruner
 
 Removes old data to keep storage bounded. Defaults are applied by `SetDefaults` in `pkg/pruner/config.go`, called from `pkg/host/host.go` when `enabled` is true.
@@ -194,12 +204,15 @@ The following keys appear in the shipped `config.yaml` but are not in the `confi
 
 ## Environment variables
 
-The Host client reads only two env vars in `config/config.go` and one in `pkg/defradb/defra.go`.
+The Host client reads five env vars in `config/config.go` and one in `pkg/defradb/defra.go`.
 
 | Env var | Overrides | Read in |
 | --- | --- | --- |
 | `START_HEIGHT` | `shinzo.start_height` | `config/config.go` |
 | `BOOTSTRAP_PEERS` | `defradb.p2p.bootstrap_peers` | `config/config.go` (comma-separated) |
+| `DEFRA_URL` | `defradb.url` | `config/config.go` |
+| `INDEXER_SCHEMA_ENDPOINT` | `schema.indexer_schema_endpoint` | `config/config.go` |
+| `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN` | `schema.auth_token` | `config/config.go` |
 | `DEFRA_KEYRING_SECRET` | `defradb.keyring_secret` | `pkg/defradb/defra.go` |
 
 Note the keyring env var prefix: the Host uses `DEFRA_KEYRING_SECRET` (with `DEFRA_`), while the Generator uses `DEFRADB_KEYRING_SECRET` (with `DEFRADB_`).
@@ -210,7 +223,6 @@ The following env vars appear in some deployment artifacts but are not read by t
 
 | Env var | Where it appears | Notes |
 | --- | --- | --- |
-| `DEFRA_URL` | `docker-compose-prod.yml`, `host-prod-setup.sh`, `gcp-startup-host-local-ssd.sh` | Not read. The DefraDB URL comes from `defradb.url` in the YAML config. |
 | `LOG_LEVEL` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. Log level is controlled by `logger.development`. |
 | `LOG_SOURCE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
 | `LOG_STACKTRACE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |

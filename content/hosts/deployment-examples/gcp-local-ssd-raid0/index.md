@@ -40,7 +40,7 @@ The GCP startup script detects all local SSDs attached to the VM, creates a RAID
 
 ## Startup script
 
-This script is drawn verbatim from `scripts/gcp-startup-host-local-ssd.sh` in the `shinzo-host-client` repo. It installs Docker, detects local SSDs by their `nvme_card` model, creates a RAID-0 array if there are two or more, formats and mounts the array, then pulls and starts the Host container:
+This script is drawn from `scripts/gcp-startup-host-local-ssd.sh` in the `shinzo-host-client` repo (two leading comment lines omitted for brevity). It installs Docker, detects local SSDs by their `nvme_card` model, creates a RAID-0 array if there are two or more, formats and mounts the array, then pulls and starts the Host container:
 
 ```shell
 #!/bin/bash
@@ -145,15 +145,15 @@ Set `START_HEIGHT` and `BOOTSTRAP_PEERS` as environment variables before running
 
 ```shell
 export START_HEIGHT=20000000
-export BOOTSTRAP_PEERS='/ip4/34.63.13.57/tcp/9171/p2p/12D3KooWJGCSs1tkiDif4rgQMS7uNqTNA8BKNsNhW62NXbUN5Au3'
+export BOOTSTRAP_PEERS='/ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT'
 sudo -E ./gcp-startup-host-local-ssd.sh
 ```
 
 ## Gotchas
 
 - GCP local SSDs are ephemeral. If the VM stops or restarts, all data on the local SSDs is lost. Use this setup only for data that can be re-synced from Generators over P2P, or pair it with the [snapshot bootstrap scenario](../snapshot-bootstrap/) to re-import historical data on restart.
-- The script pins the image to `ghcr.io/shinzonetwork/shinzo-host-client:v0.5.1`. The [Watchtower scenario](../watchtower-auto-deploy/) uses `:latest`, and the [prod VM scenario](../prod-vm-nginx-tls/) uses `:standard`. Pick one tag and be consistent. The `v0.5.1` pin protects against unexpected updates but means you need to manually update the script to get new releases.
-- `DEFRA_URL`, `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` in the `docker run` command are not read by the Host client. They are kept here because they are in the original script, but they have no effect. See [env vars that are not read](/hosts/config-reference#env-vars-that-are-not-read).
+- The script pins the image to `ghcr.io/shinzonetwork/shinzo-host-client:v0.5.1`. The [Watchtower scenario](../watchtower-auto-deploy/) uses `:latest`, and the [prod VM scenario](../prod-vm-nginx-tls/) uses `:v0.6.5-ethereum-mainnet`. Pick one tag and be consistent. The `v0.5.1` pin protects against unexpected updates but means you need to manually update the script to get new releases.
+- `DEFRA_URL` in the `docker run` command overrides `defradb.url` and is read by the Host client (`config/config.go`). It is kept here because it is in the original script, where it binds the DefraDB API to `0.0.0.0:9181` instead of the loopback-only YAML default. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` are also kept from the original script but are not read by the Host client and have no effect. See [env vars that are not read](/hosts/config-reference#env-vars-that-are-not-read).
 - The script uses `--network host`, so no Docker port mappings are specified. All Host ports (9181, 9171, 8080) are directly exposed on the VM. If you need nginx as a reverse proxy, run it as a separate container or install it on the host.
 - The `nvme_card` model check is specific to GCP local SSDs. If you are running on a different cloud provider, the NVMe model string will differ. Adjust the `MODEL` check accordingly.
 - The `chmod 777 $MNT` sets world-writable permissions on the mount point. This is permissive but matches the original script. If you want tighter permissions, adjust the chmod and ensure the Host container's UID (1003) can still access the directory.

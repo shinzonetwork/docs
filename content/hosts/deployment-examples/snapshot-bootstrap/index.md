@@ -48,8 +48,9 @@ defradb:
   p2p:
     enabled: true
     bootstrap_peers:
-      - '/ip4/34.63.13.57/tcp/9171/p2p/12D3KooWJGCSs1tkiDif4rgQMS7uNqTNA8BKNsNhW62NXbUN5Au3'
-      - '/ip4/35.208.241.78/tcp/9171/p2p/12D3KooWSwrdPrfgm79Zne51hpihmfeZgGGpNqcim2LSoEDRquvr'
+      - '/ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT'
+      - '/ip4/34.57.239.57/tcp/9171/p2p/12D3KooWBAgCEJHYqzuCFEXzjsw2CnV9JqvqMgTKYDww58aCxwW5'
+      - '/ip4/34.134.119.63/tcp/9171/p2p/12D3KooWQQTuSQaz4HfuvnJHakkQy3PhWbKBBbS3RkmBw4ZsFkyT'
     listen_addr: "/ip4/0.0.0.0/tcp/9171"
     max_retries: 5
     retry_base_delay_ms: 1000
@@ -65,7 +66,7 @@ defradb:
 
 shinzo:
   start_height: 0
-  hub_base_url: rpc.develop.devnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network:26657
   cache_queue_size: 50000
   batch_writer_count: 8
   batch_size: 500
@@ -82,7 +83,7 @@ pruner:
   prune_history: false
 
 logger:
-  development: false
+  development: true
 
 host:
   lens_registry_path: "./.defra/lens"
@@ -122,7 +123,7 @@ docker run -d \
   -v $(pwd)/data/defradb:/app/.defra \
   -v $(pwd)/config.yaml:/app/config.yaml:ro \
   -e DEFRA_KEYRING_SECRET=pingpong \
-  ghcr.io/shinzonetwork/shinzo-host-client:standard
+  ghcr.io/shinzonetwork/shinzo-host-client:latest
 ```
 
 Check the startup logs for snapshot import progress:
@@ -138,7 +139,7 @@ You should see log lines indicating snapshot downloads and imports, followed by 
 - Snapshot bootstrap only runs on first startup when DefraDB has no existing data. If the Host already has data for the requested block range, bootstrap is skipped.
 - The `indexer_url` in the shipped `config.yaml` is `http://35.206.105.60:8080`. This is a development indexer. Replace it with your own indexer URL or a production indexer that has snapshots enabled.
 - The indexer must have `SNAPSHOT_ENABLED=true` on the Generator side. If the indexer is not producing snapshot files, the `/snapshots` endpoint will return nothing and bootstrap will fail. See the [nginx with TLS scenario](/generators/deployment-examples/nginx-tls-snapshots/) for setting up an indexer that serves snapshots.
-- The `DEFRA_URL` env var appears in some deployment scripts but is not read by the Host client. The DefraDB URL comes from `defradb.url` in the YAML config. See [env vars that are not read](/hosts/config-reference#env-vars-that-are-not-read).
+- The `DEFRA_URL` env var overrides `defradb.url` at runtime and is read by the Host client (`config/config.go`). The `docker run` above does not set it, so the DefraDB URL comes from `defradb.url` in the YAML config. See [environment variables](/hosts/config-reference#environment-variables).
 - The `DEFRA_KEYRING_SECRET` env var uses the `DEFRA_` prefix. The Generator client uses `DEFRADB_KEYRING_SECRET` with the `DEFRADB_` prefix. The two clients use different env var names for the same concept. See [environment variables](/hosts/config-reference#environment-variables).
 - `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` env vars appear in some deployment scripts but are not read by the Host client. They have been omitted from the `docker run` above. See [env vars that are not read](/hosts/config-reference#env-vars-that-are-not-read).
 

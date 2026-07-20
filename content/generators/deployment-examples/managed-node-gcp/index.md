@@ -43,10 +43,10 @@ networks:
     driver: bridge
 
 services:
-  shinzo-indexer:
-    container_name: shinzo-indexer
+  shinzo-generator:
+    container_name: shinzo-generator
     platform: linux/amd64
-    image: ghcr.io/shinzonetwork/shinzo-indexer-client:standard
+    image: ghcr.io/shinzonetwork/shinzo-generator-client:standard
     user: "1001:1001"
     restart: unless-stopped
     networks:
@@ -66,6 +66,7 @@ services:
       - DEFRADB_KEYRING_SECRET=pingpong
       - GOMEMLIMIT=14GiB
       - SNAPSHOT_ENABLED=false
+      - SCHEMA_AUTH_MODE=none
     logging:
       options:
         max-size: "50m"
@@ -87,10 +88,11 @@ services:
 - `DEFRADB_KEYRING_SECRET=pingpong`: Encryption secret for the DefraDB keyring. Change this to your own secret and keep it consistent across restarts. See [defradb config](/generators/config-reference#defradb).
 - `GOMEMLIMIT=14GiB`: Go runtime soft memory limit. Set below the container `mem_limit` to leave headroom for non-Go memory. See [env vars](/generators/config-reference#environment-variables).
 - `SNAPSHOT_ENABLED=false`: Disable snapshots. Enable if you want the Generator to produce snapshot files for Host bootstrap. See [snapshot config](/generators/config-reference#snapshot).
+- `SCHEMA_AUTH_MODE=none`: Disable authentication on the `/api/v1/schema` endpoints. The code default is `token`, which requires keys via `SCHEMA_API_KEYS` or every schema request returns 503. The repo's `docker-compose-prod.yml` sets `none`. See [indexer config](/generators/config-reference#indexer).
 
 ## Env file
 
-You can also use an `.env` file instead of inline environment variables. This matches the `.env.sample` from the repo:
+You can also use an `.env` file instead of inline environment variables. This mirrors the vars in the compose above:
 
 ```shell
 GETH_RPC_URL=https://json-rpc.aouzyll7wj7e9xe4g7t82w88c.blockchainnodeengine.com
@@ -99,6 +101,7 @@ GETH_API_KEY=YOUR_API_KEY
 GETH_API_KEY_TYPE=x-goog-api-key
 INDEXER_START_HEIGHT=0
 DEFRADB_KEYRING_SECRET=YOUR_DEFRADB_KEYRING_SECRET
+SCHEMA_AUTH_MODE=none
 ```
 
 To use it with `docker run`, mount the `.env` file with `--env-file .env`.
@@ -109,10 +112,10 @@ To use it with `docker run`, mount the `.env` file with `--env-file .env`.
 docker compose -f docker-compose.yml up -d
 ```
 
-Verify health:
+Verify health. The health server listens on port 8080 inside the container but is not published to the host in this compose, so use `docker compose exec`:
 
 ```shell
-curl http://localhost:8080/health
+docker compose exec shinzo-generator curl -f http://localhost:8080/health
 ```
 
 ## Registration
@@ -121,10 +124,9 @@ Once the Generator is running, register it with the Shinzo Network. See [Registr
 
 ## Gotchas
 
-- The image tag `ghcr.io/shinzonetwork/shinzo-indexer-client:standard` in this compose file differs from the tag `ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest` used in the [install page](/generators/install/). Both refer to the Generator client image. The `:standard` tag is used in the prod compose files, while the `:ethereum-mainnet-latest` tag is used in the install quickstart. Pick one and be consistent.
-- `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `docker-compose-prod.yml` but are not read by the Generator client. They have been omitted from this compose file. Log level is controlled by `LOGGER_DEBUG`. See the [env vars table](/generators/config-reference#environment-variables) for details.
+- The image tag `ghcr.io/shinzonetwork/shinzo-generator-client:standard` in this compose matches `docker-compose-prod.yml`. The repo's `indexer-prod-setup.sh` pins a versioned tag (`ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.1-ethereum-mainnet`), and the [install page](/generators/install/) uses `ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest`. Docker pull/run tag strategy is being consolidated in issues #326 and #327; align with whatever those land on rather than mixing tags across deployments.
+- `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `docker-compose-prod.yml` but are not read by the Generator client, so they are omitted here. `SCHEMA_AUTH_MODE=none` is kept because the Generator client does read it. Log level is controlled by `LOGGER_DEBUG`. See the [env vars table](/generators/config-reference#environment-variables) for details.
 - The `GETH_WS_URL` in this compose file uses `wss://` (secure WebSocket) because GCP BNE requires TLS on all connections. If you switch to a non-TLS WebSocket provider, use `ws://` instead.
-- The `.env.sample` in the repo has a typo: `GETH-API-KEY-TYPE` uses hyphens instead of underscores. The correct env var name is `GETH_API_KEY_TYPE`. The `.env` file above uses the correct name.
 - `GOMEMLIMIT` is not a Generator client config var. It is a Go runtime soft memory limit, honored by the Go runtime itself. Set it below the container memory limit to control garbage collection under pressure.
 
 ## Need help

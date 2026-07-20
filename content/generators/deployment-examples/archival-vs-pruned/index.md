@@ -35,7 +35,7 @@ The pruned Generator writes snapshot files before deleting old blocks. Hosts can
 
 ## Pruned Generator config
 
-This config keeps 1000 blocks in the database and produces snapshot files before pruning. It is drawn from the `pruner` and `snapshot` sections of the shipped `config.yaml`:
+This config keeps 1000 blocks in the database and produces snapshot files before pruning. The `pruner` and `snapshot` values are drawn from the shipped `config.yaml`, with `docs_per_block` filled in from the code default in `SetDefaults` (it is not present in the shipped file):
 
 ```yaml
 chain:
@@ -69,14 +69,14 @@ indexer:
   start_height: 0
   concurrent_blocks: 1
   receipt_workers: 8
-  max_docs_per_txn: 500
+  max_docs_per_txn: 100
   blocks_per_minute: 60
   health_server_port: 8080
   open_browser_on_start: false
   start_buffer: 100
 
 logger:
-  development: false
+  development: true
 
 pruner:
   enabled: true
@@ -138,14 +138,14 @@ indexer:
   start_height: 0
   concurrent_blocks: 1
   receipt_workers: 8
-  max_docs_per_txn: 500
+  max_docs_per_txn: 100
   blocks_per_minute: 60
   health_server_port: 8080
   open_browser_on_start: false
   start_buffer: 100
 
 logger:
-  development: false
+  development: true
 
 pruner:
   enabled: false
@@ -175,10 +175,10 @@ networks:
     driver: bridge
 
 services:
-  shinzo-indexer:
-    container_name: shinzo-indexer
+  shinzo-generator:
+    container_name: shinzo-generator
     platform: linux/amd64
-    image: ghcr.io/shinzonetwork/shinzo-indexer-client:standard
+    image: ghcr.io/shinzonetwork/shinzo-generator-client:standard
     user: "1001:1001"
     restart: unless-stopped
     networks:

@@ -71,14 +71,14 @@ indexer:
   start_height: 0
   concurrent_blocks: 8
   receipt_workers: 32
-  max_docs_per_txn: 500
+  max_docs_per_txn: 100
   blocks_per_minute: 0
   health_server_port: 8080
   open_browser_on_start: false
   start_buffer: 100
 
 logger:
-  development: false
+  development: true
 
 pruner:
   enabled: true
@@ -103,10 +103,10 @@ networks:
     driver: bridge
 
 services:
-  shinzo-indexer:
-    container_name: shinzo-indexer
+  shinzo-generator:
+    container_name: shinzo-generator
     platform: linux/amd64
-    image: ghcr.io/shinzonetwork/shinzo-indexer-client:standard
+    image: ghcr.io/shinzonetwork/shinzo-generator-client:standard
     user: "1001:1001"
     restart: unless-stopped
     networks:
