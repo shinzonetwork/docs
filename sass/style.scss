@@ -784,6 +784,28 @@ pre {
   }
 }
 
+/* Collapse the gap between a code block and an immediately following output
+   block so they read as a single stacked unit. Handles both the raw
+   <pre>+<pre> case (before JS runs) and the .code-block-wrapper case (after
+   copy-code.js wraps the preceding <pre>). Output blocks preceded by anything
+   else (a <p>, a heading, etc.) keep their normal top margin. */
+
+// Raw <pre> directly followed by an output <pre> (no-JS / same-structure).
+.markdown pre:has(+ pre > code[data-lang="output"]) {
+  margin-bottom: 0;
+}
+.markdown pre + pre:has(code[data-lang="output"]) {
+  margin-top: 0;
+}
+
+// Wrapped code block followed by an output <pre> (post-JS).
+.markdown .code-block-wrapper:has(+ pre > code[data-lang="output"]) pre {
+  margin-bottom: 0;
+}
+.markdown .code-block-wrapper + pre:has(code[data-lang="output"]) {
+  margin-top: 0;
+}
+
 /* ─── Changelog ──────────────────────────────────────────────────────── */
 .changelog {
   h2 {
