@@ -114,7 +114,17 @@ pages = [
   "generators/hardware-requirements/index.md",
   "generators/install/index.md",
   "generators/register/index.md",
+  "generators/config-reference/index.md",
   "generators/faq/index.md",
+]
+subsections = [
+  { label = "Deployment examples", pages = [
+    "generators/deployment-examples/validator-local-geth/index.md",
+    "generators/deployment-examples/managed-node-gcp/index.md",
+    "generators/deployment-examples/nginx-tls-snapshots/index.md",
+    "generators/deployment-examples/high-throughput-tuning/index.md",
+    "generators/deployment-examples/archival-vs-pruned/index.md",
+  ] },
 ]
 
 [[extra.sidebar]]
@@ -126,7 +136,17 @@ pages = [
   "hosts/register/index.md",
   "hosts/quickstart/index.md",
   "hosts/examples/index.md",
+  "hosts/config-reference/index.md",
   "hosts/faq/index.md",
+]
+subsections = [
+  { label = "Deployment examples", pages = [
+    "hosts/deployment-examples/event-filter-allowlist/index.md",
+    "hosts/deployment-examples/snapshot-bootstrap/index.md",
+    "hosts/deployment-examples/prod-vm-nginx-tls/index.md",
+    "hosts/deployment-examples/gcp-local-ssd-raid0/index.md",
+    "hosts/deployment-examples/watchtower-auto-deploy/index.md",
+  ] },
 ]
 
 [[extra.sidebar]]
