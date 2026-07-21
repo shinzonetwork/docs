@@ -535,6 +535,15 @@ p {
   padding: 1rem 2rem 3rem;
 }
 
+.docs-content--portal {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.docs-content--portal .docItemCol {
+  max-width: none;
+}
+
 .docItemCol {
   max-width: 75ch;
   margin: 0 auto;
@@ -1448,4 +1457,53 @@ body.mobile-menu-open {
   .mobile-menu-backdrop {
     display: none !important;
   }
+}
+
+// ─── Portal landing (home page track cards) ───
+.portal-tracks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.portal-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200, #e0e0e0);
+  border-radius: 0.5rem;
+  background: var(--ifm-color-emphasis-100, #f7f7f7);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.portal-card:hover {
+  border-color: var(--ifm-color-primary, #4a90d9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.portal-card__icon {
+  margin-bottom: 0.75rem;
+  color: var(--ifm-color-primary, #4a90d9);
+}
+
+.portal-card__icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.portal-card__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.portal-card__desc {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ifm-color-emphasis-600, #555);
 }

@@ -53,117 +53,182 @@ plausible_src = "https://plausible.source.network/js/script.js"
 # Top navigation bar
 # ------------------
 # - label: link text.
-# - href: landing-page URL (literal path, e.g. "/generators/overview/").
+# - href: landing-page URL (literal path).
 # - section: path prefix for active highlighting: active when the current path starts with "/{section}/".
-# - root: optional; when true the entry is ALSO active at the site root ("/"). Used by Introduction (landing at "/", pages under "/introduction/").
+# - root: optional; when true the entry is ALSO active at the site root ("/").
 
 [[extra.navbar]]
-label = "Introduction"
-href = "/"
-section = "introduction"
-root = true
+label = "Understand"
+href = "/understand/what-is-shinzo/"
+section = "understand"
 
 [[extra.navbar]]
-label = "Generators"
-href = "/generators/overview/"
-section = "generators"
+label = "Build apps"
+href = "/build/create-a-view/"
+section = "build"
 
 [[extra.navbar]]
-label = "Hosts"
-href = "/hosts/overview/"
-section = "hosts"
-
-[[extra.navbar]]
-label = "Views"
-href = "/views/overview/"
-section = "views"
-
-[[extra.navbar]]
-label = "Guides"
-href = "/guides/building-apps-with-shinzo/"
-section = "guides"
+label = "Run infrastructure"
+href = "/run/get-started/"
+section = "run"
 
 [[extra.navbar]]
 label = "Reference"
-href = "/reference/architecture-overview/"
+href = "/reference/architecture/"
 section = "reference"
 # ------------------
 
 
 
-# Sidebar navigation tree (manual order).
+# Sidebar navigation tree (manual order, per section).
 # ---------------------------------------
-# Each [[extra.sidebar]] block is a top-level category, listed in display order. `pages` holds content paths relative to content/; page titles are resolved from front matter, so only the order and labels live here.
-# - `root = true` (Introduction only) prepends the site landing page at "/".
-# - `subsections` adds nested collapsible groups (only Reference uses one).
+# Each [[extra.sidebar]] block is a group within a section's sidebar.
+# - `section`: which top-level section this group belongs to ("understand",
+#   "build", "run", "reference"). The macro filters by the current path so
+#   only the active section's groups are shown. The home page has no sidebar.
+# - `label`: group heading text.
+# - `page`: optional path to a section _index.md; when set, the group label
+#   is a link to that landing page.
+# - `pages`: content paths relative to content/; page titles are resolved
+#   from front matter.
 # Pages are NOT auto-discovered: a new doc page must be listed here to appear.
 
+# ── Understand ──
 [[extra.sidebar]]
-label = "Introduction"
-root = true
+section = "understand"
+label = "Basics"
 pages = [
-  "introduction/how-it-works/index.md",
-  "introduction/core-concepts/index.md",
-  "introduction/get-help/index.md",
+  "understand/what-is-shinzo/index.md",
+  "understand/how-it-works/index.md",
+  "understand/eli5-architecture/index.md",
 ]
 
 [[extra.sidebar]]
-label = "Generators"
+section = "understand"
+label = "Core concepts"
+page = "understand/core-concepts/_index.md"
 pages = [
-  "generators/overview/index.md",
-  "generators/hardware-requirements/index.md",
-  "generators/install/index.md",
-  "generators/register/index.md",
-  "generators/faq/index.md",
+  "understand/core-concepts/views/index.md",
+  "understand/core-concepts/attestation/index.md",
+  "understand/core-concepts/defradb/index.md",
+  "understand/core-concepts/shnz-token/index.md",
+]
+
+# ── Build apps ──
+[[extra.sidebar]]
+section = "build"
+label = "Develop"
+pages = [
+  "build/your-first-app/index.md",
+  "build/create-a-view/index.md",
+  "build/build-an-app/index.md",
+  "build/query-data/index.md",
+  "build/publish-and-earn/index.md",
 ]
 
 [[extra.sidebar]]
-label = "Hosts"
+section = "build"
+label = "Concepts"
+page = "build/concepts/_index.md"
 pages = [
-  "hosts/overview/index.md",
-  "hosts/hardware-requirements/index.md",
-  "hosts/install/index.md",
-  "hosts/register/index.md",
-  "hosts/quickstart/index.md",
-  "hosts/examples/index.md",
-  "hosts/faq/index.md",
+  "build/concepts/views-for-builders/index.md",
+  "build/concepts/economics-of-views/index.md",
+  "build/concepts/attestation-as-a-query-filter/index.md",
+]
+
+# ── Run infrastructure ──
+[[extra.sidebar]]
+section = "run"
+label = "Quickstart"
+pages = [
+  "run/get-started/index.md",
 ]
 
 [[extra.sidebar]]
-label = "Views"
+section = "run"
+label = "Run a Generator"
+page = "run/run-a-generator/_index.md"
 pages = [
-  "views/overview/index.md",
-  "views/install/index.md",
-  "views/examples/index.md",
-  "views/lenses/index.md",
-  "views/quickstart/index.md",
-  "views/faq/index.md",
+  "run/run-a-generator/install/index.md",
+  "run/run-a-generator/hardware-requirements/index.md",
+  "run/run-a-generator/register/index.md",
 ]
 
 [[extra.sidebar]]
-label = "Guides"
+section = "run"
+label = "Run a Host"
+page = "run/run-a-host/_index.md"
 pages = [
-  "guides/building-apps-with-shinzo/index.md",
-  "guides/configuring-event-filters-on-a-shinzo-host/index.md",
-  "guides/operator-quickstart/index.md",
+  "run/run-a-host/install/index.md",
+  "run/run-a-host/hardware-requirements/index.md",
+  "run/run-a-host/configure-event-filters/index.md",
+  "run/run-a-host/register/index.md",
+  "run/run-a-host/quickstart/index.md",
 ]
 
 [[extra.sidebar]]
+section = "run"
+label = "Operations"
+page = "run/operations/_index.md"
+pages = [
+  "run/operations/key-and-identity-management/index.md",
+  "run/operations/backups/index.md",
+  "run/operations/monitoring/index.md",
+  "run/operations/troubleshooting/index.md",
+]
+
+[[extra.sidebar]]
+section = "run"
+label = "Advanced"
+pages = [
+  "run/private-hosts/index.md",
+  "run/earnings/index.md",
+]
+
+# ── Reference ──
+[[extra.sidebar]]
+section = "reference"
 label = "Reference"
 pages = [
+  "reference/architecture/index.md",
   "reference/changelog/index.md",
-  "reference/architecture-overview/index.md",
   "reference/tools/index.md",
   "reference/glossary/index.md",
 ]
-subsections = [
-  { label = "Components", pages = [
-    "reference/components/host-client/index.md",
-    "reference/components/generator-client/index.md",
-    "reference/components/outpost/index.md",
-    "reference/components/relayer/index.md",
-    "reference/components/shinzohub/index.md",
-    "reference/components/viewkit/index.md",
-  ] },
+
+[[extra.sidebar]]
+section = "reference"
+label = "Components"
+pages = [
+  "reference/components/generator-client/index.md",
+  "reference/components/host-client/index.md",
+  "reference/components/shinzohub/index.md",
+  "reference/components/sourcehub/index.md",
+  "reference/components/outpost/index.md",
+  "reference/components/viewkit/index.md",
+  "reference/components/defradb/index.md",
+  "reference/components/lens/index.md",
+  "reference/components/relayer/index.md",
+]
+
+[[extra.sidebar]]
+section = "reference"
+label = "Data model"
+page = "reference/data-model/_index.md"
+pages = [
+  "reference/data-model/primitives/index.md",
+  "reference/data-model/signatures/index.md",
+  "reference/data-model/attestation-record/index.md",
+  "reference/data-model/naming-convention/index.md",
+  "reference/data-model/defradb-metadata/index.md",
+  "reference/data-model/schema-directives/index.md",
+]
+
+[[extra.sidebar]]
+section = "reference"
+label = "API & specs"
+pages = [
+  "reference/graphql-api/index.md",
+  "reference/specs-and-limits/index.md",
 ]
 # ---------------------------------------
