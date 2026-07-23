@@ -193,11 +193,11 @@ That means three things in practice:
 
 Some design choices shape the rest of the stack and are worth understanding upfront.
 
-### Indexing lives at the validator
+### Trustless indexing lives at the validator
 
-Validators already run full nodes, already have the block data the moment it's produced, and already have economic skin in the game through their 32 ETH stake. Putting indexing there, rather than in a separate centralized service, shortens the trust path from chain to data and gets you indexing for free as a byproduct of running infrastructure people are already running.
+Validators already run full nodes, already have the block data the moment it's produced, and already have economic skin in the game through their 32 ETH stake. Putting trustless indexing there, rather than in a separate centralized service, shortens the trust path from chain to data and gets you verifiable indexing for free as a byproduct of running infrastructure people are already running.
 
-### Indexing and transformation are separate jobs
+### Trustless indexing and transformation are separate jobs
 
 Generator clients ingest, Host clients transform and serve. That split means Generator clients can stay small and cheap (so validators will actually run them), while Host clients can specialize. One Host client might process every DeFi View on the network, another might focus on NFTs. It also means scaling consumer demand is a matter of adding more Host clients, not Generator clients.
 
