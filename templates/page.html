@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% import "macros/sidebar.html" as sidebar %}
 {% import "macros/mermaid.html" as mermaid %}
+{% import "macros/anim.html" as anim %}
 
 {% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
 {% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
@@ -88,4 +89,5 @@
 
 {% block scripts %}
 {% if page.extra.mermaid %}{{ mermaid::script() }}{% endif %}
+{% if page.extra.anim %}{{ anim::script() }}{% endif %}
 {% endblock scripts %}

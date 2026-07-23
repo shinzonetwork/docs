@@ -1,0 +1,13 @@
+{# D3 animation loader. Mirrors macros/mermaid.html: a front-matter flag
+   (extra.anim = true) triggers this via the {% block scripts %} hook in
+   page.html. Scenes live in static/js/animations/<name>.js and are mounted
+   onto the [data-anim] containers emitted by the `anim` shortcode. The
+   runner (static/js/anim-runner.js) loads D3 from a CDN, handles autoplay
+   on scroll, play/step controls, prefers-reduced-motion fallback, and
+   re-rendering on themechange. #}
+{% macro script() %}
+<script type="module">
+  import { mountAll } from '/js/anim-runner.js';
+  mountAll();
+</script>
+{% endmacro script %}

@@ -1001,6 +1001,108 @@ pre {
   }
 }
 
+/* ─── Animated illustrations (D3) ────────────────────────────────────── */
+.anim-container {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid var(--szo-border);
+  border-radius: 0.5rem;
+  background: var(--background);
+
+  svg {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    font-family: "Geist", sans-serif;
+  }
+}
+
+.anim-caption {
+  margin: 0.75rem 0.25rem 0.25rem;
+  min-height: 2.75em;
+  font-family: "Geist", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.anim-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.25rem 0;
+}
+
+.anim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--szo-border);
+  border-radius: 0.35rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Geist", sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.anim-btn--play {
+  margin-right: 0.25rem;
+  font-weight: 500;
+}
+
+.anim-play-icon::before {
+  content: "\25B6"; // ▶
+  margin-right: 0.4rem;
+  font-size: 0.7rem;
+}
+
+// Reduced motion: hide the play button (autoplay is off and "play" is
+// motion-centric); stepping with prev/next/dots remains.
+.anim-controls.is-reduced .anim-btn--play {
+  display: none;
+}
+
+.anim-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0.25rem;
+}
+
+.anim-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--szo-border);
+  cursor: pointer;
+
+  &.is-active {
+    background: var(--color-primary);
+  }
+
+  &:hover:not(.is-active) {
+    background: var(--color-primary-lighter);
+  }
+}
+
 /* ─── Footnotes ──────────────────────────────────────────────────────── */
 // Zola (pulldown-cmark) emits, per footnote:
 //   <div class="footnote-definition" id="1">
