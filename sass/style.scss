@@ -312,13 +312,15 @@ p {
 
 // Theme-aware logo: show the matching variant. The dark (-w.svg) mark is
 // hidden by default and revealed only when [data-theme="dark"] is on :root.
-.navbar__logo .logo-dark {
+// Applies to any element using the .logo-light / .logo-dark pair (navbar,
+// homepage hero, etc.).
+.logo-dark {
   display: none;
 }
-[data-theme="dark"] .navbar__logo .logo-light {
+[data-theme="dark"] .logo-light {
   display: none;
 }
-[data-theme="dark"] .navbar__logo .logo-dark {
+[data-theme="dark"] .logo-dark {
   display: block;
 }
 
@@ -1339,22 +1341,55 @@ pre {
 
 /* ─── Homepage hero ──────────────────────────────────────────────────── */
 .hero {
-  padding: 4rem var(--spacing-horizontal);
-  max-width: var(--root-wrapper-width);
-  margin: 0 auto;
+  padding: 3rem 0 2rem;
+  text-align: center;
+}
+
+.hero__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .hero__logo {
-  max-width: 480px;
+  max-width: 280px;
   width: 100%;
   height: auto;
-  margin-bottom: 2rem;
 }
 
 .hero__tagline {
+  margin: 0;
   font-family: var(--heading-font-family);
-  font-size: 1.5rem;
+  font-size: 2.25rem;
+  line-height: var(--heading-line-height);
+  font-weight: var(--heading-font-weight);
   color: var(--foreground);
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding-top: 1.5rem;
+  }
+
+  .hero__logo {
+    max-width: 200px;
+  }
+
+  .hero__tagline {
+    font-size: 1.75rem;
+  }
+}
+
+/* ─── Portal intro strip (value prop from the section body) ─── */
+.portal-intro {
+  max-width: 65ch;
+  margin: 2rem auto 2.5rem;
+  text-align: center;
+  font-size: 1.25rem;
+  line-height: 1.65;
+  color: var(--foreground);
+  opacity: 0.85;
 }
 
 /* ─── Mobile navigation drawer ───────────────────────────────────────── */
@@ -1462,9 +1497,16 @@ body.mobile-menu-open {
 // ─── Portal landing (home page track cards) ───
 .portal-tracks {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
-  margin-top: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .portal-tracks {
+    grid-template-columns: 1fr;
+  }
 }
 
 .portal-card {
@@ -1472,6 +1514,7 @@ body.mobile-menu-open {
   flex-direction: column;
   padding: 1.5rem;
   border: 1px solid var(--ifm-color-emphasis-200, #e0e0e0);
+  border-top: 3px solid var(--ifm-color-emphasis-200, #e0e0e0);
   border-radius: 0.5rem;
   background: var(--ifm-color-emphasis-100, #f7f7f7);
   text-decoration: none;
@@ -1480,14 +1523,15 @@ body.mobile-menu-open {
 }
 
 .portal-card:hover {
-  border-color: var(--ifm-color-primary, #4a90d9);
+  border-color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
 .portal-card__icon {
   margin-bottom: 0.75rem;
-  color: var(--ifm-color-primary, #4a90d9);
+  color: var(--foreground);
+  opacity: 0.6;
 }
 
 .portal-card__icon svg {
@@ -1506,4 +1550,75 @@ body.mobile-menu-open {
   font-size: 0.9rem;
   line-height: 1.5;
   color: var(--ifm-color-emphasis-600, #555);
+}
+
+// Featured cards: the two primary funnels (Build apps, Run infrastructure).
+// Given more height and larger type so they read as the primary tracks.
+.portal-card--featured {
+  border-top: 3px solid var(--color-primary);
+  background: var(--ifm-color-emphasis-100, #f7f7f7);
+  padding: 2rem 1.75rem;
+  min-height: 220px;
+  justify-content: flex-start;
+}
+
+.portal-card--featured .portal-card__icon {
+  color: var(--color-primary);
+  opacity: 1;
+  margin-bottom: 1rem;
+}
+
+.portal-card--featured .portal-card__icon svg {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.portal-card--featured .portal-card__title {
+  color: var(--color-primary-darker);
+  font-size: 1.35rem;
+  margin-bottom: 0.625rem;
+}
+
+.portal-card--featured .portal-card__desc {
+  font-size: 1rem;
+}
+
+// ─── Portal quick links (secondary entry points) ───
+.portal-quicklinks {
+  max-width: 1200px;
+  margin: 2.5rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--szo-border);
+}
+
+.portal-quicklinks__heading {
+  margin: 0 0 0.75rem;
+  font-family: var(--heading-font-family);
+  font-size: 0.8rem;
+  font-weight: var(--heading-font-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.portal-quicklinks__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 1.75rem;
+}
+
+.portal-quicklinks__link {
+  color: var(--foreground);
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.portal-quicklinks__link:hover {
+  color: var(--color-primary);
+  opacity: 1;
+  text-decoration: underline;
 }

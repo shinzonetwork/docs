@@ -5,47 +5,68 @@
 {% block body %}
 <main class="main-wrapper">
   <div class="docs-content docs-content--portal">
-    <article class="docItemCol markdown">
 
-      <h1 class="doc-title">{{ section.title }}</h1>
-
-      {{ section.content | safe }}
-
-      <div class="portal-tracks">
-        <a class="portal-card" href="/understand/what-is-shinzo/">
-          <div class="portal-card__icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-          <h2 class="portal-card__title">Understand</h2>
-          <p class="portal-card__desc">What Shinzo is, how it works, and the core concepts behind it.</p>
-        </a>
-
-        <a class="portal-card" href="/build/create-a-view/">
-          <div class="portal-card__icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          </div>
-          <h2 class="portal-card__title">Build apps</h2>
-          <p class="portal-card__desc">Create Views, build applications, query data, and publish to the network.</p>
-        </a>
-
-        <a class="portal-card" href="/run/get-started/">
-          <div class="portal-card__icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-          </div>
-          <h2 class="portal-card__title">Run infrastructure</h2>
-          <p class="portal-card__desc">Run a Generator or Host client, operate nodes, and earn rewards.</p>
-        </a>
-
-        <a class="portal-card" href="/reference/architecture/">
-          <div class="portal-card__icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          </div>
-          <h2 class="portal-card__title">Reference</h2>
-          <p class="portal-card__desc">Architecture, components, data model, GraphQL API, and specs.</p>
-        </a>
+    {# ─── Hero: brand mark + tagline ─── #}
+    <section class="hero">
+      <div class="hero__brand">
+        <img class="hero__logo logo-light" src="/img/shinzo-logo-hero.svg" alt="" aria-hidden="true" />
+        <img class="hero__logo logo-dark" src="/img/shinzo-logo-hero-w.svg" alt="" aria-hidden="true" />
+        <h1 class="hero__tagline">{{ config.extra.tagline }}</h1>
       </div>
+    </section>
 
+    {# ─── What is Shinzo: short value-prop strip from the section body ─── #}
+    <article class="portal-intro markdown">
+      {{ section.content | safe }}
     </article>
+
+    {# ─── Track cards: Build apps & Run infrastructure are the primary
+         funnels (featured); Understand & Reference are secondary. ─── #}
+    <div class="portal-tracks">
+      <a class="portal-card portal-card--featured" href="/build/create-a-view/">
+        <div class="portal-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h2 class="portal-card__title">Build apps</h2>
+        <p class="portal-card__desc">Create Views, build applications, query data, and publish to the network.</p>
+      </a>
+
+      <a class="portal-card portal-card--featured" href="/run/get-started/">
+        <div class="portal-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        </div>
+        <h2 class="portal-card__title">Run infrastructure</h2>
+        <p class="portal-card__desc">Run a Generator or Host client, operate nodes, and earn rewards.</p>
+      </a>
+
+      <a class="portal-card" href="/understand/what-is-shinzo/">
+        <div class="portal-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h2 class="portal-card__title">Understand</h2>
+        <p class="portal-card__desc">What Shinzo is, how it works, and the core concepts behind it.</p>
+      </a>
+
+      <a class="portal-card" href="/reference/architecture/">
+        <div class="portal-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <h2 class="portal-card__title">Reference</h2>
+        <p class="portal-card__desc">Architecture, components, data model, GraphQL API, and specs.</p>
+      </a>
+    </div>
+
+    {# ─── Quick links: entry points that don't fit the four tracks ─── #}
+    <section class="portal-quicklinks" aria-label="Quick links">
+      <h2 class="portal-quicklinks__heading">Quick links</h2>
+      <ul class="portal-quicklinks__list">
+        <li><a class="portal-quicklinks__link" href="{{ config.extra.github_url }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a class="portal-quicklinks__link" href="/reference/changelog/">Changelog</a></li>
+        <li><a class="portal-quicklinks__link" href="/reference/glossary/">Glossary</a></li>
+        <li><a class="portal-quicklinks__link" href="/understand/get-help/">Get help</a></li>
+      </ul>
+    </section>
+
   </div>
 </main>
 {% endblock body %}
