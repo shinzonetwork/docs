@@ -34,7 +34,8 @@ mkdir -p "$OUTPUT_DIR"
 get_toml_field() {
     local file="$1" field="$2"
     grep -m1 "^${field}\s*=" "$file" 2>/dev/null \
-        | sed -E "s/^${field}\s*=\s*[\"']?([^\"']*)[\"']?\s*$/\1/" \
+        | sed -E "s/^${field}\s*=\s*//" \
+        | sed -E "s/^(\"(.*)\"|'(.*)')\s*$/\2\3/" \
         || true
 }
 
@@ -97,7 +98,7 @@ add_page() {
     description="$(get_toml_field "$content_file" "description")"
     url="${BASE_URL}${url_path}"
 
-    # Index line — written to both files
+    # Index line - written to both files
     if [[ -n "$description" ]]; then
         printf -- '- [%s](%s): %s\n' "$title" "$url" "$description" \
             | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
@@ -106,7 +107,7 @@ add_page() {
             | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
     fi
 
-    # Full body — written to llms-full.txt only.
+    # Full body - written to llms-full.txt only.
     # collapse_blanks also strips leading/trailing blank lines.
     local body
     body="$(get_body "$content_file" | clean_body | collapse_blanks)"
@@ -184,48 +185,74 @@ EOF
 write_header "$LLMS_TXT"
 write_header "$LLMS_FULL_TXT"
 
-# Introduction
-section_header "Introduction"
-add_page "/"                             "$CONTENT_DIR/_index.md"                               "What is Shinzo?"
-add_page "/introduction/how-it-works/"   "$CONTENT_DIR/introduction/how-it-works/index.md"
-add_page "/introduction/core-concepts/"  "$CONTENT_DIR/introduction/core-concepts/index.md"
+# Understand
+section_header "Understand"
+add_page "/understand/what-is-shinzo/"        "$CONTENT_DIR/understand/what-is-shinzo/index.md"
+add_page "/understand/how-it-works/"          "$CONTENT_DIR/understand/how-it-works/index.md"
+add_page "/understand/eli5-architecture/"     "$CONTENT_DIR/understand/eli5-architecture/index.md"
+add_page "/understand/core-concepts/"                   "$CONTENT_DIR/understand/core-concepts/_index.md"
+add_page "/understand/core-concepts/views/"             "$CONTENT_DIR/understand/core-concepts/views/index.md"
+add_page "/understand/core-concepts/attestation/"       "$CONTENT_DIR/understand/core-concepts/attestation/index.md"
+add_page "/understand/core-concepts/defradb/"           "$CONTENT_DIR/understand/core-concepts/defradb/index.md"
+add_page "/understand/core-concepts/shnz-token/"        "$CONTENT_DIR/understand/core-concepts/shnz-token/index.md"
 
-# Generators
-section_header "Generators"
-add_page "/generators/overview/"  "$CONTENT_DIR/generators/overview/index.md"
-add_page "/generators/install/"   "$CONTENT_DIR/generators/install/index.md"
-add_page "/generators/register/"  "$CONTENT_DIR/generators/register/index.md"
-add_page "/generators/faq/"       "$CONTENT_DIR/generators/faq/index.md"
+# Build apps
+section_header "Build apps"
+add_page "/build/your-first-app/"   "$CONTENT_DIR/build/your-first-app/index.md"
+add_page "/build/create-a-view/"    "$CONTENT_DIR/build/create-a-view/index.md"
+add_page "/build/build-an-app/"     "$CONTENT_DIR/build/build-an-app/index.md"
+add_page "/build/query-data/"       "$CONTENT_DIR/build/query-data/index.md"
+add_page "/build/publish-and-earn/" "$CONTENT_DIR/build/publish-and-earn/index.md"
+add_page "/build/concepts/"                       "$CONTENT_DIR/build/concepts/_index.md"
+add_page "/build/concepts/views-for-builders/"            "$CONTENT_DIR/build/concepts/views-for-builders/index.md"
+add_page "/build/concepts/economics-of-views/"            "$CONTENT_DIR/build/concepts/economics-of-views/index.md"
+add_page "/build/concepts/attestation-as-a-query-filter/" "$CONTENT_DIR/build/concepts/attestation-as-a-query-filter/index.md"
 
-# Hosts
-section_header "Hosts"
-add_page "/hosts/overview/"    "$CONTENT_DIR/hosts/overview/index.md"
-add_page "/hosts/quickstart/"  "$CONTENT_DIR/hosts/quickstart/index.md"
-add_page "/hosts/examples/"    "$CONTENT_DIR/hosts/examples/index.md"
-
-# Views
-section_header "Views"
-add_page "/views/overview/"    "$CONTENT_DIR/views/overview/index.md"
-add_page "/views/quickstart/"  "$CONTENT_DIR/views/quickstart/index.md"
-
-# Guides
-section_header "Guides"
-add_page "/guides/building-apps-with-shinzo/"                   "$CONTENT_DIR/guides/building-apps-with-shinzo/index.md"
-add_page "/guides/configuring-event-filters-on-a-shinzo-host/"  "$CONTENT_DIR/guides/configuring-event-filters-on-a-shinzo-host/index.md"
-add_page "/guides/operator-quickstart/"                         "$CONTENT_DIR/guides/operator-quickstart/index.md"
+# Run infrastructure
+section_header "Run infrastructure"
+add_page "/run/get-started/"  "$CONTENT_DIR/run/get-started/index.md"
+add_page "/run/run-a-generator/"                       "$CONTENT_DIR/run/run-a-generator/_index.md"
+add_page "/run/run-a-generator/install/"               "$CONTENT_DIR/run/run-a-generator/install/index.md"
+add_page "/run/run-a-generator/hardware-requirements/" "$CONTENT_DIR/run/run-a-generator/hardware-requirements/index.md"
+add_page "/run/run-a-generator/register/"              "$CONTENT_DIR/run/run-a-generator/register/index.md"
+add_page "/run/run-a-host/"                       "$CONTENT_DIR/run/run-a-host/_index.md"
+add_page "/run/run-a-host/install/"               "$CONTENT_DIR/run/run-a-host/install/index.md"
+add_page "/run/run-a-host/hardware-requirements/" "$CONTENT_DIR/run/run-a-host/hardware-requirements/index.md"
+add_page "/run/run-a-host/configure-event-filters/" "$CONTENT_DIR/run/run-a-host/configure-event-filters/index.md"
+add_page "/run/run-a-host/register/"              "$CONTENT_DIR/run/run-a-host/register/index.md"
+add_page "/run/run-a-host/quickstart/"            "$CONTENT_DIR/run/run-a-host/quickstart/index.md"
+add_page "/run/operations/"                          "$CONTENT_DIR/run/operations/_index.md"
+add_page "/run/operations/key-and-identity-management/" "$CONTENT_DIR/run/operations/key-and-identity-management/index.md"
+add_page "/run/operations/backups/"                "$CONTENT_DIR/run/operations/backups/index.md"
+add_page "/run/operations/monitoring/"             "$CONTENT_DIR/run/operations/monitoring/index.md"
+add_page "/run/operations/troubleshooting/"        "$CONTENT_DIR/run/operations/troubleshooting/index.md"
+add_page "/run/private-hosts/"  "$CONTENT_DIR/run/private-hosts/index.md"
+add_page "/run/earnings/"       "$CONTENT_DIR/run/earnings/index.md"
 
 # Reference
 section_header "Reference"
-add_page "/reference/changelog/"               "$CONTENT_DIR/reference/changelog/index.md"
-add_page "/reference/architecture-overview/"      "$CONTENT_DIR/reference/architecture-overview/index.md"
-add_page "/reference/tools/"                      "$CONTENT_DIR/reference/tools/index.md"
-add_page "/reference/components/host-client/"     "$CONTENT_DIR/reference/components/host-client/index.md"
-add_page "/reference/components/generator-client/"  "$CONTENT_DIR/reference/components/generator-client/index.md"
-add_page "/reference/components/outpost/"         "$CONTENT_DIR/reference/components/outpost/index.md"
-add_page "/reference/components/relayer/"         "$CONTENT_DIR/reference/components/relayer/index.md"
-add_page "/reference/components/shinzohub/"       "$CONTENT_DIR/reference/components/shinzohub/index.md"
-add_page "/reference/components/viewkit/"         "$CONTENT_DIR/reference/components/viewkit/index.md"
+add_page "/reference/architecture/"  "$CONTENT_DIR/reference/architecture/index.md"
+add_page "/reference/changelog/"     "$CONTENT_DIR/reference/changelog/index.md"
+add_page "/reference/tools/"         "$CONTENT_DIR/reference/tools/index.md"
 add_glossary_page "/reference/glossary/"
+add_page "/reference/components/generator-client/" "$CONTENT_DIR/reference/components/generator-client/index.md"
+add_page "/reference/components/host-client/"      "$CONTENT_DIR/reference/components/host-client/index.md"
+add_page "/reference/components/shinzohub/"        "$CONTENT_DIR/reference/components/shinzohub/index.md"
+add_page "/reference/components/sourcehub/"        "$CONTENT_DIR/reference/components/sourcehub/index.md"
+add_page "/reference/components/outpost/"          "$CONTENT_DIR/reference/components/outpost/index.md"
+add_page "/reference/components/viewkit/"          "$CONTENT_DIR/reference/components/viewkit/index.md"
+add_page "/reference/components/defradb/"          "$CONTENT_DIR/reference/components/defradb/index.md"
+add_page "/reference/components/lens/"             "$CONTENT_DIR/reference/components/lens/index.md"
+add_page "/reference/components/relayer/"          "$CONTENT_DIR/reference/components/relayer/index.md"
+add_page "/reference/data-model/"                   "$CONTENT_DIR/reference/data-model/_index.md"
+add_page "/reference/data-model/primitives/"        "$CONTENT_DIR/reference/data-model/primitives/index.md"
+add_page "/reference/data-model/signatures/"        "$CONTENT_DIR/reference/data-model/signatures/index.md"
+add_page "/reference/data-model/attestation-record/" "$CONTENT_DIR/reference/data-model/attestation-record/index.md"
+add_page "/reference/data-model/naming-convention/" "$CONTENT_DIR/reference/data-model/naming-convention/index.md"
+add_page "/reference/data-model/defradb-metadata/"  "$CONTENT_DIR/reference/data-model/defradb-metadata/index.md"
+add_page "/reference/data-model/schema-directives/" "$CONTENT_DIR/reference/data-model/schema-directives/index.md"
+add_page "/reference/graphql-api/"     "$CONTENT_DIR/reference/graphql-api/index.md"
+add_page "/reference/specs-and-limits/" "$CONTENT_DIR/reference/specs-and-limits/index.md"
 
 echo "Written $(wc -l < "$LLMS_TXT") lines → $LLMS_TXT"
 echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"

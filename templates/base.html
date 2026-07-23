@@ -45,20 +45,12 @@
 <body>
 <div class="layout">
 
-  {# ─── Navbar ─── #}
-  {# Current path is used to highlight the active top-nav entry; active
-     matching itself is driven by config.extra.navbar (see macros/navbar.html). #}
+  {# Navbar #}
+  {# Top-nav items and active-section highlighting are driven by
+     config.extra.navbar (see macros/navbar.html). #}
   {%- if page %}{% set cur_path = page.path %}
   {%- elif section %}{% set cur_path = section.path %}
   {%- else %}{% set cur_path = "/" %}{% endif -%}
-  {%- set trimmed = cur_path | trim_start_matches(pat="/") -%}
-  {%- if trimmed == "" or trimmed is starting_with("introduction/") %}{% set nav_section = "introduction" %}
-  {%- elif trimmed is starting_with("generator/") %}{% set nav_section = "generator" %}
-  {%- elif trimmed is starting_with("hosts/") %}{% set nav_section = "hosts" %}
-  {%- elif trimmed is starting_with("views/") %}{% set nav_section = "views" %}
-  {%- elif trimmed is starting_with("guides/") %}{% set nav_section = "guides" %}
-  {%- elif trimmed is starting_with("reference/") %}{% set nav_section = "reference" %}
-  {%- else %}{% set nav_section = "" %}{% endif -%}
   <header class="navbar">
     <div class="navbar__inner">
       <button type="button" class="navbar__hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -73,12 +65,7 @@
       </a>
 
       <ul class="navbar__items navbar__items--left">
-        <li><a class="navbar__link{% if nav_section == 'introduction' %} navbar__link--active{% endif %}" href="/">Introduction</a></li>
-        <li><a class="navbar__link{% if nav_section == 'generator' %} navbar__link--active{% endif %}" href="/generator/overview/">Generator</a></li>
-        <li><a class="navbar__link{% if nav_section == 'hosts' %} navbar__link--active{% endif %}" href="/hosts/overview/">Hosts</a></li>
-        <li><a class="navbar__link{% if nav_section == 'views' %} navbar__link--active{% endif %}" href="/views/overview/">Views</a></li>
-        <li><a class="navbar__link{% if nav_section == 'guides' %} navbar__link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a></li>
-        <li><a class="navbar__link{% if nav_section == 'reference' %} navbar__link--active{% endif %}" href="/reference/architecture-overview/">Reference</a></li>
+        {{ navbar::render(current=cur_path, base_class="navbar__link", active_class="navbar__link--active") }}
       </ul>
 
       <div class="navbar__items navbar__items--right">
@@ -95,16 +82,11 @@
     </div>
   </header>
 
-  {# ─── Mobile navigation drawer ─── #}
+  {# Mobile navigation drawer #}
   <div class="mobile-menu-backdrop" hidden></div>
   <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
     <nav class="mobile-menu__top" aria-label="Sections">
-      <a class="mobile-menu__top-link{% if nav_section == 'introduction' %} mobile-menu__top-link--active{% endif %}" href="/">Introduction</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'generator' %} mobile-menu__top-link--active{% endif %}" href="/generator/overview/">Generator</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'hosts' %} mobile-menu__top-link--active{% endif %}" href="/hosts/overview/">Hosts</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'views' %} mobile-menu__top-link--active{% endif %}" href="/views/overview/">Views</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'guides' %} mobile-menu__top-link--active{% endif %}" href="/guides/building-apps-with-shinzo/">Guides</a>
-      <a class="mobile-menu__top-link{% if nav_section == 'reference' %} mobile-menu__top-link--active{% endif %}" href="/reference/architecture-overview/">Reference</a>
+      {% for item in config.extra.navbar %}{{ navbar::link(item=item, cur_path=cur_path, base_class="mobile-menu__top-link", active_class="mobile-menu__top-link--active") }}{% endfor %}
     </nav>
     <div class="mobile-menu__divider"></div>
     {# Child templates inject the shared sidebar nav here (they import the
@@ -112,10 +94,10 @@
     {% block mobile_sidebar %}{% endblock mobile_sidebar %}
   </aside>
 
-  {# ─── Body ─── #}
+  {# Body #}
   {% block body %}{% endblock body %}
 
-  {# ─── Footer ─── #}
+  {# Footer #}
   {{ footer_macro::render() }}
 
 </div>

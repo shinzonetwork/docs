@@ -1,4 +1,4 @@
-// Shinzo Developer Portal — ported theme (light mode only).
+// Shinzo Developer Portal - ported theme (light mode only).
 // Ported from docs/src/css/custom.scss + docs/src/theme/Footer/styles.module.css.
 // Infima is not present in Zola, so layout primitives that Docusaurus relied on
 // (navbar bar, sidebar grid, content column, breadcrumbs, admonitions, code
@@ -6,11 +6,11 @@
 
 @import "fonts";
 
-/* ─── Theme variables ──────────────────────────────────────────────────
+/* Theme variables
    Light defaults live on :root; the `[data-theme="dark"]` block below
    overrides them. A tiny inline script in <head> sets data-theme before
    paint (no FOUC), and the toggle button lets the user override the
-   system preference (persisted in localStorage). ─────────────────────── */
+   system preference (persisted in localStorage). */
 :root {
   --background: #fff;
   --foreground: #353535;
@@ -92,15 +92,21 @@
   // Dropdown / popover shadow
   --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.12);
 
+  // Portal card surface
+  --card-background: #f7f7f7;
+  --card-border: #e0e0e0;
+  --card-text-muted: #555;
+  --card-hover-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
   @media (max-width: 996px) {
     --navbar-height: 4rem;
   }
 }
 
-/* ─── Dark theme overrides ──────────────────────────────────────────────
+/* Dark theme overrides
    Brand-derived dark palette: same brand reds (lightened for contrast on
    dark surfaces), code tokens retuned off the dark code surface, and
-   admonition tints darkened so they don't glow. ──────────────────────── */
+   admonition tints darkened so they don't glow. */
 [data-theme="dark"] {
   --background: #1a1a1a;
   --foreground: #e8e8e8;
@@ -121,7 +127,7 @@
 
   --docs-menu-border: #2e2e2e;
 
-  // Code tokens — brand hues lifted for legibility on a dark surface.
+  // Code tokens - brand hues lifted for legibility on a dark surface.
   --code-foreground: #e8e8e8;
   --code-background: #232323;
   --code-border: #3a3a3a;
@@ -154,9 +160,15 @@
   --admonition-warning-title: #f1c44d;
 
   --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  // Portal card surface - lifted above the page background.
+  --card-background: #232323;
+  --card-border: #3a3a3a;
+  --card-text-muted: #a8a8a8;
+  --card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* ─── Base / reset ───────────────────────────────────────────────────── */
+/* Base / reset */
 *,
 *::before,
 *::after {
@@ -220,7 +232,7 @@ p {
   position: relative;
 }
 
-/* ─── Layout shell ───────────────────────────────────────────────────── */
+/* Layout shell */
 .layout {
   display: flex;
   flex-direction: column;
@@ -241,7 +253,7 @@ p {
   width: 100%;
 }
 
-/* ─── Navbar ─────────────────────────────────────────────────────────── */
+/* Navbar */
 .navbar {
   position: sticky;
   top: 0;
@@ -263,7 +275,7 @@ p {
   gap: 1.5rem;
 }
 
-// Hamburger button — hidden on desktop, shown on mobile (see mobile media query)
+// Hamburger button - hidden on desktop, shown on mobile (see mobile media query)
 .navbar__hamburger {
   display: none;
   flex-direction: column;
@@ -312,13 +324,14 @@ p {
 
 // Theme-aware logo: show the matching variant. The dark (-w.svg) mark is
 // hidden by default and revealed only when [data-theme="dark"] is on :root.
-.navbar__logo .logo-dark {
+// Uses img.logo-* selectors (specificity 0,1,1) to override .navbar__logo img.
+img.logo-dark {
   display: none;
 }
-[data-theme="dark"] .navbar__logo .logo-light {
+[data-theme="dark"] img.logo-light {
   display: none;
 }
-[data-theme="dark"] .navbar__logo .logo-dark {
+[data-theme="dark"] img.logo-dark {
   display: block;
 }
 
@@ -370,7 +383,7 @@ p {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg fill='%23e8e8e8' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E");
 }
 
-/* ─── Theme toggle ───────────────────────────────────────────────────── */
+/* Theme toggle */
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -410,7 +423,7 @@ p {
   display: block;
 }
 
-/* ─── Sidebar ────────────────────────────────────────────────────────── */
+/* Sidebar */
 .theme-doc-sidebar-container {
   flex: 0 0 18rem;
   width: 18rem;
@@ -486,7 +499,7 @@ p {
   }
 }
 
-// Category labels (non-link section headers) — dimmed, non-clickable.
+// Category labels (non-link section headers) - dimmed, non-clickable.
 .menu__list-item-collapsible .menu__link--category {
   cursor: default;
   opacity: 0.45;
@@ -497,7 +510,7 @@ p {
   }
 }
 
-/* ─── Breadcrumbs ────────────────────────────────────────────────────── */
+/* Breadcrumbs */
 // `.markdown ul` adds a left padding to every list; override it here so the
 // breadcrumbs sit flush against the left edge of the content column.
 .markdown ul.breadcrumbs,
@@ -528,11 +541,20 @@ p {
   }
 }
 
-/* ─── Doc content column ─────────────────────────────────────────────── */
+/* Doc content column */
 .docs-content {
   flex: 1 1 auto;
   min-width: 0;
   padding: 1rem 2rem 3rem;
+}
+
+.docs-content--portal {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.docs-content--portal .docItemCol {
+  max-width: none;
 }
 
 .docItemCol {
@@ -540,7 +562,7 @@ p {
   margin: 0 auto;
 }
 
-/* ─── Table of contents (right column) ───────────────────────────────── */
+/* Table of contents (right column) */
 .toc-container {
   flex: 0 0 16rem;
   width: 16rem;
@@ -669,7 +691,7 @@ p {
   }
 }
 
-/* ─── Inline + block code ────────────────────────────────────────────── */
+/* Inline + block code */
 code {
   font-family: var(--font-family-monospace);
   font-size: var(--code-font-size);
@@ -700,7 +722,7 @@ pre {
   }
 }
 
-/* ─── Copy code button ───────────────────────────────────────────────── */
+/* Copy code button */
 .code-block-wrapper {
   position: relative;
 
@@ -758,7 +780,7 @@ pre {
   }
 }
 
-/* ─── Code tabs ({% tab %}, grouped by tabs.js) ──────────────────────── */
+/* Code tabs ({% tab %}, grouped by tabs.js) */
 .tabs {
   margin: 1rem 0;
 }
@@ -810,7 +832,7 @@ pre {
     margin-bottom: 0;
   }
   // copy-code.js wraps <pre> in .code-block-wrapper, whose <pre> keeps its own
-  // 1rem margins — zero those at the panel edges too.
+  // 1rem margins - zero those at the panel edges too.
   > .code-block-wrapper:first-child > pre,
   > .code-block-wrapper:last-child > pre {
     margin-top: 0;
@@ -818,7 +840,7 @@ pre {
   }
 }
 
-/* ─── Output code blocks (```output) ─────────────────────────────────── */
+/* Output code blocks (```output) */
 // Rendered by Zola as <pre><code data-lang="output">...). The "output"
 // language is registered via extra_grammars (grammars/output.json) so Zola
 // keeps the data-lang attribute instead of folding it to "plain".
@@ -866,7 +888,7 @@ pre {
   margin-top: 0;
 }
 
-/* ─── Changelog ──────────────────────────────────────────────────────── */
+/* Changelog */
 .changelog {
   h2 {
     margin-top: 2.5rem;
@@ -924,7 +946,7 @@ pre {
   }
 }
 
-/* ─── Admonitions (:::info / :::warning / :::note / :::tip) ───────────── */
+/* Admonitions (:::info / :::warning / :::note / :::tip) */
 .admonition {
   border: 1px solid var(--szo-border);
   border-radius: var(--alert-border-radius);
@@ -974,7 +996,7 @@ pre {
   }
 }
 
-/* ─── Mermaid containers ─────────────────────────────────────────────── */
+/* Mermaid containers */
 .mermaid-container {
   margin: 1.5rem 0;
   padding: 1rem;
@@ -1001,7 +1023,7 @@ pre {
   }
 }
 
-/* ─── Footnotes ──────────────────────────────────────────────────────── */
+/* Footnotes */
 // Zola (pulldown-cmark) emits, per footnote:
 //   <div class="footnote-definition" id="1">
 //     <sup class="footnote-definition-label">1</sup>
@@ -1058,7 +1080,7 @@ pre {
   }
 }
 
-/* ─── Pagination (prev / next) ───────────────────────────────────────── */
+/* Pagination (prev / next) */
 .pagination-nav {
   display: flex;
   justify-content: space-between;
@@ -1090,7 +1112,7 @@ pre {
   font-weight: 500;
 }
 
-/* ─── Search ─────────────────────────────────────────────────────────── */
+/* Search */
 .search-box {
   position: relative;
   margin-left: auto;
@@ -1147,7 +1169,7 @@ pre {
   }
 }
 
-/* ─── Footer (ported from Footer/styles.module.css) ──────────────────── */
+/* Footer (ported from Footer/styles.module.css) */
 .footer {
   background: var(--background);
   border-top: 1px solid var(--szo-border);
@@ -1285,7 +1307,7 @@ pre {
   color: var(--foreground);
 }
 
-/* ─── Glossary ───────────────────────────────────────────────────────── */
+/* Glossary */
 .glossary {
   margin: 1.5rem 0;
 }
@@ -1328,27 +1350,60 @@ pre {
   margin-right: 0.25rem;
 }
 
-/* ─── Homepage hero ──────────────────────────────────────────────────── */
+/* Homepage hero */
 .hero {
-  padding: 4rem var(--spacing-horizontal);
-  max-width: var(--root-wrapper-width);
-  margin: 0 auto;
+  padding: 3rem 0 2rem;
+  text-align: center;
+}
+
+.hero__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .hero__logo {
-  max-width: 480px;
+  max-width: 280px;
   width: 100%;
   height: auto;
-  margin-bottom: 2rem;
 }
 
 .hero__tagline {
+  margin: 0;
   font-family: var(--heading-font-family);
-  font-size: 1.5rem;
+  font-size: 2.25rem;
+  line-height: var(--heading-line-height);
+  font-weight: var(--heading-font-weight);
   color: var(--foreground);
 }
 
-/* ─── Mobile navigation drawer ───────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero {
+    padding-top: 1.5rem;
+  }
+
+  .hero__logo {
+    max-width: 200px;
+  }
+
+  .hero__tagline {
+    font-size: 1.75rem;
+  }
+}
+
+/* Portal intro strip */
+.portal-intro {
+  max-width: 65ch;
+  margin: 2rem auto 2.5rem;
+  text-align: center;
+  font-size: 1.25rem;
+  line-height: 1.65;
+  color: var(--foreground);
+  opacity: 0.85;
+}
+
+/* Mobile navigation drawer */
 .mobile-menu-backdrop {
   position: fixed;
   inset: 0;
@@ -1422,7 +1477,7 @@ body.mobile-menu-open {
   overflow: hidden;
 }
 
-/* ─── Mobile ─────────────────────────────────────────────────────────── */
+/* Mobile */
 @media (max-width: 996px) {
   .theme-doc-sidebar-container {
     display: none;
@@ -1448,4 +1503,132 @@ body.mobile-menu-open {
   .mobile-menu-backdrop {
     display: none !important;
   }
+}
+
+// Portal landing (home page track cards)
+.portal-tracks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .portal-tracks {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border: 1px solid var(--card-border);
+  border-top: 3px solid var(--card-border);
+  border-radius: 0.5rem;
+  background: var(--card-background);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.portal-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-2px);
+}
+
+.portal-card__icon {
+  margin-bottom: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.6;
+}
+
+.portal-card__icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.portal-card__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.portal-card__desc {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--card-text-muted);
+}
+
+// Featured cards: Build apps and Run infrastructure.
+.portal-card--featured {
+  border-top: 3px solid var(--color-primary);
+  background: var(--card-background);
+  padding: 2rem 1.75rem;
+  min-height: 220px;
+  justify-content: flex-start;
+}
+
+.portal-card--featured .portal-card__icon {
+  color: var(--color-primary);
+  opacity: 1;
+  margin-bottom: 1rem;
+}
+
+.portal-card--featured .portal-card__icon svg {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.portal-card--featured .portal-card__title {
+  color: var(--color-primary-darker);
+  font-size: 1.35rem;
+  margin-bottom: 0.625rem;
+}
+
+.portal-card--featured .portal-card__desc {
+  font-size: 1rem;
+}
+
+// Portal quick links
+.portal-quicklinks {
+  max-width: 1200px;
+  margin: 2.5rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--szo-border);
+}
+
+.portal-quicklinks__heading {
+  margin: 0 0 0.75rem;
+  font-family: var(--heading-font-family);
+  font-size: 0.8rem;
+  font-weight: var(--heading-font-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.portal-quicklinks__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 1.75rem;
+}
+
+.portal-quicklinks__link {
+  color: var(--foreground);
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.portal-quicklinks__link:hover {
+  color: var(--color-primary);
+  opacity: 1;
+  text-decoration: underline;
 }

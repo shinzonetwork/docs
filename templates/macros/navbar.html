@@ -9,3 +9,13 @@
   {% if item.section and cur_path is starting_with("/" ~ item.section ~ "/") %}{% set is_active = true %}{% endif %}
   <a class="{{ base_class }}{% if is_active %} {{ active_class }}{% endif %}" href="{{ item.href }}">{{ item.label }}</a>
 {% endmacro link %}
+
+{# Render the full navbar as a list of <li> items, driven by config.extra.navbar. #}
+{% macro render(current, base_class, active_class) %}
+  {% for item in config.extra.navbar %}
+    {% set is_active = false %}
+    {% if item.root and current == "/" %}{% set is_active = true %}{% endif %}
+    {% if item.section and current is starting_with("/" ~ item.section ~ "/") %}{% set is_active = true %}{% endif %}
+    <li><a class="{{ base_class }}{% if is_active %} {{ active_class }}{% endif %}" href="{{ item.href }}">{{ item.label }}</a></li>
+  {% endfor %}
+{% endmacro render %}

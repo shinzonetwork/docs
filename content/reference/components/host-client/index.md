@@ -239,7 +239,7 @@ Port 8080 exposes Prometheus metrics: block processing rates, attestation counts
 
 ## Resource requirements
 
-See the [hardware requirements page](/hosts/hardware-requirements/) for current minimum and recommended specs. Host storage depends mainly on the number of Views served and whether pruning is enabled (the default).
+See the [hardware requirements page](/run/run-a-host/hardware-requirements/) for current minimum and recommended specs. Host storage depends mainly on the number of Views served and whether pruning is enabled (the default).
 
 ## Key files
 

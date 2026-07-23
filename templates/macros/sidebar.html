@@ -1,8 +1,10 @@
-{# Sidebar navigation. The entire tree (categories, pages, and the Reference
-   "Components" subsection) is read from config.toml ([extra.sidebar]). Page
-   titles are resolved from front matter via get_page, so only the order and
-   category labels are owned by the config. Pages are NOT auto-discovered:
-   adding a new doc page means listing it in config.toml. #}
+{# Sidebar navigation, per section.
+   The tree is read from config.toml ([extra.sidebar]). Each block carries a
+   `section` field ("home", "understand", "build", "run", "reference"); the
+   macro determines the active section from the current path and renders only
+   the matching groups. Page titles are resolved from front matter via
+   get_page / get_section. Pages are NOT auto-discovered: a new doc page must
+   be listed in config.toml. #}
 
 {% macro link(title, path, current) %}
   {% if current == path %}
@@ -26,31 +28,33 @@
 {% macro render(current) %}
 <nav class="menu" aria-label="Docs sidebar">
   <ul class="menu__list">
+    {# Determine the active section from the current path. #}
+    {% if current == "/" %}
+      {% set cur_section = "home" %}
+    {% else %}
+      {% set cur_section = current | trim_start_matches(pat="/") | split(pat="/") | first %}
+    {% endif %}
+
     {% for cat in config.extra.sidebar %}
-      <li class="menu__list-item">
-        <div class="menu__list-item-collapsible">
-          <span class="menu__link menu__link--category">{{ cat.label }}</span>
-        </div>
-        <ul class="menu__list">
-          {% if cat.root %}
-            {% set root = get_section(path="_index.md") %}
-            <li class="menu__list-item">{{ self::link(title=root.title, path=root.path, current=current) }}</li>
-          {% endif %}
-          {% for p in cat.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
-          {% if cat.subsections %}
-            {% for sub in cat.subsections %}
-              <li class="menu__list-item">
-                <div class="menu__list-item-collapsible">
-                  <span class="menu__link menu__link--category">{{ sub.label }}</span>
-                </div>
-                <ul class="menu__list">
-                  {% for p in sub.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
-                </ul>
-              </li>
-            {% endfor %}
-          {% endif %}
-        </ul>
-      </li>
+      {% if cat.section == cur_section %}
+        <li class="menu__list-item">
+          <div class="menu__list-item-collapsible">
+            {% if cat.page %}
+              {% set s = get_section(path=cat.page) %}
+              {% if current == s.path %}
+                <a class="menu__link menu__link--category menu__link--active" href="{{ s.path }}">{{ cat.label }}</a>
+              {% else %}
+                <a class="menu__link menu__link--category" href="{{ s.path }}">{{ cat.label }}</a>
+              {% endif %}
+            {% else %}
+              <span class="menu__link menu__link--category">{{ cat.label }}</span>
+            {% endif %}
+          </div>
+          <ul class="menu__list">
+            {% for p in cat.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
+          </ul>
+        </li>
+      {% endif %}
     {% endfor %}
   </ul>
 </nav>

@@ -27,7 +27,7 @@
           {% set anchor = term.term | slugify %}
           <dt id="{{ anchor }}" class="glossary__term">
             <a href="#{{ anchor }}">{{ term.term }}</a>
-            {% if term.abbreviation %}<span class="glossary__abbr"> — {{ term.abbreviation }}</span>{% endif %}
+            {% if term.abbreviation %}<span class="glossary__abbr"> - {{ term.abbreviation }}</span>{% endif %}
           </dt>
           <dd class="glossary__definition">
             {% if term.definition %}{{ term.definition | markdown(inline=true) | safe }}{% endif %}
