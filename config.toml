@@ -93,7 +93,7 @@ section = "reference"
 #   from front matter.
 # Pages are NOT auto-discovered: a new doc page must be listed here to appear.
 
-# ── Understand ──
+# Understand
 [[extra.sidebar]]
 section = "understand"
 label = "Basics"
@@ -113,7 +113,7 @@ pages = [
   "understand/core-concepts/shnz-token/index.md",
 ]
 
-# ── Build apps ──
+# Build apps
 [[extra.sidebar]]
 section = "build"
 label = "Develop"
@@ -131,7 +131,7 @@ pages = [
   "build/concepts/views-for-builders/index.md",
 ]
 
-# ── Run infrastructure ──
+# Run infrastructure
 [[extra.sidebar]]
 section = "run"
 label = "Quickstart"
@@ -169,7 +169,7 @@ pages = [
   "run/operations/troubleshooting/index.md",
 ]
 
-# ── Reference ──
+# Reference
 [[extra.sidebar]]
 section = "reference"
 label = "Reference"

@@ -6,7 +6,7 @@
 <main class="main-wrapper">
   <div class="docs-content docs-content--portal">
 
-    {# ─── Hero: brand mark + tagline ─── #}
+    {# Hero #}
     <section class="hero">
       <div class="hero__brand">
         <img class="hero__logo logo-light" src="/img/shinzo-logo-hero.svg" alt="" aria-hidden="true" />
@@ -15,13 +15,12 @@
       </div>
     </section>
 
-    {# ─── What is Shinzo: short value-prop strip from the section body ─── #}
+    {# Intro strip (rendered from the section body) #}
     <article class="portal-intro markdown">
       {{ section.content | safe }}
     </article>
 
-    {# ─── Track cards: Build apps & Run infrastructure are the primary
-         funnels (featured); Understand & Reference are secondary. ─── #}
+    {# Track cards #}
     <div class="portal-tracks">
       <a class="portal-card portal-card--featured" href="/build/create-a-view/">
         <div class="portal-card__icon" aria-hidden="true">
@@ -56,7 +55,7 @@
       </a>
     </div>
 
-    {# ─── Quick links: entry points that don't fit the four tracks ─── #}
+    {# Quick links #}
     <section class="portal-quicklinks" aria-label="Quick links">
       <h2 class="portal-quicklinks__heading">Quick links</h2>
       <ul class="portal-quicklinks__list">

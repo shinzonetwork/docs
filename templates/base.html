@@ -45,7 +45,7 @@
 <body>
 <div class="layout">
 
-  {# ─── Navbar ─── #}
+  {# Navbar #}
   {# Top-nav items and active-section highlighting are driven by
      config.extra.navbar (see macros/navbar.html). #}
   {%- if page %}{% set cur_path = page.path %}
@@ -82,7 +82,7 @@
     </div>
   </header>
 
-  {# ─── Mobile navigation drawer ─── #}
+  {# Mobile navigation drawer #}
   <div class="mobile-menu-backdrop" hidden></div>
   <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
     <nav class="mobile-menu__top" aria-label="Sections">
@@ -94,10 +94,10 @@
     {% block mobile_sidebar %}{% endblock mobile_sidebar %}
   </aside>
 
-  {# ─── Body ─── #}
+  {# Body #}
   {% block body %}{% endblock body %}
 
-  {# ─── Footer ─── #}
+  {# Footer #}
   {{ footer_macro::render() }}
 
 </div>

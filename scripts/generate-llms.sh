@@ -98,7 +98,7 @@ add_page() {
     description="$(get_toml_field "$content_file" "description")"
     url="${BASE_URL}${url_path}"
 
-    # Index line — written to both files
+    # Index line - written to both files
     if [[ -n "$description" ]]; then
         printf -- '- [%s](%s): %s\n' "$title" "$url" "$description" \
             | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
@@ -107,7 +107,7 @@ add_page() {
             | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
     fi
 
-    # Full body — written to llms-full.txt only.
+    # Full body - written to llms-full.txt only.
     # collapse_blanks also strips leading/trailing blank lines.
     local body
     body="$(get_body "$content_file" | clean_body | collapse_blanks)"
