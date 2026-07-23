@@ -28,9 +28,10 @@
 {% macro render(current) %}
 <nav class="menu" aria-label="Docs sidebar">
   <ul class="menu__list">
-    {# Determine the active section from the current path. #}
+    {# Determine the active section from the current path. The root path
+       renders the Understand section's sidebar. #}
     {% if current == "/" %}
-      {% set cur_section = "home" %}
+      {% set cur_section = "understand" %}
     {% else %}
       {% set cur_section = current | trim_start_matches(pat="/") | split(pat="/") | first %}
     {% endif %}
@@ -51,6 +52,10 @@
             {% endif %}
           </div>
           <ul class="menu__list">
+            {% if cat.root %}
+              {% set root = get_section(path="_index.md") %}
+              <li class="menu__list-item">{{ self::link(title=root.title, path=root.path, current=current) }}</li>
+            {% endif %}
             {% for p in cat.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
           </ul>
         </li>

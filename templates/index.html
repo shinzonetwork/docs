@@ -14,17 +14,12 @@
     <div class="docs-content">
       <article class="docItemCol markdown">
 
-        {# Breadcrumbs. This page is the site root, so there is no URL path to
-           derive crumbs from (as page.html does). It lives conceptually under
-           the Introduction section, so the trail is hardcoded here. #}
         <ul class="breadcrumbs">
           <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Home</a></li>
-          <li class="breadcrumbs__item"><span class="breadcrumbs__link">Introduction</span></li>
+          <li class="breadcrumbs__item"><span class="breadcrumbs__link">Understand</span></li>
           <li class="breadcrumbs__item"><span class="breadcrumbs__link">{{ section.title }}</span></li>
         </ul>
 
-        {# Page title from front-matter. Rendered here (outside section.content)
-           so it is NOT part of the table of contents. #}
         <h1 class="doc-title">{{ section.title }}</h1>
 
         {{ section.content | safe }}

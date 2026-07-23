@@ -59,8 +59,9 @@ plausible_src = "https://plausible.source.network/js/script.js"
 
 [[extra.navbar]]
 label = "Understand"
-href = "/understand/what-is-shinzo/"
+href = "/"
 section = "understand"
+root = true
 
 [[extra.navbar]]
 label = "Build apps"
@@ -97,8 +98,8 @@ section = "reference"
 [[extra.sidebar]]
 section = "understand"
 label = "Basics"
+root = true
 pages = [
-  "understand/what-is-shinzo/index.md",
   "understand/how-it-works/index.md",
 ]
 
