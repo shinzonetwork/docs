@@ -215,7 +215,7 @@ Now that everything is set up, we can start creating and deploying views.
 
     This tells Viewkit that `testdeploy` will ingest `Log` objects with the specified fields.
 
-Then, check:
+1. Then, check:
 
     ```shell
     viewkit view inspect testdeploy
@@ -361,8 +361,9 @@ Then, check:
      - Updated At: 2026-07-09 09:39:11 +0000 UTC
     ```
 
-> ![TIP]
-> If you see `libwasmer.dylib` / "image not found" errors, revisit the Wasmer setup.
+{% admonition(type="tip") %}
+If you see `libwasmer.dylib` / "image not found" errors, revisit the Wasmer setup.
+{% end %}
 
 1. Before deploying, validate that your view builds and compiles successfully:
 
