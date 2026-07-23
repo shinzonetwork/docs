@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Monitoring"
 description = "Health checks, metrics endpoints, and alerting for production deployments."
 +++

@@ -9,4 +9,4 @@ Confirmed so far:
 - Funding: consumers prepay SHNZ into a View's contract, tied to their DID. The balance sits there until a Host client serves a query, at which point the current price is debited and credited to the creator's earnings.
 - Protocol cut: a flat percentage comes off every consumption event. It's enforced in the SVS-1 contract standard and can't be bypassed with a custom pricing contract.
 
-The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out. For the operator-facing side of earnings, see [Earnings](/run/earnings/). For the builder-facing side, see [Publish & earn](/build/publish-and-earn/).
+The broader token design (staking incentives, Host earnings, slashing, the final fee rate) is still being worked out.

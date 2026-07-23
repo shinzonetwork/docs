@@ -43,7 +43,7 @@ If you lose your `node-identity-key`, your node's identity is permanently lost.
 - You must register again with a new identity
 - The new node may use the same EVM address, but it will be treated as a new identity
 
-To avoid this, always back up your node-identity-key. See [Key and identity management](/run/operations/key-and-identity-management/).
+To avoid this, always back up your node-identity-key.
 
 ### How can I backup my keys?
 
@@ -52,8 +52,6 @@ By default your DefraDB keys are stored in `~/.defra/keys`. To back them up, sim
 ```shell
 cp -r ~/.defra/keys /mnt/backup-drive/
 ```
-
-See [Backups](/run/operations/backups/) for more.
 
 ### What types of data are indexed?
 

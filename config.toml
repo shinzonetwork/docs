@@ -100,7 +100,6 @@ label = "Basics"
 pages = [
   "understand/what-is-shinzo/index.md",
   "understand/how-it-works/index.md",
-  "understand/eli5-architecture/index.md",
 ]
 
 [[extra.sidebar]]
@@ -119,11 +118,9 @@ pages = [
 section = "build"
 label = "Develop"
 pages = [
-  "build/your-first-app/index.md",
   "build/create-a-view/index.md",
   "build/build-an-app/index.md",
   "build/query-data/index.md",
-  "build/publish-and-earn/index.md",
 ]
 
 [[extra.sidebar]]
@@ -132,8 +129,6 @@ label = "Concepts"
 page = "build/concepts/_index.md"
 pages = [
   "build/concepts/views-for-builders/index.md",
-  "build/concepts/economics-of-views/index.md",
-  "build/concepts/attestation-as-a-query-filter/index.md",
 ]
 
 # ── Run infrastructure ──
@@ -171,18 +166,7 @@ section = "run"
 label = "Operations"
 page = "run/operations/_index.md"
 pages = [
-  "run/operations/key-and-identity-management/index.md",
-  "run/operations/backups/index.md",
-  "run/operations/monitoring/index.md",
   "run/operations/troubleshooting/index.md",
-]
-
-[[extra.sidebar]]
-section = "run"
-label = "Advanced"
-pages = [
-  "run/private-hosts/index.md",
-  "run/earnings/index.md",
 ]
 
 # ── Reference ──
@@ -203,32 +187,10 @@ pages = [
   "reference/components/generator-client/index.md",
   "reference/components/host-client/index.md",
   "reference/components/shinzohub/index.md",
-  "reference/components/sourcehub/index.md",
   "reference/components/outpost/index.md",
   "reference/components/viewkit/index.md",
-  "reference/components/defradb/index.md",
   "reference/components/lens/index.md",
   "reference/components/relayer/index.md",
 ]
 
-[[extra.sidebar]]
-section = "reference"
-label = "Data model"
-page = "reference/data-model/_index.md"
-pages = [
-  "reference/data-model/primitives/index.md",
-  "reference/data-model/signatures/index.md",
-  "reference/data-model/attestation-record/index.md",
-  "reference/data-model/naming-convention/index.md",
-  "reference/data-model/defradb-metadata/index.md",
-  "reference/data-model/schema-directives/index.md",
-]
-
-[[extra.sidebar]]
-section = "reference"
-label = "API & specs"
-pages = [
-  "reference/graphql-api/index.md",
-  "reference/specs-and-limits/index.md",
-]
 # ---------------------------------------

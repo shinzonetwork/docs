@@ -312,15 +312,15 @@ p {
 
 // Theme-aware logo: show the matching variant. The dark (-w.svg) mark is
 // hidden by default and revealed only when [data-theme="dark"] is on :root.
-// Applies to any element using the .logo-light / .logo-dark pair (navbar,
-// homepage hero, etc.).
-.logo-dark {
+// Uses img.logo-* selectors (specificity 0,1,1) to override .navbar__logo img
+// { display: block } above. Applies to any img using logo-light / logo-dark.
+img.logo-dark {
   display: none;
 }
-[data-theme="dark"] .logo-light {
+[data-theme="dark"] img.logo-light {
   display: none;
 }
-[data-theme="dark"] .logo-dark {
+[data-theme="dark"] img.logo-dark {
   display: block;
 }
 

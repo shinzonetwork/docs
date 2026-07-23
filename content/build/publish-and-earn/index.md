@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Publish & earn"
 description = "How to publish Views to the network and earn SHNZ from consumption."
 +++

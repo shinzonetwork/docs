@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Specs & limits"
 description = "Technical specifications, throughput limits, and supported configurations."
 +++

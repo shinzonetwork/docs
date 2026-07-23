@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Earnings"
 description = "How Host and Generator operators earn SHNZ from network participation."
 +++
