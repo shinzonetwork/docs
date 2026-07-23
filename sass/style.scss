@@ -92,6 +92,12 @@
   // Dropdown / popover shadow
   --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.12);
 
+  // Portal card surface
+  --card-background: #f7f7f7;
+  --card-border: #e0e0e0;
+  --card-text-muted: #555;
+  --card-hover-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
   @media (max-width: 996px) {
     --navbar-height: 4rem;
   }
@@ -154,6 +160,12 @@
   --admonition-warning-title: #f1c44d;
 
   --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  // Portal card surface - lifted above the page background.
+  --card-background: #232323;
+  --card-border: #3a3a3a;
+  --card-text-muted: #a8a8a8;
+  --card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Base / reset */
@@ -1512,10 +1524,10 @@ body.mobile-menu-open {
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  border: 1px solid var(--ifm-color-emphasis-200, #e0e0e0);
-  border-top: 3px solid var(--ifm-color-emphasis-200, #e0e0e0);
+  border: 1px solid var(--card-border);
+  border-top: 3px solid var(--card-border);
   border-radius: 0.5rem;
-  background: var(--ifm-color-emphasis-100, #f7f7f7);
+  background: var(--card-background);
   text-decoration: none;
   color: inherit;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
@@ -1523,7 +1535,7 @@ body.mobile-menu-open {
 
 .portal-card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-hover-shadow);
   transform: translateY(-2px);
 }
 
@@ -1548,13 +1560,13 @@ body.mobile-menu-open {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--ifm-color-emphasis-600, #555);
+  color: var(--card-text-muted);
 }
 
 // Featured cards: Build apps and Run infrastructure.
 .portal-card--featured {
   border-top: 3px solid var(--color-primary);
-  background: var(--ifm-color-emphasis-100, #f7f7f7);
+  background: var(--card-background);
   padding: 2rem 1.75rem;
   min-height: 220px;
   justify-content: flex-start;
