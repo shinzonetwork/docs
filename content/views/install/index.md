@@ -136,6 +136,7 @@ We need to set three new environment variables:
     dummy.go  libwasmer.so
     ```
 
-> [!WARNING]
-> If `libwasmer.dylib` is missing, re-run the `go get` step and ensure `go env GOPATH` returns a valid path.
+{% admonition(type="warning") %}
+If `libwasmer.dylib` is missing, re-run the `go get` step and ensure `go env GOPATH` returns a valid path.
+{% end %}
 
