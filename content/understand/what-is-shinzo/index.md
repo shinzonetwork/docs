@@ -8,7 +8,7 @@ mermaid = true
 
 Shinzo is a decentralized indexing network for blockchains. It takes raw on-chain data and turns it into structured datasets that any application can query, without having to go through a centralized indexing service to get them.
 
-If you've built any kind web3 app before, you know the usual pattern: you pick a hosted indexer, pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that index the chain at the source and share the results peer to peer.
+If you've built any kind web3 app before, you know the usual pattern: you pick a centralized service provider (alchemy, infura), pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that index the chain at the source and share the results peer to peer.
 
 ## The problem Shinzo solves
 
@@ -66,7 +66,7 @@ There are several ways you can join the Shinzo network.
 
 ### Run a Generator client
 
-If you already operate an Ethereum node, adding a Generator client is cheap and easy. The Generator client itself is a sidecar, not a separate heavyweight service. It attaches to your existing execution client, reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/run/run-a-generator/hardware-requirements/) for sizing.
+If you already are an Ethereum validator, adding a Generator client is cheap and easy. The Generator client itself is a sidecar, not a separate heavyweight service. It attaches to your existing execution client, reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/run/run-a-generator/hardware-requirements/) for sizing.
 
 ### Run a Host
 

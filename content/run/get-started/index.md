@@ -30,7 +30,7 @@ Two containers through one shared Docker bridge. Both containers run on the same
 
 - Docker. 
 - Both `curl` and `jq`.
-- A reachable Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or a managed provider like Alchemy or QuickNode. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/run-a-generator/install/#do-you-need-an-api-key).
+- A live Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or any managed Geth node. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/run-a-generator/install/#do-you-need-an-api-key).
 
 You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/run/run-a-generator/register/) and [Host registration](/run/run-a-host/quickstart/#shinzohub-registration) pages.
 
