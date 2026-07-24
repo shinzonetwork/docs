@@ -41,6 +41,15 @@
 
   {# Plausible analytics (migrated from docusaurus.config scripts) #}
   <script defer data-domain="{{ config.extra.plausible_domain }}" src="{{ config.extra.plausible_src }}"></script>
+
+  {# Google Analytics 4 (gtag.js) #}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.extra.google_analytics_id }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ config.extra.google_analytics_id }}');
+  </script>
 </head>
 <body>
 <div class="layout">
