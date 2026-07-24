@@ -47,6 +47,8 @@ favicon = "/img/favicon.png"
 # Plausible analytics
 plausible_domain = "docs.shinzo.network"
 plausible_src = "https://plausible.source.network/js/script.js"
+# Google Analytics 4 (gtag.js)
+google_analytics_id = "G-VC59JRWDBZ"
 
 
 
