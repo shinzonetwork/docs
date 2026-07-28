@@ -1,14 +1,28 @@
-{# Single tab panel. tabs.js groups consecutive panels into a tabbed widget.
+{#- Tab panel start marker. Pair with {{ endtab() }}. 
 
-   IMPORTANT: separate consecutive {% tab %} calls with a blank line so
-   pulldown-cmark emits each panel as its own HTML block. Without it, the run
-   gets wrapped in a <p> (invalid: <div> inside <p>). Separate tab groups with
-   any other content (a paragraph, heading, etc.).
+Here's an example:
 
-   {% tab(label="npm") %} `npm install` {% end %}
+````markdown
+1. Run the client:
 
-   {% tab(label="yarn") %} `yarn install` {% end %} #}
+    {{ tab(label="Run as a binary") }}
+    ```shell
+    make start
+    ```
+    {{ endtab() }}
+
+    {{ tab(label="Without building the binary") }}
+    ```shell
+    go run cmd/main.go
+    ```
+    {{ endtab() }}
+
+1. Done!
+````
+
+The content between the markers is parsed by the page markdown parser (NOT re-parsed here), so fenced code blocks keep correct list-context indentation. tabs.js wraps the bounded content into a .tabs__panel and groups consecutive panels into a tabbed widget. 
+
+-#}
+
 {%- set tab_label = label | default(value="") -%}
-<div class="tabs__panel" data-tab-label="{{ tab_label }}">
-{{ body | markdown | safe }}
-</div>
+<div class="tabs__start" data-tab-label="{{ tab_label }}"></div>

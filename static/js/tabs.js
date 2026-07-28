@@ -1,10 +1,81 @@
-// Turns consecutive {% tab(label="...") %}...{% end %} panels into a tabbed
-// widget. Each `tab` shortcode renders a .tabs__panel; this script groups runs
-// of adjacent sibling panels, wraps each run in a .tabs container, builds a tab
-// bar from the panels' data-tab-label attributes, and shows only the first.
-// Without JS, every panel stacks in order, so content stays readable.
+// Turns {{ tab(label="...") }} ... {{ endtab() }} marker pairs into a tabbed
+// widget. Each `tab` shortcode renders a .tabs__start marker and each `endtab`
+// renders a .tabs__end marker; the page markdown parser handles the content
+// between them (so fenced code blocks keep correct list-context indentation).
+// This script collects the sibling nodes between each start/end pair into a
+// .tabs__panel, removes the markers, then groups runs of adjacent panels into
+// a .tabs container, builds a tab bar from the panels' data-tab-label
+// attributes, and shows only the first. Without JS, every panel's content
+// stacks in order, so content stays readable.
 (function () {
   var idCounter = 0;
+
+  // Whether a node is an ignorable whitespace-only text node.
+  function isBlank(node) {
+    return node.nodeType === 3 && /^\s*$/.test(node.nodeValue);
+  }
+
+  // Remove leading/trailing whitespace-only text nodes from a container.
+  function trimWhitespace(container) {
+    while (container.firstChild && isBlank(container.firstChild)) {
+      container.removeChild(container.firstChild);
+    }
+    while (container.lastChild && isBlank(container.lastChild)) {
+      container.removeChild(container.lastChild);
+    }
+  }
+
+  // Find the next element sibling matching `selector`, starting after `node`.
+  function findNextMarker(node, selector) {
+    var cur = node.nextSibling;
+    while (cur) {
+      if (cur.nodeType === 1 && cur.matches(selector)) return cur;
+      cur = cur.nextSibling;
+    }
+    return null;
+  }
+
+  // Build a .tabs__panel from each .tabs__start / .tabs__end marker pair:
+  // move every sibling between the markers into the panel, replace the start
+  // marker with the panel, and remove the end marker. Returns the panels in
+  // document order.
+  function buildPanels() {
+    var starts = Array.prototype.slice.call(
+      document.querySelectorAll(".tabs__start")
+    );
+    var panels = [];
+
+    starts.forEach(function (start) {
+      var end = findNextMarker(start, ".tabs__end");
+      if (!end) return; // unbalanced markers: leave content as-is
+
+      var panel = document.createElement("div");
+      panel.className = "tabs__panel";
+      panel.setAttribute(
+        "data-tab-label",
+        start.getAttribute("data-tab-label") || ""
+      );
+
+      // Move siblings between start (exclusive) and end (exclusive) in.
+      var node = start.nextSibling;
+      while (node && node !== end) {
+        var next = node.nextSibling;
+        panel.appendChild(node);
+        node = next;
+      }
+
+      trimWhitespace(panel);
+
+      // Replace the start marker with the panel, then drop the end marker.
+      start.parentNode.insertBefore(panel, start);
+      start.parentNode.removeChild(start);
+      end.parentNode.removeChild(end);
+
+      panels.push(panel);
+    });
+
+    return panels;
+  }
 
   // Collect maximal runs of consecutive .tabs__panel siblings (whitespace text
   // nodes between them are ignored). Returns an array of arrays.
@@ -24,7 +95,7 @@
 
       var node = panel.nextSibling;
       while (node) {
-        if (node.nodeType === 3 && /^\s*$/.test(node.nodeValue)) {
+        if (isBlank(node)) {
           node = node.nextSibling;
           continue;
         }
@@ -102,10 +173,11 @@
   }
 
   function init() {
-    var panels = Array.prototype.slice.call(
+    buildPanels();
+    var allPanels = Array.prototype.slice.call(
       document.querySelectorAll(".tabs__panel")
     );
-    var groups = groupPanels(panels);
+    var groups = groupPanels(allPanels);
     groups.forEach(build);
   }
 
