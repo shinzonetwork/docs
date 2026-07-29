@@ -53,7 +53,7 @@ By default your DefraDB keys are stored in `~/.defra/keys`. To back them up, sim
 cp -r ~/.defra/keys /mnt/backup-drive/
 ```
 
-### What types of data are indexed?
+### What type of data is indexed?
 
 All blockchain data is indexed, including blocks, transactions, logs, and storage access lists. The data is indexed by hash (block and transaction), block number, and document.
 
@@ -63,7 +63,7 @@ With pruning enabled (the default), the Generator's own data stays bounded at ro
 
 ### How long does it take to sync?
 
-Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The Generator client processes blocks approximately 2–4 seconds per block, which is faster than Ethereum's 12-second block time. This allows the Generator client to gradually close any sync gap after initial backfilling.
+Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The Generator client processes blocks approximately 2–4 seconds per block.
 
 ### How do I choose a start height?
 
@@ -105,7 +105,7 @@ The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is cor
 
 ### What is the difference between a Host and a Generator?
 
-Generator clients are the write side: they read raw blocks from an Ethereum execution node, sign the data, and gossip it over P2P. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node; a Host client never does. See the [Run a Host](/run/run-a-host/) overview for more.
+Generator clients are the write side: they read raw blocks from an Ethereum execution node, sign the data, gossip it over P2P, and provide attestations to prove the data is correct. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node, but a Host client never does. See the [Run a Host](/run/run-a-host/) overview for more.
 
 ### Do I need to run my own Generator client to run a Host client?
 
