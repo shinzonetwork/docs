@@ -13,8 +13,6 @@
 # config.toml ([extra.sidebar]) — the same source of truth the site sidebar
 # uses. Add a page to the sidebar there and it appears here; no per-page edits
 # are needed. Draft pages (draft = true) are skipped with a warning.
-#
-# Requires: jq (for glossary rendering).
 
 set -euo pipefail
 
@@ -167,12 +165,40 @@ add_glossary_page() {
 
     printf '\n### Glossary\n\n' >> "$LLMS_FULL_TXT"
 
-    jq -r '
-      .terms[] |
-      ("**" + .term + "**" + (if .abbreviation then " (" + .abbreviation + ")" else "" end)),
-      (if (.definition // "") != "" then ": " + .definition else empty end),
-      (if ((.relatedTerms // []) | length) > 0 then ": *Related: " + (.relatedTerms | join(", ")) + "*" else empty end),
-      ""
+    awk '
+        BEGIN { in_terms = 0; in_term = 0; in_related = 0 }
+        /"terms":[[:space:]]*\[/ { in_terms = 1; next }
+        in_terms && /^[[:space:]]*\{/ { in_term = 1; term = ""; abbr = ""; defn = ""; related = ""; next }
+        in_term && /^[[:space:]]*\}/ {
+            if (abbr != "") printf "**%s** (%s)\n", term, abbr
+            else printf "**%s**\n", term
+            if (defn != "") printf ": %s\n", defn
+            if (related != "") printf ": *Related: %s*\n", related
+            print ""
+            in_term = 0; in_related = 0; next
+        }
+        in_term && /"relatedTerms":[[:space:]]*\[/ { in_related = 1; next }
+        in_related && /^[[:space:]]*\]/ { in_related = 0; next }
+        in_related {
+            line = $0
+            gsub(/^[[:space:]]*"/, "", line)
+            sub(/",?[[:space:]]*$/, "", line)
+            gsub(/\\"/, "\"", line)
+            if (line != "") {
+                if (related != "") related = related ", "
+                related = related line
+            }
+            next
+        }
+        in_term && /"term":[[:space:]]*"/ { term = extract_field($0); next }
+        in_term && /"abbreviation":[[:space:]]*"/ { abbr = extract_field($0); next }
+        in_term && /"definition":[[:space:]]*"/ { defn = extract_field($0); next }
+        function extract_field(line) {
+            sub(/^[[:space:]]*"[^"]*":[[:space:]]*"/, "", line)
+            sub(/",?[[:space:]]*$/, "", line)
+            gsub(/\\"/, "\"", line)
+            return line
+        }
     ' "$DATA_DIR/glossary.json" >> "$LLMS_FULL_TXT"
 }
 
