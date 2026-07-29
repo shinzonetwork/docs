@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Generates llms.txt and llms-full.txt for docs.shinzo.network.
-# 
+#
 # 1. Run `zola build` to generate the `./public` directory.
 # 2. Run this script:
 #
@@ -8,7 +8,13 @@
 #   ./scripts/generate-llms.sh
 #   ```
 #
-# Output files are written to ./public/ or set OUTPUT_DIR to any other location. The page order mirrors the sidebar in templates/macros/sidebar.html.
+# Output files are written to ./public/ or set OUTPUT_DIR to any other location.
+# The page list and order are read automatically from the sidebar tree in
+# config.toml ([extra.sidebar]) — the same source of truth the site sidebar
+# uses. Add a page to the sidebar there and it appears here; no per-page edits
+# are needed. Draft pages (draft = true) are skipped with a warning.
+#
+# Requires: jq (for glossary rendering).
 
 set -euo pipefail
 
@@ -70,6 +76,32 @@ collapse_blanks() {
     '
 }
 
+# Derive a site URL path from a content-relative file path.
+#   understand/what-is-shinzo/index.md  -> /understand/what-is-shinzo/
+#   understand/core-concepts/_index.md  -> /understand/core-concepts/
+path_to_url() {
+    local rel="$1"
+    local dir stem
+    dir="$(dirname "$rel")"
+    stem="$(basename "${rel%.md}")"
+    if [[ "$stem" == "index" || "$stem" == "_index" ]]; then
+        printf '/%s/' "$dir"
+    else
+        printf '/%s/%s/' "$dir" "$stem"
+    fi
+}
+
+# Map a sidebar section key to its display title.
+section_title() {
+    case "$1" in
+        understand) printf 'Understand' ;;
+        build)      printf 'Build apps' ;;
+        run)        printf 'Run infrastructure' ;;
+        reference)  printf 'Reference' ;;
+        *)          printf '%s' "$1" ;;
+    esac
+}
+
 # ---------------------------------------
 # Section header (written to both files).
 # ---------------------------------------
@@ -83,20 +115,25 @@ section_header() {
 # Add a standard content page.
 # ----------------------------
 add_page() {
-    local url_path="$1"
-    local content_file="$2"
-    local override_title="${3:-}"
+    local rel_path="$1"
+    local content_file="$CONTENT_DIR/$rel_path"
 
-    local title description url
-
-    if [[ -n "$override_title" ]]; then
-        title="$override_title"
-    else
-        title="$(get_toml_field "$content_file" "title")"
+    if [[ ! -f "$content_file" ]]; then
+        echo "warning: sidebar page not found, skipping: $rel_path" >&2
+        return
     fi
 
+    local draft
+    draft="$(get_toml_field "$content_file" "draft")"
+    if [[ "$draft" == "true" ]]; then
+        echo "warning: skipping draft page listed in sidebar: $rel_path" >&2
+        return
+    fi
+
+    local title description url
+    title="$(get_toml_field "$content_file" "title")"
     description="$(get_toml_field "$content_file" "description")"
-    url="${BASE_URL}${url_path}"
+    url="${BASE_URL}$(path_to_url "$rel_path")"
 
     # Index line - written to both files
     if [[ -n "$description" ]]; then
@@ -121,8 +158,8 @@ add_page() {
 # Add the glossary page (no markdown body. Content lives in glossary.json)
 # ------------------------------------------------------------------------
 add_glossary_page() {
-    local url_path="$1"
-    local url="${BASE_URL}${url_path}"
+    local rel_path="$1"
+    local url="${BASE_URL}$(path_to_url "$rel_path")"
     local desc="Definitions for all terms and abbreviations used across the Shinzo documentation."
 
     printf -- '- [Glossary](%s): %s\n' "$url" "$desc" \
@@ -130,26 +167,13 @@ add_glossary_page() {
 
     printf '\n### Glossary\n\n' >> "$LLMS_FULL_TXT"
 
-    python3 - "$DATA_DIR/glossary.json" >> "$LLMS_FULL_TXT" << 'PYEOF'
-import json, sys
-
-with open(sys.argv[1]) as f:
-    data = json.load(f)
-
-for entry in data.get("terms", []):
-    term    = entry.get("term", "")
-    abbr    = entry.get("abbreviation", "")
-    defn    = entry.get("definition", "")
-    related = entry.get("relatedTerms", [])
-
-    header = f"**{term}** ({abbr})" if abbr else f"**{term}**"
-    print(header)
-    if defn:
-        print(f": {defn}")
-    if related:
-        print(f": *Related: {', '.join(related)}*")
-    print()
-PYEOF
+    jq -r '
+      .terms[] |
+      ("**" + .term + "**" + (if .abbreviation then " (" + .abbreviation + ")" else "" end)),
+      (if (.definition // "") != "" then ": " + .definition else empty end),
+      (if ((.relatedTerms // []) | length) > 0 then ": *Related: " + (.relatedTerms | join(", ")) + "*" else empty end),
+      ""
+    ' "$DATA_DIR/glossary.json" >> "$LLMS_FULL_TXT"
 }
 
 # ----------------------------------------
@@ -185,74 +209,58 @@ EOF
 write_header "$LLMS_TXT"
 write_header "$LLMS_FULL_TXT"
 
-# Understand
-section_header "Understand"
-add_page "/understand/what-is-shinzo/"        "$CONTENT_DIR/understand/what-is-shinzo/index.md"
-add_page "/understand/how-it-works/"          "$CONTENT_DIR/understand/how-it-works/index.md"
-add_page "/understand/eli5-architecture/"     "$CONTENT_DIR/understand/eli5-architecture/index.md"
-add_page "/understand/core-concepts/"                   "$CONTENT_DIR/understand/core-concepts/_index.md"
-add_page "/understand/core-concepts/views/"             "$CONTENT_DIR/understand/core-concepts/views/index.md"
-add_page "/understand/core-concepts/attestation/"       "$CONTENT_DIR/understand/core-concepts/attestation/index.md"
-add_page "/understand/core-concepts/defradb/"           "$CONTENT_DIR/understand/core-concepts/defradb/index.md"
-add_page "/understand/core-concepts/shnz-token/"        "$CONTENT_DIR/understand/core-concepts/shnz-token/index.md"
+# Walk the sidebar tree in config.toml and emit each section's pages in order.
+# awk extracts one record per [[extra.sidebar]] block:
+#   section|path1,path2,...
+# The while-loop uses process substitution (< <(...)) so that variables
+# (current_section) persist across iterations.
+current_section=""
+while IFS='|' read -r section paths; do
+    if [[ "$section" != "$current_section" ]]; then
+        section_header "$(section_title "$section")"
+        current_section="$section"
+    fi
 
-# Build apps
-section_header "Build apps"
-add_page "/build/your-first-app/"   "$CONTENT_DIR/build/your-first-app/index.md"
-add_page "/build/create-a-view/"    "$CONTENT_DIR/build/create-a-view/index.md"
-add_page "/build/build-an-app/"     "$CONTENT_DIR/build/build-an-app/index.md"
-add_page "/build/query-data/"       "$CONTENT_DIR/build/query-data/index.md"
-add_page "/build/publish/"          "$CONTENT_DIR/build/publish-and-earn/index.md"
-add_page "/build/concepts/"                       "$CONTENT_DIR/build/concepts/_index.md"
-add_page "/build/concepts/views-for-builders/"            "$CONTENT_DIR/build/concepts/views-for-builders/index.md"
-add_page "/build/concepts/economics-of-views/"            "$CONTENT_DIR/build/concepts/economics-of-views/index.md"
-add_page "/build/concepts/attestation-as-a-query-filter/" "$CONTENT_DIR/build/concepts/attestation-as-a-query-filter/index.md"
-
-# Run infrastructure
-section_header "Run infrastructure"
-add_page "/run/get-started/"  "$CONTENT_DIR/run/get-started/index.md"
-add_page "/run/run-a-generator/"                       "$CONTENT_DIR/run/run-a-generator/_index.md"
-add_page "/run/run-a-generator/install/"               "$CONTENT_DIR/run/run-a-generator/install/index.md"
-add_page "/run/run-a-generator/hardware-requirements/" "$CONTENT_DIR/run/run-a-generator/hardware-requirements/index.md"
-add_page "/run/run-a-generator/register/"              "$CONTENT_DIR/run/run-a-generator/register/index.md"
-add_page "/run/run-a-host/"                       "$CONTENT_DIR/run/run-a-host/_index.md"
-add_page "/run/run-a-host/install/"               "$CONTENT_DIR/run/run-a-host/install/index.md"
-add_page "/run/run-a-host/hardware-requirements/" "$CONTENT_DIR/run/run-a-host/hardware-requirements/index.md"
-add_page "/run/run-a-host/configure-event-filters/" "$CONTENT_DIR/run/run-a-host/configure-event-filters/index.md"
-add_page "/run/run-a-host/register/"              "$CONTENT_DIR/run/run-a-host/register/index.md"
-add_page "/run/run-a-host/quickstart/"            "$CONTENT_DIR/run/run-a-host/quickstart/index.md"
-add_page "/run/operations/"                          "$CONTENT_DIR/run/operations/_index.md"
-add_page "/run/operations/key-and-identity-management/" "$CONTENT_DIR/run/operations/key-and-identity-management/index.md"
-add_page "/run/operations/backups/"                "$CONTENT_DIR/run/operations/backups/index.md"
-add_page "/run/operations/monitoring/"             "$CONTENT_DIR/run/operations/monitoring/index.md"
-add_page "/run/operations/troubleshooting/"        "$CONTENT_DIR/run/operations/troubleshooting/index.md"
-add_page "/run/private-hosts/"  "$CONTENT_DIR/run/private-hosts/index.md"
-add_page "/run/earnings/"       "$CONTENT_DIR/run/earnings/index.md"
-
-# Reference
-section_header "Reference"
-add_page "/reference/architecture/"  "$CONTENT_DIR/reference/architecture/index.md"
-add_page "/reference/changelog/"     "$CONTENT_DIR/reference/changelog/index.md"
-add_page "/reference/tools/"         "$CONTENT_DIR/reference/tools/index.md"
-add_glossary_page "/reference/glossary/"
-add_page "/reference/components/generator-client/" "$CONTENT_DIR/reference/components/generator-client/index.md"
-add_page "/reference/components/host-client/"      "$CONTENT_DIR/reference/components/host-client/index.md"
-add_page "/reference/components/shinzohub/"        "$CONTENT_DIR/reference/components/shinzohub/index.md"
-add_page "/reference/components/sourcehub/"        "$CONTENT_DIR/reference/components/sourcehub/index.md"
-add_page "/reference/components/outpost/"          "$CONTENT_DIR/reference/components/outpost/index.md"
-add_page "/reference/components/viewkit/"          "$CONTENT_DIR/reference/components/viewkit/index.md"
-add_page "/reference/components/defradb/"          "$CONTENT_DIR/reference/components/defradb/index.md"
-add_page "/reference/components/lens/"             "$CONTENT_DIR/reference/components/lens/index.md"
-add_page "/reference/components/relayer/"          "$CONTENT_DIR/reference/components/relayer/index.md"
-add_page "/reference/data-model/"                   "$CONTENT_DIR/reference/data-model/_index.md"
-add_page "/reference/data-model/primitives/"        "$CONTENT_DIR/reference/data-model/primitives/index.md"
-add_page "/reference/data-model/signatures/"        "$CONTENT_DIR/reference/data-model/signatures/index.md"
-add_page "/reference/data-model/attestation-record/" "$CONTENT_DIR/reference/data-model/attestation-record/index.md"
-add_page "/reference/data-model/naming-convention/" "$CONTENT_DIR/reference/data-model/naming-convention/index.md"
-add_page "/reference/data-model/defradb-metadata/"  "$CONTENT_DIR/reference/data-model/defradb-metadata/index.md"
-add_page "/reference/data-model/schema-directives/" "$CONTENT_DIR/reference/data-model/schema-directives/index.md"
-add_page "/reference/graphql-api/"     "$CONTENT_DIR/reference/graphql-api/index.md"
-add_page "/reference/specs-and-limits/" "$CONTENT_DIR/reference/specs-and-limits/index.md"
+    IFS=',' read -ra page_paths <<< "$paths"
+    for path in "${page_paths[@]}"; do
+        if [[ "$path" == "reference/glossary/index.md" ]]; then
+            add_glossary_page "$path"
+        else
+            add_page "$path"
+        fi
+    done
+done < <(
+    awk '
+        BEGIN { inblock = 0 }
+        /^\[\[extra\.sidebar\]\]/ {
+            if (inblock && sec != "") {
+                printf "%s|", sec
+                for (i = 1; i <= n; i++) printf "%s%s", paths[i], (i < n ? "," : "")
+                print ""
+            }
+            sec = ""; n = 0; inblock = 1; next
+        }
+        inblock && /^section[[:space:]]*=[[:space:]]*"/ {
+            sub(/^section[[:space:]]*=[[:space:]]*"/, "")
+            sub(/".*/, "")
+            sec = $0; next
+        }
+        inblock {
+            line = $0
+            while (match(line, /"[^"]*\.md"/)) {
+                n++; paths[n] = substr(line, RSTART + 1, RLENGTH - 2)
+                line = substr(line, RSTART + RLENGTH)
+            }
+        }
+        END {
+            if (inblock && sec != "") {
+                printf "%s|", sec
+                for (i = 1; i <= n; i++) printf "%s%s", paths[i], (i < n ? "," : "")
+                print ""
+            }
+        }
+    ' "$DOCS_DIR/config.toml"
+)
 
 echo "Written $(wc -l < "$LLMS_TXT") lines → $LLMS_TXT"
 echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"
