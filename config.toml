@@ -47,6 +47,8 @@ favicon = "/img/favicon.png"
 # Plausible analytics
 plausible_domain = "docs.shinzo.network"
 plausible_src = "https://plausible.source.network/js/script.js"
+# Google Analytics 4 (gtag.js)
+google_analytics_id = "G-VC59JRWDBZ"
 
 
 
@@ -147,6 +149,12 @@ pages = [
   "run/run-a-generator/install/index.md",
   "run/run-a-generator/hardware-requirements/index.md",
   "run/run-a-generator/register/index.md",
+  "run/run-a-generator/config-reference/index.md",
+  "run/run-a-generator/deployment-examples/validator-local-geth/index.md",
+  "run/run-a-generator/deployment-examples/managed-node-gcp/index.md",
+  "run/run-a-generator/deployment-examples/nginx-tls-snapshots/index.md",
+  "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
+  "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",
 ]
 
 [[extra.sidebar]]
@@ -159,6 +167,12 @@ pages = [
   "run/run-a-host/configure-event-filters/index.md",
   "run/run-a-host/register/index.md",
   "run/run-a-host/quickstart/index.md",
+  "run/run-a-host/config-reference/index.md",
+  "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
+  "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
+  "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
+  "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
+  "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
 ]
 
 [[extra.sidebar]]

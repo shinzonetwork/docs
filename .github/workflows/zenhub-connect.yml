@@ -1,0 +1,57 @@
+name: Zenhub PR Connector
+
+on:
+  workflow_call: # Makes this callable by other repos
+    secrets:
+      ZENHUB_API_KEY:
+        required: true
+
+jobs:
+  connect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connect Issue to PR on Zenhub
+        env:
+          ZENHUB_TOKEN: ${{ secrets.ZENHUB_API_KEY }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NODE_ID: ${{ github.event.pull_request.node_id }}
+        run: |
+          # 1. Parse issue number from PR description
+          ISSUE_NUM=$(echo "$PR_BODY" | grep -oE '#[0-9]+' | head -n 1 | tr -d '#')
+
+          if [ -z "$ISSUE_NUM" ]; then
+            echo "No issue reference found."
+            exit 0
+          fi
+
+          # 2. Get issue GraphQL Node ID
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.event.repository.name }}"
+
+          ISSUE_QUERY=$(cat <<EOF
+          {"query": "query { repository(owner: \"$REPO_OWNER\", name: \"$REPO_NAME\") { issue(number: $ISSUE_NUM) { id } } }"}
+          EOF
+          )
+
+          ISSUE_NODE_ID=$(curl -s -X POST \
+            -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$ISSUE_QUERY" \
+            https://api.github.com/graphql | jq -r '.data.repository.issue.id')
+
+          if [ "$ISSUE_NODE_ID" == "null" ] || [ -z "$ISSUE_NODE_ID" ]; then
+            echo "Could not fetch Node ID for issue #$ISSUE_NUM"
+            exit 1
+          fi
+
+          # 3. Connect via Zenhub GraphQL
+          ZENHUB_MUTATION=$(cat <<EOF
+          {"query": "mutation { connectIssueAndPullRequest(input: {issueId: \"$ISSUE_NODE_ID\", pullRequestId: \"$PR_NODE_ID\"}) { issue { id } pullRequest { id } } }"}
+          EOF
+          )
+
+          curl -s -X POST \
+            -H "Authorization: Bearer $ZENHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$ZENHUB_MUTATION" \
+            https://api.zenhub.com/public/graphql

@@ -176,7 +176,7 @@ defradb:
   p2p:
     enabled: true
     bootstrap_peers:
-      - '/ip4/34.63.13.57/tcp/9171/p2p/12D3KooWMYhYNBo4zAi9j7TpyGQJBSvbwSSNkgsMrLs6vHUnFUzY'
+      - '/ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT'
     listen_addr: "/ip4/0.0.0.0/tcp/9171"
     enable_auto_reconnect: true
   store:
@@ -251,7 +251,7 @@ networks:
 
 services:
   shinzo-host:
-    image: ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+    image: ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
     user: "1001:1001"
     mem_limit: 16g
     mem_reservation: 13g
@@ -319,7 +319,7 @@ docker logs shinzo-host
 The multi-stage Dockerfile builds the host binary (Go 1.25) along with the Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
 
 ```shell
-ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 
 ## ShinzoHub Registration

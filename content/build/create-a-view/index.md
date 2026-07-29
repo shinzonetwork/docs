@@ -136,8 +136,9 @@ We need to set three new environment variables:
     dummy.go  libwasmer.so
     ```
 
-> [!WARNING]
-> If `libwasmer.dylib` is missing, re-run the `go get` step and ensure `go env GOPATH` returns a valid path.
+{% admonition(type="warning") %}
+If `libwasmer.dylib` is missing, re-run the `go get` step and ensure `go env GOPATH` returns a valid path.
+{% end %}
 
 ## Create a view
 
@@ -214,7 +215,7 @@ Now that everything is set up, we can start creating and deploying views.
 
     This tells Viewkit that `testdeploy` will ingest `Log` objects with the specified fields.
 
-Then, check:
+1. Then, check:
 
     ```shell
     viewkit view inspect testdeploy
@@ -262,9 +263,10 @@ Then, check:
      - Updated At: 2026-07-09 09:37:24 +0000 UTC
     ```
 
-    > [!NOTE]
-    >  - `@materialized(if: false)`: treat this as a virtual type, not a persisted table.
-    > - `transactionHash: String`: minimal example field; real views will define more fields.
+    {% admonition(type="note") %}
+- `@materialized(if: false)`: treat this as a virtual type, not a persisted table.
+- `transactionHash: String`: minimal example field; real views will define more fields.
+    {% end %}
 
 1. Inspect the view again:
 
@@ -359,8 +361,9 @@ Then, check:
      - Updated At: 2026-07-09 09:39:11 +0000 UTC
     ```
 
-> ![TIP]
-> If you see `libwasmer.dylib` / "image not found" errors, revisit the Wasmer setup.
+{% admonition(type="tip") %}
+If you see `libwasmer.dylib` / "image not found" errors, revisit the Wasmer setup.
+{% end %}
 
 1. Before deploying, validate that your view builds and compiles successfully:
 
