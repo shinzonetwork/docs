@@ -1,5 +1,5 @@
 +++
-title = "Nginx with TLS serving snapshots"
+title = "Nginx with snapshots"
 description = "Run a production Generator behind nginx with TLS termination and serve signed snapshot files to Hosts for fast historical bootstrap."
 aliases = ["/generators/deployment-examples/nginx-tls-snapshots"]
 [extra]

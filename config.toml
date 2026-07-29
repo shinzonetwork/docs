@@ -153,9 +153,9 @@ pages = [
 ]
 subsections = [
   { label = "Deployment Examples", pages = [
-    "run/run-a-generator/deployment-examples/validator-local-geth/index.md",
-    "run/run-a-generator/deployment-examples/managed-node-gcp/index.md",
-    "run/run-a-generator/deployment-examples/nginx-tls-snapshots/index.md",
+    "run/run-a-generator/deployment-examples/validator-with-geth/index.md",
+    "run/run-a-generator/deployment-examples/managed-gcp-node/index.md",
+    "run/run-a-generator/deployment-examples/nginx-with-snapshots/index.md",
     "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
     "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",
   ] },
