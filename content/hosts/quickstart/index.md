@@ -250,7 +250,7 @@ networks:
 
 services:
   shinzo-host:
-    image: ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+    image: ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
     user: "1001:1001"
     mem_limit: 16g
     mem_reservation: 13g
@@ -318,7 +318,7 @@ docker logs shinzo-host
 The multi-stage Dockerfile builds the host binary (Go 1.25) along with the Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
 
 ```shell
-ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
+ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 
 ## ShinzoHub Registration
