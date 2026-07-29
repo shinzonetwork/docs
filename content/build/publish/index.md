@@ -1,6 +1,6 @@
 +++
 draft = true
-title = "Publish & earn"
+title = "Publish"
 description = "How to publish Views to the network."
 +++
 
