@@ -123,9 +123,9 @@ Or use an [online keccak256 tool](https://emn178.github.io/online-tools/keccak_2
 p2p:
   enabled: true
   bootstrap_peers:
-    - '/ip4/34.63.13.57/tcp/9171/p2p/12D3KooWBT2F45LH7Gy6EadTE3sm7PKofyJ3RXcCnKufdu4L5c4M'
-    - '/ip4/35.208.241.78/tcp/9171/p2p/12D3KooWDYXkjdncFL3X1SaaYBpFi4XfWskbXv4y5gYdTvmGm3bo'
-    - '/ip4/35.209.45.53/tcp/9171/p2p/12D3KooWNLCXZEVZoM6NwU1i7zAZDscEZHhynsF74M5hP99sptM9'
+    - '/ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT'
+    - '/ip4/34.57.239.57/tcp/9171/p2p/12D3KooWBAgCEJHYqzuCFEXzjsw2CnV9JqvqMgTKYDww58aCxwW5'
+    - '/ip4/34.134.119.63/tcp/9171/p2p/12D3KooWQQTuSQaz4HfuvnJHakkQy3PhWbKBBbS3RkmBw4ZsFkyT'
 ```
 
 These are the addresses of the peers your host connects to for data. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for updated peer lists; these change when the network is updated.
