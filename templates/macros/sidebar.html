@@ -52,6 +52,27 @@
           </div>
           <ul class="menu__list">
             {% for p in cat.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
+            {% if cat.subsections %}
+              {% for sub in cat.subsections %}
+                <li class="menu__list-item">
+                  <div class="menu__list-item-collapsible">
+                    {% if sub.page %}
+                      {% set s = get_section(path=sub.page) %}
+                      {% if current == s.path %}
+                        <a class="menu__link menu__link--category menu__link--active" href="{{ s.path }}">{{ sub.label }}</a>
+                      {% else %}
+                        <a class="menu__link menu__link--category" href="{{ s.path }}">{{ sub.label }}</a>
+                      {% endif %}
+                    {% else %}
+                      <span class="menu__link menu__link--category">{{ sub.label }}</span>
+                    {% endif %}
+                  </div>
+                  <ul class="menu__list">
+                    {% for p in sub.pages %}{{ self::page_link(path=p, current=current) }}{% endfor %}
+                  </ul>
+                </li>
+              {% endfor %}
+            {% endif %}
           </ul>
         </li>
       {% endif %}

@@ -150,11 +150,15 @@ pages = [
   "run/run-a-generator/hardware-requirements/index.md",
   "run/run-a-generator/register/index.md",
   "run/run-a-generator/config-reference/index.md",
-  "run/run-a-generator/deployment-examples/validator-local-geth/index.md",
-  "run/run-a-generator/deployment-examples/managed-node-gcp/index.md",
-  "run/run-a-generator/deployment-examples/nginx-tls-snapshots/index.md",
-  "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
-  "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",
+]
+subsections = [
+  { label = "Deployment Examples", pages = [
+    "run/run-a-generator/deployment-examples/validator-local-geth/index.md",
+    "run/run-a-generator/deployment-examples/managed-node-gcp/index.md",
+    "run/run-a-generator/deployment-examples/nginx-tls-snapshots/index.md",
+    "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
+    "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",
+  ] },
 ]
 
 [[extra.sidebar]]
@@ -162,8 +166,8 @@ section = "run"
 label = "Run a Host"
 page = "run/run-a-host/_index.md"
 pages = [
-  "run/run-a-host/install/index.md",
   "run/run-a-host/hardware-requirements/index.md",
+  "run/run-a-host/install/index.md",
   "run/run-a-host/configure-event-filters/index.md",
   "run/run-a-host/register/index.md",
   "run/run-a-host/quickstart/index.md",
