@@ -16,11 +16,12 @@ There is no separate download, no `--private` flag, and no private build of the 
 
 ## The privacy model
 
-A standard Host client ships configured for the public network. Out of the box it does three things that each publicize activity:
+A standard Host client ships configured for the public network. On startup it does two things that publicize activity:
 
 - Dials the public bootstrap peers shipped in `config.yaml` to reach Generator clients it doesn't control.
 - Contacts ShinzoHub (`shinzo.hub_base_url`) to fetch every registered View and subscribe to live registration events.
-- Registers itself on the Host Registry so other nodes can discover and replicate from it.
+
+A third step is opt-in: registering on the Host Registry so other nodes can discover and replicate from it. This is a manual, wallet-signed action from the registration app, not something the host does on startup.
 
 A private connection closes some or all of these. How many you close decides how private the setup is.
 
@@ -77,7 +78,7 @@ defradb:
     path: "./.defra"
 shinzo:
   hub_base_url: ""             # air-gapped: no ShinzoHub fetch, no event subscription
-  minimum_attestations: 1
+  minimum_attestations: 1      # not read by the host; kept for parity with shipped config.yaml
   start_height: 0
 logger:
   development: false
@@ -117,7 +118,9 @@ In Tier 1, with `hub_base_url` pointed at ShinzoHub, the host fetches every regi
 In Tier 2, with `hub_base_url` empty, the host never fetches from ShinzoHub, so `views.json` only contains what was already persisted. To populate it, use an ingest-then-go-dark flow:
 
 1. Start the host once with `hub_base_url` set to ShinzoHub. It fetches the public Views and writes them to `views.json`.
-1. Stop the host, set `hub_base_url` to `""`, and restart. The host now loads those Views from the local file and contacts no hub.
+1. Stop the host, edit the mounted config to set `hub_base_url` to `""`, and restart the **same** container (`docker stop shinzo-host && docker start shinzo-host`). The host now loads those Views from the local file and contacts no hub.
+
+Restart the same container, not a fresh one. `views.json` and the cached WASM lens files live in `./.defra` inside the container, and the `docker run` above doesn't mount that path. If you `docker rm` and start a new container, `views.json` is gone and the host boots with no Views. To let `views.json` survive container recreation, mount a persistent `.defra` volume as shown in [Install](/hosts/install/).
 
 {% admonition(type="warning") %}
 Running your own unpublished Views in an air-gapped host is a forthcoming capability. Viewkit can build and preview a View locally with `viewkit view deploy --target local`, but that spins up a throwaway DefraDB; it doesn't install the View into your running host. Deploying with `--target devnet` registers the View on ShinzoHub, which publicizes it. Until a private install path exists, an air-gapped host can only run Views that were already ingested from the public registry. See the [Viewkit Quickstart](/views/quickstart/) for the local build and preview flow.
@@ -125,7 +128,7 @@ Running your own unpublished Views in an air-gapped host is a forthcoming capabi
 
 ## What stays the same and the trade-offs
 
-- The host still creates `AttestationRecord`s from your Generator's signatures and verifies them. What you lose is cross-host replication of those attestations. With no other Host peers, there's no one to gossip with, so set `minimum_attestations` to `1` since you have a single source.
+- The host still creates `AttestationRecord`s from your Generator's signatures and verifies them. What you lose is cross-host replication of those attestations. With no other Host peers, there's no one to gossip with. The `minimum_attestations` key is in the config but the host doesn't read it. It's an app-sdk setting, so changing it has no effect on a host.
 - The host isn't discoverable and earns no rewards. Registration is what opts you into the network economy; skipping it opts you out.
 - Your Generator is your only data source. If it goes down or falls behind, the host has no public fallback in a Tier 2 setup.
 - You manage View updates yourself. In Tier 1 the hub still pushes new registrations. In Tier 2 you re-run the ingest step to pick up new public Views.
