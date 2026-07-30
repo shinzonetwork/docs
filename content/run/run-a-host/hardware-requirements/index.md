@@ -5,13 +5,22 @@ aliases = ["/hosts/hardware-requirements"]
 
 These requirements are for the Host client. A Host does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage that an execution client or archival Generator requires. It receives signed primitive data over P2P from Generator clients, applies Lens transforms, and serves Views to applications.
 
-## Recommended hardware
+## Recommended hardware 
 
-{{ hardware(component="host") }}
+The Host client specific hardware requirements depending on which chain the Generator it's linked to is indexing. See [shinzo.network/chains](https://shinzo.network/chains) for currently networks.
+
+### Ethereum mainnet
+
+| Resource | Minimum | Recommended |
+| --- | --- | --- |
+| CPU | 4 cores | 8 cores |
+| Memory (RAM) | 8 GB | 16 GB |
+| Storage | 300 GB | 500 GB |
+| Network | 100 Mbps | 1 Gbps |
 
 ## Storage
 
-Host storage depends almost entirely on how many Views you serve and how aggressively you prune. A Host serving a few filtered Views with pruning enabled stays close to the minimum. A Host that accepts all primitive data and serves many materialized Views will trend toward the recommended figure and beyond. Pruning is enabled by default and retains roughly the last 2,000 blocks.
+Host storage depends almost entirely on how many Views you serve and how aggressively you prune. A Host serving a few filtered Views with pruning enabled stays close to the minimum. A Host that accepts all primitive data and serves many materialized Views will trend toward the recommended figure and beyond. Pruning is enabled by default and retains roughly the last 2,000 blocks. Because the Host receives primitives from Generator clients, its storage growth tracks the throughput of the source chain — chains with higher transaction volume produce more documents per block. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
 
 ## Network
 

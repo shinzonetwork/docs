@@ -5,11 +5,20 @@ aliases = ["/generator/hardware-requirements", "/generators/hardware-requirement
 
 These requirements are for the Generator client itself. It runs as a sidecar next to an execution node (such as Geth), so size the machine for the node first and add the Generator overhead on top.
 
-## Recommended hardware
+## Recommended hardware 
 
-{{ hardware(component="generator") }}
+The Generator client specific hardware requirements depending on which chain the Generator is indexing.
 
-With pruning enabled (the default), the Generator retains roughly the last 1,000 blocks, so its own data stays bounded at roughly 50 to 100 GB. The 300–500 GB figures above are the recommended provisioned disk — the headroom covers growth, snapshot serving, and P2P replication. In archival mode (pruning disabled), storage grows linearly with chain history and can exceed 3 TB (see the [FAQ](/run/operations/troubleshooting/) for details on growth rate).
+### Ethereum Mainnet
+
+| Resource | Minimum | Recommended |
+| --- | --- | --- |
+| CPU | 4 cores | 8 cores |
+| Memory (RAM) | 8 GB | 16 GB |
+| Storage | 300 GB | 500 GB |
+| Network | 100 Mbps | 1 Gbps |
+
+With pruning enabled (the default), the Generator retains roughly the last 1,000 blocks, so its own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet. The 300–500 GB figures above are the recommended provisioned disk — the headroom covers growth, snapshot serving, and P2P replication. In archival mode (pruning disabled), storage grows linearly with chain history and on Ethereum Mainnet can exceed 3 TB (see the [FAQ](/run/operations/troubleshooting/) for details on growth rate). Storage growth differs by chain — see [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
 
 ## Sizing for your execution node
 

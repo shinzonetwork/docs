@@ -7,11 +7,7 @@ This page covers installing a Shinzo Generator client with Docker or from source
 
 ## Hardware recommendations
 
-The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an execution node. The figures below are for the Generator client itself, on top of whatever the execution node needs.
-
-{{ hardware(component="generator") }}
-
-If you are running your execution node on the same machine, size for it first. A snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM by itself (check your client's docs, for example the [Geth hardware requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements)). See the [hardware requirements page](../hardware-requirements/) for details.
+The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
 ## Using Docker 
 

@@ -59,7 +59,7 @@ All blockchain data is indexed, including blocks, transactions, logs, and storag
 
 ### How much space do I need?
 
-With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB; we recommend provisioning 300–500 GB to leave headroom (see [hardware requirements](/run/run-a-generator/hardware-requirements/)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history.
+With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet; we recommend provisioning 300–500 GB to leave headroom (see [hardware requirements](/run/run-a-generator/hardware-requirements/)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history. Storage figures differ by chain — see [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
 
 ### How long does it take to sync?
 
@@ -75,7 +75,7 @@ The Generator client fetches blocks by block number from the upstream node it is
 
 ### How does storage grow over time?
 
-Without pruning, storage grows linearly at roughly 10 GB per 1,000 full blocks. Storage growth is not perfectly uniform — early blocks on a chain are often significantly smaller than blocks after major protocol upgrades.
+Without pruning, storage grows linearly at roughly 10 GB per 1,000 full blocks on Ethereum Mainnet. Storage growth is not perfectly uniform — early blocks on a chain are often significantly smaller than blocks after major protocol upgrades — and the rate differs between chains.
 
 With pruning enabled (the default), the pruner removes documents for blocks older than the configured retention window, keeping disk usage bounded. You can also passively prune documents that have already been gossiped, which clears up old blocks and reduces long-term storage pressure.
 
