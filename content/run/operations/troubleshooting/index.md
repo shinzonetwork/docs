@@ -10,9 +10,9 @@ description = "Common errors, troubleshooting steps, and frequently asked questi
 
 https://github.com/shinzonetwork/shinzo-generator-client
 
-### Does the Generator client replace my Ethereum node?
+### Does the Generator client replace my execution node?
 
-No. The Generator client is a sidecar that connects to an existing Ethereum execution node. It does not run an execution client, expose a JSON-RPC interface, or replace the execution node used by your validator. Instead, you configure it to connect to an upstream JSON-RPC and WebSocket endpoint (Geth is supported). The Generator client reads block data from that execution node and stores it in its local DefraDB instance.
+No. The Generator client is a sidecar that connects to an existing execution node. It does not run an execution client, expose a JSON-RPC interface, or replace the execution node used by your validator. Instead, you configure it to connect to an upstream JSON-RPC and WebSocket endpoint. The Generator client reads block data from that execution node and stores it in its local DefraDB instance.
 
 ### What hardware is recommended for deploying Shinzo?
 
@@ -71,11 +71,11 @@ The further back you choose, the longer it will take to get to current blocks. H
 
 ### How often is the Generator client updated with new blocks?
 
-The Generator client fetches blocks by block number from the upstream Ethereum node it is configured to read from. As soon as a block becomes available on that node after being gossiped and finalized on the network, the Generator client can pull it in. The Generator client does not participate in consensus or gossip itself; it just reads from a node that does.
+The Generator client fetches blocks by block number from the upstream node it is configured to read from. As soon as a block becomes available on that node after being gossiped and finalized on the network, the Generator client can pull it in. The Generator client does not participate in consensus or gossip itself; it just reads from a node that does.
 
 ### How does storage grow over time?
 
-Without pruning, storage grows linearly at roughly 10 GB per 1,000 full blocks. The first 15M blocks of Ethereum are significantly smaller than blocks after the proof-of-stake migration.
+Without pruning, storage grows linearly at roughly 10 GB per 1,000 full blocks. Storage growth is not perfectly uniform — early blocks on a chain are often significantly smaller than blocks after major protocol upgrades.
 
 With pruning enabled (the default), the pruner removes documents for blocks older than the configured retention window, keeping disk usage bounded. You can also passively prune documents that have already been gossiped, which clears up old blocks and reduces long-term storage pressure.
 
@@ -105,7 +105,7 @@ The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is cor
 
 ### What is the difference between a Host and a Generator?
 
-Generator clients are the write side: they read raw blocks from an Ethereum execution node, sign the data, gossip it over P2P, and provide attestations to prove the data is correct. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node, but a Host client never does. See the [Run a Host](/run/run-a-host/) overview for more.
+Generator clients are the write side: they read raw blocks from an execution node, sign the data, gossip it over P2P, and provide attestations to prove the data is correct. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node, but a Host client never does. See the [Run a Host](/run/run-a-host/) overview for more.
 
 ### Do I need to run my own Generator client to run a Host client?
 
@@ -285,9 +285,9 @@ No. Raw event data lives in the `Log` collection, where `topics` holds indexed p
 
 Use `if: true` for frequently queried data like token transfers in a UI. Use `if: false` during development or for large datasets queried occasionally.
 
-### Do I need to prefix my query with `Ethereum__Mainnet__`?
+### Do I need to prefix my query with the chain prefix?
 
-Viewkit lets you use short names like `Log` or `Transaction` in your query. The Host client automatically prepends the chain prefix (`Ethereum__Mainnet__`) at runtime. You can also use the fully-qualified name explicitly. Both work.
+Viewkit lets you use short names like `Log` or `Transaction` in your query. The Host client automatically prepends the chain prefix (e.g. `<Chain>__<Network>__`) at runtime. You can also use the fully-qualified name explicitly. Both work.
 
 ### How do Hosts discover my View?
 

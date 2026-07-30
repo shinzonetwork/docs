@@ -3,7 +3,7 @@ title = "Hardware requirements"
 aliases = ["/generator/hardware-requirements", "/generators/hardware-requirements"]
 +++
 
-These requirements are for the Generator client itself. It runs as a sidecar next to an Ethereum execution node (currently Geth), so size the machine for the node first and add the Generator overhead on top.
+These requirements are for the Generator client itself. It runs as a sidecar next to an execution node (such as Geth), so size the machine for the node first and add the Generator overhead on top.
 
 ## Recommended hardware
 
@@ -11,9 +11,9 @@ These requirements are for the Generator client itself. It runs as a sidecar nex
 
 With pruning enabled (the default), the Generator retains roughly the last 1,000 blocks, so its own data stays bounded at roughly 50 to 100 GB. The 300–500 GB figures above are the recommended provisioned disk — the headroom covers growth, snapshot serving, and P2P replication. In archival mode (pruning disabled), storage grows linearly with chain history and can exceed 3 TB (see the [FAQ](/run/operations/troubleshooting/) for details on growth rate).
 
-## Sizing for Geth
+## Sizing for your execution node
 
-The numbers above do not include the execution node. Geth has its own, much larger footprint: a snap-synced full node needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. See the [Geth hardware requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements) for current guidance, and provision accordingly.
+The numbers above do not include the execution node. Your execution node has its own, much larger footprint: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. See your client's docs (for example, the [Geth hardware requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements)) for current guidance, and provision accordingly.
 
 ## Network
 

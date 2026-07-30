@@ -14,7 +14,7 @@ Attestation answers that question.
 When a Host client receives a document from a Generator client, it checks the signature and creates (or updates) an attestation record for that document. The record tracks which Generators client signed off and maintains a running vote count.
 
 ```graphql
-type Ethereum__Mainnet__AttestationRecord {
+type <Chain>__<Network>__AttestationRecord {
     attested_doc: String
     source_doc: String
     CIDs: [String]

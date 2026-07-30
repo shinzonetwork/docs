@@ -8,7 +8,7 @@ Seven progressively more complex Views, from a basic event decode to a multi-eve
 
 ## Primitive data
 
-Views query the primitive collections that Generator clients produce. All collection names are prefixed with `Ethereum__Mainnet__` (or the equivalent chain/network prefix). Viewkit lets you use short names like `Log`, and the Host client auto-prefixes them at runtime.
+Views query the primitive collections that Generator clients produce. All collection names are prefixed with `<Chain>__<Network>__`, derived from the Generator's `chain.name` and `chain.network` settings. Viewkit lets you use short names like `Log`, and the Host client auto-prefixes them at runtime.
 
 | Collection | Common fields | Typical use |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ There is no `Event` collection. Raw event data lives in `Log`, where `topics` ho
 
 ## Decode event logs
 
-Decode all ERC-20 `Transfer` events on Ethereum into structured records. This is the simplest useful View that includes a lens: it decodes raw log `topics` and `data` into named fields using an ABI.
+Decode all ERC-20 `Transfer` events into structured records. This is the simplest useful View that includes a lens: it decodes raw log `topics` and `data` into named fields using an ABI.
 
 **Query**
 
@@ -34,7 +34,7 @@ The query selects raw log fields plus the nested `transaction` relation. The `de
 **SDL**
 
 ```graphql
-type EthEvent @materialized(if: true) {
+type EventView @materialized(if: true) {
   hash: String
   from: String
   to: String
@@ -74,7 +74,7 @@ The `decode_log` lens takes an `abi` argument: a stringified JSON array of event
 1. Initalize the view:
 
     ```shell
-    viewkit view init eth-event
+    viewkit view init event-view
     ```
 
 1. Add the query (raw log shape with transaction relation):
@@ -82,15 +82,15 @@ The `decode_log` lens takes an `abi` argument: a stringified JSON array of event
     ```shell
     viewkit view add query \
       "Log { address topics data transactionHash blockNumber transaction { hash from to } }" \
-      --name eth-event
+      --name event-view
     ```
 
 1. Add the SDL (output schema matching decode_log output):
 
     ```shell
     viewkit view add sdl \
-      "type EthEvent @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
-      --name eth-event
+      "type EventView @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
+      --name event-view
     ```
 
 1. Attach the decode lens with the Transfer ABI:
@@ -100,25 +100,25 @@ The `decode_log` lens takes an `abi` argument: a stringified JSON array of event
       --label "decode-transfer" \
       --url "https://raw.githubusercontent.com/shinzonetwork/wasm-bucket/main/bucket/decode_log/decode_log.wasm" \
       --args '{"abi":"[{\"type\":\"event\",\"name\":\"Transfer\",\"inputs\":[{\"type\":\"address\",\"name\":\"from\",\"indexed\":true},{\"type\":\"address\",\"name\":\"to\",\"indexed\":true},{\"type\":\"uint256\",\"name\":\"value\",\"indexed\":false}]}]"}' \
-      --name eth-event
+      --name event-view
     ```
 
 1. Inspect to confirm everything is attached:
 
 ```shell
-viewkit view inspect eth-event
+viewkit view inspect event-view
 ```
 
 1. test locally (optional but recommended):
 
 ```shell
-viewkit view test eth-event
+viewkit view test event-view
 ```
 
 1. Deploy locally and explore in the playground:
 
 ```shell
-viewkit view deploy eth-event --target local
+viewkit view deploy event-view --target local
 ```
 
 **Querying the result**
@@ -127,7 +127,7 @@ Once deployed, open the DefraDB Playground (URL printed in the terminal) and run
 
 ```graphql
 {
-  EthEvent(limit: 10, order: { blockNumber: DESC }) {
+  EventView(limit: 10, order: { blockNumber: DESC }) {
     hash
     from
     to
@@ -158,7 +158,7 @@ Same as Example 1. Create a view named `usdc-event` with the same query, SDL, an
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     filter: { logAddress: { _eq: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" } }
     order: { blockNumber: DESC }
     limit: 10
@@ -182,7 +182,7 @@ The `from` and `to` fields come from the parent transaction, not the event's ind
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     filter: {
       _and: [
         { logAddress: { _eq: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" } }
@@ -216,7 +216,7 @@ Log { address topics data transactionHash blockNumber transaction { hash from to
 **SDL**
 
 ```graphql
-type EthEvent @materialized(if: true) {
+type EventView @materialized(if: true) {
   hash: String
   from: String
   to: String
@@ -252,7 +252,7 @@ viewkit view add query \
 
 # 3) add the SDL
 viewkit view add sdl \
-  "type EthEvent @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
+  "type EventView @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
   --name erc20-events
 
 # 4) attach the decode lens with both Transfer and Approval in the ABI
@@ -272,7 +272,7 @@ viewkit view deploy erc20-events --target local
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     filter: {
       _and: [
         { logAddress: { _eq: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" } }
@@ -295,7 +295,7 @@ viewkit view deploy erc20-events --target local
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     filter: {
       _and: [
         { logAddress: { _eq: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" } }
@@ -329,7 +329,7 @@ Transaction { hash from to value blockNumber gasUsed gasPrice }
 **SDL**
 
 ```graphql
-type EthTransaction @materialized(if: false) {
+type TransactionView @materialized(if: false) {
   hash: String
   from: String
   to: String
@@ -350,29 +350,29 @@ None. The query and SDL are sufficient. DefraDB applies the view as a virtual pr
 
 ```shell
 # 1) initialize the view
-viewkit view init eth-transaction
+viewkit view init transaction-view
 
 # 2) add the query
 viewkit view add query \
   "Transaction { hash from to value blockNumber gasUsed gasPrice }" \
-  --name eth-transaction
+  --name transaction-view
 
 # 3) add the SDL
 viewkit view add sdl \
-  "type EthTransaction @materialized(if: false) { hash: String from: String to: String value: String blockNumber: Int gasUsed: String gasPrice: String }" \
-  --name eth-transaction
+  "type TransactionView @materialized(if: false) { hash: String from: String to: String value: String blockNumber: Int gasUsed: String gasPrice: String }" \
+  --name transaction-view
 
 # 4) inspect, test, and deploy
-viewkit view inspect eth-transaction
-viewkit view test eth-transaction
-viewkit view deploy eth-transaction --target local
+viewkit view inspect transaction-view
+viewkit view test transaction-view
+viewkit view deploy transaction-view --target local
 ```
 
 **Querying the result**
 
 ```graphql
 {
-  EthTransaction(
+  TransactionView(
     filter: { to: { _eq: "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45" } }
     order: { blockNumber: DESC }
     limit: 10
@@ -404,7 +404,7 @@ The `@materialized` directive controls when the View's output is computed:
 Materialized (pre-computed):
 
 ```graphql
-type EthEvent @materialized(if: true) {
+type EventView @materialized(if: true) {
   hash: String
   from: String
   to: String
@@ -419,7 +419,7 @@ type EthEvent @materialized(if: true) {
 On-query (virtual):
 
 ```graphql
-type EthEvent @materialized(if: false) {
+type EventView @materialized(if: false) {
   hash: String
   from: String
   to: String
@@ -438,20 +438,20 @@ To toggle materialization on an existing view, update the SDL:
 ```shell
 # switch to materialized
 viewkit view add sdl \
-  "type EthEvent @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
-  --name eth-event
+  "type EventView @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
+  --name event-view
 
 # or switch to on-query
 viewkit view add sdl \
-  "type EthEvent @materialized(if: false) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
-  --name eth-event
+  "type EventView @materialized(if: false) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }" \
+  --name event-view
 ```
 
 Then redeploy:
 
 ```shell
-viewkit view test eth-event
-viewkit view deploy eth-event --target local
+viewkit view test event-view
+viewkit view deploy event-view --target local
 ```
 
 {% admonition(type="tip") %}
@@ -467,7 +467,7 @@ Modify an existing View without starting from scratch. This example builds on th
 Assume you already have `erc20-events` deployed with:
 
 - Query: `Log { address topics data transactionHash blockNumber transaction { hash from to } }`
-- SDL: `type EthEvent @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }`
+- SDL: `type EventView @materialized(if: true) { hash: String from: String to: String blockNumber: Int logAddress: String event: String signature: String arguments: [String] }`
 - Lens: `decode-erc20` (decode_log, Transfer + Approval ABI)
 
 ### Swap the lens to decode three event types
@@ -544,7 +544,7 @@ GraphQL queries you can run against a deployed View's output collection. These e
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     order: { blockNumber: DESC }
     limit: 10
   ) {
@@ -564,7 +564,7 @@ GraphQL queries you can run against a deployed View's output collection. These e
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     filter: {
       _and: [
         { logAddress: { _eq: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" } }
@@ -586,7 +586,7 @@ GraphQL queries you can run against a deployed View's output collection. These e
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     filter: { blockNumber: { _gte: 19540000 } }
   ) {
     hash
@@ -602,7 +602,7 @@ GraphQL queries you can run against a deployed View's output collection. These e
 
 ```graphql
 {
-  EthEvent(
+  EventView(
     filter: { hash: { _eq: "0xabc123..." } }
   ) {
     hash

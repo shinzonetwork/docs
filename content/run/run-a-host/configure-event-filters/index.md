@@ -1,10 +1,10 @@
 +++
 title = "Configure event filters"
 aliases = ["/guides/configuring-event-filters-on-a-shinzo-host"]
-description = "Shinzo hosts will store absolutely everything it is given from a Generator client by default. In this guide you will learn how to configure a Host to only store USDT ERC-20 contact events."
+description = "Shinzo hosts will store absolutely everything it is given from a Generator client by default. In this guide you will learn how to configure a Host to only store specific token transfer events."
 +++
 
-A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default the Host stores everything, but it can be configured to only store specific data. This guide configures the Host client to only store USDT ERC-20 transfer events.
+A Shinzo Host subscribes to a stream of blockchain data and writes it to a local DefraDB instance. By default the Host stores everything, but it can be configured to only store specific data. This guide configures the Host client to only store a specific token's transfer events, using USDT as the example.
 
 ## Prerequisites
 
@@ -44,7 +44,7 @@ pruner:
   interval_seconds: 30
 ```
 
-The pruner deletes data for blocks older than `max_blocks`. At roughly 12 seconds per Ethereum block, 2000 blocks is about 6-7 hours of history. Increase this if you need more, keeping in mind the storage implications.
+The pruner deletes data for blocks older than `max_blocks`. At roughly 12 seconds per block, 2000 blocks is about 6-7 hours of history (adjust for your chain's block time). Increase this if you need more, keeping in mind the storage implications.
 
 ### Filtering blockchain events
 
@@ -78,7 +78,7 @@ event_filter:
 
 #### Tracking different tokens
 
-- To track another token, replace the contract `address` with the one you want. Contract addresses are available on Etherscan.
+- To track another token, replace the contract `address` with the one you want. Contract addresses are available on a block explorer for your chain.
 - To track multiple tokens, add another group under `groups`.
 
 ```yaml

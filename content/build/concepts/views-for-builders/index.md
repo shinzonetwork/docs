@@ -52,7 +52,7 @@ flowchart LR
 
 ## Primitive data Views operate on
 
-Generator clients produce six primitive collection types, all prefixed with `Ethereum__Mainnet__` (or the equivalent chain/network prefix):
+Generator clients produce six primitive collection types, all prefixed with `<Chain>__<Network>__` (derived from the Generator's `chain.name` and `chain.network` settings):
 
 | Collection | Key fields | What it represents |
 | --- | --- | --- |

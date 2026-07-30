@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you want pushes to `main` to automatically deploy to your Host VM. GitHub Actions builds and pushes the image to GHCR, then Watchtower on the VM detects the new image and restarts the container.
 
-These scenarios use Ethereum Mainnet data. Ethereum is the only officially supported chain today, but any EVM-compatible chain should work by changing the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
