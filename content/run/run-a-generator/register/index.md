@@ -7,7 +7,7 @@ To participate in the Shinzo Network, you must register your node. Registration 
 
 ## Prerequisites
 
-Running the Generator client only requires an Ethereum execution node (see [Install](../install)). The register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step in which you prove control of a validator on your source chain. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
+Running the Generator client only requires an Ethereum execution node (see [Install](../install)). To register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step in which you prove control of a validator on your source chain. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
 
 Before you start, have the following ready:
 
@@ -39,7 +39,8 @@ Before you start, have the following ready:
 
 The Assertion step verifies that you control the validator you are registering as a Generator. You'll need to provide:
 
-- **Consensus public key**: The consensus public key of the validator you are registering (see [Consensus public key](/reference/components/outpost#consensus-public-key)).
+- **Consensus public key**: The validator's consensus-layer identity (on Ethereum, a 48-byte BLS12-381 public key, formatted as a `0x`-prefixed 96-character hex string, used to sign beacon-chain attestations). This names the validator being asserted — it is not the withdrawal address or an EVM address. See [Consensus public key](/reference/components/outpost#consensus-public-key) for how to retrieve it.
+- **Withdrawal address**: The validator's withdrawal address. This is read from the validator you named with the consensus public key and is included in the assertion digest; the assertion is signed with the matching withdrawal key to prove control of the validator's stake.
 - **Source chain**: The blockchain your generator monitors (e.g. Ethereum, Bitcoin, etc).
 
 The assertion is authorized by your validator's withdrawal key, which proves control of the validator's stake. See [Validator assertions](/reference/components/outpost#validator-assertions) for how this works end to end.
