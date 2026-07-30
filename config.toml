@@ -135,6 +135,7 @@ pages = [
   "hosts/hardware-requirements/index.md",
   "hosts/install/index.md",
   "hosts/register/index.md",
+  "hosts/private-connections/index.md",
   "hosts/quickstart/index.md",
   "hosts/examples/index.md",
   "hosts/config-reference/index.md",
