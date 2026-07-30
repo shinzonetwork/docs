@@ -34,7 +34,7 @@ Keep ShinzoHub connected so the host still fetches and runs the public Views reg
 What changes from the defaults:
 
 - `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator's multiaddr only.
-- `shinzo.hub_base_url`: leave it at `testnet.shinzo.network:26657` so the host keeps fetching public Views.
+- `shinzo.hub_base_url`: set it to `testnet.shinzo.network:26657` (the shipped value; the code default is empty) so the host keeps fetching public Views.
 - Skip [Register](/hosts/register/). An unregistered host isn't discoverable and won't serve the network.
 
 This is the topology covered in the [Operator Quickstart](/guides/operator-quickstart/).
@@ -54,13 +54,24 @@ With no hub connection, no public peers, and no registration, nothing about this
 
 ## Configure an air-gapped direct client
 
-You need a reachable Generator client and its libp2p multiaddr. If you don't have one running, see [Generator Install](/generators/install/) and the [Operator Quickstart](/guides/operator-quickstart/). Read the multiaddr from the Generator's health endpoint:
+You need a reachable Generator client and its libp2p multiaddr. If you don't have one running, see [Generator Install](/generators/install/) and the [Operator Quickstart](/guides/operator-quickstart/). The Generator's `/health` endpoint returns its peer ID and listening addresses under `.p2p.self`, as an object rather than a finished multiaddr:
 
 ```shell
-curl -s http://<generator-host>:8080/health | jq -r '.p2p.self'
+PEER_ID=$(curl -s http://<generator-host>:8080/health | jq -r '.p2p.self.id')
+
+GENERATOR_IP=$(curl -s http://<generator-host>:8080/health \
+  | jq -r '[.p2p.self.addresses[] | capture("/ip4/(?<ip>[0-9.]+)/").ip
+           | select(. != "127.0.0.1" and . != "0.0.0.0")][0]')
+
+BOOTSTRAP_PEER="/ip4/${GENERATOR_IP}/tcp/9171/p2p/${PEER_ID}"
+echo "$BOOTSTRAP_PEER"
 ```
 
-Assemble it as `/ip4/<generator-ip>/tcp/9171/p2p/<generator-peer-id>`. libp2p authenticates the peer ID, so the connection is verified end to end.
+```output
+/ip4/172.17.0.2/tcp/9171/p2p/12D3KooWK8zmiDmX91PwDV1PsqtgA1UUDuuyipVBVPEjrvwgoFJH
+```
+
+`.p2p.self.id` is the Generator's libp2p Peer ID, and `.p2p.self.addresses` lists the multiaddrs it's listening on. The jq filter drops loopback and `0.0.0.0` and takes the first remaining IPv4. `BOOTSTRAP_PEER` is the multiaddr the host dials. libp2p authenticates the peer ID, so the connection is verified end to end.
 
 Save this as `~/host-config.yaml`:
 
@@ -101,7 +112,7 @@ docker run -d \
   ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 
-Tier 1 uses the same config with one line different: leave `shinzo.hub_base_url` at its default `testnet.shinzo.network:26657`.
+Tier 1 uses the same config with one line different: set `shinzo.hub_base_url` to `testnet.shinzo.network:26657` (the shipped value; the code default is empty).
 
 {% admonition(type="tip") %}
 You don't need to expose port `9171` to the internet for a private setup. The host dials out to your Generator; it doesn't need to accept inbound P2P from the public network. Keep `9171` firewalled to your private network.
