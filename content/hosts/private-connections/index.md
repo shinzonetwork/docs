@@ -41,7 +41,7 @@ This is the topology covered in the [Operator Quickstart](/guides/operator-quick
 
 ### Fully air-gapped direct client (Tier 2)
 
-Cut ShinzoHub off entirely by setting `shinzo.hub_base_url` to an empty string. On startup the host logs `No ShinzoHub base URL configured - skipping remote view fetch` and starts no event subscription, so it contacts nothing except the Generator you point it at.
+Cut ShinzoHub off entirely by setting `shinzo.hub_base_url` to an empty string. On startup the host logs a message like _No ShinzoHub base URL configured..._ and starts no event subscription, so it contacts nothing except the Generator you point it at.
 
 {% mermaid() %}
 flowchart LR
@@ -111,6 +111,8 @@ docker run -d \
   -p 9171:9171 \
   ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
+
+Publishing `9171` is optional for a private setup. The host only dials out to your Generator, so you can drop `-p 9171:9171` or leave it published and firewall the port. The tip below explains why.
 
 Tier 1 uses the same config with one line different: set `shinzo.hub_base_url` to `testnet.shinzo.network:26657` (the shipped value; the code default is empty).
 
