@@ -100,7 +100,6 @@ section = "understand"
 label = "Basics"
 pages = [
   "understand/what-is-shinzo/index.md",
-  "understand/eli5-architecture/index.md",
   "understand/how-it-works/index.md"
 ]
 
