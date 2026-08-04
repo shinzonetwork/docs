@@ -44,7 +44,7 @@ How the digest is computed depends on the implementation. Different chains have 
 
 ### EVM implementation
 
-On Ethereum, the outpost contract (`GeneratorAssertion`) uses EIP-712 typed data signatures. The validator opens an assertion with `createAssertion`, then submits the withdrawal-key signature with `submitAssertionSignature`. The contract emits `AssertionSigned`, which the relayer subscribes to:
+On EVM chains, the outpost contract (`GeneratorAssertion`) uses EIP-712 typed data signatures. The validator opens an assertion with `createAssertion`, then submits the withdrawal-key signature with `submitAssertionSignature`. The contract emits `AssertionSigned`, which the relayer subscribes to:
 
 {% mermaid() %}
 sequenceDiagram

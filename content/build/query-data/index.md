@@ -1,10 +1,14 @@
 +++
 title = "Query data"
 aliases = ["/hosts/examples"]
-description = "Ethereum Mainnet GraphQL query examples and patterns for querying indexed data through a Shinzo Host."
+description = "GraphQL query examples and patterns for querying indexed data through a Shinzo Host."
 +++
 
-This page lists common GraphQL query examples for Ethereum Mainnet. The examples focus on blocks, transactions, attestations, signatures, and document navigation using DocIDs and CIDs.
+This page lists common GraphQL query examples for indexed chain data. The examples focus on blocks, transactions, attestations, signatures, and document navigation using DocIDs and CIDs.
+
+{% admonition(type="note") %}
+Collection names are prefixed with `<Chain>__<Network>__`, derived from the `chain.name` and `chain.network` settings of the Generator client that indexed the data (for example `<Chain>__<Network>__Block` or `Optimism__Mainnet__Block`). The examples below use the `<Chain>__<Network>__` placeholder — substitute the prefix that matches your chain. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+{% end %}
 
 ## 1. Querying a Block with Nested Data
 
@@ -12,7 +16,7 @@ Fetch a single block with nested sub-documents.
 
 ```graphql
 {
-  Ethereum__Mainnet__Block(limit:1){
+  <Chain>__<Network>__Block(limit:1){
     _docID
     number
     timestamp
@@ -64,7 +68,7 @@ Verify who signed a block record and inspect the cryptographic metadata.
 
 ```graphql
 {
-  Ethereum__Mainnet__Block(limit: 10, order: {number: DESC}) {
+  <Chain>__<Network>__Block(limit: 10, order: {number: DESC}) {
     number
     _docID
     _version {
@@ -85,7 +89,7 @@ Retrieve an exact document when you already know its `_docID`.
 
 ```graphql
 query {
-  Ethereum__Mainnet__Block(docID: <doc-id>) {
+  <Chain>__<Network>__Block(docID: <doc-id>) {
     _docID
     number
     _count(transactions:{})
@@ -106,7 +110,7 @@ Attestation records link documents to one or more CIDs. These CIDs can then be u
 
 ```graphql
 {
-  Ethereum__Mainnet__AttestationRecord(limit:10){
+  <Chain>__<Network>__AttestationRecord(limit:10){
     attested_doc
     source_doc
     CIDs
@@ -125,7 +129,7 @@ Attestation records link documents to one or more CIDs. These CIDs can then be u
 	],
 	"_docID": "bae-00000035-bd9b-5938-a55f-3a477dac226a",
 	"attested_doc": "bae-25fb059c-f232-5305-8a5d-0162f01e43e6",
-  "doc_type": "Ethereum__Mainnet__Transaction",
+  "doc_type": "<Chain>__<Network>__Transaction",
   "source_doc": "bae-25fb059c-f232-5305-8a5d-0162f01e43e6"
 },...]
 ```
@@ -180,7 +184,7 @@ The same CID can be used to directly resolve the document itself.
 
 ```graphql
 {
-  Ethereum__Mainnet__Transaction(cid:"bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy"){
+  <Chain>__<Network>__Transaction(cid:"bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy"){
     _docID
 		block_id
     blockHash
@@ -200,7 +204,7 @@ The same CID can be used to directly resolve the document itself.
 ```json
 {
   "data": {
-    "Ethereum__Mainnet__Transaction": [
+    "<Chain>__<Network>__Transaction": [
       {
         "_docID": "bae-25fb059c-f232-5305-8a5d-0162f01e43e6",
         "blockHash": "0x9ea35b3bd9e71c57617cc30394b22f607b735f2eea7a0db974cf02ad54de98fb",
@@ -221,7 +225,7 @@ The same CID can be used to directly resolve the document itself.
 
 ```graphql
 {
-  Ethereum__Mainnet__Transaction(cid:"bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy"){
+  <Chain>__<Network>__Transaction(cid:"bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy"){
     _docID
 		block_id
     blockHash
@@ -241,7 +245,7 @@ The same CID can be used to directly resolve the document itself.
 ```json
 {
   "data": {
-    "Ethereum__Mainnet__Transaction": [
+    "<Chain>__<Network>__Transaction": [
       {
         "_docID": "bae-25fb059c-f232-5305-8a5d-0162f01e43e6",
         "blockHash": "0x9ea35b3bd9e71c57617cc30394b22f607b735f2eea7a0db974cf02ad54de98fb",
@@ -262,7 +266,7 @@ The same CID can be used to directly resolve the document itself.
 
 ```graphql
 {
-  Ethereum__Mainnet__Transaction(docID:"bae-25fb059c-f232-5305-8a5d-0162f01e43e6"){
+  <Chain>__<Network>__Transaction(docID:"bae-25fb059c-f232-5305-8a5d-0162f01e43e6"){
     _docID
 	block_id
     blockHash
@@ -282,7 +286,7 @@ The same CID can be used to directly resolve the document itself.
 ```json
 {
   "data": {
-    "Ethereum__Mainnet__Transaction": [
+    "<Chain>__<Network>__Transaction": [
       {
         "_docID": "bae-25fb059c-f232-5305-8a5d-0162f01e43e6",
         "blockHash": "0x9ea35b3bd9e71c57617cc30394b22f607b735f2eea7a0db974cf02ad54de98fb",
@@ -305,7 +309,7 @@ Number of Transactions in a Specific Block
 
 ```graphql
 query {
-  Ethereum__Mainnet__Block( filter: { number: { _eq: 23901130 } } ){
+  <Chain>__<Network>__Block( filter: { number: { _eq: 23901130 } } ){
     _docID
     number
     hash
@@ -329,7 +333,7 @@ The total transaction count is `highest transactionIndex + 1`.
 
 ```graphql
 query {
-  Ethereum__Mainnet__Block(limit:10) {
+  <Chain>__<Network>__Block(limit:10) {
     _docID
     number
     hash

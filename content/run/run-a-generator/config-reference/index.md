@@ -17,7 +17,7 @@ Identifies which EVM chain to index. Collection names are derived as `{name}__{n
 | `name` | string | `Ethereum` | no | `CHAIN_NAME` | Chain name. Also supports `Arbitrum`, `Optimism`, `Avalanche`, or any EVM chain. |
 | `network` | string | `Mainnet` | no | `CHAIN_NETWORK` | Network name, for example `Mainnet` or `Testnet`. |
 
-Ethereum is the only officially supported chain today. The shipped `config.yaml` lists Arbitrum, Optimism, and Avalanche as supported, and any EVM-compatible chain can likely be indexed by setting `chain.name` and `chain.network` to the correct values and pointing `geth.node_url` at a compatible RPC endpoint. The codebase is being refactored from EVM-only to a `Chain` interface with chain-specific Fetcher and Converter components, which will formalize multi-chain support. See [Chain abstraction](/reference/components/generator-client#chain-abstraction-in-progress) for the current state.
+Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. The shipped `config.yaml` lists Arbitrum, Optimism, and Avalanche, and any EVM-compatible chain can likely be indexed by setting `chain.name` and `chain.network` to the correct values and pointing `geth.node_url` at a compatible RPC endpoint. The codebase is being refactored from EVM-only to a `Chain` interface with chain-specific Fetcher and Converter components, which will formalize multi-chain support. See [Chain abstraction](/reference/components/generator-client#chain-abstraction-in-progress) for the current state.
 
 ## defradb
 
@@ -61,12 +61,12 @@ Badger storage engine configuration. All cache and compaction fields map directl
 
 ## geth
 
-Connection details for the Ethereum execution node. The Generator does not run a node. It reads from one you provide.
+Connection details for the execution node. The Generator does not run a node. It reads from one you provide. (The `geth` section name is historical — it accepts any compatible JSON-RPC and WebSocket endpoint.)
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `node_url` | string | empty | yes | `GETH_RPC_URL` | Geth JSON-RPC endpoint URL. Used for full block fetches, gap fills, and historical ranges. |
-| `ws_url` | string | empty | yes | `GETH_WS_URL` | Geth WebSocket endpoint URL. Used for real-time new block header subscriptions. |
+| `node_url` | string | empty | yes | `GETH_RPC_URL` | JSON-RPC endpoint URL. Used for full block fetches, gap fills, and historical ranges. |
+| `ws_url` | string | empty | yes | `GETH_WS_URL` | WebSocket endpoint URL. Used for real-time new block header subscriptions. |
 | `api_key` | string | empty | no | `GETH_API_KEY` | API key for node authentication. Leave empty for same-VPC nodes without auth. |
 | `api_key_type` | string | empty | no | `GETH_API_KEY_TYPE` | Header name for the API key. `x-goog-api-key` for GCP Blockchain Node Engine, `x-api-key` for most others. |
 
@@ -98,7 +98,7 @@ Removes old data to keep storage bounded. Defaults are applied by `SetDefaults` 
 | --- | --- | --- | --- | --- | --- |
 | `enabled` | bool | false | no | `PRUNER_ENABLED` | Enable automatic pruning. Shipped `config.yaml` sets true. |
 | `max_blocks` | int64 | 10000 | no | `PRUNER_MAX_BLOCKS` | Number of blocks to retain. Shipped `config.yaml` sets 1000. |
-| `docs_per_block` | int | 1000 | no | (none) | Average docs per block, used with `max_blocks` to compute the max document count. Approximately 1057 on Ethereum mainnet. |
+| `docs_per_block` | int | 1000 | no | (none) | Average docs per block, used with `max_blocks` to compute the max document count. Approximately 1057 on a typical EVM mainnet (varies by chain). |
 | `prune_threshold` | int64 | 0 | no | `PRUNER_PRUNE_THRESHOLD` | Deprecated. Kept for backward compatibility but unused by the pruner. Shipped `config.yaml` sets 1. |
 | `interval_seconds` | int | 60 | no | `PRUNER_INTERVAL_SECONDS` | How often in seconds to check and prune. Shipped `config.yaml` sets 30. |
 | `prune_history` | bool | false | no | (none) | Walk DAG chains to delete historical block versions. Two to three times slower. |

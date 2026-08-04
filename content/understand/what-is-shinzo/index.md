@@ -66,7 +66,7 @@ There are several ways you can join the Shinzo network.
 
 ### Run a Generator client
 
-If you already are an Ethereum validator, adding a Generator client is cheap and easy. The Generator client itself is a sidecar, not a separate heavyweight service. It attaches to your existing execution client, reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/run/run-a-generator/hardware-requirements/) for sizing.
+If you already run a blockchain node (a validator, a full node, or an archive node), adding a Generator client is cheap and easy. The Generator client itself is a sidecar, not a separate heavyweight service. It attaches to your existing execution client, reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/run/run-a-generator/hardware-requirements/) for sizing.
 
 ### Run a Host
 
@@ -90,7 +90,7 @@ Shinzo's public testnet is now live. Anyone can join the network by running the 
 
 The current testnet includes:
 
-- The **Generator** client indexes Ethereum Mainnet from a Geth node, signs indexed data and replicates it across the network using DefraDB's libp2p-based replication layer.
+- The **Generator** client reads a supported chain from an execution node, signs the data, and replicates it across the network using DefraDB's libp2p-based replication layer. See [shinzo.network/chains](https://shinzo.network/chains) for the current list of supported chains.
 - The **Host** client receives replicated data from Generators, materializes registered Views using Lens transforms, and serves GraphQL queries to applications.
 - **Viewkit** allows developers to define, package and deploy custom Views to the network, making indexed datasets immediately available to participating Hosts.
 - **ShinzoHub** coordinates network participation, View registration, entity registration, and access control for the testnet.

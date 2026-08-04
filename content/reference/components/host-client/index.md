@@ -89,7 +89,7 @@ When a host receives data from multiple Generator clients for the same block, it
 ### AttestationRecord schema
 
 ```graphql
-type Ethereum__Mainnet__AttestationRecord {
+type <Chain>__<Network>__AttestationRecord {
     attested_doc: String @index
     source_doc: String
     CIDs: [String]
@@ -140,7 +140,7 @@ mutation {
 The Host client creates separate attestation collections per view:
 
 ```go
-collectionName := fmt.Sprintf("Ethereum__Mainnet__AttestationRecord_%s", viewName)
+collectionName := fmt.Sprintf("<Chain>__<Network>__AttestationRecord_%s", viewName)
 ```
 
 So you get `AttestationRecord_Block` for primitive attestations and `AttestationRecord_TokenTransfer` for a specific view.

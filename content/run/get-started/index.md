@@ -6,20 +6,20 @@ description = "Bring up a Generator client and a Host on one machine, peer them 
 mermaid = true
 +++
 
-Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query indexed Ethereum data through the Host client's GraphQL API. If your Geth node is already reachable, the whole thing takes about ten minutes.
+Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query indexed chain data through the Host client's GraphQL API. If your node is already reachable, the whole thing takes about ten minutes.
 
 When you're done you'll have:
 
-- A running Generator client pulling blocks from a Geth node and signing them.
+- A running Generator client pulling blocks from an execution node and signing them.
 - A running Host client receiving those blocks over P2P and serving them.
-- A GraphQL query returning real Ethereum data through the Host client.
+- A GraphQL query returning real chain data through the Host client.
 - A understanding of how the two main Shinzo infrastructure pieces fit together.
 
 ## What you're building
 
 {% mermaid() %}
 flowchart LR
-  Geth["Geth (your node)"] -->|RPC + WS| Generator["Generator client"]
+  Node["Your node"] -->|RPC + WS| Generator["Generator client"]
   Generator -->|libp2p| Host
   Host -->|GraphQL| You["You (curl)"]
 {% end %}
@@ -30,13 +30,13 @@ Two containers through one shared Docker bridge. Both containers run on the same
 
 - Docker. 
 - Both `curl` and `jq`.
-- A live Ethereum execution node (Geth or compatible) exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or any managed Geth node. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/run-a-generator/install/#do-you-need-an-api-key).
+- A live execution node exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or any managed node provider. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/run-a-generator/install/#do-you-need-an-api-key).
 
 You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/run/run-a-generator/register/) and [Host registration](/run/run-a-host/quickstart/#shinzohub-registration) pages.
 
-## Set your Geth endpoint
+## Set your execution node endpoint
 
-Export the URL and (optionally) the API key for your Geth node. The rest of the quickstart references these variables.
+Export the URL and (optionally) the API key for your node. The rest of the quickstart references these variables. (The `GETH_*` env var names are historical — the Generator client accepts any compatible JSON-RPC and WebSocket endpoint.)
 
 ```shell
 export GETH_RPC_URL="<your-rpc-url>"
@@ -84,7 +84,7 @@ docker run -d \
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
-`INDEXER_START_HEIGHT=0` starts indexing at the current chain tip — no historical backfill. To sync from a specific point instead, set this to that block's height. On Ethereum Mainnet, a height far below tip means a lot of history to index, so use a recent block if you just want to confirm the pipeline works.
+`INDEXER_START_HEIGHT=0` starts indexing at the current chain tip — no historical backfill. To sync from a specific point instead, set this to that block's height. On a chain with a lot of history, a height far below tip means a lot of data to index, so use a recent block if you just want to confirm the pipeline works.
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
@@ -258,7 +258,11 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 }
 ```
 
-The rows that come back were originally just logs on Ethereum, then pulled in by the Generator client over the Geth WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. More queries are on the [Host examples](/build/query-data/) page.
+The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. More queries are on the [Host examples](/build/query-data/) page.
+
+{% admonition(type="note") %}
+The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match — for example `Optimism__Mainnet__Log`. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+{% end %}
 
 ## Undo everything
 
@@ -277,7 +281,7 @@ rm ~/host-config.yaml
 docker logs --tail 50 shinzo-generator
 ```
 
-The most common cause is the Generator client can't reach Geth. Confirm `GETH_RPC_URL` and `GETH_WS_URL` are correct and reachable from the container, and that the API key (if any) is right. The Generator client can fall back to HTTP-only mode if WebSocket is unavailable, and will log that it did.
+The most common cause is the Generator client can't reach your execution node. Confirm `GETH_RPC_URL` and `GETH_WS_URL` are correct and reachable from the container, and that the API key (if any) is right. The Generator client can fall back to HTTP-only mode if WebSocket is unavailable, and will log that it did.
 
 ### The Host client never lists the Generator client as a peer
 

@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you want to run the Generator client against GCP Blockchain Node Engine or another managed node provider, authenticating with an API key header.
 
-These scenarios use Ethereum Mainnet and Geth. Ethereum is the only officially supported chain today, but any EVM-compatible chain should work by changing `chain.name` and pointing the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 

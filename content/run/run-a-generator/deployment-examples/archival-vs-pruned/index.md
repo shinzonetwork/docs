@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you need to decide whether your Generator keeps all historical data or prunes old blocks. A pruned Generator uses less storage but can still serve snapshots for Host bootstrap. An archival Generator keeps everything but grows without bound.
 
-These scenarios use Ethereum Mainnet and Geth. Ethereum is the only officially supported chain today, but any EVM-compatible chain should work by changing `chain.name` and pointing the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -96,7 +96,7 @@ snapshot:
 ### Pruned key values
 
 - `pruner.enabled: true`: Turn on automatic pruning. See [pruner config](/run/run-a-generator/config-reference#pruner).
-- `pruner.max_blocks: 1000`: Keep the last 1000 blocks in the database. At roughly 12 seconds per Ethereum block, that is about 3.3 hours of history. See [pruner config](/run/run-a-generator/config-reference#pruner).
+- `pruner.max_blocks: 1000`: Keep the last 1000 blocks in the database. At roughly 12 seconds per block, that is about 3.3 hours of history (adjust for your chain's block time). See [pruner config](/run/run-a-generator/config-reference#pruner).
 - `pruner.docs_per_block: 1000`: Average docs per block. The pruner triggers at `max_blocks` times `docs_per_block` documents. See [pruner config](/run/run-a-generator/config-reference#pruner).
 - `pruner.interval_seconds: 30`: Check for pruning every 30 seconds. See [pruner config](/run/run-a-generator/config-reference#pruner).
 - `pruner.prune_history: false`: Do not walk DAG chains to delete historical block versions. Setting this to true is two to three times slower. See [pruner config](/run/run-a-generator/config-reference#pruner).
@@ -162,9 +162,9 @@ snapshot:
 
 ## Storage comparison
 
-The pruned Generator with `max_blocks: 1000` and `docs_per_block: 1000` holds roughly 1 million documents at steady state. On Ethereum mainnet, each block produces approximately 150 documents on average (blocks with many transactions produce more, empty blocks produce fewer). The actual document count varies, but 1000 blocks typically uses 2 to 5 GB of Badger storage.
+The pruned Generator with `max_blocks: 1000` and `docs_per_block: 1000` holds roughly 1 million documents at steady state. Each block produces approximately 150 documents on average (blocks with many transactions produce more, empty blocks produce fewer; this varies by chain). The actual document count varies, but 1000 blocks typically uses 2 to 5 GB of Badger storage.
 
-The archival Generator grows by roughly 150 documents per block, or about 650,000 documents per day. At Ethereum's 12-second block time, a year of mainnet history is approximately 2.6 million blocks, producing hundreds of GB of storage. Plan disk capacity accordingly.
+The archival Generator grows by roughly 150 documents per block, or about 650,000 documents per day. At a 12-second block time, a year of history is approximately 2.6 million blocks, producing hundreds of GB of storage. Plan disk capacity accordingly.
 
 ## Compose file
 

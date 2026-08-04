@@ -7,7 +7,7 @@ A View is a developer-defined data product. It describes what raw blockchain dat
 
 Every View is a versioned bundle with three parts:
 
-- A query that specifies which primitive data to pull from the Generator layer. Today that means blocks, transactions, logs, and access list entries from Ethereum Mainnet.
+- A query that specifies which primitive data to pull from the Generator layer. Today that means blocks, transactions, logs, and access list entries from a supported chain.
 - A schema, a GraphQL SDL type definition describing the shape of the output. This is what subscribers see and query against.
 - One or more Lens transforms, WebAssembly modules that do the actual filtering, decoding, and reshaping work.
 

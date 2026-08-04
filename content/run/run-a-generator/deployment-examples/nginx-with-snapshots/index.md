@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you want to run a production Generator behind Nginx with TLS, serving snapshot files to Host clients for fast historical bootstraping.
 
-These scenarios use Ethereum Mainnet and Geth. Ethereum is the only officially supported chain today, but any EVM-compatible chain should work by changing `chain.name` and pointing the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -33,12 +33,12 @@ Nginx terminates TLS on port 443 and proxies health, metrics, and snapshot reque
 
 - Docker installed on the VM.
 - TLS certificate and key files at `~/ssl/nginx.crt` and `~/ssl/nginx.key`. You can use Let's Encrypt or your own CA.
-- A Geth node endpoint (self-hosted or managed provider).
+- An execution node endpoint (self-hosted or managed provider).
 - Ports 443 and 9171 open externally.
 
 ## Compose file
 
-This compose file is drawn from `docker-compose-prod.yml` in the `shinzo-generator-client` repo. Two things are changed for this scenario: `SNAPSHOT_ENABLED` is flipped to `true` so the Generator produces snapshot files Hosts can download through Nginx, and the Nginx port mapping is `443:443` (instead of the repo's `8080:8080`) so Nginx terminates TLS on 443 as described below. Replace `<YOUR_API_KEY_HERE>` with your Geth API key:
+This compose file is drawn from `docker-compose-prod.yml` in the `shinzo-generator-client` repo. Two things are changed for this scenario: `SNAPSHOT_ENABLED` is flipped to `true` so the Generator produces snapshot files Hosts can download through Nginx, and the Nginx port mapping is `443:443` (instead of the repo's `8080:8080`) so Nginx terminates TLS on 443 as described below. Replace `<YOUR_API_KEY_HERE>` with your API key:
 
 ```yaml
 networks:

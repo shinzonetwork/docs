@@ -9,11 +9,7 @@ Running the client only requires access to an Ethereum execution node — you do
 
 ## Hardware recommendations
 
-The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an Ethereum execution node. The figures below are for the Generator client itself, on top of whatever the execution node needs.
-
-{{ hardware(component="generator") }}
-
-If you are running Geth on the same machine, size for Geth first. A snap-synced Geth full node needs over 650 GB of fast SSD storage and at least 16 GB of RAM by itself. See the [Geth hardware requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements) and the [hardware requirements page](../hardware-requirements/) for details.
+The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
 ## Using Docker 
 
@@ -22,7 +18,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
 ### Prerequisites
 
 - Docker.
-- Access to an Ethereum execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
+- Access to an execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
 - A browser wallet setup. This wallet does not need to hold any funds.
 
 You do not need to be a validator, or to run a validator, just to install and run the Generator client. Validator requirements only apply to the [Registration](../register) step.
@@ -46,7 +42,7 @@ You do not need to be a validator, or to run a validator, just to install and ru
     Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     ```
 
-1. Gather your Geth node's:
+1. Gather your execution node's:
 
     - RPC URL
     - WebSocket URL
@@ -72,7 +68,7 @@ You do not need to be a validator, or to run a validator, just to install and ru
       ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
     ```
 
-You should see the Generator client connect to Geth and start collecting and committing blocks:
+You should see the Generator client connect to your node and start collecting and committing blocks:
 
 ```output
 2026-05-11T10:59:54.762Z	INFO	Committed block 25071330 (ID: bae-235bbc36-32ff-5fb0-8361-6c4dc3d6aeb9)
@@ -105,7 +101,7 @@ You can also build the Generator client binary from source instead of using Dock
 
 - Go 1.26 or later.
 - Git.
-- Access to an Ethereum execution node (same as the [Docker install method](#using-docker)).
+- Access to an execution node (same as the [Docker install method](#using-docker)).
 
 ### Steps
 
@@ -136,7 +132,7 @@ You can also build the Generator client binary from source instead of using Dock
     EOF
     ```
 
-    You [may not need to enter a Geth API key](#do-you-need-an-api-key).
+    You [may not need to enter an API key](#do-you-need-an-api-key).
 
 1. Build the binary.
 
@@ -160,9 +156,9 @@ Once your Generator client is running, register it with the Shinzo Network. See 
 
 ## Do you need an API key?
 
-It depends on where your Geth node is.
+It depends on where your node is.
 
-If the Generator client and the Geth node are on the same private network (both on VMs in the same VPC, for example) you probably don't need one. Geth has no authentication by default. Leave `GETH_API_KEY` empty and point `GETH_RPC_URL` at the node's internal IP or hostname.
+If the Generator client and your node are on the same private network (both on VMs in the same VPC, for example) you probably don't need one. Most execution nodes have no authentication by default. Leave `GETH_API_KEY` empty and point `GETH_RPC_URL` at the node's internal IP or hostname.
 
 For an externally hosted node, authentication is almost always required. Two common cases:
 

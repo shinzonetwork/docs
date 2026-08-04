@@ -16,16 +16,16 @@ Data flows from left to right. Coordination happens on the side.
 
 ## The data's journey
 
-Here's a single USDC transfer on Ethereum Mainnet, from the moment it lands on-chain to the moment an app shows it to a user.
+Here's a single USDC transfer on a supported chain, from the moment it lands on-chain to the moment an app shows it to a user.
 
 ### A block arrives at a validator
 
-Somewhere on the network, an Ethereum validator's node produces or receives the block containing the transfer. The validator is already running a full execution client (Geth, typically) and already has the data. Shinzo takes advantage of that.
+Somewhere on the network, a validator's node produces or receives the block containing the transfer. The validator is already running a full execution client and already has the data. Shinzo takes advantage of that.
 
 {% mermaid() %}
 flowchart LR
     ShinzoHub["ShinzoHub"]
-    Eth["Ethereum Node"]
+    Node["Execution node"]
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
@@ -37,25 +37,25 @@ flowchart LR
         Host -->|View| App
     end
 
-    Eth --> Generator
+    Node --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
     classDef active fill:#ffa94d,stroke:#1e1e1e,stroke-width:2px
     class P2P dashed
-    class Eth active
+    class Node active
 {% end %}
 
 ### The Generator structures and signs it
 
-Sitting next to the Ethereum node is the Shinzo Generator client (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Generator client pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
+Sitting next to the execution node is the Shinzo Generator client (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Generator client pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
 
 Those documents land in the Generator client's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
 
 {% mermaid() %}
 flowchart LR
     ShinzoHub["ShinzoHub"]
-    Eth["Ethereum Node"]
+    Node["Execution node"]
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
@@ -67,7 +67,7 @@ flowchart LR
         Host -->|View| App
     end
 
-    Eth --> Generator
+    Node --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
@@ -83,7 +83,7 @@ Hosts subscribe to the primitive collection topics they care about (blocks, tran
 {% mermaid() %}
 flowchart LR
     ShinzoHub["ShinzoHub"]
-    Eth["Ethereum Node"]
+    Node["Execution node"]
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
@@ -95,7 +95,7 @@ flowchart LR
         Host -->|View| App
     end
 
-    Eth --> Generator
+    Node --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
@@ -113,7 +113,7 @@ The filtering and decoding are implemented as _Lens transforms_, which are WASM 
 {% mermaid() %}
 flowchart LR
     ShinzoHub["ShinzoHub"]
-    Eth["Ethereum Node"]
+    Node["Execution node"]
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
@@ -125,7 +125,7 @@ flowchart LR
         Host -->|"View"| App
     end
 
-    Eth --> Generator
+    Node --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
@@ -140,7 +140,7 @@ On the app side, things look (surprisingly) normal. The app embeds DefraDB using
 {% mermaid() %}
 flowchart LR
     ShinzoHub["ShinzoHub"]
-    Eth["Ethereum Node"]
+    Node["Execution node"]
 
     subgraph P2P["P2P Network (DefraDB)"]
         direction LR
@@ -152,7 +152,7 @@ flowchart LR
         Host -->|View| App
     end
 
-    Eth --> Generator
+    Node --> Generator
     ShinzoHub --> P2P
 
     classDef dashed stroke-dasharray:5 5
@@ -165,7 +165,7 @@ flowchart LR
 
 #### Generator clients
 
-Generator clients are the entry point. Reserved for Ethereum validators at mainnet launch (and open to any node operator on testnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
+Generator clients are the entry point. Reserved for validators at mainnet launch (and open to any node operator on testnet), they run as a sidecar to an existing execution client. Their only job is to read the chain, produce structured and signed primitives, and hand them off.
 
 #### Hosts
 
@@ -195,7 +195,7 @@ Some design choices shape the rest of the stack and are worth understanding upfr
 
 ### Trustless indexing lives at the validator
 
-Validators already run full nodes, already have the block data the moment it's produced, and already have economic skin in the game through their 32 ETH stake. Putting trustless indexing there, rather than in a separate centralized service, shortens the trust path from chain to data and gets you verifiable indexing for free as a byproduct of running infrastructure people are already running.
+Validators already run full nodes, already have the block data the moment it's produced, and already have economic skin in the game through their staked collateral. Putting trustless indexing there, rather than in a separate centralized service, shortens the trust path from chain to data and gets you verifiable indexing for free as a byproduct of running infrastructure people are already running.
 
 ### Trustless indexing and transformation are separate jobs
 

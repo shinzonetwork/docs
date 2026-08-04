@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you need high IOPS for DefraDB storage and want to use GCP local SSDs in a RAID-0 array. Local SSDs provide much higher throughput than standard persistent disks but are ephemeral.
 
-These scenarios use Ethereum Mainnet data. Ethereum is the only officially supported chain today, but any EVM-compatible chain should work by changing the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 

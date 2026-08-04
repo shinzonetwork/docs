@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: your Generator needs to catch up from a historical start height quickly, or you want to maximize block processing throughput on a machine with available CPU and memory.
 
-These scenarios use Ethereum Mainnet and Geth. Ethereum is the only officially supported chain today, but any EVM-compatible chain should work by changing `chain.name` and pointing the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -21,19 +21,19 @@ flowchart LR
     Gen --> DB
   end
 
-  Geth["Geth node"]
+  Node["Execution node"]
   Hosts["Hosts"]
 
-  Geth -- "HTTP + WS" --> Gen
+  Node -- "HTTP + WS" --> Gen
   Gen -- "P2P (libp2p)" --> Hosts
 {% end %}
 
-The Generator fetches blocks from Geth and processes them with a configurable number of concurrent workers. Receipt fetching happens in parallel per block. Badger cache sizes control how much data stays in memory before hitting disk. The `GOMEMLIMIT` env var tells the Go runtime when to trigger garbage collection, preventing OOM kills under load.
+The Generator fetches blocks from your execution node and processes them with a configurable number of concurrent workers. Receipt fetching happens in parallel per block. Badger cache sizes control how much data stays in memory before hitting disk. The `GOMEMLIMIT` env var tells the Go runtime when to trigger garbage collection, preventing OOM kills under load.
 
 ## Prerequisites
 
 - Docker installed on the VM.
-- A Geth node endpoint with enough capacity to handle parallel RPC requests. A local node or a high-throughput managed provider works best.
+- An execution node endpoint with enough capacity to handle parallel RPC requests. A local node or a high-throughput managed provider works best.
 - At least 16 GB of RAM on the VM. The tuning values below assume this.
 
 ## Config file
@@ -96,7 +96,7 @@ snapshot:
 
 ## Compose file
 
-Mount the config file and set `GOMEMLIMIT` via the environment. The Geth connection details come from env vars, which override the `${GETH_*}` placeholders in the config file:
+Mount the config file and set `GOMEMLIMIT` via the environment. The node connection details come from env vars, which override the `${GETH_*}` placeholders in the config file:
 
 ```yaml
 networks:
@@ -138,7 +138,7 @@ services:
 
 ### What each tuning value does
 
-- `concurrent_blocks: 8`: Process 8 blocks at the same time instead of the shipped default of 1. This is the code default from `applyDefaults`. Increase it if your Geth node can handle parallel requests. See [indexer config](/run/run-a-generator/config-reference#indexer).
+- `concurrent_blocks: 8`: Process 8 blocks at the same time instead of the shipped default of 1. This is the code default from `applyDefaults`. Increase it if your node can handle parallel requests. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `receipt_workers: 32`: Fetch 32 receipts concurrently per block, up from the shipped 8. Receipts are the bottleneck for blocks with many transactions. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `blocks_per_minute: 0`: Disable the rate limit. The shipped `config.yaml` sets 60, which caps indexing speed. Set to 0 for maximum throughput during catch-up. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `block_cache_mb: 1024`: Double the shipped 512. More cache means fewer disk reads for recently written blocks. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).
@@ -162,8 +162,8 @@ curl -s http://localhost:8080/metrics | jq '.blocks_processed, .blocks_per_minut
 ## Gotchas
 
 - The shipped `config.yaml` sets `concurrent_blocks: 1`, but the code default in `applyDefaults` is 8. If you mount no config file and set no env var, you get the code default of 8. If the container image includes the shipped `config.yaml`, you get 1 unless you override it.
-- High `concurrent_blocks` and `receipt_workers` values generate parallel RPC requests against your Geth node. A local Geth node can usually handle this. A shared or rate-limited managed provider may throttle or reject connections. Monitor your Geth node's request queue and RPC error rate.
-- `blocks_per_minute: 0` removes the rate limit entirely. This is useful for catch-up but means the Generator will process blocks as fast as Geth can serve them. If Geth is also serving other consumers, this can starve them of RPC capacity.
+- High `concurrent_blocks` and `receipt_workers` values generate parallel RPC requests against your execution node. A local node can usually handle this. A shared or rate-limited managed provider may throttle or reject connections. Monitor your node's request queue and RPC error rate.
+- `blocks_per_minute: 0` removes the rate limit entirely. This is useful for catch-up but means the Generator will process blocks as fast as your node can serve them. If your node is also serving other consumers, this can starve them of RPC capacity.
 - `GOMEMLIMIT` is a Go runtime soft memory limit, not a Generator client config var. It is honored by the Go runtime's garbage collector. Set it below the container `mem_limit` to leave headroom for non-Go memory allocations. If you set it too high, the container can be OOM-killed by the kernel.
 - Increasing Badger cache sizes raises memory usage. The values above (`block_cache_mb: 1024`, `memtable_mb: 128`, `index_cache_mb: 512`) add up to roughly 1.6 GB of cache alone. Make sure the total stays within the `GOMEMLIMIT` and container memory limit.
 - `num_compactors: 8` uses more CPU. On a machine with fewer than 8 cores, this can cause CPU contention with block processing. Match it to your available cores.

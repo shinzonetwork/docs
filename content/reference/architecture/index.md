@@ -13,11 +13,11 @@ Neither layer works without the other. The on-chain layer controls who can parti
 
 {% mermaid() %}
 flowchart LR
-  Src["Source chains<br/>(Ethereum, Cosmos, …)"]
+  Src["Source chains<br/>(EVM chains, Cosmos, …)"]
 
   subgraph OffChain["Off-chain data layer"]
     direction TB
-    Idx["Generator<br/>(Geth + Generator client)"]
+    Idx["Generator<br/>(execution node + Generator client)"]
     Host["Host<br/>(host client + DefraDB)"]
     Idx -- "signed blocks" --> Host
   end
@@ -53,7 +53,7 @@ The scheduler and gateway are coordination services. They match the Generator cl
 
 | Component | Layer | Language | Repo | Touches data? |
 | --- | --- | --- | --- | --- |
-| Geth (source chain node) | Off-chain | Go | [go-ethereum](https://github.com/ethereum/go-ethereum) | Yes |
+| Execution node (source chain) | Off-chain | Go | [go-ethereum](https://github.com/ethereum/go-ethereum) | Yes |
 | Generator client | Off-chain | Go | [shinzo-generator-client](https://github.com/shinzonetwork/shinzo-generator-client/) | Yes |
 | Host client | Off-chain | Go | [shinzo-host-client](https://github.com/shinzonetwork/shinzo-host-client/) | Yes |
 | Scheduler | Off-chain | Go | [shinzo-scheduler-service](https://github.com/shinzonetwork/shinzo-scheduler-service) | No |
@@ -150,7 +150,7 @@ The `x/sourcehub` keeper uses a hardcoded 5-minute timeout on all `SendTx` calls
 
 ## The bridge to source chains
 
-Two components connect external blockchains (Ethereum, Cosmos chains, etc.) to ShinzoHub.
+Two components connect external blockchains (EVM chains, Cosmos chains, etc.) to ShinzoHub.
 
 ### Outpost contracts
 
@@ -171,7 +171,7 @@ The EVM relayer is a Go process with two pipelines:
 The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for gas.
 
 {% admonition(type="note") %}
-The EVM relayer and the Hermes IBC relayer are completely different systems. The EVM relayer bridges Ethereum to ShinzoHub. The Hermes relayer bridges ShinzoHub to SourceHub over IBC. They share the word _relayer_ and nothing else.
+The EVM relayer and the Hermes IBC relayer are completely different systems. The EVM relayer bridges EVM chains to ShinzoHub. The Hermes relayer bridges ShinzoHub to SourceHub over IBC. They share the word _relayer_ and nothing else.
 {% end %}
 
 ## Off-chain data flow
