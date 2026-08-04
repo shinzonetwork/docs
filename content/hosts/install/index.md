@@ -152,18 +152,33 @@ make build-playground
 
 ### Configure and run
 
-The only required setting is the keyring secret. Export it, then start the Host client:
+The only required setting is the keyring secret. 
 
-```shell
-export DEFRA_KEYRING_SECRET="<your-strong-secret>"
-make start
-```
+1. Export the secret key:
 
-Or run without building a binary:
+    ```shell
+    export DEFRA_KEYRING_SECRET="<your-strong-secret>"
+    ```
 
-```shell
-go run cmd/main.go
-```
+1. Run the client:
+
+    {{ tab(label="Run as a binary") }}
+
+    ```shell
+    make start
+    ```
+
+    {{ endtab() }}
+
+    {{ tab(label="Without building the binary") }}
+
+    ```shell
+    go run cmd/main.go
+    ```
+
+    {{ endtab() }}
+
+1. Done!
 
 ### Build tags
 
