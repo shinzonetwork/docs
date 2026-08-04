@@ -100,7 +100,8 @@ section = "understand"
 label = "Basics"
 pages = [
   "understand/what-is-shinzo/index.md",
-  "understand/how-it-works/index.md",
+  "understand/eli5-architecture/index.md",
+  "understand/how-it-works/index.md"
 ]
 
 [[extra.sidebar]]
@@ -112,6 +113,15 @@ pages = [
   "understand/core-concepts/attestation/index.md",
   "understand/core-concepts/defradb/index.md",
   "understand/core-concepts/shnz-token/index.md",
+]
+
+[[extra.sidebar]]
+section = "understand"
+label = "Community"
+pages = [
+  "understand/get-help/index.md",
+  "understand/join-the-community/index.md",
+  "understand/contributing/index.md",
 ]
 
 # Build apps
