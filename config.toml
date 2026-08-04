@@ -110,8 +110,7 @@ page = "understand/core-concepts/_index.md"
 pages = [
   "understand/core-concepts/views/index.md",
   "understand/core-concepts/attestation/index.md",
-  "understand/core-concepts/defradb/index.md",
-  "understand/core-concepts/shnz-token/index.md",
+  "understand/core-concepts/defradb/index.md"
 ]
 
 [[extra.sidebar]]
