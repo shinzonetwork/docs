@@ -171,11 +171,15 @@ pages = [
   "run/run-a-host/register/index.md",
   "run/run-a-host/quickstart/index.md",
   "run/run-a-host/config-reference/index.md",
-  "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
-  "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
-  "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
-  "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
-  "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
+]
+subsections = [
+  { label = "Deployment Examples", pages = [
+    "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
+    "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
+    "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
+    "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
+    "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
+  ] },
 ]
 
 [[extra.sidebar]]
