@@ -5,6 +5,8 @@ aliases = ["/generator/install", "/generators/install"]
 
 This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
 
+Running the client only requires access to an Ethereum execution node — you do not need to run an Ethereum validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration prerequisites](../register#prerequisites) for details.
+
 ## Hardware recommendations
 
 The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
@@ -18,6 +20,8 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
 - Docker.
 - Access to an execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
 - A browser wallet setup. This wallet does not need to hold any funds.
+
+You do not need to be a validator, or to run a validator, just to install and run the Generator client. Validator requirements only apply to the [Registration](../register) step.
 
 ### Steps
 

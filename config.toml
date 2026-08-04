@@ -100,7 +100,7 @@ section = "understand"
 label = "Basics"
 pages = [
   "understand/what-is-shinzo/index.md",
-  "understand/how-it-works/index.md",
+  "understand/how-it-works/index.md"
 ]
 
 [[extra.sidebar]]
@@ -110,8 +110,16 @@ page = "understand/core-concepts/_index.md"
 pages = [
   "understand/core-concepts/views/index.md",
   "understand/core-concepts/attestation/index.md",
-  "understand/core-concepts/defradb/index.md",
-  "understand/core-concepts/shnz-token/index.md",
+  "understand/core-concepts/defradb/index.md"
+]
+
+[[extra.sidebar]]
+section = "understand"
+label = "Community"
+pages = [
+  "understand/get-help/index.md",
+  "understand/join-the-community/index.md",
+  "understand/contributing/index.md",
 ]
 
 # Build apps
@@ -171,11 +179,15 @@ pages = [
   "run/run-a-host/register/index.md",
   "run/run-a-host/quickstart/index.md",
   "run/run-a-host/config-reference/index.md",
-  "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
-  "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
-  "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
-  "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
-  "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
+]
+subsections = [
+  { label = "Deployment Examples", pages = [
+    "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
+    "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
+    "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
+    "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
+    "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
+  ] },
 ]
 
 [[extra.sidebar]]

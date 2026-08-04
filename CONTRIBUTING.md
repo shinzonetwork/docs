@@ -1,23 +1,26 @@
 # Contributing
 
+The full contributor guide lives at https://docs.shinzo.network/understand/contributing/. This file is a short summary for someone browsing the repo on GitHub.
+
 ## Before you start
 
-Open an issue to discuss your proposed change before submitting a PR. This avoids wasted effort if the change isn't a good fit. PRs without issues attached with be closed.
+Open an issue to discuss your proposed change before submitting a PR. This avoids wasted effort if the change isn't a good fit or is already in progress. PRs without an attached issue will be closed.
 
-## Making changes
+## Run the site locally
 
-All documentation lives in `content/` as Markdown files.
+This site is built with [Zola](https://www.getzola.org/) 0.19 or later. There's no Node tooling.
 
-To add a new page:
+```shell
+zola serve
+```
 
-1. Create a `.md` file in the appropriate subdirectory under `content/`.
-1. Add frontmatter with at least a `title` and `sidebar_position`.
-1. Register the page in `sidebars.ts` if it doesn't get picked up automatically.
-1. Run `pnpm start` to preview your changes locally.
+The dev server runs at `http://127.0.0.1:1111` with live reload.
 
-## Submitting a PR
+## Add a page
 
-- Keep PRs focused. One change per PR.
-- Describe what you changed and why in the PR description.
-- Make sure `pnpm build` and `pnpm typecheck` pass before requesting review.
+1. Create a folder under `content/` with an `index.md` file (for example, `content/understand/my-topic/index.md`).
+1. Add TOML frontmatter delimited by `+++` with at least a `title`.
+1. Register the path in the relevant `[[extra.sidebar]]` block in `config.toml`. Pages are not auto-discovered.
+1. Run `zola check` to validate links before opening your PR.
 
+See the [contributing guide](https://docs.shinzo.network/understand/contributing/) for page conventions, aliases, and style notes.
