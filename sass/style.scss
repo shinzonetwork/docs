@@ -510,6 +510,14 @@ img.logo-dark {
   }
 }
 
+.menu__link--category {
+  margin-top: 20px;
+}
+
+.menu > .menu__list > .menu__list-item:first-child > .menu__list-item-collapsible > .menu__link--category {
+  margin-top: 0;
+}
+
 /* Breadcrumbs */
 // `.markdown ul` adds a left padding to every list; override it here so the
 // breadcrumbs sit flush against the left edge of the content column.
