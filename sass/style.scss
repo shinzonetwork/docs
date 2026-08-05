@@ -510,12 +510,8 @@ img.logo-dark {
   }
 }
 
-.menu__link--category {
+.menu__list-item:not(:first-child) .menu__link--category {
   margin-top: 20px;
-}
-
-.menu > .menu__list > .menu__list-item:first-child > .menu__list-item-collapsible > .menu__link--category {
-  margin-top: 0;
 }
 
 /* Breadcrumbs */
