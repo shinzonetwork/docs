@@ -6,7 +6,7 @@ async function main() {
   const value = SIZE_MAP[label.toUpperCase()];
 
   if (value === undefined) {
-    console.log(`Label "${label}" is not a sizing label (XS/S/M/L/XL) — skipping.`);
+    console.log(`Label "${label}" is not a sizing label (XS/S/M/L/XL) - skipping.`);
     return;
   }
 

@@ -19,7 +19,7 @@
   opacity: 0.8;
 }
 
-/* Code block surface — use the brand code background/foreground. */
+/* Code block surface - use the brand code background/foreground. */
 pre.giallo,
 pre.z-code {
   color: var(--code-foreground) !important;
@@ -85,18 +85,18 @@ pre.z-code {
   color: var(--code-token-constant) !important;
 }
 
-/* ─── Tokens not covered above but emitted by giallo (github-light).
+/* Tokens not covered above but emitted by giallo (github-light).
    These were hardcoded light values in giallo.css; map them onto the same
    brand variables so the dark palette (defined in style.scss) recolours
-   them automatically. Loaded AFTER giallo.css with !important to win. ── */
+   them automatically. Loaded AFTER giallo.css with !important to win. */
 
-/* Plain source wrapper + broad text — neutral foreground. */
+/* Plain source wrapper + broad text - neutral foreground. */
 .z-source {
   color: var(--code-token-string) !important;
 }
 
 /* Variable / parameter / storage-modifier text that giallo paints dark
-   (#24292E) — would be invisible on a dark surface. Use the foreground. */
+   (#24292E) - would be invisible on a dark surface. Use the foreground. */
 .z-variable.z-other,
 .z-variable.z-parameter.z-function,
 .z-storage.z-modifier.z-package,
@@ -105,7 +105,7 @@ pre.z-code {
   color: var(--code-token-punctuation) !important;
 }
 
-/* Keywords giallo colours red (#D73A49): fn/let/struct/use/import — keep
+/* Keywords giallo colours red (#D73A49): fn/let/struct/use/import - keep
    them on the brand keyword (purple) like the other keywords. */
 .z-storage.z.type {
   color: var(--code-token-keyword) !important;
@@ -116,7 +116,7 @@ pre.z-code {
   color: var(--code-token-constant) !important;
 }
 
-/* Type / entity names giallo paints blue — use the brand property purple. */
+/* Type / entity names giallo paints blue - use the brand property purple. */
 .z-entity.z-name,
 .z-entity.z-name.z-constant,
 .z-variable.z-other.z-constant,
@@ -172,7 +172,7 @@ pre.z-code {
   font-weight: bold;
 }
 
-/* Bracket highlighter — dim grey. */
+/* Bracket highlighter - dim grey. */
 .z-brackethighlighter.z-tag,
 .z-brackethighlighter.z-curly,
 .z-brackethighlighter.z-round,
@@ -195,7 +195,7 @@ pre.z-code {
   font-style: italic;
 }
 
-/* Diff markup — token colour + translucent brand-tinted background. */
+/* Diff markup - token colour + translucent brand-tinted background. */
 .z-markup.z-inserted,
 .z-punctuation.z-definition.z-inserted {
   color: var(--code-token-function) !important;
@@ -227,7 +227,7 @@ pre.z-code {
   color: var(--code-token-constant) !important;
 }
 
-/* Ignored / untracked — neutral on a brand backdrop. */
+/* Ignored / untracked - neutral on a brand backdrop. */
 .z-markup.z-ignored,
 .z-markup.z-untracked {
   color: var(--code-background) !important;
@@ -242,7 +242,7 @@ pre.z-code {
   text-decoration: underline;
 }
 
-/* Line numbers — dim, theme-aware. */
+/* Line numbers - dim, theme-aware. */
 .giallo-ln {
   color: color-mix(in srgb, var(--foreground) 40%, transparent) !important;
 }

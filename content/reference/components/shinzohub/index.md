@@ -169,7 +169,7 @@ Key file: `x/sourcehub/keeper/keeper.go`
 
 The path from user payment to access grant has four steps:
 
-1. User calls `payment()` on the outpost contract on the source chain, sends ETH. Contract stores receipt, emits `PaymentCreated`.
+1. User calls `payment()` on the outpost contract on the source chain, sending the chain's native currency. Contract stores receipt, emits `PaymentCreated`.
 1. EVM relayer subscribes to `PaymentCreated`, builds `MsgRequestStreamAccess`, broadcasts to ShinzoHub.
 1. ShinzoHub handler builds `MsgDirectPolicyCmd` with `SetRelationshipCmd`, sends via ICA. Grants user's DID read access on SourceHub.
 1. ShinzoHub emits `AccessRequestSuccess` event.

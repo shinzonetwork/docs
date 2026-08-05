@@ -4,7 +4,7 @@ title = "Generator client"
 mermaid = true
 +++
 
-The Generator client is a standalone Go process that runs as a sidecar alongside an Ethereum validator node. It connects to the validator's Geth node, fetches every new block (with transactions, receipts, and logs), structures them into DefraDB documents, signs the batch, and publishes everything over P2P.
+The Generator client is a standalone Go process that runs as a sidecar alongside a blockchain node. It connects to the node's execution client, fetches every new block (with transactions, receipts, and logs), structures them into DefraDB documents, signs the batch, and publishes everything over P2P.
 
 Generator clients are write-only data producers. They push data out and reject all incoming replication.
 
@@ -14,14 +14,14 @@ Generator clients are write-only data producers. They push data out and reject a
 flowchart LR
   subgraph VM["Validator machine"]
     direction LR
-    Geth["<b>Geth node</b><br/>:8545 HTTP<br/>:8546 WS"]
+    Node["<b>Execution node</b><br/>:8545 HTTP<br/>:8546 WS"]
     subgraph IC["Generator client"]
       direction LR
       RPC["RPC client"] --> BH["Block handler"]
       BH --> Sig["Signing"]
       Sig --> DB[("Embedded<br/>DefraDB")]
     end
-    Geth -- "HTTP / WS" --> RPC
+    Node -- "HTTP / WS" --> RPC
   end
 
   Hosts["Host(s)"]
@@ -29,7 +29,7 @@ flowchart LR
   DB -- "P2P (libp2p)" --> Hosts
 {% end %}
 
-The Generator client connects to Geth over two channels:
+The Generator client connects to the execution node over two channels:
 
 - WebSocket (port 8546): subscribes to new block headers for real-time feed.
 - HTTP JSON-RPC (port 8545): fetches full block details, fills gaps on restart, handles historical ranges. This is a backup connection.
@@ -49,14 +49,14 @@ Each block goes through six stages:
 
 The Generator client produces six document types per block. The first four come directly from on-chain data. The last two are metadata that the Generator client itself produces.
 
-Collection names use a chain prefix: `Ethereum__Mainnet__Block`, `Optimism__Mainnet__Block`, etc. Schema definitions live in `pkg/schema/schema_standard.graphql`. There are two schema variants:
+Collection names are prefixed with `<Chain>__<Network>__`, derived from your `chain.name` and `chain.network` settings. Schema definitions live in `pkg/schema/schema_standard.graphql`. There are two schema variants:
 
 - Standard: parallel transaction processing (default build).
 
 ### Block
 
 ```graphql
-type Ethereum__Mainnet__Block {
+type <Chain>__<Network>__Block {
     hash: String 
     number: Int 
     timestamp: String
@@ -77,7 +77,7 @@ type Ethereum__Mainnet__Block {
     extraData: String
     mixHash: String
     uncles: [String]
-    transactions: [Ethereum__Mainnet__Transaction] @relation(name: "block_transactions")
+    transactions: [<Chain>__<Network>__Transaction] @relation(name: "block_transactions")
 }
 ```
 
@@ -86,7 +86,7 @@ type Ethereum__Mainnet__Block {
 Merges fields from both the transaction object and its receipt. Receipt-specific fields: `status`, `gasUsed`, `cumulativeGasUsed`, `effectiveGasPrice`.
 
 ```graphql
-type Ethereum__Mainnet__Transaction {
+type <Chain>__<Network>__Transaction {
     hash: String
     blockHash: String 
     blockNumber: Int 
@@ -109,9 +109,9 @@ type Ethereum__Mainnet__Transaction {
     status: Boolean
     cumulativeGasUsed: String
     effectiveGasPrice: String
-    block: Ethereum__Mainnet__Block @relation(name: "block_transactions")
-    logs: [Ethereum__Mainnet__Log] @relation(name: "transaction_logs")
-    accessList: [Ethereum__Mainnet__AccessListEntry] @relation(name: "transaction_accessList")
+    block: <Chain>__<Network>__Block @relation(name: "block_transactions")
+    logs: [<Chain>__<Network>__Log] @relation(name: "transaction_logs")
+    accessList: [<Chain>__<Network>__AccessListEntry] @relation(name: "transaction_accessList")
 }
 ```
 
@@ -125,11 +125,11 @@ Event logs emitted during transaction execution. `topics` is an array of hex-enc
 EIP-2930 access list entries. Most transactions do not have access lists, so this collection is typically sparse.
 
 ```graphql
-type Ethereum__Mainnet__AccessListEntry {
+type <Chain>__<Network>__AccessListEntry {
     address: String
     storageKeys: [String]
     blockNumber: Int
-    transaction: Ethereum__Mainnet__Transaction @relation(name: "transaction_accessList")
+    transaction: <Chain>__<Network>__Transaction @relation(name: "transaction_accessList")
 }
 ```
 
@@ -138,7 +138,7 @@ type Ethereum__Mainnet__AccessListEntry {
 Created after all documents for a block are written. Contains a Merkle root computed over all document CIDs for that block, signed with the Generator client's identity key.
 
 ```graphql
-type Ethereum__Mainnet__BlockSignature {
+type <Chain>__<Network>__BlockSignature {
     blockNumber: Int
     blockHash: String
     merkleRoot: String
@@ -156,7 +156,7 @@ type Ethereum__Mainnet__BlockSignature {
 Seals a range of blocks into a single signed snapshot. The `merkleRoot` is computed over the per-block `BlockSignature` Merkle roots within the range, not over individual document CIDs.
 
 ```graphql
-type Ethereum__Mainnet__SnapshotSignature {
+type <Chain>__<Network>__SnapshotSignature {
     startBlock: Int
     endBlock: Int
     merkleRoot: String
@@ -237,7 +237,7 @@ Bootstrap peers are configured in the DefraDB config. Peers are also discovered 
 
 ## Resource requirements
 
-See the [hardware requirements page](/generators/hardware-requirements/) for current minimum and recommended specs.
+See the [hardware requirements page](/run/run-a-generator/hardware-requirements/) for current minimum and recommended specs.
 
 ## Configuration
 
@@ -267,7 +267,7 @@ The codebase is being refactored from EVM-only to support multiple chains. The a
 | Path | Purpose |
 | --- | --- |
 | `cmd/block_poster/main.go` | Entry point |
-| `pkg/rpc/ethereum_client.go` | Geth RPC client (WebSocket + HTTP) |
+| `pkg/rpc/ethereum_client.go` | Execution node RPC client (WebSocket + HTTP) |
 | `pkg/defra/block_handler.go` | Block processing and document creation |
 | `pkg/generator/replication_filter.go` | Rejects all incoming P2P replication |
 | `pkg/snapshot/snapshot.go` | Snapshot signature creation |

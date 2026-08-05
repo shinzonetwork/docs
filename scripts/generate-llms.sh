@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Generates llms.txt and llms-full.txt for docs.shinzo.network.
-# 
+#
 # 1. Run `zola build` to generate the `./public` directory.
 # 2. Run this script:
 #
@@ -8,7 +8,11 @@
 #   ./scripts/generate-llms.sh
 #   ```
 #
-# Output files are written to ./public/ or set OUTPUT_DIR to any other location. The page order mirrors the sidebar in templates/macros/sidebar.html.
+# Output files are written to ./public/ or set OUTPUT_DIR to any other location.
+# The page list and order are read automatically from the sidebar tree in
+# config.toml ([extra.sidebar]) — the same source of truth the site sidebar
+# uses. Add a page to the sidebar there and it appears here; no per-page edits
+# are needed. Draft pages (draft = true) are skipped with a warning.
 
 set -euo pipefail
 
@@ -34,7 +38,8 @@ mkdir -p "$OUTPUT_DIR"
 get_toml_field() {
     local file="$1" field="$2"
     grep -m1 "^${field}\s*=" "$file" 2>/dev/null \
-        | sed -E "s/^${field}\s*=\s*[\"']?([^\"']*)[\"']?\s*$/\1/" \
+        | sed -E "s/^${field}\s*=\s*//" \
+        | sed -E "s/^(\"(.*)\"|'(.*)')\s*$/\2\3/" \
         || true
 }
 
@@ -69,6 +74,32 @@ collapse_blanks() {
     '
 }
 
+# Derive a site URL path from a content-relative file path.
+#   understand/what-is-shinzo/index.md  -> /understand/what-is-shinzo/
+#   understand/core-concepts/_index.md  -> /understand/core-concepts/
+path_to_url() {
+    local rel="$1"
+    local dir stem
+    dir="$(dirname "$rel")"
+    stem="$(basename "${rel%.md}")"
+    if [[ "$stem" == "index" || "$stem" == "_index" ]]; then
+        printf '/%s/' "$dir"
+    else
+        printf '/%s/%s/' "$dir" "$stem"
+    fi
+}
+
+# Map a sidebar section key to its display title.
+section_title() {
+    case "$1" in
+        understand) printf 'Understand' ;;
+        build)      printf 'Build apps' ;;
+        run)        printf 'Run infrastructure' ;;
+        reference)  printf 'Reference' ;;
+        *)          printf '%s' "$1" ;;
+    esac
+}
+
 # ---------------------------------------
 # Section header (written to both files).
 # ---------------------------------------
@@ -82,22 +113,27 @@ section_header() {
 # Add a standard content page.
 # ----------------------------
 add_page() {
-    local url_path="$1"
-    local content_file="$2"
-    local override_title="${3:-}"
+    local rel_path="$1"
+    local content_file="$CONTENT_DIR/$rel_path"
 
-    local title description url
-
-    if [[ -n "$override_title" ]]; then
-        title="$override_title"
-    else
-        title="$(get_toml_field "$content_file" "title")"
+    if [[ ! -f "$content_file" ]]; then
+        echo "warning: sidebar page not found, skipping: $rel_path" >&2
+        return
     fi
 
-    description="$(get_toml_field "$content_file" "description")"
-    url="${BASE_URL}${url_path}"
+    local draft
+    draft="$(get_toml_field "$content_file" "draft")"
+    if [[ "$draft" == "true" ]]; then
+        echo "warning: skipping draft page listed in sidebar: $rel_path" >&2
+        return
+    fi
 
-    # Index line — written to both files
+    local title description url
+    title="$(get_toml_field "$content_file" "title")"
+    description="$(get_toml_field "$content_file" "description")"
+    url="${BASE_URL}$(path_to_url "$rel_path")"
+
+    # Index line - written to both files
     if [[ -n "$description" ]]; then
         printf -- '- [%s](%s): %s\n' "$title" "$url" "$description" \
             | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
@@ -106,7 +142,7 @@ add_page() {
             | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
     fi
 
-    # Full body — written to llms-full.txt only.
+    # Full body - written to llms-full.txt only.
     # collapse_blanks also strips leading/trailing blank lines.
     local body
     body="$(get_body "$content_file" | clean_body | collapse_blanks)"
@@ -120,8 +156,8 @@ add_page() {
 # Add the glossary page (no markdown body. Content lives in glossary.json)
 # ------------------------------------------------------------------------
 add_glossary_page() {
-    local url_path="$1"
-    local url="${BASE_URL}${url_path}"
+    local rel_path="$1"
+    local url="${BASE_URL}$(path_to_url "$rel_path")"
     local desc="Definitions for all terms and abbreviations used across the Shinzo documentation."
 
     printf -- '- [Glossary](%s): %s\n' "$url" "$desc" \
@@ -129,26 +165,41 @@ add_glossary_page() {
 
     printf '\n### Glossary\n\n' >> "$LLMS_FULL_TXT"
 
-    python3 - "$DATA_DIR/glossary.json" >> "$LLMS_FULL_TXT" << 'PYEOF'
-import json, sys
-
-with open(sys.argv[1]) as f:
-    data = json.load(f)
-
-for entry in data.get("terms", []):
-    term    = entry.get("term", "")
-    abbr    = entry.get("abbreviation", "")
-    defn    = entry.get("definition", "")
-    related = entry.get("relatedTerms", [])
-
-    header = f"**{term}** ({abbr})" if abbr else f"**{term}**"
-    print(header)
-    if defn:
-        print(f": {defn}")
-    if related:
-        print(f": *Related: {', '.join(related)}*")
-    print()
-PYEOF
+    awk '
+        BEGIN { in_terms = 0; in_term = 0; in_related = 0 }
+        /"terms":[[:space:]]*\[/ { in_terms = 1; next }
+        in_terms && /^[[:space:]]*\{/ { in_term = 1; term = ""; abbr = ""; defn = ""; related = ""; next }
+        in_term && /^[[:space:]]*\}/ {
+            if (abbr != "") printf "**%s** (%s)\n", term, abbr
+            else printf "**%s**\n", term
+            if (defn != "") printf ": %s\n", defn
+            if (related != "") printf ": *Related: %s*\n", related
+            print ""
+            in_term = 0; in_related = 0; next
+        }
+        in_term && /"relatedTerms":[[:space:]]*\[/ { in_related = 1; next }
+        in_related && /^[[:space:]]*\]/ { in_related = 0; next }
+        in_related {
+            line = $0
+            gsub(/^[[:space:]]*"/, "", line)
+            sub(/",?[[:space:]]*$/, "", line)
+            gsub(/\\"/, "\"", line)
+            if (line != "") {
+                if (related != "") related = related ", "
+                related = related line
+            }
+            next
+        }
+        in_term && /"term":[[:space:]]*"/ { term = extract_field($0); next }
+        in_term && /"abbreviation":[[:space:]]*"/ { abbr = extract_field($0); next }
+        in_term && /"definition":[[:space:]]*"/ { defn = extract_field($0); next }
+        function extract_field(line) {
+            sub(/^[[:space:]]*"[^"]*":[[:space:]]*"/, "", line)
+            sub(/",?[[:space:]]*$/, "", line)
+            gsub(/\\"/, "\"", line)
+            return line
+        }
+    ' "$DATA_DIR/glossary.json" >> "$LLMS_FULL_TXT"
 }
 
 # ----------------------------------------
@@ -184,48 +235,58 @@ EOF
 write_header "$LLMS_TXT"
 write_header "$LLMS_FULL_TXT"
 
-# Introduction
-section_header "Introduction"
-add_page "/"                             "$CONTENT_DIR/_index.md"                               "What is Shinzo?"
-add_page "/introduction/how-it-works/"   "$CONTENT_DIR/introduction/how-it-works/index.md"
-add_page "/introduction/core-concepts/"  "$CONTENT_DIR/introduction/core-concepts/index.md"
+# Walk the sidebar tree in config.toml and emit each section's pages in order.
+# awk extracts one record per [[extra.sidebar]] block:
+#   section|path1,path2,...
+# The while-loop uses process substitution (< <(...)) so that variables
+# (current_section) persist across iterations.
+current_section=""
+while IFS='|' read -r section paths; do
+    if [[ "$section" != "$current_section" ]]; then
+        section_header "$(section_title "$section")"
+        current_section="$section"
+    fi
 
-# Generators
-section_header "Generators"
-add_page "/generators/overview/"  "$CONTENT_DIR/generators/overview/index.md"
-add_page "/generators/install/"   "$CONTENT_DIR/generators/install/index.md"
-add_page "/generators/register/"  "$CONTENT_DIR/generators/register/index.md"
-add_page "/generators/faq/"       "$CONTENT_DIR/generators/faq/index.md"
-
-# Hosts
-section_header "Hosts"
-add_page "/hosts/overview/"    "$CONTENT_DIR/hosts/overview/index.md"
-add_page "/hosts/quickstart/"  "$CONTENT_DIR/hosts/quickstart/index.md"
-add_page "/hosts/examples/"    "$CONTENT_DIR/hosts/examples/index.md"
-
-# Views
-section_header "Views"
-add_page "/views/overview/"    "$CONTENT_DIR/views/overview/index.md"
-add_page "/views/quickstart/"  "$CONTENT_DIR/views/quickstart/index.md"
-
-# Guides
-section_header "Guides"
-add_page "/guides/building-apps-with-shinzo/"                   "$CONTENT_DIR/guides/building-apps-with-shinzo/index.md"
-add_page "/guides/configuring-event-filters-on-a-shinzo-host/"  "$CONTENT_DIR/guides/configuring-event-filters-on-a-shinzo-host/index.md"
-add_page "/guides/operator-quickstart/"                         "$CONTENT_DIR/guides/operator-quickstart/index.md"
-
-# Reference
-section_header "Reference"
-add_page "/reference/changelog/"               "$CONTENT_DIR/reference/changelog/index.md"
-add_page "/reference/architecture-overview/"      "$CONTENT_DIR/reference/architecture-overview/index.md"
-add_page "/reference/tools/"                      "$CONTENT_DIR/reference/tools/index.md"
-add_page "/reference/components/host-client/"     "$CONTENT_DIR/reference/components/host-client/index.md"
-add_page "/reference/components/generator-client/"  "$CONTENT_DIR/reference/components/generator-client/index.md"
-add_page "/reference/components/outpost/"         "$CONTENT_DIR/reference/components/outpost/index.md"
-add_page "/reference/components/relayer/"         "$CONTENT_DIR/reference/components/relayer/index.md"
-add_page "/reference/components/shinzohub/"       "$CONTENT_DIR/reference/components/shinzohub/index.md"
-add_page "/reference/components/viewkit/"         "$CONTENT_DIR/reference/components/viewkit/index.md"
-add_glossary_page "/reference/glossary/"
+    IFS=',' read -ra page_paths <<< "$paths"
+    for path in "${page_paths[@]}"; do
+        if [[ "$path" == "reference/glossary/index.md" ]]; then
+            add_glossary_page "$path"
+        else
+            add_page "$path"
+        fi
+    done
+done < <(
+    awk '
+        BEGIN { inblock = 0 }
+        /^\[\[extra\.sidebar\]\]/ {
+            if (inblock && sec != "") {
+                printf "%s|", sec
+                for (i = 1; i <= n; i++) printf "%s%s", paths[i], (i < n ? "," : "")
+                print ""
+            }
+            sec = ""; n = 0; inblock = 1; next
+        }
+        inblock && /^section[[:space:]]*=[[:space:]]*"/ {
+            sub(/^section[[:space:]]*=[[:space:]]*"/, "")
+            sub(/".*/, "")
+            sec = $0; next
+        }
+        inblock {
+            line = $0
+            while (match(line, /"[^"]*\.md"/)) {
+                n++; paths[n] = substr(line, RSTART + 1, RLENGTH - 2)
+                line = substr(line, RSTART + RLENGTH)
+            }
+        }
+        END {
+            if (inblock && sec != "") {
+                printf "%s|", sec
+                for (i = 1; i <= n; i++) printf "%s%s", paths[i], (i < n ? "," : "")
+                print ""
+            }
+        }
+    ' "$DOCS_DIR/config.toml"
+)
 
 echo "Written $(wc -l < "$LLMS_TXT") lines → $LLMS_TXT"
 echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"
