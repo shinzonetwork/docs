@@ -106,7 +106,6 @@ pages = [
 [[extra.sidebar]]
 section = "understand"
 label = "Core concepts"
-page = "understand/core-concepts/_index.md"
 pages = [
   "understand/core-concepts/views/index.md",
   "understand/core-concepts/attestation/index.md",
@@ -136,7 +135,6 @@ pages = [
 [[extra.sidebar]]
 section = "build"
 label = "Concepts"
-page = "build/concepts/_index.md"
 pages = [
   "build/concepts/views-for-builders/index.md",
 ]
@@ -152,7 +150,6 @@ pages = [
 [[extra.sidebar]]
 section = "run"
 label = "Run a Generator"
-page = "run/run-a-generator/_index.md"
 pages = [
   "run/run-a-generator/install/index.md",
   "run/run-a-generator/hardware-requirements/index.md",
@@ -172,7 +169,6 @@ subsections = [
 [[extra.sidebar]]
 section = "run"
 label = "Run a Host"
-page = "run/run-a-host/_index.md"
 pages = [
   "run/run-a-host/hardware-requirements/index.md",
   "run/run-a-host/install/index.md",
@@ -195,7 +191,6 @@ subsections = [
 [[extra.sidebar]]
 section = "run"
 label = "Operations"
-page = "run/operations/_index.md"
 pages = [
   "run/operations/troubleshooting/index.md",
 ]

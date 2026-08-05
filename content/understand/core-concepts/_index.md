@@ -1,7 +1,6 @@
 +++
-title = "Core concepts"
+render = false
 page_template = "page.html"
-aliases = ["/introduction/core-concepts"]
 +++
 Shinzo runs on four ideas that show up everywhere in the stack: Views, Attestation, DefraDB, and the SHNZ token. The [How it works](../how-it-works/) page covers how they fit together end to end.
 
