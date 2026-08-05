@@ -369,4 +369,4 @@ Your Host is now registered and authorized to participate in the Shinzo Network.
 
 ## Next Steps
 
-Your Host can now receive and serve Views. Try running queries against it through the playground GUI.
+Your Host can now receive and serve Views. A registered Host starts serving a specific View by joining its [pool](/understand/core-concepts/pools/). That's what commits a Host to running a particular View. Try running queries against it through the playground GUI.

@@ -90,6 +90,7 @@ Viewkit provides strong defaults, explicit versioning, and deterministic behavio
 ## Where to go next
 
 - [Create a View](/build/create-a-view/): step-by-step guide to building and deploying your first view.
+- [Pools](/understand/core-concepts/pools/): how developer demand for a View meets the Hosts that serve it.
 - [Build an app](/build/build-an-app/): use the app-sdk to subscribe to Views and query data locally.
 - [Query data](/build/query-data/): GraphQL query patterns for deployed Views.
 - [Lens reference](/reference/components/lens/): how WASM transforms work, available lenses, and how to chain them.
