@@ -188,7 +188,7 @@ Stored in the [`wasm-bucket`](https://github.com/shinzonetwork/wasm-bucket) repo
 | `decode_function_call` | ABI-decodes function calls from transaction `input` data | `{"function_abi": "[...]", "event_abi": "[...]"}` |
 | `decode_function_call_str` | Same as `decode_function_call` but `arguments` is a JSON string | `{"function_abi": "[...]", "event_abi": "[...]"}` |
 
-See the [Lenses guide](/views/lenses/) for details on each lens, output fields, and usage examples.
+See the [Lenses guide](/reference/components/lens/) for details on each lens, output fields, and usage examples.
 
 ### Writing new lenses
 

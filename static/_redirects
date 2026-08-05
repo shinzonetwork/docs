@@ -1,21 +1,20 @@
-/guides /guides/building-apps-with-shinzo
+# Legacy path redirects to the current information architecture.
+# Paths handled by Zola aliases on content pages (/, /introduction, /understand)
+# are not duplicated here.
 
-/host     /hosts/overview
-/host/*   /hosts/:splat
-/hosts    /hosts/overview
-
-/generators     /generators/overview
-
-/indexer      /generators/overview
-/indexer/*    /generators/:splat
-/indexers     /generators/overview
-/indexers/*   /generators/:splat
-
-/introduction   /
-
-/reference    /reference/architecture-overview/
-/reference/components   /reference/components/host-client/
-
-/view-creator   /views/overview
-/view-creator/* /views/:splat
-/views          /views/overview
+/guides               /build/create-a-view/
+/host                 /run/run-a-host/
+/host/*               /run/run-a-host/:splat
+/hosts                /run/run-a-host/
+/hosts/*              /run/run-a-host/:splat
+/generators           /run/run-a-generator/
+/generators/*         /run/run-a-generator/:splat
+/indexer              /run/run-a-generator/
+/indexer/*            /run/run-a-generator/:splat
+/indexers             /run/run-a-generator/
+/indexers/*           /run/run-a-generator/:splat
+/views                /build/create-a-view/
+/view-creator         /build/create-a-view/
+/view-creator/*       /build/create-a-view/:splat
+/reference            /reference/architecture/
+/reference/components /reference/components/

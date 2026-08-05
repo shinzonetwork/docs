@@ -1,0 +1,29 @@
++++
+title = "Hardware requirements"
+aliases = ["/generator/hardware-requirements", "/generators/hardware-requirements"]
++++
+
+These requirements are for the Generator client itself. It runs as a sidecar next to an execution node (such as Geth), so size the machine for the node first and add the Generator overhead on top.
+
+## Recommended hardware 
+
+The Generator client specific hardware requirements depending on which chain the Generator is indexing.
+
+### Ethereum Mainnet
+
+| Resource | Minimum | Recommended |
+| --- | --- | --- |
+| CPU | 4 cores | 8 cores |
+| Memory (RAM) | 8 GB | 16 GB |
+| Storage | 300 GB | 500 GB |
+| Network | 100 Mbps | 1 Gbps |
+
+With pruning enabled (the default), the Generator retains roughly the last 1,000 blocks, so its own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet. The 300–500 GB figures above are the recommended provisioned disk — the headroom covers growth, snapshot serving, and P2P replication. In archival mode (pruning disabled), storage grows linearly with chain history and on Ethereum Mainnet can exceed 3 TB (see the [FAQ](/run/operations/troubleshooting/) for details on growth rate). Storage growth differs by chain — see [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
+
+## Sizing for your execution node
+
+The numbers above do not include the execution node. Your execution node has its own, much larger footprint: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. See your client's docs (for example, the [Geth hardware requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements)) for current guidance, and provision accordingly.
+
+## Network
+
+A stable connection matters more than raw bandwidth. The Generator client reads new blocks from the execution node as they arrive, so latency to that node and uptime are more important than peak throughput. 100 Mbps is enough to keep up; 1 Gbps gives headroom for serving snapshots and P2P replication to Hosts.
