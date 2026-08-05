@@ -1,57 +1,129 @@
 name: Zenhub PR Connector
 
 on:
-  workflow_call: # Makes this callable by other repos
-    secrets:
-      ZENHUB_API_KEY:
-        required: true
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
 
 jobs:
   connect:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Connect Issue to PR on Zenhub
+      - name: Connect GitHub closing issues to Zenhub PR
+        if: github.event.pull_request.merged == true
         env:
           ZENHUB_TOKEN: ${{ secrets.ZENHUB_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_NODE_ID: ${{ github.event.pull_request.node_id }}
+          CURRENT_OWNER: ${{ github.repository_owner }}
+          CURRENT_REPO: ${{ github.event.repository.name }}
+        shell: bash
         run: |
-          # 1. Parse issue number from PR description
-          ISSUE_NUM=$(echo "$PR_BODY" | grep -oE '#[0-9]+' | head -n 1 | tr -d '#')
+          set -euo pipefail
 
-          if [ -z "$ISSUE_NUM" ]; then
-            echo "No issue reference found."
+          mapfile -t REFERENCES < <(
+            python3 - <<'PY'
+            import os
+            import re
+
+            body = os.environ.get("PR_BODY", "")
+            current_repo = f'{os.environ["CURRENT_OWNER"]}/{os.environ["CURRENT_REPO"]}'
+            refs = set()
+
+            pattern = re.compile(
+                r'(?im)^\s*(?:close|closes|closed|fix|fixes|fixed|resolve|resolves|resolved)\s+'
+                r'(?:(https?://github\.com/(?P<url_owner>[^/\s]+)/(?P<url_repo>[^/\s]+)/issues/(?P<url_number>\d+))'
+                r'|(?P<cross_owner>[\w.-]+)/(?P<cross_repo>[\w.-]+)\#(?P<cross_number>\d+)'
+                r'|#(?P<local_number>\d+))\b'
+            )
+
+            for m in pattern.finditer(body):
+                if m.group("url_number"):
+                    repo = f'{m.group("url_owner")}/{m.group("url_repo")}'
+                    num = m.group("url_number")
+                elif m.group("cross_number"):
+                    repo = f'{m.group("cross_owner")}/{m.group("cross_repo")}'
+                    num = m.group("cross_number")
+                else:
+                    repo = current_repo
+                    num = m.group("local_number")
+                refs.add((repo, num))
+
+            for repo, num in sorted(refs):
+                print(f"{repo}\t{num}")
+            PY
+          )
+
+          if [ "${#REFERENCES[@]}" -eq 0 ]; then
+            echo "No closing references found."
             exit 0
           fi
 
-          # 2. Get issue GraphQL Node ID
-          REPO_OWNER="${{ github.repository_owner }}"
-          REPO_NAME="${{ github.event.repository.name }}"
+          for REFERENCE in "${REFERENCES[@]}"; do
+            IFS=$'\t' read -r TARGET_REPOSITORY ISSUE_NUMBER <<< "$REFERENCE"
+            TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
+            TARGET_REPO="${TARGET_REPOSITORY##*/}"
 
-          ISSUE_QUERY=$(cat <<EOF
-          {"query": "query { repository(owner: \"$REPO_OWNER\", name: \"$REPO_NAME\") { issue(number: $ISSUE_NUM) { id } } }"}
-          EOF
-          )
+            GITHUB_QUERY=$(
+              jq -nc \
+                --arg owner "$TARGET_OWNER" \
+                --arg repo "$TARGET_REPO" \
+                --argjson number "$ISSUE_NUMBER" \
+                '{
+                  query: "query($owner: String!, $repo: String!, $number: Int!) {
+                    repository(owner: $owner, name: $repo) {
+                      issueOrPullRequest(number: $number) {
+                        __typename
+                        ... on Issue { id }
+                      }
+                    }
+                  }",
+                  variables: { owner: $owner, repo: $repo, number: $number }
+                }'
+            )
 
-          ISSUE_NODE_ID=$(curl -s -X POST \
-            -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "$ISSUE_QUERY" \
-            https://api.github.com/graphql | jq -r '.data.repository.issue.id')
+            GITHUB_RESPONSE=$(
+              curl --silent --show-error \
+                -X POST \
+                -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "$GITHUB_QUERY" \
+                https://api.github.com/graphql
+            )
 
-          if [ "$ISSUE_NODE_ID" == "null" ] || [ -z "$ISSUE_NODE_ID" ]; then
-            echo "Could not fetch Node ID for issue #$ISSUE_NUM"
-            exit 1
-          fi
+            OBJECT_TYPE=$(jq -r '.data.repository.issueOrPullRequest.__typename // empty' <<< "$GITHUB_RESPONSE")
+            ISSUE_NODE_ID=$(jq -r '.data.repository.issueOrPullRequest.id // empty' <<< "$GITHUB_RESPONSE")
 
-          # 3. Connect via Zenhub GraphQL
-          ZENHUB_MUTATION=$(cat <<EOF
-          {"query": "mutation { connectIssueAndPullRequest(input: {issueId: \"$ISSUE_NODE_ID\", pullRequestId: \"$PR_NODE_ID\"}) { issue { id } pullRequest { id } } }"}
-          EOF
-          )
+            if [ "$OBJECT_TYPE" != "Issue" ] || [ -z "$ISSUE_NODE_ID" ]; then
+              echo "Skipping $TARGET_REPOSITORY#$ISSUE_NUMBER"
+              continue
+            fi
 
-          curl -s -X POST \
-            -H "Authorization: Bearer $ZENHUB_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "$ZENHUB_MUTATION" \
-            https://api.zenhub.com/public/graphql
+            ZENHUB_MUTATION=$(
+              jq -nc \
+                --arg issueId "$ISSUE_NODE_ID" \
+                --arg pullRequestId "$PR_NODE_ID" \
+                '{
+                  query: "mutation($issueId: ID!, $pullRequestId: ID!) {
+                    connectIssueAndPullRequest(input: { issueId: $issueId, pullRequestId: $pullRequestId }) {
+                      issue { id }
+                      pullRequest { id }
+                    }
+                  }",
+                  variables: { issueId: $issueId, pullRequestId: $pullRequestId }
+                }'
+            )
+
+            curl --silent --show-error \
+              -X POST \
+              -H "Authorization: Bearer $ZENHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$ZENHUB_MUTATION" \
+              https://api.zenhub.com/public/graphql >/dev/null || true
+          done
