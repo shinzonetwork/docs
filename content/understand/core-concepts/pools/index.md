@@ -37,7 +37,7 @@ A pool is identified by two things: the View it serves, and a small config. Toda
 
 ## Two faces of a pool
 
-A pool has two representations. The real state (which Hosts have joined, the open demands, whether the pool is active) lives on ShinzoHub. Each pool also gets its own contract address on the EVM, so block explorers, other contracts, and off-chain tooling can talk to a specific pool directly. The contract itself is thin: it reads through to ShinzoHub rather than holding state of its own.
+A pool has two representations. The real state (which Hosts have joined, the open demands, whether the pool is active) lives on ShinzoHub. Each pool also gets its own contract address on the blockchain that it's connected to so block explorers, other contracts, and off-chain tooling can talk to a specific pool directly. The contract itself is thin: it reads through to ShinzoHub rather than holding state of its own.
 
 ## Hosts join to make a pool active
 
