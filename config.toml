@@ -64,14 +64,14 @@ href = "/understand/what-is-shinzo/"
 section = "understand"
 
 [[extra.navbar]]
-label = "Build apps"
-href = "/build/create-a-view/"
-section = "build"
-
-[[extra.navbar]]
 label = "Run infrastructure"
 href = "/run/get-started/"
 section = "run"
+
+[[extra.navbar]]
+label = "Build apps"
+href = "/build/create-a-view/"
+section = "build"
 
 [[extra.navbar]]
 label = "Reference"
