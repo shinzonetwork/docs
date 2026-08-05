@@ -110,7 +110,8 @@ page = "understand/core-concepts/_index.md"
 pages = [
   "understand/core-concepts/views/index.md",
   "understand/core-concepts/attestation/index.md",
-  "understand/core-concepts/defradb/index.md"
+  "understand/core-concepts/defradb/index.md",
+  "understand/core-concepts/privacy/index.md"
 ]
 
 [[extra.sidebar]]
@@ -177,6 +178,7 @@ pages = [
   "run/run-a-host/install/index.md",
   "run/run-a-host/configure-event-filters/index.md",
   "run/run-a-host/register/index.md",
+  "run/run-a-host/private-hosts/index.md",
   "run/run-a-host/quickstart/index.md",
   "run/run-a-host/config-reference/index.md",
 ]
