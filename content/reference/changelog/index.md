@@ -10,7 +10,7 @@ page_template = "changelog.html"
 
 Track what's new across the Shinzo developer platform: network releases, SDK changes, tooling updates and documentation improvements.
 
-## Aug 06, 2026 {#07-16-2026}
+## Aug 06, 2026 {#08-06-2026}
 
 ### 🐳 Upgrade
 
