@@ -10,6 +10,31 @@ page_template = "changelog.html"
 
 Track what's new across the Shinzo developer platform: network releases, SDK changes, tooling updates and documentation improvements.
 
+## Aug 06, 2026 {#07-16-2026}
+
+### 🐳 Upgrade
+
+**Generator Client**
+
+```bash
+docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.3-ethereum-mainnet
+```
+
+**Host Client**
+
+```bash
+docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.3-ethereum-mainnet
+```
+
+### 🚀 Improvements
+
+- {{ tag(name="Generator") }} Improved block signing performance by signing batched blocks directly from collected CIDs instead of performing a read-back query. ([PR #308](https://github.com/shinzonetwork/shinzo-generator-client/pull/308))
+- {{ tag(name="Generator") }} Fixed a hardcoded Shinzo Hub URL used during testnet deployments. ([PR #313](https://github.com/shinzonetwork/shinzo-generator-client/pull/313))
+- {{ tag(name="Host") }} History pruning is now enabled by default. ([PR #326](https://github.com/shinzonetwork/shinzo-host-client/pull/326))
+- {{ tag(name="Host") }} Fixed a hardcoded Shinzo Hub URL in the health server. ([PR #351](https://github.com/shinzonetwork/shinzo-host-client/pull/351))
+- {{ tag(name="Generator") }}{{ tag(name="Host") }} Updated dependencies, including Go Ethereum, GitHub Actions, gRPC, and other internal libraries for improved stability and maintenance.
+
+
 ## July 16, 2026 {#07-16-2026}
 
 ### 🐳 Upgrade
