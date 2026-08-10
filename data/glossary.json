@@ -83,6 +83,16 @@
       ]
     },
     {
+      "term": "Bond",
+      "definition": "An amount of ushinzo escrowed from a caller's balance when registering demand for a pool. The bond must be greater than zero and is pulled from the registrant's wallet into the `x/pool` module account, rather than sent as `msg.value`. It signals real demand for a View.",
+      "relatedTerms": [
+        "Demand",
+        "Pool",
+        "ushinzo",
+        "Pool Registry"
+      ]
+    },
+    {
       "term": "CometBFT",
       "definition": "The BFT consensus engine used by Cosmos SDK chains. ShinzoHub runs CometBFT for block production. Hosts connect to ShinzoHub's CometBFT RPC over WebSocket to receive real-time event notifications.",
       "relatedTerms": [
@@ -146,6 +156,16 @@
         "View",
         "MerkleCRDT",
         "libp2p"
+      ]
+    },
+    {
+      "term": "Demand",
+      "definition": "A developer's registered request for a View to be served, recorded against a pool and backed by a bond in ushinzo. Registering demand is what creates a pool when none exists yet for the (view, config) pair. Each registrant can hold one open demand per pool.",
+      "relatedTerms": [
+        "Pool",
+        "Bond",
+        "Pool Registry",
+        "View"
       ]
     },
     {
@@ -492,6 +512,37 @@
         "Host",
         "libp2p",
         "Peer Key"
+      ]
+    },
+    {
+      "term": "Pool",
+      "definition": "The (view, config) tuple that binds developer demand for a View to the Hosts willing to serve it. A pool is created the first time demand is registered for a View and becomes active once at least 3 Hosts have joined. Pool state lives in the `x/pool` Cosmos module; a thin `Pool.sol` contract gives each pool an EVM-addressable identity.",
+      "relatedTerms": [
+        "View",
+        "Host",
+        "Pool Registry",
+        "PoolConfig",
+        "Demand"
+      ]
+    },
+    {
+      "term": "Pool Registry",
+      "definition": "The ShinzoHub EVM precompile at `0x0213` that creates and tracks pools. `registerDemandForView(view, config, bond)` materialises a pool at the deterministic address derived from (view, config) and records the caller's demand. Hosts do not join through the registry directly; they call `join()` on a pool's `Pool.sol` contract, which forwards to the registry.",
+      "relatedTerms": [
+        "Pool",
+        "Precompile",
+        "Demand",
+        "Bond",
+        "Host Registry"
+      ]
+    },
+    {
+      "term": "PoolConfig",
+      "definition": "The configuration struct that, together with a view address, uniquely identifies a pool. Today it has a single field, `windowSize`. The whole struct is hashed into the `CREATE2` salt, so changing any field produces a different pool address.",
+      "relatedTerms": [
+        "Pool",
+        "Pool Registry",
+        "View"
       ]
     },
     {

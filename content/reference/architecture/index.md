@@ -72,17 +72,18 @@ The scheduler and gateway are coordination services. They match the Generator cl
 
 ShinzoHub is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Its native token is SHNZ.
 
-ShinzoHub maintains three EVM precompile registries:
+ShinzoHub maintains four EVM precompile registries:
 
 | Address | Registry | Purpose |
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views, deploys SVS-1 contracts. |
 | `0x0211` | Host Registry | Tracks registered hosts. |
 | `0x0212` | Generator Registry | Tracks registered Generator clients. |
+| `0x0213` | Pool Registry | Registers demand for views and tracks the pools that bind demand to hosts. |
 
 These precompiles are implemented in Go, not Solidity bytecode. They have direct access to Cosmos SDK keepers, which is how EVM transactions trigger cross-chain ICA calls to SourceHub.
 
-ShinzoHub also runs five custom Cosmos modules: `x/admin`, `x/sourcehub` (ICA controller), `x/host`, `x/generator`, and `x/view`. These run alongside the standard Cosmos modules (auth, bank, staking, etc.).
+ShinzoHub also runs six custom Cosmos modules: `x/admin`, `x/sourcehub` (ICA controller), `x/host`, `x/generator`, `x/view`, and `x/pool`. These run alongside the standard Cosmos modules (auth, bank, staking, etc.).
 
 #### Chain IDs
 

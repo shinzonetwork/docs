@@ -1,6 +1,7 @@
 +++
 title = "Views"
 +++
+
 A View is a developer-defined data product. It describes what raw blockchain data to pull, how to transform it, and what schema to expose the result as. Once deployed, Hosts run it continuously and push results to any application that subscribes.
 
 ## What a View contains
@@ -15,7 +16,7 @@ Every View is a versioned bundle with three parts:
 
 The split between _what data_ (the query), _how to transform it_ (the Lens), and _what shape to expose_ (the schema) is intentional. It keeps the View portable: any compliant Host client can pick it up, run the same deterministic transforms against the same input, and get the same output. Because Lens transforms are WASM and deterministic, any Host client or auditor can re-run them to verify the result independently.
 
-You deploy Views through `viewkit` to ShinzoHub, which validates and registers them. Hosts watch for new View registrations and decide which ones to run.
+You deploy Views through `viewkit` to ShinzoHub, which validates and registers them. Hosts watch for new View registrations and decide which ones to run. Joining a [pool](/understand/core-concepts/pools/) is how they commit to serving one.
 
 ## View categories
 
