@@ -95,7 +95,7 @@ chmod 777 $MNT
 mkdir -p \
   $MNT/defradb \
   $MNT/logs
-chown -R 1003:1006 $MNT/defradb
+chown -R 1001:1001 $MNT/defradb
 
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.5.1
 docker rm -f shinzo-host || true
@@ -103,7 +103,7 @@ docker run -d \
   --name shinzo-host \
   --restart unless-stopped \
   --network host \
-  -u 1003:1006 \
+  -u 1001:1001 \
   -v $MNT/defradb:/app/.defra \
   -v $(pwd)/config.yaml:/app/config.yaml:ro \
   -e DEFRA_URL=0.0.0.0:9181 \
@@ -128,7 +128,7 @@ docker run -d \
 - The `for dev in /dev/nvme*n*` loop: Detects all NVMe devices and filters for GCP local SSDs by checking the `nvme_card` model string. GCP local SSDs can appear as multiple namespaces on one controller (`nvme0n1`, `nvme0n2`) or as separate controllers (`nvme0n1`, `nvme1n1`).
 - `mdadm --create`: Creates a RAID-0 array across all detected local SSDs. If only one SSD is found, it is used directly without RAID.
 - `mount -o noatime,discard`: Mounts the filesystem with `noatime` (no access time updates) and `discard` (TRIM support for SSD wear leveling).
-- `chown -R 1003:1006 $MNT/defradb`: Sets ownership so the Host container (UID 1003, GID 1006) can read and write.
+- `chown -R 1001:1001 $MNT/defradb`: Sets ownership so the Host container (UID 1001, GID 1001) can read and write.
 - `--network host`: The Host container uses the host network directly. No port mappings are needed because all ports are exposed on the VM.
 - `-v $MNT/defradb:/app/.defra`: Mounts the RAID-0 filesystem as the DefraDB data directory. See [defradb store](/run/run-a-host/config-reference#defradb-store).
 - `START_HEIGHT=${START_HEIGHT:-}` and `BOOTSTRAP_PEERS=${BOOTSTRAP_PEERS:-}`: These env vars are passed through from the VM environment if set. See [environment variables](/run/run-a-host/config-reference#environment-variables).
@@ -157,7 +157,7 @@ sudo -E ./gcp-startup-host-local-ssd.sh
 - `DEFRA_URL` in the `docker run` command overrides `defradb.url` and is read by the Host client (`config/config.go`). It is kept here because it is in the original script, where it binds the DefraDB API to `0.0.0.0:9181` instead of the loopback-only YAML default. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` are also kept from the original script but are not read by the Host client and have no effect. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
 - The script uses `--network host`, so no Docker port mappings are specified. All Host ports (9181, 9171, 8080) are directly exposed on the VM. If you need nginx as a reverse proxy, run it as a separate container or install it on the host.
 - The `nvme_card` model check is specific to GCP local SSDs. If you are running on a different cloud provider, the NVMe model string will differ. Adjust the `MODEL` check accordingly.
-- The `chmod 777 $MNT` sets world-writable permissions on the mount point. This is permissive but matches the original script. If you want tighter permissions, adjust the chmod and ensure the Host container's UID (1003) can still access the directory.
+- The `chmod 777 $MNT` sets world-writable permissions on the mount point. This is permissive but matches the original script. If you want tighter permissions, adjust the chmod and ensure the Host container's UID (1001) can still access the directory.
 
 ## Need help
 
