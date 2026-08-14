@@ -5,9 +5,7 @@ description = "A walkthrough for operators who want to run a Shinzo Generator cl
 
 In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, point it at a QuickNode HTTPS + WSS endpoint, authenticate with an `x-token` header, and watch it sign and commit blocks from chain tip. We're using Ethereum mainnet in this example.
 
-## Who this is for
-
-If you want to participate in Shinzo as a Generator operator (trustlessly reading and signing on-chain data) but you don't run your own Geth / Nethermind / Erigon node and don't want to then this guide is for you. Most managed node providers, like Quicknode, require a monthly subscription fee, however most offer a free tier for basic testing. This guide also assumed you have a small Linux VM and can run Docker.
+If you want to participate in the Shinzo by trustlessly reading and signing on-chain data, but you don't want to run your own node then this guide is for you. Most managed node providers, like Quicknode, require a monthly subscription fee, however most offer a free tier for basic testing. This guide also assumed you have a small Linux VM and can run Docker.
 
 {% admonition(type="note") %}
 Installing and running the Generator client does not require you to be a Validator. The separate Registration step, which makes the Generator a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
@@ -22,7 +20,7 @@ Installing and running the Generator client does not require you to be a Validat
   - Port `9171` reachable if you want Hosts to connect over P2P (fine to leave closed for this guide, since the Generator still reads and signs data locally).
   - The examples in this guide assume you're running a Debian-based Linux distro, however any distro is fine; you'll just have to tweak some commands to fit your OS.
 
-## Create your QuickNode endpoint and grab credentials
+## Create a QuickNode endpoint
 
 1. In the QuickNode dashboard, create an endpoint. In this guide we're using **Ethereum mainnet** as an example.
 1. Under **Security**, make sure **Token Authentication** is enabled (JWTs can stay disabled).
@@ -48,7 +46,6 @@ Sanity-check the header auth with curl before touching the Generator client. Wit
 This is wrong:
 
 ```shell
-# Expect HTTP 401 (no auth)
 curl -s -o /dev/null -w "%{http_code}\n" -X POST \
   https://alpha-proud-isle.ethereum-mainnet.quiknode.pro/ \
   -H "Content-Type: application/json" \
@@ -74,9 +71,9 @@ curl -s -X POST https://alpha-proud-isle.ethereum-mainnet.quiknode.pro/ \
 
 Getting a block number (like `"result":"0x188f3f9"`) means you're ready to wire up the Generator client.
 
-## Install Docker (if not already present)
+## Install Docker
 
-Get the latest install instructions from the [official Docker Docs site](https://docs.docker.com/engine/install/). The general process for Debian/Ubuntu hosts is:
+If you've already got Docker installed, skip this section. Get the latest install instructions from the [official Docker Docs site](https://docs.docker.com/engine/install/). The general process for Debian/Ubuntu hosts is:
 
 1. Install the prerequisites:
 
@@ -115,7 +112,7 @@ Get the latest install instructions from the [official Docker Docs site](https:/
 
 1. Done.
 
-## Get the Generator client and configure it
+## Configure the Generator client
 
 Clone the client repo (it ships the compose templates and sample env):
 
@@ -124,7 +121,7 @@ git clone https://github.com/shinzonetwork/shinzo-generator-client.git
 cd shinzo-generator-client
 ```
 
-### Create your env file (never commit this)
+### Create your env file
 
 Create a `.env` in the repo root, gitignored by default. Use the base URLs (token removed) and put the token in `GETH_API_KEY` with `GETH_API_KEY_TYPE=x-token`:
 
@@ -245,7 +242,7 @@ chown -R 1001:1001 /root/shinzo-data
 See the [Generator client config reference](../../../run-a-generator/config-reference/index.md) for a detailed list of available configuration options.
 {% end %}
 
-## Start the Generator client
+## Start the client
 
 ```shell
 docker compose -f docker-compose.quicknode.yml --env-file .env up -d
@@ -323,9 +320,7 @@ curl -s -X POST http://127.0.0.1:9181/api/v0/graphql \
   -d '{"query":"{ Ethereum__Mainnet__Block { number } }"}'
 ```
 
-Expected (abridged):
-
-```json
+```output
 {
   "data": {
     "Ethereum__Mainnet__Block": [
