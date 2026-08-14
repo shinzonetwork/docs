@@ -633,8 +633,7 @@ img.logo-dark {
     font-size: 2.5rem;
   }
 
-  // The page title (from front-matter) sits above the content; give it the
-  // same top spacing the first body heading used to have.
+  // The page title (from front-matter) sits above the content; give it the same top spacing the first body heading used to have.
   .doc-title {
     margin-top: 0.5rem;
   }
@@ -644,6 +643,15 @@ img.logo-dark {
     width: 100%;
     border-collapse: collapse;
     margin: 1rem 0;
+
+    // On mobile, wide tables overflow the viewport. Let them scroll within their own box instead of pushing the page horizontally. `width: 100%` keeps narrow tables full-width; wide tables still scroll when needed.
+    @media (max-width: 996px) {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   }
 
   th,
