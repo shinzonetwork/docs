@@ -9,8 +9,9 @@ In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, 
 
 If you want to participate in Shinzo as a Generator operator (trustlessly reading and signing on-chain data) but you don't run your own Geth / Nethermind / Erigon node and don't want to then this guide is for you. Most managed node providers, like Quicknode, require a monthly subscription fee, however most offer a free tier for basic testing. This guide also assumed you have a small Linux VM and can run Docker.
 
-> [!NOTE]
-> Installing and running the Generator client does not require you to be a Validator. The separate Registration step, which makes the Generator a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
+{% admonition(type="note") %}
+Installing and running the Generator client does not require you to be a Validator. The separate Registration step, which makes the Generator a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
+{% end %}
 
 ## Prerequisites
 
@@ -38,8 +39,9 @@ You'll use the base URLs (strip the token off the path) plus the token sent as a
 | WS URL (no token) | `wss://alpha-proud-isle.ethereum-mainnet.quiknode.pro/` |
 | Token | `77f6889ea5a4f33fed9a02ce024811980754c573` |
 
-> [!WARNING]
-> QuickNode's admin Console API uses an `x-api-key` header but the RPC endpoints don't. The RPC endpoints use the token-in-URL or an `x-token` header. Sending `x-api-key` to the RPC endpoint will still get you a `401`. This guide uses `x-token`, which the Shinzo Generator supports natively via `GETH_API_KEY_TYPE`.
+{% admonition(type="warning") %}
+QuickNode's admin Console API uses an `x-api-key` header but the RPC endpoints don't. The RPC endpoints use the token-in-URL or an `x-token` header. Sending `x-api-key` to the RPC endpoint will still get you a `401`. This guide uses `x-token`, which the Shinzo Generator supports natively via `GETH_API_KEY_TYPE`.
+{% end %}
 
 Sanity-check the header auth with curl before touching the Generator client. With no header you should get a `401`; with `x-token` you should get a block number:
 
@@ -239,8 +241,9 @@ chown -R 1001:1001 /root/shinzo-data
 | `SCHEMA_AUTH_MODE=none` | Disables token auth on `/api/v1/schema` (fine for a single-operator node). |
 | `GOMEMLIMIT=5GiB` | Go runtime soft memory limit; keep below `mem_limit`. Scale both up on bigger hosts. |
 
-> [!INFO]
-> See the [Generator client config reference](../../../run-a-generator/config-reference/index.md) for a detailed list of available configuration options.
+{% admonition(type="info") %}
+See the [Generator client config reference](../../../run-a-generator/config-reference/index.md) for a detailed list of available configuration options.
+{% end %}
 
 ## Start the Generator client
 
@@ -357,8 +360,9 @@ docker compose -f docker-compose.quicknode.yml down -v
 sudo rm -rf /root/shinzo-data/defradb/*
 ```
 
-> [!WARNING]
-> Running `rm -rf` is (mostly) irreversable. Data deleted this way is really, _really_ hard to get back. But you already knew that, right?
+{% admonition(type="warning") %}
+Running `rm -rf` is (mostly) irreversable. Data deleted this way is really, _really_ hard to get back. But you already knew that, right?
+{% end %}
 
 ## Gotchas
 
