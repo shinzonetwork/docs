@@ -225,10 +225,6 @@ Example query:
 }
 ```
 
-## Earnings
-
-How Host operators earn from serving views is covered on the [Earnings](/run/earnings/) page.
-
 ## Document filtering
 
 Hosts can filter incoming documents by contract address, event type, or function signature. A host running only ERC-20 transfer views does not need to store every log from every contract.
