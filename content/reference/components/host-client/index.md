@@ -227,7 +227,7 @@ Example query:
 
 ## Earnings
 
-Hosts receive the Compute Factor component of view pricing. There is an immediate payment per query served, plus a potential bonus at epoch end if the Host client's coverage (uptime and data availability) exceeds the network average.
+How Host operators earn from serving views is covered on the [Earnings](/run/earnings/) page.
 
 ## Document filtering
 

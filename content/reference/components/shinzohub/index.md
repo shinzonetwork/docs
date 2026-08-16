@@ -2,7 +2,7 @@
 title = "ShinzoHub"
 +++
 
-ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, Hosts, Generators, and the economic layer (staking, funding, pricing, earnings) all live here.
+ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, Hosts, Generators, and the economic layer (staking, earnings) all live here.
 
 ShinzoHub does not store or serve blockchain data. It is only a coordination layer.
 
@@ -59,18 +59,17 @@ ShinzoHub uses EVM precompiled contracts to connect Cosmos module logic with the
 
 | Address | Precompile | Purpose |
 | --- | --- | --- |
-| `0x0210` | View Registry | Registers views, deploys SVS-1 contracts |
+| `0x0210` | View Registry | Registers views |
 | `0x0211` | Host Registry | Tracks registered hosts |
 | `0x0212` | Generator Registry | Tracks registered generator |
 
 ### View Registry (0x0210)
 
-Two registration methods:
+Registration method:
 
 | Method | Signature | Description |
 | --- | --- | --- |
-| `register` | `register(bytes) returns (address)` | Register view from VWL wire bytes, returns deployed View.sol address |
-| `registerWithPricing` | `registerWithPricing(bytes, address) returns (address)` | Same, but sets a custom SVPS-1 pricing contract |
+| `register` | `register(bytes)` | Register view from VWL wire bytes |
 
 When `register(bytes)` is called:
 
@@ -80,7 +79,6 @@ When `register(bytes)` is called:
 1. Modifies SDL to include unique ID (typename becomes `typename_0xkey`).
 1. Re-encodes via `viewbundle.EncodeHeader()`.
 1. Calls `sourcehubKeeper.RegisterObject()` via ICA to register in SourceHub ACP.
-1. Deploys an SVS-1 contract for the view.
 1. Stores creator mapping in EVM state.
 1. Emits `Registered(key, creator)` EVM log + Cosmos event.
 
@@ -95,12 +93,6 @@ Receives a peer key and node identity key. On registration:
 1. Verifies signatures.
 1. Derives DID and PID.
 1. Triggers ICA to SourceHub to add the DID to the `"host"` group.
-
-View.sol contracts check this registry before allowing `report()` and `consume()` calls:
-
-```solidity
-require(HOST_REGISTRY_CONTRACT.isRegistered(msg.sender), "caller is not a registered host");
-```
 
 Key files: `app/precompiles/hostregistry/methods.go`
 
@@ -135,25 +127,6 @@ Other events:
 There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches any Generator Registry events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
 
 Some older docs reference `DataPurchased`, `AccessRevoked`, and `AccessRequestPayment`. These event names do not exist in the codebase.
-
-## SVS-1 (Shinzo View Standard 1)
-
-A per-view smart contract that the View Registry deploys automatically during view registration. Each view gets its own SVS-1 instance.
-
-The contract exposes four functions:
-
-- `stake()`: stake SHNZ on the view.
-- `fund(did)`: fund a DID's access to query the view.
-- `consume(did)`: consume funded credits (called by hosts when serving queries).
-- `report()`: report usage.
-
-Price formula:
-
-```plaintext
-price = rate x complexity x premium - 5% protocol fee
-```
-
-For custom pricing, views can implement the SVPS-1 interface, which exposes a single `price() returns (uint256)` function.
 
 ## The sourcehub module (x/sourcehub)
 

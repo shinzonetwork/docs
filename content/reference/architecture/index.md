@@ -76,7 +76,7 @@ ShinzoHub maintains four EVM precompile registries:
 
 | Address | Registry | Purpose |
 | --- | --- | --- |
-| `0x0210` | View Registry | Registers views, deploys SVS-1 contracts. |
+| `0x0210` | View Registry | Registers views. |
 | `0x0211` | Host Registry | Tracks registered hosts. |
 | `0x0212` | Generator Registry | Tracks registered Generator clients. |
 | `0x0213` | Pool Registry | Registers demand for views and tracks the pools that bind demand to hosts. |
@@ -258,7 +258,7 @@ sequenceDiagram
   participant Host as Host
 
   Dev->>SH: viewkit view deploy<br/>(encode VWL, sign EVM tx)
-  SH->>SH: decode VWL header,<br/>extract SDL type,<br/>deploy SVS-1 contract
+  SH->>SH: decode VWL header,<br/>extract SDL type,<br/>compute view ID
   SH->>Source: ICA RegisterObject
   Source->>Source: ACP registers<br/>view object
   SH-)Host: emit Registered event
