@@ -3,7 +3,7 @@ title = "Quicknode setup"
 description = "A walkthrough for operators who want to run a Shinzo Generator client but would rather pay a managed node provider than run and babysit their own Ethereum execution node."
 +++
 
-In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, point it at a QuickNode HTTPS + WSS endpoint, authenticate with an `x-token` header, and watch it sign and commit blocks from chain tip. We're using Ethereum mainnet in this example.
+In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, point it at a QuickNode HTTPS + WSS endpoint, authenticate with an `x-token` header, and watch it sign and commit blocks from chain tip. We're using Ethereum mainnet in this example; the process is similar or the same for other networks.
 
 If you want to participate in the Shinzo by trustlessly reading and signing on-chain data, but you don't want to run your own node then this guide is for you. Most managed node providers, like Quicknode, require a monthly subscription fee, however most offer a free tier for basic testing. This guide also assumed you have a small Linux VM and can run Docker.
 
