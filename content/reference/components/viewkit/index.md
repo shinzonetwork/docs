@@ -211,7 +211,7 @@ sequenceDiagram
 
   Note over Dev: 1. viewkit view init + add<br/>(define query, SDL, add lens)
   Dev->>SH: 2. viewkit view deploy<br/>(encode VWL, send EVM tx)
-  Note over SH: 3. validate bundle,<br/>RegisterObject (ICA),<br/>deploy SVS-1 contract
+  Note over SH: 3. validate bundle,<br/>compute view ID,<br/>RegisterObject (ICA)
   SH-)Host: emit Registered event
   Note over Host: 4. download bundle,<br/>load WASM lens,<br/>transform primitives
   User->>Host: 5. GraphQL query

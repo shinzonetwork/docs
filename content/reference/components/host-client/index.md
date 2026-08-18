@@ -225,10 +225,6 @@ Example query:
 }
 ```
 
-## Earnings
-
-Hosts receive the Compute Factor component of view pricing. There is an immediate payment per query served, plus a potential bonus at epoch end if the Host client's coverage (uptime and data availability) exceeds the network average.
-
 ## Document filtering
 
 Hosts can filter incoming documents by contract address, event type, or function signature. A host running only ERC-20 transfer views does not need to store every log from every contract.
