@@ -229,6 +229,28 @@ http {
       proxy_set_header Host $host;
     }
 
+    location = /health {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:8080/health;
+      proxy_set_header Host $host;
+    }
+
+    location = /registration {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:8080/registration;
+      proxy_set_header Host $host;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location = /registration-app {
+      if ($request_method = OPTIONS) { return 204; }
+      proxy_pass http://shinzo-host:8080/registration-app;
+      proxy_set_header Host $host;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
     location = /api/v0/graphql {
       if ($request_method = OPTIONS) { return 204; }
       proxy_pass http://shinzo-host:9181/api/v0/graphql;

@@ -69,7 +69,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     | `9181` | DefraDB GraphQL + REST API | |
     | `9182` | GraphQL Playground UI | |
     | `9171` | libp2p P2P networking | Must be reachable from the internet — open/forward this port |
-    | `8080` | Health + metrics | Served inside the container; publish with `-p 8080:8080` if you want to scrape it |
+    | `8080` | Health + metrics | Served inside the container. Publish with `-p 8080:8080` and open it in your firewall so the public Hosts dashboard can probe `/health` and show your Host as online. The default `docker run` above does not publish it. |
 
 1. Confirm the container is up:
 

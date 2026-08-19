@@ -7,7 +7,7 @@ To participate in the Shinzo Network and make your view publically available, yo
 
 ## Register with the GUI
 
-1. Start your Host with the health/registration port published (`-p 8080:8080`). The registration app is served on port `8080`, and the default command in [Install](/run/run-a-host/install/) does not publish it.
+1. Start your Host with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Hosts dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. If `8080` isn't reachable from the internet, your Host shows as offline even while it's running fine. The default command in [Install](/run/run-a-host/install/) does not publish it.
 1. Add the Shinzo Testnet to your browser wallet with the following values:
    - Network name: `Shinzo`
    - Default RPC URL: `http://testnet.shinzo.network:8545`
