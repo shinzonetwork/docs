@@ -165,6 +165,9 @@ subsections = [
     "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
     "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",
   ] },
+  { label = "Guides", pages = [
+    "run/run-a-generator/guides/quicknode-setup/index.md",
+  ] },
 ]
 
 [[extra.sidebar]]
