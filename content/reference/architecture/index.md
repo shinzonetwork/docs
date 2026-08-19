@@ -265,6 +265,8 @@ sequenceDiagram
   Host->>Host: download bundle,<br/>load WASM lens,<br/>start transforming
 {% end %}
 
+For the developer-side view of this flow (Viewkit → ShinzoHub → Host → app SDK), see [The view lifecycle across repos](/reference/components/viewkit/#the-view-lifecycle-across-repos) in the Viewkit reference.
+
 ## Transaction flow through a precompile
 
 The full path of an EVM transaction that hits a registry precompile and triggers a cross-chain ICA call:

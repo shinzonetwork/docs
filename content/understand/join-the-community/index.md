@@ -25,7 +25,7 @@ All of Shinzo's code lives under the [shinzonetwork](https://github.com/shinzone
 - [shinzo-generator-client](https://github.com/shinzonetwork/shinzo-generator-client): the Generator client.
 - [shinzo-host-client](https://github.com/shinzonetwork/shinzo-host-client): the Host client.
 - [app-sdk](https://github.com/shinzonetwork/app-sdk): the Go SDK for embedding Shinzo in an application.
-- [viewkit](https://github.com/shinzonetwork/viewkit): the CLI for building and deploying Views.
+- [shinzo-view-creator](https://github.com/shinzonetwork/shinzo-view-creator): the CLI for building and deploying Views.
 
 To contribute code or documentation, see [Contributing](../contributing/). To report a bug, see [Get help](../get-help/).
 
