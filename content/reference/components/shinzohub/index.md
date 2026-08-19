@@ -61,7 +61,7 @@ ShinzoHub uses EVM precompiled contracts to connect Cosmos module logic with the
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views |
 | `0x0211` | Host Registry | Tracks registered hosts |
-| `0x0212` | Generator Registry | Tracks registered generator |
+| `0x0212` | Generator Registry | Tracks registered generators |
 
 ### View Registry (0x0210)
 
