@@ -14,13 +14,13 @@ Track what's new across the Shinzo developer platform: network releases, SDK cha
 
 ### Upgrade
 
-**Generator Client**
+#### Generator client
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.3-ethereum-mainnet
 ```
 
-**Host Client**
+#### Host client
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.3-ethereum-mainnet
@@ -39,13 +39,13 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.3-ethereum-mainnet
 
 ### Upgrade
 
-**Generator Client**
+#### Generator client
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.2-ethereum-mainnet
 ```
 
-**Host Client**
+#### Host client
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.2-ethereum-mainnet
@@ -68,13 +68,13 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.2-ethereum-mainnet
 
 ### Upgrade
 
-**Generator Client**
+#### Generator client
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
-**Host Client**
+#### Host client
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet

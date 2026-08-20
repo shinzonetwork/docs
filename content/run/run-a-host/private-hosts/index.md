@@ -27,7 +27,7 @@ A private Host client connection closes some or all of these. How many you close
 
 ## Two tiers
 
-There are two tiers of privacy. Select that one that works for your use-case.
+There are two tiers of privacy. Select the one that works for your use case.
 
 ### Standard private Host client
 
@@ -35,7 +35,7 @@ Keep ShinzoHub connected so the Host client still fetches and runs the public Vi
 
 What changes from the defaults:
 
-- `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do no include any other multiaddrs.
+- `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do not include any other multiaddrs.
 - `shinzo.hub_base_url`: set it to `testnet.shinzo.network:26657` (the shipped value; the code default is empty) so the Host client keeps fetching public Views.
 - Skip [Register](/hosts/register/). An unregistered Host isn't discoverable and won't serve the network.
 
@@ -141,6 +141,6 @@ Restart the same container, not a fresh one. `views.json` and the cached WASM le
 - Your Generator is your only data source. If it goes down or falls behind, the Host client has no public fallback in a fully air-gapped setup.
 - You manage View updates yourself. In a standard private host setup the hub still pushes new registrations. In a fully air-gapped setup, you re-run the ingest step to pick up new public Views.
 
-## Need Help
+## Need help
 
 {{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}

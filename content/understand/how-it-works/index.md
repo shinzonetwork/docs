@@ -5,12 +5,12 @@ aliases = ["/introduction/how-it-works"]
 mermaid = true
 +++
 
-Shinzo has four kinds of moving parts: 
+Shinzo has four kinds of moving parts:
 
 1. **Generators** that read the chain.
-1. **Hosts** that transform and serve the data. 
+1. **Hosts** that transform and serve the data.
 1. **Applications** that consume that data.
-1. **ShinzoHub**, a coordination layer that tells everyone what's going on. 
+1. **ShinzoHub**, a coordination layer that tells everyone what's going on.
 
 Data flows from left to right. Coordination happens on the side.
 
@@ -183,7 +183,7 @@ Applications embed DefraDB locally, subscribe to the Views they need, and query 
 
 ShinzoHub is a Cosmos SDK chain that sits to the side of the data path. It doesn't carry bulk data itself (that all flows over the P2P network between DefraDB instances). What ShinzoHub does is keep the registry of who's on the network and what they can do.
 
-That means three things in practice: 
+That means three things in practice:
 
 1. **View registration**: When a developer deploys a View, ShinzoHub validates and registers it, then emits an event that Hosts listen for.
 1. **Participant tracking**: Generators and Hosts register themselves on-chain so the rest of the network can discover them.
@@ -201,6 +201,6 @@ Validators already run full nodes, already have the block data the moment it's p
 
 Generator clients ingest, Host clients transform and serve. That split means Generator clients can stay small and cheap (so validators will actually run them), while Host clients can specialize. One Host client might process every DeFi View on the network, another might focus on NFTs. It also means scaling consumer demand is a matter of adding more Host clients, not Generator clients.
 
-### Apps query local data, not remote APIs
+### Apps query local data not remote APIs
 
 Because application clients embed DefraDB and receive pre-processed view data over P2P, a query is a local database lookup. You don't pay per read, you don't hit rate limits, and you can verify what you got against the attestation record before you trust it. The trade-off is that your app is _pushed_ data for the Views it subscribes to rather than pulling arbitrary slices.

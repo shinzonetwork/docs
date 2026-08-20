@@ -1,14 +1,14 @@
 +++
-title = "Snapshot bootstrap from an indexer"
-description = "Bootstrap a Host with historical data on first startup by downloading signed snapshot files from an indexer over HTTPS, then receive live blocks over P2P."
+title = "Snapshot bootstrap from a trustless indexer"
+description = "Bootstrap a Host with historical data on first startup by downloading signed snapshot files from a trustless indexer over HTTPS, then receive live blocks over P2P."
 aliases = ["/hosts/deployment-examples/snapshot-bootstrap"]
 [extra]
 mermaid = true
 +++
 
-When to use this: you want your Host to sync historical data quickly on first startup by downloading signed snapshot files from an indexer, instead of waiting for P2P replication to catch up from the chain tip.
+When to use this: you want your Host to sync historical data quickly on first startup by downloading signed snapshot files from a trustless indexer, instead of waiting for P2P replication to catch up from the chain tip.
 
-These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported blockchain. Shinzo supports multiple blockchains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -30,17 +30,17 @@ flowchart LR
   Gens -- "P2P (libp2p)" --> Host
 {% end %}
 
-On first startup, the Host downloads signed snapshot files from an indexer over HTTPS and imports them into DefraDB. After the snapshot import completes, the Host connects to Generators over P2P and starts receiving live blocks from the chain tip. This is faster than waiting for P2P replication to fill in historical data block by block.
+On first startup, the Host downloads signed snapshot files from a trustless indexer over HTTPS and imports them into DefraDB. After the snapshot import completes, the Host connects to Generators over P2P and starts receiving live blocks from the chain tip. This is faster than waiting for P2P replication to fill in historical data block by block.
 
 ## Prerequisites
 
 - Docker installed on the VM.
-- An indexer serving snapshots over HTTP. The indexer must have `SNAPSHOT_ENABLED=true` and be reachable over HTTPS or HTTP. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-tls-snapshots/) for how to set up an indexer that serves snapshots.
-- The block range you want to bootstrap. The indexer must have snapshot files covering that range.
+- A trustless indexer serving snapshots over HTTP. The trustless indexer must have `SNAPSHOT_ENABLED=true` and be reachable over HTTPS or HTTP. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-tls-snapshots/) for how to set up a trustless indexer that serves snapshots.
+- The block range you want to bootstrap. The trustless indexer must have snapshot files covering that range.
 
 ## Config file
 
-This config enables snapshot bootstrap from the indexer at `http://35.206.105.60:8080` for blocks 24528700 through 24528999. It is drawn from the `host.snapshot` section of the shipped `host-client/config/config.yaml`:
+This config enables snapshot bootstrap from the trustless indexer at `http://35.206.105.60:8080` for blocks 24528700 through 24528999. It is drawn from the `host.snapshot` section of the shipped `host-client/config/config.yaml`:
 
 ```yaml
 defradb:
@@ -101,7 +101,7 @@ host:
 ### What each snapshot value does
 
 - `host.snapshot.enabled: true`: Run snapshot bootstrap on startup. The shipped `config.yaml` sets this to false. See [host snapshot](/run/run-a-host/config-reference#host-snapshot).
-- `host.snapshot.indexer_url`: HTTP base URL of the indexer serving snapshots. Replace `http://35.206.105.60:8080` with your indexer URL. See [host snapshot](/run/run-a-host/config-reference#host-snapshot).
+- `host.snapshot.indexer_url`: HTTP base URL of the trustless indexer serving snapshots. Replace `http://35.206.105.60:8080` with your trustless indexer URL. See [host snapshot](/run/run-a-host/config-reference#host-snapshot).
 - `host.snapshot.historical_ranges`: Block ranges to download during bootstrap. Each range is inclusive. See [host snapshot](/run/run-a-host/config-reference#host-snapshot).
 
 ## How bootstrap works
@@ -138,8 +138,8 @@ You should see log lines indicating snapshot downloads and imports, followed by 
 ## Gotchas
 
 - Snapshot bootstrap only runs on first startup when DefraDB has no existing data. If the Host already has data for the requested block range, bootstrap is skipped.
-- The `indexer_url` in the shipped `config.yaml` is `http://35.206.105.60:8080`. This is a development indexer. Replace it with your own indexer URL or a production indexer that has snapshots enabled.
-- The indexer must have `SNAPSHOT_ENABLED=true` on the Generator side. If the indexer is not producing snapshot files, the `/snapshots` endpoint will return nothing and bootstrap will fail. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-tls-snapshots/) for setting up an indexer that serves snapshots.
+- The `indexer_url` in the shipped `config.yaml` is `http://35.206.105.60:8080`. This is a development trustless indexer. Replace it with your own trustless indexer URL or a production trustless indexer that has snapshots enabled.
+- The trustless indexer must have `SNAPSHOT_ENABLED=true` on the Generator side. If the trustless indexer is not producing snapshot files, the `/snapshots` endpoint will return nothing and bootstrap will fail. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-tls-snapshots/) for setting up a trustless indexer that serves snapshots.
 - The `DEFRA_URL` env var overrides `defradb.url` at runtime and is read by the Host client (`config/config.go`). The `docker run` above does not set it, so the DefraDB URL comes from `defradb.url` in the YAML config. See [environment variables](/run/run-a-host/config-reference#environment-variables).
 - The `DEFRA_KEYRING_SECRET` env var uses the `DEFRA_` prefix. The Generator client uses `DEFRADB_KEYRING_SECRET` with the `DEFRADB_` prefix. The two clients use different env var names for the same concept. See [environment variables](/run/run-a-host/config-reference#environment-variables).
 - `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` env vars appear in some deployment scripts but are not read by the Host client. They have been omitted from the `docker run` above. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).

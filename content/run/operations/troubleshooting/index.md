@@ -32,16 +32,18 @@ The Generator client reads from whatever execution node you point it at. That up
 - `eth_getUncleByBlockHashAndIndex`
 - `eth_getBlockReceipts`
 
-> Note: The Generator client only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
+{% admonition(type="note") %}
+The Generator client only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
+{% end %}
 
 ### What happens if I lose my node-identity-key? Can I regenerate it?
 
 If you lose your `node-identity-key`, your node's identity is permanently lost.
 
-- The key cannot be regenerated
-- You must spin up a new instance of the Generator client
-- You must register again with a new identity
-- The new node may use the same EVM address, but it will be treated as a new identity
+- The key cannot be regenerated.
+- You must spin up a new instance of the Generator client.
+- You must register again with a new identity.
+- The new node may use the same EVM address, but it will be treated as a new identity.
 
 To avoid this, always back up your node-identity-key.
 
@@ -53,21 +55,21 @@ By default your DefraDB keys are stored in `~/.defra/keys`. To back them up, sim
 cp -r ~/.defra/keys /mnt/backup-drive/
 ```
 
-### What type of data is indexed?
+### What data does the Generator client read?
 
-All blockchain data is indexed, including blocks, transactions, logs, and storage access lists. The data is indexed by hash (block and transaction), block number, and document.
+The Generator client reads all blockchain data, including blocks, transactions, logs, and storage access lists. The data is keyed by hash (block and transaction), block number, and document.
 
 ### How much space do I need?
 
-With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet; we recommend provisioning 300–500 GB to leave headroom (see [hardware requirements](/run/run-a-generator/hardware-requirements/)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history. Storage figures differ by chain — see [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
+With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet; we recommend provisioning 300 to 500 GB to leave headroom (see [hardware requirements](/run/run-a-generator/hardware-requirements/)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history. Storage figures differ by chain. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
 
 ### How long does it take to sync?
 
-Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The Generator client processes blocks approximately 2–4 seconds per block.
+Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The Generator client processes blocks approximately 2 to 4 seconds per block.
 
 ### How do I choose a start height?
 
-The further back you choose, the longer it will take to get to current blocks. However, the further back you index, the more you contribute to the network.
+The further back you choose, the longer it will take to get to current blocks. However, the further back you start, the more data you contribute to the network.
 
 ### How often is the Generator client updated with new blocks?
 
@@ -75,7 +77,7 @@ The Generator client fetches blocks by block number from the upstream node it is
 
 ### How does storage grow over time?
 
-Without pruning, storage grows linearly at roughly 10 GB per 1,000 full blocks on Ethereum Mainnet. Storage growth is not perfectly uniform — early blocks on a chain are often significantly smaller than blocks after major protocol upgrades — and the rate differs between chains.
+Without pruning, storage grows linearly at roughly 10 GB per 1,000 full blocks on Ethereum Mainnet. Storage growth is not perfectly uniform. Early blocks on a chain are often significantly smaller than blocks after major protocol upgrades, and the rate differs between chains.
 
 With pruning enabled (the default), the pruner removes documents for blocks older than the configured retention window, keeping disk usage bounded. You can also passively prune documents that have already been gossiped, which clears up old blocks and reduces long-term storage pressure.
 
@@ -109,7 +111,7 @@ Generator clients are the write side: they read raw blocks from an execution nod
 
 ### Do I need to run my own Generator client to run a Host client?
 
-No, but you do need access to at least one working Generator client. A Host client doesn't read the source chain itself; it receives signed primitives from Generator clients over P2P, so it needs at least one reachable Generator client to sync from. That Generator client doesn't have to be _yours_, you can point at any one you can reach. The image ships with default peers, but they aren't guaranteed to be live, so in practice set `BOOTSTRAP_PEERS` to a Generator client you know is up (see [Install](/run/run-a-host/install/)).
+No, but you do need access to at least one working Generator client. A Host client doesn't read the source chain itself; it receives signed primitives from Generator clients over P2P, so it needs at least one reachable Generator client to sync from. That Generator client doesn't have to be _yours_; you can point at any one you can reach. The image ships with default peers, but they aren't guaranteed to be live, so in practice set `BOOTSTRAP_PEERS` to a Generator client you know is up (see [Install](/run/run-a-host/install/)).
 
 A public Generator client you can point at is planned; this page will link it once it's live.
 
@@ -184,7 +186,7 @@ See [Install](/run/run-a-host/install/#use-docker) for how to confirm a healthy 
 
 ## Viewkit
 
-### image not found / library not loaded: libwasmer.dylib
+### `image not found / library not loaded: libwasmer.dylib`
 
 Viewkit uses the Wasmer runtime to execute WASM lenses locally. If the native library can't be found, any command that touches lenses will fail.
 
@@ -274,7 +276,7 @@ If you need a clean slate, stop the local DefraDB instance (Ctrl+C), delete the 
 
 ### Is there an `Event` collection?
 
-No. Raw event data lives in the `Log` collection, where `topics` holds indexed parameters and `data` holds non-indexed ones. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/create-a-view/examples/) for a complete walkthrough.
+No. Raw event data lives in the `Log` collection, where `topics` holds the parameters flagged `indexed` and `data` holds the rest. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/create-a-view/examples/) for a complete walkthrough.
 
 ### What's the difference between `@materialized(if: true)` and `@materialized(if: false)`?
 

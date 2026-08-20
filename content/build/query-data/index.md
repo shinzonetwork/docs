@@ -7,10 +7,10 @@ description = "GraphQL query examples and patterns for querying indexed data thr
 This page lists common GraphQL query examples for indexed chain data. The examples focus on blocks, transactions, attestations, signatures, and document navigation using DocIDs and CIDs.
 
 {% admonition(type="note") %}
-Collection names are prefixed with `<Chain>__<Network>__`, derived from the `chain.name` and `chain.network` settings of the Generator client that indexed the data (for example `<Chain>__<Network>__Block` or `Optimism__Mainnet__Block`). The examples below use the `<Chain>__<Network>__` placeholder — substitute the prefix that matches your chain. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+Collection names are prefixed with `<Chain>__<Network>__`, derived from the `chain.name` and `chain.network` settings of the Generator client that indexed the data (for example `<Chain>__<Network>__Block` or `Optimism__Mainnet__Block`). The examples below use the `<Chain>__<Network>__` placeholder. Substitute the prefix that matches your chain. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 {% end %}
 
-## 1. Querying a Block with Nested Data
+## Querying a block with nested data
 
 Fetch a single block with nested sub-documents.
 
@@ -62,7 +62,7 @@ Fetch a single block with nested sub-documents.
 }
 ```
 
-## 2. Blocks with Signatures (Verifiability)
+## Blocks with signatures (verifiability)
 
 Verify who signed a block record and inspect the cryptographic metadata.
 
@@ -83,7 +83,7 @@ Verify who signed a block record and inspect the cryptographic metadata.
 }
 ```
 
-## 3. Fetching a Document by DocID
+## Fetching a document by DocID
 
 Retrieve an exact document when you already know its `_docID`.
 
@@ -102,11 +102,11 @@ query {
 }
 ```
 
-## 4. Attestations and Document Navigation
+## Attestations and document navigation
 
 Attestation records link documents to one or more CIDs. These CIDs can then be used to navigate to commit metadata or directly to the underlying document.
 
-### 4.1 AttestationRecord
+### AttestationRecord
 
 ```graphql
 {
@@ -120,7 +120,7 @@ Attestation records link documents to one or more CIDs. These CIDs can then be u
 }
 ```
 
-**Response**
+#### Response
 
 ```json
 [..., {
@@ -134,7 +134,7 @@ Attestation records link documents to one or more CIDs. These CIDs can then be u
 },...]
 ```
 
-### 4.2 CID → Commit Details
+### CID to commit details
 
 Given a CID from an attestation record, you can query commit-level metadata and signatures.
 
@@ -156,7 +156,7 @@ Given a CID from an attestation record, you can query commit-level metadata and 
 }
 ```
 
-**Response**
+#### Response
 
 ```json
 {
@@ -178,7 +178,7 @@ Given a CID from an attestation record, you can query commit-level metadata and 
 }
 ```
 
-### 4.3 CID → Document
+### CID to document
 
 The same CID can be used to directly resolve the document itself.
 
@@ -199,7 +199,7 @@ The same CID can be used to directly resolve the document itself.
 }
 ```
 
-**Response**
+#### Response
 
 ```json
 {
@@ -221,7 +221,7 @@ The same CID can be used to directly resolve the document itself.
 }
 ```
 
-### 4.4 From CID → Document Directly
+### From CID to document directly
 
 ```graphql
 {
@@ -240,7 +240,7 @@ The same CID can be used to directly resolve the document itself.
 }
 ```
 
-**Response**
+#### Response
 
 ```json
 {
@@ -262,7 +262,7 @@ The same CID can be used to directly resolve the document itself.
 }
 ```
 
-## 5. DocID-Based Queries
+## DocID-based queries
 
 ```graphql
 {
@@ -281,7 +281,7 @@ The same CID can be used to directly resolve the document itself.
 }
 ```
 
-**Response**
+#### Response
 
 ```json
 {
@@ -303,9 +303,9 @@ The same CID can be used to directly resolve the document itself.
 }
 ```
 
-## 6. Filters, Ordering & Limits
+## Filters ordering and limits
 
-Number of Transactions in a Specific Block
+### Number of transactions in a specific block
 
 ```graphql
 query {
@@ -329,7 +329,7 @@ query {
 
 The total transaction count is `highest transactionIndex + 1`.
 
-## 7. Block with Transaction Count
+## Block with transaction count
 
 ```graphql
 query {
@@ -342,6 +342,6 @@ query {
 }
 ```
 
-## Need Help
+## Need help
 
 {{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}

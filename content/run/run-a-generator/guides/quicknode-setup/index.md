@@ -3,12 +3,12 @@ title = "Quicknode setup"
 description = "A walkthrough for operators who want to run a Shinzo Generator client but would rather pay a managed node provider than run and babysit their own Ethereum execution node."
 +++
 
-In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, point it at a QuickNode HTTPS + WSS endpoint, authenticate with an `x-token` header, and watch it sign and commit blocks from chain tip. We're using Ethereum mainnet in this example; the process is similar or the same for other networks.
+In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, point it at a QuickNode HTTPS + WSS endpoint, authenticate with an `x-token` header, and watch it sign and commit blocks from chain tip. This example uses Ethereum mainnet; the process is similar or the same for other networks.
 
-If you want to participate in the Shinzo by trustlessly reading and signing on-chain data, but you don't want to run your own node then this guide is for you. Most managed node providers, like Quicknode, require a monthly subscription fee, however most offer a free tier for basic testing. This guide also assumed you have a small Linux VM and can run Docker.
+If you want to participate in Shinzo by trustlessly reading and signing on-chain data, but you don't want to run your own node, then this guide is for you. Most managed node providers, like QuickNode, require a monthly subscription fee. However, most offer a free tier for basic testing. This guide also assumes you have a small Linux VM and can run Docker.
 
 {% admonition(type="note") %}
-Installing and running the Generator client does not require you to be a Validator. The separate Registration step, which makes the Generator a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
+Installing and running the Generator client does not require you to be a validator. The separate Registration step, which makes the Generator a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
 {% end %}
 
 ## Prerequisites
@@ -16,13 +16,13 @@ Installing and running the Generator client does not require you to be a Validat
 - A [QuickNode](https://www.quicknode.com/) account.
 - A Linux VM with:
   - ~8 GB RAM, ~30 GB free disk.
-  - **Docker** + the **Docker Compose plugin** installed.
+  - Docker + the Docker Compose plugin installed.
   - Port `9171` reachable if you want Hosts to connect over P2P (fine to leave closed for this guide, since the Generator still reads and signs data locally).
-  - The examples in this guide assume you're running a Debian-based Linux distro, however any distro is fine; you'll just have to tweak some commands to fit your OS.
+  - The examples in this guide assume you're running a Debian-based Linux distro. However, any distro is fine; you'll just have to tweak some commands to fit your OS.
 
 ## Create a QuickNode endpoint
 
-1. In the QuickNode dashboard, create an endpoint. In this guide we're using **Ethereum mainnet** as an example.
+1. In the QuickNode dashboard, create an endpoint. This guide uses Ethereum mainnet as an example.
 1. Under **Security**, make sure **Token Authentication** is enabled (JWTs can stay disabled).
 1. Copy three things from the endpoint's **Connection Details**:
    - HTTP Provider URL (e.g. `https://alpha-proud-isle.ethereum-mainnet.quiknode.pro/77f6889.../`).
@@ -286,7 +286,7 @@ On a healthy start you'll see, in order:
 
 1. Once it reaches the head of the chain, it transitions to waiting for new blocks (HTTP-only polling fallback message, or a short `not available yet, waiting...` line), which is the live-at-tip milestone.
 
-The Generator's default rate limit is 60 blocks/minute, and Ethereum mainnet produces ~5 blocks/minute, so the ~100-block startup gap closes in roughly a couple of minutes.
+The Generator's default rate limit is 60 blocks/minute, and Ethereum mainnet produces ~5 blocks/minute, so the ~100-block startup gap closes in a couple of minutes.
 
 ## Verify
 
@@ -356,12 +356,10 @@ sudo rm -rf /root/shinzo-data/defradb/*
 ```
 
 {% admonition(type="warning") %}
-Running `rm -rf` is (mostly) irreversable. Data deleted this way is really, _really_ hard to get back. But you already knew that, right?
+Running `rm -rf` is irreversible. Data deleted this way cannot be recovered.
 {% end %}
 
 ## Gotchas
-
-Here are a few things that might trip you up.
 
 - **`x-token` isn't `x-api-key`.** QuickNode's RPC endpoints authenticate with the URL token or an `x-token` header. `x-api-key` is only for QuickNode's admin Console API. Pointing `GETH_API_KEY_TYPE` at `x-api-key` against an RPC endpoint will give you `401`s that look mysterious.
 - **`DEFRADB_KEYRING_SECRET` must be stable.** If it changes between restarts, DefraDB can't load its existing identity and the container will fail to start with "Failed to load existing DefraDB identity." Restore the original value. Generate it once with `openssl rand -hex 32` and treat it like a password.

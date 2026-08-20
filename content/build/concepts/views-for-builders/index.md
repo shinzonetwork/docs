@@ -37,7 +37,7 @@ A View is the fundamental unit produced by Viewkit. Each view is a self-containe
 
 Conceptually, a view represents the pipeline:
 
-**indexed primitive data → query → lenses (WASM) → GraphQL schema → consumable API**
+indexed primitive data → query → lenses (WASM) → GraphQL schema → consumable API
 
 {% mermaid() %}
 flowchart LR
@@ -58,7 +58,7 @@ Generator clients produce six primitive collection types, all prefixed with `<Ch
 | --- | --- | --- |
 | `Block` | `number`, `hash`, `timestamp`, `miner`, `gasUsed`, `gasLimit` | Block headers |
 | `Transaction` | `hash`, `from`, `to`, `value`, `blockNumber`, `status`, `gasUsed` | Transactions with receipt data |
-| `Log` | `address`, `topics`, `data`, `transactionHash`, `blockNumber` | EVM event logs |
+| `Log` | `address`, `topics`, `data`, `transactionHash`, `blockNumber` | Event logs |
 | `AccessListEntry` | `address`, `storageKeys`, `blockNumber` | EIP-2930 access list entries |
 | `BlockSignature` | `blockNumber`, `blockHash`, `merkleRoot`, `signatureValue` | Per-block aggregate signatures |
 | `SnapshotSignature` | `startBlock`, `endBlock`, `merkleRoot`, `signatureValue` | Range-level snapshot signatures |

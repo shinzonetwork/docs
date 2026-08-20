@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you need high IOPS for DefraDB storage and want to use GCP local SSDs in a RAID-0 array. Local SSDs provide much higher throughput than standard persistent disks but are ephemeral.
 
-These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported chain. Shinzo supports multiple chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -41,7 +41,7 @@ The GCP startup script detects all local SSDs attached to the VM, creates a RAID
 
 ## Startup script
 
-This script is drawn from `scripts/gcp-startup-host-local-ssd.sh` in the `shinzo-host-client` repo (two leading comment lines omitted for brevity). It installs Docker, detects local SSDs by their `nvme_card` model, creates a RAID-0 array if there are two or more, formats and mounts the array, then pulls and starts the Host container:
+This script is from `scripts/gcp-startup-host-local-ssd.sh` in the `shinzo-host-client` repo (two leading comment lines omitted for brevity). It installs Docker, detects local SSDs by their `nvme_card` model, creates a RAID-0 array if there are two or more, formats and mounts the array, then pulls and starts the Host container:
 
 ```shell
 #!/bin/bash

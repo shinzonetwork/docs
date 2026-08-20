@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you need to decide whether your Generator keeps all historical data or prunes old blocks. A pruned Generator uses less storage but can still serve snapshots for Host bootstrap. An archival Generator keeps everything but grows without bound.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 

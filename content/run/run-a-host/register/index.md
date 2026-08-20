@@ -7,10 +7,12 @@ To participate in the Shinzo Network and make your View publicly available, you 
 
 ## Add the Shinzo Testnet to your wallet
 
-- Network name: `Shinzo`
-- Default RPC URL: `http://testnet.shinzo.network:8545`
-- Chain ID: `91273001`
-- Currency symbol: `SHNZ`
+| Field | Value |
+| --- | --- |
+| Network name | `Shinzo` |
+| Default RPC URL | `http://testnet.shinzo.network:8545` |
+| Chain ID | `91273001` |
+| Currency symbol | `SHNZ` |
 
 ## Register with the hosted app
 
@@ -34,7 +36,7 @@ If your Host is on a private network or you'd rather not route registration thro
     1. Open `http://localhost:8080/registration-app` in your browser.
     {% end %}
 
-1. Click **Register as Host** and fill out all the details
+1. Click **Register as Host** and fill out all the details.
 1. Submit your registration and confirm the transaction in your browser wallet. You should see a successful registration notification.
 
 ## Register with the CLI
@@ -53,6 +55,6 @@ This key is your Host's identity on the network. If you lose it without a backup
 If this key is lost with no backup available, you will need to spin up a new Host and re-register with a new identity.
 {% end %}
 
-## Need Help
+## Need help
 
 {{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}

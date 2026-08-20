@@ -23,7 +23,7 @@ There is no `Event` collection. Raw event data lives in `Log`, where `topics` ho
 
 Decode all ERC-20 `Transfer` events into structured records. This is the simplest useful View that includes a lens: it decodes raw log `topics` and `data` into named fields using an ABI.
 
-**Query**
+### Query
 
 ```graphql
 Log { address topics data transactionHash blockNumber transaction { hash from to } }
@@ -31,7 +31,7 @@ Log { address topics data transactionHash blockNumber transaction { hash from to
 
 The query selects raw log fields plus the nested `transaction` relation. The `decode_log` lens uses `transaction.hash`, `transaction.from`, and `transaction.to` to populate the output's `hash`, `from`, and `to` fields.
 
-**SDL**
+### SDL
 
 ```graphql
 type EventView @materialized(if: true) {
@@ -57,7 +57,7 @@ The `decode_log` lens outputs these fields:
 
 `@materialized(if: true)` tells DefraDB to pre-compute and store the output. See [Materialized versus on-query](#materialized-vs-on-query) for the tradeoff.
 
-**Lens**
+### Lens
 
 | Lens | Purpose | Arguments |
 | --- | --- | --- |
@@ -69,9 +69,9 @@ The `decode_log` lens takes an `abi` argument: a stringified JSON array of event
 [{"type":"event","name":"Transfer","inputs":[{"type":"address","name":"from","indexed":true},{"type":"address","name":"to","indexed":true},{"type":"uint256","name":"value","indexed":false}]}]
 ```
 
-**Commands**
+### Commands
 
-1. Initalize the view:
+1. Initialize the view:
 
     ```shell
     viewkit view init event-view
@@ -109,7 +109,7 @@ The `decode_log` lens takes an `abi` argument: a stringified JSON array of event
 viewkit view inspect event-view
 ```
 
-1. test locally (optional but recommended):
+1. Test locally (optional but recommended):
 
 ```shell
 viewkit view test event-view
@@ -121,7 +121,7 @@ viewkit view test event-view
 viewkit view deploy event-view --target local
 ```
 
-**Querying the result**
+### Querying the result
 
 Once deployed, open the DefraDB Playground (URL printed in the terminal) and run:
 
@@ -146,15 +146,15 @@ This returns all decoded `Transfer` events across all contracts. To narrow down 
 
 Decode `Transfer` events from a specific contract only (e.g. USDC). Without a filter lens, `decode_log` processes every log on the chain. You filter the output using GraphQL queries against the `logAddress` field.
 
-**Query and SDL**
+### Query and SDL
 
 Same as the [Decode event logs example](#decode-event-logs). The query, SDL, and lens are identical. The filtering happens at query time, not at the lens level.
 
-**Commands**
+### Commands
 
 Same as Example 1. Create a view named `usdc-event` with the same query, SDL, and lens.
 
-**Querying the result**: USDC transfers only
+### USDC transfers only
 
 ```graphql
 {
@@ -207,13 +207,13 @@ The `from` and `to` fields come from the parent transaction, not the event's ind
 
 Decode both `Transfer` and `Approval` events from a single contract in one View. Pass both event definitions in the ABI argument to `decode_log`.
 
-**Query**
+### Query
 
 ```graphql
 Log { address topics data transactionHash blockNumber transaction { hash from to } }
 ```
 
-**SDL**
+### SDL
 
 ```graphql
 type EventView @materialized(if: true) {
@@ -228,7 +228,7 @@ type EventView @materialized(if: true) {
 }
 ```
 
-**Lens**
+### Lens
 
 The ABI argument includes both `Transfer` and `Approval` event definitions. The `decode_log` lens matches each log's `topics[0]` against the event signature hash and decodes accordingly.
 
@@ -239,7 +239,7 @@ The ABI argument includes both `Transfer` and `Approval` event definitions. The 
 ]
 ```
 
-**Commands**
+### Commands
 
 ```shell
 # 1) initialize the view
@@ -268,7 +268,7 @@ viewkit view test erc20-events
 viewkit view deploy erc20-events --target local
 ```
 
-**Querying the result**: Transfers only
+### Transfers only
 
 ```graphql
 {
@@ -291,7 +291,7 @@ viewkit view deploy erc20-events --target local
 }
 ```
 
-**Querying the result**: Approvals only
+### Approvals only
 
 ```graphql
 {
@@ -320,13 +320,13 @@ The `event` field lets you distinguish between event types in the same View coll
 
 Expose all transactions sent to a specific contract. This View queries `Transaction` documents directly. No lens needed because we're not decoding events.
 
-**Query**
+### Query
 
 ```graphql
 Transaction { hash from to value blockNumber gasUsed gasPrice }
 ```
 
-**SDL**
+### SDL
 
 ```graphql
 type TransactionView @materialized(if: false) {
@@ -342,11 +342,11 @@ type TransactionView @materialized(if: false) {
 
 Here we use `@materialized(if: false)`: the view is computed on query, not pre-stored. This makes sense for transaction data, which is large and queried less frequently than decoded events. See [Example 5](#materialized-vs-on-query) for details.
 
-**Lens**
+### Lens
 
 None. The query and SDL are sufficient. DefraDB applies the view as a virtual projection over the `Transaction` collection.
 
-**Commands**
+### Commands
 
 ```shell
 # 1) initialize the view
@@ -368,7 +368,7 @@ viewkit view test transaction-view
 viewkit view deploy transaction-view --target local
 ```
 
-**Querying the result**
+### Querying the result
 
 ```graphql
 {
@@ -399,7 +399,7 @@ The `@materialized` directive controls when the View's output is computed:
 | `if: true` | At write time. Host pre-computes and stores results. | Fast. Data is already materialized. | Higher. Host stores the output collection. | Frequently queried data (e.g. token transfers in a UI). |
 | `if: false` | At query time. Host computes on the fly. | Slower. Depends on data volume. | Lower. No pre-stored output. | Large datasets queried occasionally, or during development. |
 
-### Same View, two modes
+### Same view in two modes
 
 Materialized (pre-computed):
 
@@ -540,7 +540,7 @@ This deletes the local bundle. It does not remove a view that has already been d
 
 GraphQL queries you can run against a deployed View's output collection. These examples assume the `erc20-events` View from Example 3 is deployed and receiving data.
 
-### Basic query: latest 10 events
+### Basic query for the latest 10 events
 
 ```graphql
 {
@@ -616,7 +616,7 @@ GraphQL queries you can run against a deployed View's output collection. These e
 }
 ```
 
-For the full list of Viewkit commands and GraphQL filter operators, see the [Viewkit reference](/reference/components/viewkit/). For a deeper dive on lenses, available modules, and how to chain them, see the [Lenses guide](/reference/components/lens/). For troubleshooting and common errors, see the [FAQ](/run/operations/troubleshooting/).
+For the full list of Viewkit commands and GraphQL filter operators, see the [Viewkit reference](/reference/components/viewkit/). For more on lenses, available modules, and how to chain them, see the [Lenses guide](/reference/components/lens/). For troubleshooting and common errors, see the [FAQ](/run/operations/troubleshooting/).
 
 ## Need help
 
