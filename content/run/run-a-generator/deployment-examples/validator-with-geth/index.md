@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you run a validator and want to run the Generator client beside your own Geth node on the same machine or VPC, with no API key and minimal latency.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -58,7 +58,7 @@ docker run -d \
 
 - `GETH_RPC_URL=http://localhost:8545`: Geth JSON-RPC on localhost. See [geth config](/run/run-a-generator/config-reference#geth).
 - `GETH_WS_URL=ws://localhost:8546`: Geth WebSocket on localhost. See [geth config](/run/run-a-generator/config-reference#geth).
-- `INDEXER_START_HEIGHT=0`: Start indexing from the chain tip. See [indexer config](/run/run-a-generator/config-reference#indexer).
+- `INDEXER_START_HEIGHT=0`: Start verifiable indexing from the chain tip. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `DEFRADB_KEYRING_SECRET=testnet-secret`: Encryption secret for the DefraDB keyring. Change this to your own secret and keep it consistent across restarts. See [defradb config](/run/run-a-generator/config-reference#defradb).
 - `DEFRADB_P2P_ENABLED=true`: Enable P2P networking so the Generator can push data to Hosts. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).
 - `DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171`: Listen on all interfaces so Hosts outside the machine can connect. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).

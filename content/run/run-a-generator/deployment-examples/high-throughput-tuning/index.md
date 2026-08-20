@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: your Generator needs to catch up from a historical start height quickly, or you want to maximize block processing throughput on a machine with available CPU and memory.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -28,7 +28,7 @@ flowchart LR
   Gen -- "P2P (libp2p)" --> Hosts
 {% end %}
 
-The Generator fetches blocks from your execution node and processes them with a configurable number of concurrent workers. Receipt fetching happens in parallel per block. Badger cache sizes control how much data stays in memory before hitting disk. The `GOMEMLIMIT` env var tells the Go runtime when to trigger garbage collection, preventing OOM kills under load.
+The Generator fetches blocks from your execution node and processes them with a configurable number of concurrent workers. Receipt fetching happens in parallel per block. Badger cache sizes control how much data stays in memory before hitting disk. The `GOMEMLIMIT` env var tells the Go runtime when to trigger garbage collection, which prevents OOM kills under load.
 
 ## Prerequisites
 
@@ -140,7 +140,7 @@ services:
 
 - `concurrent_blocks: 8`: Process 8 blocks at the same time instead of the shipped default of 1. This is the code default from `applyDefaults`. Increase it if your node can handle parallel requests. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `receipt_workers: 32`: Fetch 32 receipts concurrently per block, up from the shipped 8. Receipts are the bottleneck for blocks with many transactions. See [indexer config](/run/run-a-generator/config-reference#indexer).
-- `blocks_per_minute: 0`: Disable the rate limit. The shipped `config.yaml` sets 60, which caps indexing speed. Set to 0 for maximum throughput during catch-up. See [indexer config](/run/run-a-generator/config-reference#indexer).
+- `blocks_per_minute: 0`: Disable the rate limit. The shipped `config.yaml` sets 60, which caps verifiable indexing speed. Set to 0 for maximum throughput during catch-up. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `block_cache_mb: 1024`: Double the shipped 512. More cache means fewer disk reads for recently written blocks. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).
 - `memtable_mb: 128`: Double the shipped 64. Larger memtables reduce the frequency of flushes to disk. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).
 - `index_cache_mb: 512`: Double the shipped 256. More index cache speeds up point lookups during pruning and snapshot creation. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).

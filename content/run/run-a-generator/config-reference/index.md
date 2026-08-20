@@ -10,14 +10,14 @@ Env vars override YAML values. Where the shipped `config.yaml` sets a different 
 
 ## chain
 
-Identifies which EVM chain to index. Collection names are derived as `{name}__{network}__Block`, etc.
+Identifies which EVM chain the Generator reads. Collection names are derived as `{name}__{network}__Block`, etc.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
 | `name` | string | `Ethereum` | no | `CHAIN_NAME` | Chain name. Also supports `Arbitrum`, `Optimism`, `Avalanche`, or any EVM chain. |
 | `network` | string | `Mainnet` | no | `CHAIN_NETWORK` | Network name, for example `Mainnet` or `Testnet`. |
 
-Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. The shipped `config.yaml` lists Arbitrum, Optimism, and Avalanche, and any EVM-compatible chain can likely be indexed by setting `chain.name` and `chain.network` to the correct values and pointing `geth.node_url` at a compatible RPC endpoint. The codebase is being refactored from EVM-only to a `Chain` interface with chain-specific Fetcher and Converter components, which will formalize multi-chain support. See [Chain abstraction](/reference/components/generator-client#chain-abstraction-in-progress) for the current state.
+Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. The shipped `config.yaml` lists Arbitrum, Optimism, and Avalanche, and any EVM-compatible chain can likely be read by setting `chain.name` and `chain.network` to the correct values and pointing `geth.node_url` at a compatible RPC endpoint. The codebase is being refactored from EVM-only to a `Chain` interface with chain-specific Fetcher and Converter components, which will formalize multi-chain support. See [Chain abstraction](/reference/components/generator-client#chain-abstraction-in-progress) for the current state.
 
 ## defradb
 
@@ -61,7 +61,7 @@ Badger storage engine configuration. All cache and compaction fields map directl
 
 ## geth
 
-Connection details for the execution node. The Generator does not run a node. It reads from one you provide. (The `geth` section name is historical — it accepts any compatible JSON-RPC and WebSocket endpoint.)
+Connection details for the execution node. The Generator does not run a node. It reads from one you provide. (The `geth` section name is historical; it accepts any compatible JSON-RPC and WebSocket endpoint.)
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
@@ -76,14 +76,14 @@ Controls how the Generator fetches and processes blocks.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `start_height` | int | 0 | no | `INDEXER_START_HEIGHT` | Block number to start indexing from on first run with no existing data. 0 means auto-detect from chain tip. Must be 0 or higher. |
+| `start_height` | int | 0 | no | `INDEXER_START_HEIGHT` | Block number to start reading from on first run with no existing data. 0 means auto-detect from chain tip. Must be 0 or higher. |
 | `concurrent_blocks` | int | 8 | no | `INDEXER_CONCURRENT_BLOCKS` | Number of blocks to process concurrently. Shipped `config.yaml` sets 1. |
 | `receipt_workers` | int | 16 | no | `INDEXER_RECEIPT_WORKERS` | Concurrent receipt fetchers per block. Shipped `config.yaml` sets 8. |
 | `max_docs_per_txn` | int | 1000 | no | `INDEXER_MAX_DOCS_PER_TXN` | Document threshold for single-transaction block creation. Shipped `config.yaml` sets 100. |
 | `max_tx_docs_per_batch` | int | 0 | no | `INDEXER_MAX_TX_DOCS` | Per-batch document size for transactions. 0 means use `max_docs_per_txn`. Shipped `config.yaml` sets 100. |
 | `max_log_docs_per_batch` | int | 0 | no | `INDEXER_MAX_LOG_DOCS` | Per-batch document size for logs. 0 means use `max_docs_per_txn`. Shipped `config.yaml` sets 125. |
 | `max_ale_docs_per_batch` | int | 0 | no | `INDEXER_MAX_ALE_DOCS` | Per-batch document size for access list entries. 0 means use `max_docs_per_txn`. Shipped `config.yaml` sets 500. |
-| `blocks_per_minute` | int | 0 | no | `INDEXER_BLOCKS_PER_MINUTE` | Block indexing rate limit. 0 means no limit. Shipped `config.yaml` sets 60. |
+| `blocks_per_minute` | int | 0 | no | `INDEXER_BLOCKS_PER_MINUTE` | Block processing rate limit. 0 means no limit. Shipped `config.yaml` sets 60. |
 | `health_server_port` | int | 8080 | no | `INDEXER_HEALTH_SERVER_PORT` | Health server port. Set to -1 to disable. |
 | `open_browser_on_start` | bool | false | no | (none) | Auto-open the health page in a browser on startup. |
 | `start_buffer` | int | 100 | no | `INDEXER_START_BUFFER` | Start this many blocks before chain tip when skipping ahead. |

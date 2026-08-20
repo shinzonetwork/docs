@@ -12,7 +12,7 @@ Running the Generator client only requires an execution node (see [Install](../i
 Before you start, have the following ready:
 
 1. **An active, bonded chain validator.** The outpost checks that the validator named in your assertion is active and bonded on the source chain.
-1. **Your validator's consensus public key.** The key type, format, and lookup tooling are chain-specific — see [Consensus public key](/reference/components/outpost#consensus-public-key) for how to retrieve it on your chain. It is not your withdrawal address or an EVM address.
+1. **Your validator's consensus public key.** The key type, format, and lookup tooling are chain-specific. See [Consensus public key](/reference/components/outpost#consensus-public-key) for how to retrieve it on your chain. It is not your withdrawal address or an EVM address.
 1. **Access to your validator's withdrawal key.** The assertion is signed with the withdrawal key to prove control of the validator's stake, and the withdrawal address is included in the assertion. See [Validator assertions](/reference/components/outpost#validator-assertions) for the full flow.
 1. **A browser wallet** to sign the on-chain registration transaction.
 
@@ -73,6 +73,6 @@ This key defines your node's identity on the network. Back it up so you can rest
 If this key is lost, and there is no backup available, you will be unable to restore your node with the same identity.
 {% end %}
 
-## Need Help
+## Need help
 
 {{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}

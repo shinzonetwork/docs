@@ -3,22 +3,22 @@ title = "Install"
 aliases = ["/generator/install", "/generators/install"]
 +++
 
-This page covers installing a Shinzo Generator client with Docker or from source. To complete the generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
+This page covers installing a Shinzo Generator client with Docker or from source. To complete the Generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
 
-Running the client only requires access to an Ethereum execution node — you do not need to run an Ethereum validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration prerequisites](../register#prerequisites) for details.
+Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration prerequisites](../register#prerequisites) for details.
 
 ## Hardware recommendations
 
 The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
-## Using Docker 
+## Using Docker
 
 These steps use Docker to run the Shinzo Generator client. To build the Generator client from source, see [Building from source](#building-from-source) below.
 
 ### Prerequisites
 
 - Docker.
-- Access to an execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you, it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
+- Access to an execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you; it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
 - A browser wallet setup. This wallet does not need to hold any funds.
 
 You do not need to be a validator, or to run a validator, just to install and run the Generator client. Validator requirements only apply to the [Registration](../register) step.
@@ -178,7 +178,7 @@ The following ports must be exposed and available on the machine.
 
 | Port | Service |
 | --- | --- |
-| `8080` | Health endpoint (`/health`), metrics (`/metrics`), and registration ('/registration'). |
+| `8080` | Health endpoint (`/health`), metrics (`/metrics`), and registration (`/registration`). |
 | `9171` | DefraDB P2P. |
 | `9181` | DefraDB GraphQL API. |
 
@@ -202,6 +202,6 @@ docker-compose -f ~/docker-compose.yml start
 
 The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.
 
-## Need Help
+## Need help
 
 {{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}

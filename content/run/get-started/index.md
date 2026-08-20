@@ -6,14 +6,14 @@ description = "Bring up a Generator client and a Host on one machine, peer them 
 mermaid = true
 +++
 
-Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query indexed chain data through the Host client's GraphQL API. If your node is already reachable, the whole thing takes about ten minutes.
+Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query chain data through the Host client's GraphQL API. If your node is already reachable, the whole thing takes about ten minutes.
 
 When you're done you'll have:
 
 - A running Generator client pulling blocks from an execution node and signing them.
 - A running Host client receiving those blocks over P2P and serving them.
 - A GraphQL query returning real chain data through the Host client.
-- A understanding of how the two main Shinzo infrastructure pieces fit together.
+- An understanding of how the two main Shinzo infrastructure pieces fit together.
 
 ## What you're building
 
@@ -28,7 +28,7 @@ Two containers through one shared Docker bridge. Both containers run on the same
 
 ## Prerequisites
 
-- Docker. 
+- Docker.
 - Both `curl` and `jq`.
 - A live execution node exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or any managed node provider. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/run-a-generator/install/#do-you-need-an-api-key).
 
@@ -36,7 +36,7 @@ You don't need a wallet, funds, or a ShinzoHub registration for this quickstart.
 
 ## Set your execution node endpoint
 
-Export the URL and (optionally) the API key for your node. The rest of the quickstart references these variables. (The `GETH_*` env var names are historical — the Generator client accepts any compatible JSON-RPC and WebSocket endpoint.)
+Export the URL and (optionally) the API key for your node. The rest of the quickstart references these variables. (The `GETH_*` env var names are historical; the Generator client accepts any compatible JSON-RPC and WebSocket endpoint.)
 
 ```shell
 export GETH_RPC_URL="<your-rpc-url>"
@@ -54,7 +54,7 @@ The Generator client sits next to a blockchain node, subscribes to new blocks, a
 
 | Host port | Container port | What it is |
 | --- | --- | --- |
-| `9181` | `9181` | DefraDB GraphQL API. The query interface for raw indexed data. |
+| `9181` | `9181` | DefraDB GraphQL API. The query interface for raw chain data. |
 | `9171` | `9171` | libp2p P2P port. This is how Hosts subscribe to the Generator client. |
 | `8080` | `8080` | Health, metrics, and registration endpoints. |
 
@@ -80,17 +80,17 @@ docker run -d \
   ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
-`DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `testnet-secret` password is fine for this quickstart, but remember use something more secure for anything in a production environment.
+`DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `testnet-secret` password is fine for this quickstart, but remember to use something more secure for anything in a production environment.
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
-`INDEXER_START_HEIGHT=0` starts indexing at the current chain tip — no historical backfill. To sync from a specific point instead, set this to that block's height. On a chain with a lot of history, a height far below tip means a lot of data to index, so use a recent block if you just want to confirm the pipeline works.
+`INDEXER_START_HEIGHT=0` starts the client at the current chain tip, with no historical backfill. To sync from a specific point instead, set this to that block's height. On a chain with a lot of history, a height far below tip means a lot of data to process, so use a recent block if you just want to confirm the pipeline works.
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
 ## Read the Generator client's P2P address
 
-The Host client needs two things to connect: 
+The Host client needs two things to connect:
 
 1. The Generator client's libp2p Peer ID.
 1. A multiaddr it can dial.
@@ -226,7 +226,7 @@ curl -s http://localhost:8080/health | jq '[.p2p.peers[].id]'
 ]
 ```
 
-If both list each other, libp2p is connected and DefraDB is replicating between them! Data from the Generator client lands in the Host client within a few seconds.
+If both list each other, libp2p is connected and DefraDB is replicating between them. Data from the Generator client lands in the Host client within a few seconds.
 
 ## Query the Host client
 
@@ -261,7 +261,7 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. You can also browse this data visually in the [Explorer](https://explorer.shinzo.network/). More queries are on the [Host examples](/build/query-data/) page.
 
 {% admonition(type="note") %}
-The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match — for example `Optimism__Mainnet__Log`. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match, for example `Optimism__Mainnet__Log`. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 {% end %}
 
 ## Undo everything

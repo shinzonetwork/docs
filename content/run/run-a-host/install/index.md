@@ -68,7 +68,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     | --- | --- | --- |
     | `9181` | DefraDB GraphQL + REST API | |
     | `9182` | GraphQL Playground UI | |
-    | `9171` | libp2p P2P networking | Must be reachable from the internet — open/forward this port |
+    | `9171` | libp2p P2P networking | Must be reachable from the internet. Open or forward this port |
     | `8080` | Health + metrics | Served inside the container; publish with `-p 8080:8080` if you want to scrape it |
 
 1. Confirm the container is up:
@@ -89,7 +89,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
 
     A JSON response confirms the API is serving. On a freshly started Host client you'll see an error like `{"errors":[{"message":"key not found"}],"data":null}`, which is expected. The API is up; there's just no data yet. You can also open the Playground at `http://localhost:9182` to confirm the UI loads.
 
-1. Returning real indexed data depends on the Host client reaching the Generator client you set in `BOOTSTRAP_PEERS` and syncing from it. Check the connection in the logs:
+1. To return real data, the Host client must reach the Generator client you set in `BOOTSTRAP_PEERS` and sync from it. Check the connection in the logs:
 
     ```shell
     docker logs shinzo-host | grep -i peer
@@ -153,7 +153,7 @@ make build-playground
 
 ### Configure and run
 
-The only required setting is the keyring secret. 
+The only required setting is the keyring secret.
 
 1. Export the secret key:
 
@@ -189,6 +189,6 @@ The only required setting is the keyring secret.
 
 Ports, verification, and registration are the same as the Docker path above.
 
-## Need Help
+## Need help
 
 {{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
