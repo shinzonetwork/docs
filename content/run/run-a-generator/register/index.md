@@ -36,7 +36,7 @@ Before you start, have the following ready:
 
 ### Assertion
 
-The assertion verifies that you control the validator you are registering as a Generator. It is a prerequisite for this page, and it has its own dedicated walkthrough: see [Assert ownership of a validator](../assert-ownership/). Complete that first, then return here to register on-chain.
+The assertion verifies that you control the validator you are registering as a Generator. It is a prerequisite for this page, and it has its own dedicated walkthrough: see [Assert ownership of a validator](../assert-ownership-of-a-validator/). Complete that first, then return here to register on-chain.
 
 You provide your validator's consensus public key and source chain, and sign the assertion digest with your withdrawal key using **Sign & Submit**. The full on-chain mechanism is documented under [Validator assertions](/reference/components/outpost#validator-assertions).
 

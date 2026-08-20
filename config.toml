@@ -154,7 +154,7 @@ label = "Run a Generator"
 pages = [
   "run/run-a-generator/hardware-requirements/index.md",
   "run/run-a-generator/install/index.md",
-  "run/run-a-generator/assert-ownership/index.md",
+  "run/run-a-generator/assert-ownership-of-a-validator/index.md",
   "run/run-a-generator/register/index.md",
   "run/run-a-generator/config-reference/index.md",
 ]
