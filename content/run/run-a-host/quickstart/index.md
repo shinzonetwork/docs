@@ -327,14 +327,16 @@ To participate in the Shinzo Network, you must register your Host. Registration 
 ### Option A: Register with the GUI
 
 1. Start your Host client.
-2. Add Shinzo testnet to Metamask with the following values:
+1. Add Shinzo testnet to Metamask with the following values:
   - Network name: Shinzo
   - Default RPC URL: http://testnet.shinzo.network:8545
   - Chain ID: 91273001
   - Currency symbol: SHNZ
-3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
-4. On the registration page, click Register and select "Host" as your role to complete the process.
-5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
+
+  You need a small amount of SHNZ for the registration transaction fee. Get testnet SHNZ from the [faucet](https://faucet.shinzo.network/).
+1. Open the [Registration app](https://registration.shinzo.network/) and connect your wallet. If your Host is on a private network, the Host client also serves a local registration app at `http://localhost:8080/registration-app`; use SSH port forwarding to reach a remote node.
+1. On the registration page, click **Register** and select **Host** as your role to complete the process.
+1. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
 
 ### Option B: Register with the CLI
 

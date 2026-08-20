@@ -82,7 +82,7 @@ If you're a developer working on an app, wallet, or any kind of web3 service, Vi
 - A schema (GraphQL SDL) describing how you want that data organized.
 - Lens transforms to filter, decode, and shape that data into what you _actually_ need.
 
-You build Views with `viewkit`, Shinzo's CLI, and deploy them to Shinzohub so that anyone else use them. Any Host client can then pick up the View, run it, and serve the results. Your application subscribes through the [app-sdk](https://github.com/shinzonetwork/app-sdk) and queries the resulting data locally.
+You build Views with `viewkit`, Shinzo's CLI, and deploy them to Shinzohub so that anyone else use them. If you'd rather skip the CLI, [Shinzo Studio](https://studio.shinzo.network/) provides the same build-and-deploy workflow in the browser. Any Host client can then pick up the View, run it, and serve the results. Your application subscribes through the [app-sdk](https://github.com/shinzonetwork/app-sdk) and queries the resulting data locally.
 
 ## Where the project is today
 
@@ -94,6 +94,7 @@ The current testnet includes:
 - The **Host** client receives replicated data from Generators, materializes registered Views using Lens transforms, and serves GraphQL queries to applications.
 - **Viewkit** allows developers to define, package and deploy custom Views to the network, making indexed datasets immediately available to participating Hosts.
 - **ShinzoHub** coordinates network participation, View registration, entity registration, and access control for the testnet.
+- The **Explorer** lets anyone browse transactions and other on-chain activity across the testnet without running a node.
 - The **Gateway** provides a unified GraphQL endpoint by routing requests across Hosts and validating responses through network consensus.
 - The **App SDK** enables Go applications to embed Shinzo components and query attestation-filtered data directly from the network.
 

@@ -156,6 +156,8 @@ The path from user payment to access grant has four steps:
 | REST / LCD | `http://testnet.shinzo.network:1317` |
 | gRPC | port 9090 |
 
+For testnet SHNZ to pay transaction fees, use the [faucet](https://faucet.shinzo.network/). To browse on-chain activity, use the [Explorer](https://explorer.shinzo.network/). See [Tools](/reference/tools/) for the full list of web interfaces and endpoints.
+
 <!--
 ## What is not implemented yet
 

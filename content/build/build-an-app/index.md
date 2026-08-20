@@ -25,7 +25,7 @@ To do this, you would first create a View, describing how to transform primitive
 
 ## Usage
 
-Before using the app-sdk, you'll want to [use Viewkit to create the View(s)](/build/concepts/views-for-builders/) for your app.
+Before using the app-sdk, you'll want to [use Viewkit to create the View(s)](/build/concepts/views-for-builders/) for your app, or build them in the [Shinzo Studio](https://studio.shinzo.network/) browser UI.
 
 Once you've created your Views, the next step is to configure your app.
 

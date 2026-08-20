@@ -32,7 +32,7 @@ Two containers through one shared Docker bridge. Both containers run on the same
 - Both `curl` and `jq`.
 - A live execution node exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or any managed node provider. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/run-a-generator/install/#do-you-need-an-api-key).
 
-You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/run/run-a-generator/register/) and [Host registration](/run/run-a-host/quickstart/#shinzohub-registration) pages.
+You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/run/run-a-generator/register/) and [Host registration](/run/run-a-host/quickstart/#shinzohub-registration) pages. Both use the hosted [Registration app](https://registration.shinzo.network/), and you can get the testnet SHNZ for the registration fee from the [faucet](https://faucet.shinzo.network/).
 
 ## Set your execution node endpoint
 
@@ -258,7 +258,7 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 }
 ```
 
-The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. More queries are on the [Host examples](/build/query-data/) page.
+The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. You can also browse this data visually in the [Explorer](https://explorer.shinzo.network/). More queries are on the [Host examples](/build/query-data/) page.
 
 {% admonition(type="note") %}
 The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match — for example `Optimism__Mainnet__Log`. See the [chain config](/run/run-a-generator/config-reference#chain) for details.

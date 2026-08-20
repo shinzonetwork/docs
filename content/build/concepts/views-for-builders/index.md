@@ -5,7 +5,7 @@ description = "Viewkit is the developer-facing toolchain for defining, packaging
 [extra]
 mermaid = true
 +++
-Viewkit (also known as View Creator) is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views. It provides a workflow for turning raw indexed blockchain data into reusable, versioned data APIs that can be executed and served by Hosts.
+Viewkit (also known as View Creator) is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views. It provides a workflow for turning raw indexed blockchain data into reusable, versioned data APIs that can be executed and served by Hosts. The same workflow is also available as a browser UI in [Shinzo Studio](https://studio.shinzo.network/), for developers who prefer not to use the CLI.
 
 Viewkit sits between indexed primitive data and application-ready data interfaces. It lets developers declaratively specify what data to ingest, how to transform it, and how to expose it, without managing infrastructure, execution environments, or deployment mechanics directly.
 

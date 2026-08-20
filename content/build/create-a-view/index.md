@@ -3,7 +3,7 @@ title = "Create a View"
 aliases = ["/views/quickstart", "/views/install", "/build"]
 description = "Build and deploy your first Shinzo View with Viewkit — from install to local testing to devnet publishing."
 +++
-Viewkit is a CLI tool that helps you initialize, manage, and publish Shinzo views. In this guide we're going to build and install the `viewkit` executable, create a view, and publish it to the testnet.
+Viewkit is a CLI tool that helps you initialize, manage, and publish Shinzo views. In this guide we're going to build and install the `viewkit` executable, create a view, and publish it to the testnet. If you'd rather work from a browser UI instead of the CLI, [Shinzo Studio](https://studio.shinzo.network/) covers the same create → deploy → query flow for Views.
 
 ## Prerequisites
 

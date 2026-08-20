@@ -24,16 +24,15 @@ Before you start, have the following ready:
    - Default RPC URL: `http://testnet.shinzo.network:8545`
    - Chain ID: `91273001`
    - Currency symbol: `SHNZ`
-1. Go to the [Technical Registry](http://localhost:8080/registration-app) and connect your wallet using the button in the top-right corner.
+
+   You need a small amount of SHNZ to cover the registration transaction fee. Get testnet SHNZ from the [faucet](https://faucet.shinzo.network/).
+1. Open the [Technical Registry](https://registration.shinzo.network/) and connect your wallet using the button in the top-right corner.
 
     {% admonition(type="info") %}
-    If your node is running on a remote server (like Hetzner, DigitalOcean, GCP, AWS, etc), you can use SSH local port forwarding to access the registration page.
-
-1. On your local machine, run `ssh -L 8080:localhost:8080 user@your-hetzner-ip`.
-1. Open `http://localhost:8080/registration-app` in your browser.
+    The Technical Registry is hosted at [registration.shinzo.network](https://registration.shinzo.network/). If your node is on a private network or you'd rather use the registration app bundled with the Generator client, it's also served locally at `http://localhost:8080/registration-app`. For a remote node, use SSH local port forwarding to reach it: run `ssh -L 8080:localhost:8080 user@your-node-ip` on your local machine, then open `http://localhost:8080/registration-app` in your browser.
     {% end %}
 
-4. From the Technical Registry homepage, click **Register as Generator** to start the two-step registration flow.
+1. From the Technical Registry homepage, click **Register as Generator** to start the two-step registration flow.
 
 ### Assertion
 

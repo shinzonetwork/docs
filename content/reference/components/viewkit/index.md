@@ -113,7 +113,7 @@ Two implementations of the wire format exist:
 | Implementation | Language | Side | Used by |
 | --- | --- | --- | --- |
 | viewbundle-go | Go | Server-side | Viewkit, precompile |
-| viewbundle | TypeScript | Client-side | Browser-based tooling |
+| viewbundle | TypeScript | Client-side | Shinzo Studio (browser UI) |
 
 Key functions:
 
