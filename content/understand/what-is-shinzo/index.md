@@ -6,27 +6,33 @@ page_template = "page.html"
 mermaid = true
 +++
 
-Shinzo is a decentralized indexing network for blockchains. It takes raw on-chain data and turns it into structured datasets that any application can query, without having to go through a centralized indexing service to get them.
+Shinzo is a trustless network for reading blockchain data. It takes raw on-chain data and turns it into structured datasets that any application can query, without having to go through a centralized data service to get them.
 
-If you've built any kind web3 app before, you know the usual pattern: you pick a centralized service provider (alchemy, infura), pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that index the chain at the source and share the results peer to peer.
+If you've built any kind web3 app before, you know the usual pattern: you pick a centralized service provider (alchemy, infura), pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that read the chain at the source and share the results peer to peer.
 
 ## The problem Shinzo solves
 
-Blockchains are good at writing data and bad at reading it. If you want to show a user all their previous transactions, or count token transfers for a given contract, you can't just ask the chain. The raw data isn't organized for questions like that. So the industry bolted centralized indexing services onto the side of every chain, and those services now sit in the trust path between your app and the data.
+Blockchains are good at writing data and bad at reading it. If you want to show a user all their previous transactions, or count token transfers for a given contract, you can't just ask the chain. The raw data isn't organized for questions like that. So the industry bolted centralized data services onto the side of every chain, and those services now sit in the trust path between your app and the data.
 
-This setup is expensive and fragile. The indexer's DNS might fail, or the cloud service hosting it might go down. But the biggest failure of this system is that you there's no way to verify that the data you're receiving is accurate until _after_ you've received (and paid) for it.
+This setup is expensive and fragile. The provider's DNS might fail, or the cloud service hosting it might go down. But the biggest failure of this system is that there's no way to verify that the data you're receiving is accurate until _after_ you've received (and paid) for it.
 
-The goal of Shinzo is to make reading blockchain data as decentralized and verifiable as writing to it.
+The goal of Shinzo is to make reading blockchain data as trustless and verifiable as writing to it.
 
 ## How it works
 
 Three kinds of participants run the network.
 
-**Generator clients** sit next to blockchain nodes and turn new blocks into structured documents as they arrive. They cryptographically sign everything they produce, so anyone downstream can check that the data is valid.
+### Generator clients
 
-**Host clients** receive primitive data from Generator clients over a peer-to-peer network and apply user-defined transforms called _Views_. They keep attestation records, which count how many different Generator clients signed off on each piece of data, so developers can use those counts to set their own trust thresholds.
+Generator clients sit next to blockchain nodes and turn new blocks into structured documents as they arrive. They cryptographically sign everything they produce, so anyone downstream can check that the data is valid.
 
-**Developers** define the Views. A View is basically a way to say _"here's the raw data I care about, here's how I want it filtered and decoded, and here's how I want it structured."_ Once a View is deployed, Hosts pick it up, run it, and push the results to whoever subscribes to that particular View.
+### Host clients
+
+Host clients receive primitive data from Generator clients over a peer-to-peer network and apply user-defined transforms called _Views_. They keep attestation records, which count how many different Generator clients signed off on each piece of data, so developers can use those counts to set their own trust thresholds.
+
+### Developers
+
+Developers define the Views. A View is basically a way to say _"here's the raw data I care about, here's how I want it filtered and decoded, and here's how I want it structured."_ Once a View is deployed, Hosts pick it up, run it, and push the results to whoever subscribes to that particular View.
 
 {% mermaid() %}
 flowchart LR
@@ -82,7 +88,7 @@ If you're a developer working on an app, wallet, or any kind of web3 service, Vi
 - A schema (GraphQL SDL) describing how you want that data organized.
 - Lens transforms to filter, decode, and shape that data into what you _actually_ need.
 
-You build Views with `viewkit`, Shinzo's CLI, and deploy them to Shinzohub so that anyone else use them. If you'd rather skip the CLI, [Shinzo Studio](https://studio.shinzo.network/) provides the same build-and-deploy workflow in the browser. Any Host client can then pick up the View, run it, and serve the results. Your application subscribes through the [app-sdk](https://github.com/shinzonetwork/app-sdk) and queries the resulting data locally.
+You build Views with `viewkit`, Shinzo's CLI, and deploy them to ShinzoHub so that anyone else can use them. If you'd rather skip the CLI, [Shinzo Studio](https://studio.shinzo.network/) provides the same build-and-deploy workflow in the browser. Any Host client can then pick up the View, run it, and serve the results. Your application subscribes through the [app-sdk](https://github.com/shinzonetwork/app-sdk) and queries the resulting data locally.
 
 ## Where the project is today
 
@@ -90,12 +96,12 @@ Shinzo's public testnet is now live. Anyone can join the network by running the 
 
 The current testnet includes:
 
-- The **Generator** client reads a supported chain from an execution node, signs the data, and replicates it across the network using DefraDB's libp2p-based replication layer. See [shinzo.network/chains](https://shinzo.network/chains) for the current list of supported chains.
-- The **Host** client receives replicated data from Generators, materializes registered Views using Lens transforms, and serves GraphQL queries to applications.
-- **Viewkit** allows developers to define, package and deploy custom Views to the network, making indexed datasets immediately available to participating Hosts.
-- **ShinzoHub** coordinates network participation, View registration, entity registration, and access control for the testnet.
-- The **Explorer** lets anyone browse transactions and other on-chain activity across the testnet without running a node.
-- The **Gateway** provides a unified GraphQL endpoint by routing requests across Hosts and validating responses through network consensus.
-- The **App SDK** enables Go applications to embed Shinzo components and query attestation-filtered data directly from the network.
+- The Generator client reads a supported chain from an execution node, signs the data, and replicates it across the network using DefraDB's libp2p-based replication layer. See [shinzo.network/chains](https://shinzo.network/chains) for the current list of supported chains.
+- The Host client receives replicated data from Generators, materializes registered Views using Lens transforms, and serves GraphQL queries to applications.
+- Viewkit allows developers to define, package and deploy custom Views to the network, making the datasets immediately available to participating Hosts.
+- ShinzoHub coordinates network participation, View registration, entity registration, and access control for the testnet.
+- The Explorer lets anyone browse transactions and other on-chain activity across the testnet without running a node.
+- The Gateway provides a unified GraphQL endpoint by routing requests across Hosts and validating responses through network consensus.
+- The App SDK enables Go applications to embed Shinzo components and query attestation-filtered data directly from the network.
 
 This testnet is intended to validate Shinzo's trustless indexing architecture under real-world conditions, gather feedback from operators and developers and harden the protocol ahead of mainnet.
