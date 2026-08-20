@@ -27,7 +27,7 @@ A private Host client connection closes some or all of these. How many you close
 
 ## Two tiers
 
-There are two tiers of privacy. Select that one that works for your use-case.
+There are two tiers of privacy. Select the one that works for your use case.
 
 ### Standard private Host client
 
@@ -35,7 +35,7 @@ Keep ShinzoHub connected so the Host client still fetches and runs the public Vi
 
 What changes from the defaults:
 
-- `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do no include any other multiaddrs.
+- `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do not include any other multiaddrs.
 - `shinzo.hub_base_url`: set it to `testnet.shinzo.network:26657` (the shipped value; the code default is empty) so the Host client keeps fetching public Views.
 - Skip [Register](/hosts/register/). An unregistered Host isn't discoverable and won't serve the network.
 
@@ -135,16 +135,12 @@ In a [fully air-gapped Host client](#fully-air-gapped-host-client), with `hub_ba
 
 Restart the same container, not a fresh one. `views.json` and the cached WASM lens files live in `./.defra` inside the container, and the `docker run` above doesn't mount that path. If you `docker rm` and start a new container, `views.json` is gone and the host boots with no Views. To let `views.json` survive container recreation, mount a persistent `.defra` volume as shown in [Install](/hosts/install/).
 
-{% admonition(type="warning") %}
-Running your own unpublished Views in an air-gapped host is a forthcoming capability. Viewkit can build and preview a View locally with `viewkit view deploy --target local`, but that spins up a throwaway DefraDB; it doesn't install the View into your running Host client. Deploying with `--target devnet` registers the View on ShinzoHub, which publicizes it. Until a private install path exists, an air-gapped Host client can only run Views that were already ingested from the public registry. See the [Viewkit Quickstart](/views/quickstart/) for the local build and preview flow.
-{% end %}
-
 ## What stays the same and the trade-offs
 
 - The Host client still creates `AttestationRecord`s from your Generator client's signatures and verifies them. What you lose is cross-host replication of those attestations. With no other Host peers, there's no one to gossip with. The `minimum_attestations` key is in the config but the Host client doesn't read it. It's an app-sdk setting, so changing it has no effect on a Host.
 - Your Generator is your only data source. If it goes down or falls behind, the Host client has no public fallback in a fully air-gapped setup.
 - You manage View updates yourself. In a standard private host setup the hub still pushes new registrations. In a fully air-gapped setup, you re-run the ingest step to pick up new public Views.
 
-## Need Help
+## Need help
 
 {{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}

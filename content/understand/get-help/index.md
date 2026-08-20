@@ -25,7 +25,7 @@ Include the following where it applies:
 1. What you expected to happen.
 1. What happened instead (paste the full error message or log output, not just the last line)
 1. Versions. The client version from the `/health` endpoint or the binary's `--version` flag, the source chain, and your OS.
-1. For registration problems, the transaction hash and your DID. You can find your DID in the Technical Registry after registering.
+1. For registration problems, the transaction hash and your DID. You can find your DID in the [Technical Registry](https://registration.shinzo.network/) after registering.
 
 ## FAQs
 

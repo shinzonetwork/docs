@@ -178,7 +178,7 @@ Key fields:
 | `logs_processed` | Events captured matching your filter |
 | `attestations_created` | Data integrity records written |
 
-If `logs_processed` stays at 0 but `blocks_processed` is climbing, either no matching events have occurred in the blocks being indexed, or the connected Generator client is not providing full transaction data (only block headers). If `transactions_processed` is also 0, contact the [Shinzo team](https://discord.shinzo.network/) for access to a full-data Generator.
+If `logs_processed` stays at 0 but `blocks_processed` is climbing, either no matching events have occurred in the blocks being scanned, or the connected Generator client is not providing full transaction data (only block headers). If `transactions_processed` is also 0, contact the [Shinzo team](https://discord.shinzo.network/) for access to a full-data Generator.
 
 ### Query stored logs
 

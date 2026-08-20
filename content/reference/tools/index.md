@@ -3,23 +3,23 @@ title = "Tools"
 +++
 A reference list of web interfaces and endpoints for the Shinzo network.
 
-## Explorers
+## Explorer
 
-- [Explorer](https://explorer.shinzo.network/)
+- [Explorer](https://explorer.shinzo.network/) (browse transactions and other on-chain activity across the Shinzo network).
 
-## Faucets
+## Faucet
 
-- [Testnet faucet](https://faucet.shinzo.network/)
+- [Testnet faucet](https://faucet.shinzo.network/) (claim testnet SHNZ to pay for transactions while interacting with the network).
 
-## RPC Endpoints
+## Developer tools
 
-- `http://testnet.shinzo.network:8545/ `
+- [Shinzo Studio](https://studio.shinzo.network/) (create, deploy, and query Views from the browser, no CLI required).
+- [Registration app](https://registration.shinzo.network/) (register a Host or Generator on ShinzoHub; optional for private or direct infrastructure).
+
+## RPC endpoints
+
+- `http://testnet.shinzo.network:8545/`
 - `wss://testnet.shinzo.network:8545/`
-
-## Developer Tools
-
-- [Shinzo Studio](https://studio.shinzo.network/) (deploy and manage views via UI).
-- [Registration app](https://registration.shinzo.network/) (register as a Host or Generator on ShinzoHub).
 
 ## Designs
 

@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you want to run the Generator client against GCP Blockchain Node Engine or another managed node provider, authenticating with an API key header.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -85,7 +85,7 @@ services:
 - `GETH_RPC_URL` and `GETH_WS_URL`: Your GCP BNE endpoints. Replace the example URLs with your own BNE instance URLs. See [geth config](/run/run-a-generator/config-reference#geth).
 - `GETH_API_KEY=<YOUR_API_KEY_HERE>`: Your GCP API key. Replace this with the actual key from your GCP console. See [geth config](/run/run-a-generator/config-reference#geth).
 - `GETH_API_KEY_TYPE=x-goog-api-key`: The header name GCP BNE expects for authentication. See [geth config](/run/run-a-generator/config-reference#geth).
-- `INDEXER_START_HEIGHT=0`: Start indexing from the chain tip. See [indexer config](/run/run-a-generator/config-reference#indexer).
+- `INDEXER_START_HEIGHT=0`: Start verifiable indexing from the chain tip. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `DEFRADB_KEYRING_SECRET=pingpong`: Encryption secret for the DefraDB keyring. Change this to your own secret and keep it consistent across restarts. See [defradb config](/run/run-a-generator/config-reference#defradb).
 - `GOMEMLIMIT=14GiB`: Go runtime soft memory limit. Set below the container `mem_limit` to leave headroom for non-Go memory. See [env vars](/run/run-a-generator/config-reference#environment-variables).
 - `SNAPSHOT_ENABLED=false`: Disable snapshots. Enable if you want the Generator to produce snapshot files for Host bootstrap. See [snapshot config](/run/run-a-generator/config-reference#snapshot).

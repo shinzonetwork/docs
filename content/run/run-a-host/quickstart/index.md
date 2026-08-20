@@ -4,22 +4,22 @@ aliases = ["/hosts/quickstart"]
 description = "Run a Shinzo Host to transform blockchain data into verifiable Views"
 +++
 
-Hosts turn raw blockchain data into structured **Views** and produce **Attestation Records** that help secure the network. This guide covers installing, configuring, and running the Shinzo Host Client.
+Hosts turn raw blockchain data into structured Views and produce Attestation Records that help secure the network. This guide covers installing, configuring, and running the Shinzo Host Client.
 
 ## Hardware recommendations
 
-The Host client does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage of an execution client or archival Generator. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing.
+The Host client does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage of a full node or archival Generator. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing.
 
-## Local Deployment
+## Local deployment
 
 Run the Shinzo Host Client directly on your local machine for development and testing.
 
 ### Prerequisites
 
-- Go 1.25
-- Metamask with a wallet setup. This wallet does not need to hold any funds.
+- Go 1.25.
+- MetaMask with a wallet setup. This wallet does not need to hold any funds.
 
-### Clone the Repository
+### Clone the repository
 
 ```shell
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
@@ -28,17 +28,17 @@ cd shinzo-host-client
 
 ### Configuration
 
-The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml), which comes with working defaults. The only field you need to set is `defradb.keyring_secret`. Alternatively, you can also set the password as an environment variable to avoid storing it in plaintext:
+The Host Client reads from [config.yaml](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml), which comes with working defaults. The only field you need to set is `defradb.keyring_secret`. You can also set the password as an environment variable to avoid storing it in plaintext:
 
 ```shell
 export DEFRA_KEYRING_SECRET=<make_a_password>
 ```
 
-#### Key Fields
+#### Key fields
 
 - `defradb.url`: API endpoint of your local DefraDB node. Defaults work for most setups.
 - `defradb.keyring_secret`: Requires a secret to generate your private keys.
-- `p2p.bootstrap_peers`: Generator client peers for receiving indexed data. Defaults include a reliable bootstrap peer.
+- `p2p.bootstrap_peers`: Generator client peers for receiving verifiable data. Defaults include a reliable bootstrap peer.
 - `p2p.listen_addr`: Default is suitable for local runs. Override when containerizing.
 - `store.path`: Directory where local DefraDB data is stored.
 - `shinzo.web_socket_url`: Defaults to a hosted ShinzoHub node. Only change if connecting to a different node.
@@ -63,20 +63,20 @@ If you are running a Generator client and a Host client on the same machine, app
 
 The Generator client is likely already using port `9181`, so update the `defradb.url` field:
 
-```shell
+```yaml
 url: "localhost:9182"
 ```
 
 Also update the [P2P settings](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml#L4) to use localhost and a different port so the Host doesn't clash with the Generator client:
 
 
-```shell
+```yaml
 bootstrap_peers:
   - '/ip4/127.0.0.1/tcp/9171/p2p/<PeerID>'
 listen_addr: "/ip4/0.0.0.0/tcp/9172"
 ```
 
-### Build and Run
+### Build and run
 
 {{ tab(label="Run directly") }}
 ```shell
@@ -129,7 +129,7 @@ query GetLatestLogs {
 
 More query examples are available [here](/build/query-data/).
 
-## VM Deployment
+## VM deployment
 
 This is the recommended approach for production and testnet participation. It uses Docker, docker-compose, and Nginx on a virtual machine.
 
@@ -137,21 +137,21 @@ This is the recommended approach for production and testnet participation. It us
 
 - Port `444` open in your firewall/security group.
 
-### Install System Dependencies
+### Install system dependencies
 
 ```shell
 sudo apt-get update
 sudo apt-get install -y docker.io docker-compose nginx
 ```
 
-### Create the Data Directory
+### Create the data directory
 
 ```shell
 sudo mkdir -p ~/data/defradb ~/data/lens
 sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
 ```
 
-### Generate SSL Certificates
+### Generate SSL certificates
 
 ```shell
 # Generate private key, certificate signing request, and self-signed certificate
@@ -163,7 +163,7 @@ sudo openssl x509 -req -days 365 -in /tmp/nginx.csr -signkey ~/ssl/nginx.key -ou
 sudo rm /tmp/nginx.csr
 ```
 
-### Write the Configuration File
+### Write the configuration file
 
 Create `~/config.yaml`. The production config enables performance tuning, peer reconnection, pruning, and optional event filtering. Key values to set:
 
@@ -194,11 +194,11 @@ host:
 The full production config is generated automatically by `host-prod-setup.sh`. See below.
 {% end %}
 
-### Write the Nginx Config
+### Write the Nginx config
 
 Create `~/nginx.conf`:
 
-```shell
+```nginx
 events { worker_connections 1024; }
 
 http {
@@ -259,8 +259,8 @@ http {
   }
 }
 ```
- 
-### Write the docker-compose File
+
+### Write the docker-compose file
 
 Create `~/docker-compose.yml`:
 
@@ -323,7 +323,7 @@ docker-compose up -d
 
 The health check endpoint is available at:
 
-```shell
+```plaintext
 http://<VM_IP>:8080/metrics
 ```
 
@@ -334,33 +334,35 @@ docker ps
 docker logs shinzo-host
 ```
 
-### Docker Image
+### Docker image
 
 The multi-stage Dockerfile builds the host binary (Go 1.25) along with the Wasmtime and Wasmer WASM runtimes. The production image is based on Ubuntu 24.04 and runs as a non-root `shinzo` user. Pre-built images are published to:
 
-```shell
+```plaintext
 ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 
-## ShinzoHub Registration
+## ShinzoHub registration
 
 To participate in the Shinzo Network, you must register your Host. Registration identifies your node so it can replicate data and earn rewards. An unregistered Host will not be recognized by the network. There are two ways to register:
 
-### Option A: Register with the GUI
+### Register with the GUI (Option A)
 
 1. Start your Host client.
-2. Add Shinzo testnet to Metamask with the following values:
+1. Add Shinzo testnet to Metamask with the following values:
   - Network name: Shinzo
-  - Default RPC URL: http://testnet.shinzo.network:8545
-  - Chain ID: 91273001
-  - Currency symbol: SHNZ
-3. Open the [registration route](http://localhost:8080/registration-app) and connect your wallet.
-4. On the registration page, click Register and select "Host" as your role to complete the process.
-5. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
+  - Default RPC URL: `http://testnet.shinzo.network:8545`
+  - Chain ID: `91273001`
+  - Currency symbol: `SHNZ`
 
-### Option B: Register with the CLI
+  You need a small amount of SHNZ for the registration transaction fee. Get testnet SHNZ from the [faucet](https://faucet.shinzo.network/).
+1. Open the [Registration app](https://registration.shinzo.network/) and connect your wallet. If your Host is on a private network, the Host client also serves a local registration app at `http://localhost:8080/registration-app`; use SSH port forwarding to reach a remote node.
+1. On the registration page, click **Register** and select **Host** as your role to complete the process.
+1. Submit your registration, then confirm the transaction in MetaMask. You should see a successful registration notification.
 
-You can also register your Host by submitting the registration transaction directly with Foundry’s `cast` CLI.
+### Register with the CLI (Option B)
+
+You can also register your Host by submitting the registration transaction directly with Foundry's `cast` CLI.
 
 ```shell
 cast send "0x0000000000000000000000000000000000000211" \
@@ -385,10 +387,10 @@ Be careful with your private key. Do not commit it to source control, paste it i
 
 Your Host is now registered and authorized to participate in the Shinzo Network.
 
-## Need Help
+## Need help
 
 {{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
 
-## Next Steps
+## Next steps
 
 Your Host can now receive and serve Views. A registered Host starts serving a specific View by joining its [pool](/understand/core-concepts/pools/). That's what commits a Host to running a particular View. Try running queries against it through the playground GUI.

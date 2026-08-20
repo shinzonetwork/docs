@@ -1,6 +1,6 @@
 +++
 title = "Privacy"
-description = "If your concerned about keeping all your Views and queries private, you may want to consider spinning up a private Host client, sometimes called a Direct Client."
+description = "If you're concerned about keeping all your Views and queries private, you may want to consider spinning up a private Host client, sometimes called a Direct Client."
 mermaid = true
 +++
 
@@ -25,7 +25,7 @@ A private Host client connection closes some or all of these. How many you close
 
 ## Two tiers
 
-There are two tiers of privacy. Select that one that works for your use-case.
+There are two tiers of privacy. Select the one that works for your use-case.
 
 ### Standard private Host client
 
@@ -33,7 +33,7 @@ Keep ShinzoHub connected so the Host client still fetches and runs the public Vi
 
 What changes from the defaults:
 
-- `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do no include any other multiaddrs.
+- `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do not include any other multiaddrs.
 - `shinzo.hub_base_url`: set it to `testnet.shinzo.network:26657` (the shipped value; the code default is empty) so the Host client keeps fetching public Views.
 - Skip [Register](/hosts/register/). An unregistered Host isn't discoverable and won't serve the network.
 

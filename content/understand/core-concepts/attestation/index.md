@@ -5,7 +5,7 @@ Attestation is how Shinzo tracks how much of the network has independently agree
 
 ## The problem it solves
 
-With a centralized indexing service, you trust the provider because you have no other option. You can't verify[^1] the data you got matches what's actually on chain. In Shinzo, Generators cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Generators saw the same thing.
+With a centralized data service, you trust the provider because you have no other option. You can't verify[^1] the data you got matches what's actually on chain. In Shinzo, Generators cryptographically sign every document they produce, so there's a verifiable record of who said what. But a single signature only goes so far. You still need to know whether multiple independent Generators saw the same thing.
 
 Attestation answers that question.
 

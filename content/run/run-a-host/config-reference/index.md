@@ -28,7 +28,7 @@ P2P networking configuration. The Host receives data from Generator clients over
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
 | `enabled` | bool | true | no | (none) | Enable P2P networking. Shipped `config.yaml` sets true. |
-| `bootstrap_peers` | string array | empty | no | `BOOTSTRAP_PEERS` | P2P bootstrap peer multiaddrs. Env var is comma-separated. Shipped `config.yaml` lists three indexer peers. |
+| `bootstrap_peers` | string array | empty | no | `BOOTSTRAP_PEERS` | P2P bootstrap peer multiaddrs. Env var is comma-separated. Shipped `config.yaml` lists three trustless indexer peers. |
 | `listen_addr` | string | `/ip4/127.0.0.1/tcp/9171` | no | (none) | Multiaddr to listen on for P2P connections. Applied as a fallback in `StartDefraInstance` when empty. Shipped `config.yaml` sets `/ip4/0.0.0.0/tcp/9171`. |
 | `max_retries` | int | 5 | no | (none) | Connection attempts before marking a peer as failed. Default applied in `network_handler.go`. |
 | `retry_base_delay_ms` | int | 1000 | no | (none) | Base delay in milliseconds for exponential backoff. Default applied in `network_handler.go`. |
@@ -136,12 +136,12 @@ Host-level configuration: lens registry path, health server, and snapshot bootst
 
 ### host snapshot
 
-Downloads historical data from an indexer on first startup for fast initial sync.
+Downloads historical data from a trustless indexer on first startup for fast initial sync.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
 | `enabled` | bool | false | no | (none) | Enable snapshot bootstrap on startup. Shipped `config.yaml` sets false. |
-| `indexer_url` | string | empty | no | (none) | HTTP base URL of the indexer serving snapshots. Shipped `config.yaml` sets `http://35.206.105.60:8080`. |
+| `indexer_url` | string | empty | no | (none) | HTTP base URL of the trustless indexer serving snapshots. Shipped `config.yaml` sets `http://35.206.105.60:8080`. |
 | `historical_ranges` | object array | empty | no | (none) | Block ranges to download during bootstrap. |
 
 #### host snapshot historical ranges
@@ -153,13 +153,13 @@ Downloads historical data from an indexer on first startup for fast initial sync
 
 ## schema
 
-Dynamic schema fetching from an indexer. The Host fetches the indexer's schema on startup so its collection definitions match the Generator's.
+Dynamic schema fetching from a trustless indexer. The Host fetches the schema on startup so its collection definitions match the Generator's.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `indexer_schema_endpoint` | string | `/api/v1/schema` | no | `INDEXER_SCHEMA_ENDPOINT` | HTTP endpoint path on the indexer for fetching the schema. Defaults to `DefaultIndexerSchemaEndpoint` in `config/config.go` when empty. Shipped `config.yaml` sets `/api/v1/schema`. |
+| `indexer_schema_endpoint` | string | `/api/v1/schema` | no | `INDEXER_SCHEMA_ENDPOINT` | HTTP endpoint path on the trustless indexer for fetching the schema. Defaults to `DefaultIndexerSchemaEndpoint` in `config/config.go` when empty. Shipped `config.yaml` sets `/api/v1/schema`. |
 | `http_client_timeout_secs` | int | 30 | no | (none) | HTTP client timeout in seconds for schema fetches. Must be non-negative and cannot exceed 300 (`MaxSchemaHTTPClientTimeout`); 0 defaults to 30 (`DefaultSchemaHTTPClientTimeout`). Shipped `config.yaml` sets 30. |
-| `auth_token` | string | empty | yes if the indexer uses `SCHEMA_AUTH_MODE=token` | `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN` | Bearer token used to authenticate schema fetches against indexers with `SCHEMA_AUTH_MODE=token` (the Generator's default). Not settable in `config.yaml` (the field uses `yaml:"-"`); provide via `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN` or schema fetches receive 401/503 and fall back to the embedded schema. |
+| `auth_token` | string | empty | yes if the trustless indexer uses `SCHEMA_AUTH_MODE=token` | `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN` | Bearer token used to authenticate schema fetches against trustless indexers with `SCHEMA_AUTH_MODE=token` (the Generator's default). Not settable in `config.yaml` (the field uses `yaml:"-"`); provide via `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN` or schema fetches receive 401/503 and fall back to the embedded schema. |
 
 ## pruner
 
@@ -176,7 +176,7 @@ Removes old data to keep storage bounded. Defaults are applied by `SetDefaults` 
 
 ## logger
 
-Logging configuration. The logger is zap-based.
+Logging configuration. The logger uses zap.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |

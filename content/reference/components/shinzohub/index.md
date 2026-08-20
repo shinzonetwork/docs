@@ -61,7 +61,7 @@ ShinzoHub uses EVM precompiled contracts to connect Cosmos module logic with the
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views |
 | `0x0211` | Host Registry | Tracks registered hosts |
-| `0x0212` | Generator Registry | Tracks registered generator |
+| `0x0212` | Generator Registry | Tracks registered generators |
 
 ### View Registry (0x0210)
 
@@ -155,6 +155,8 @@ The path from user payment to access grant has four steps:
 | CometBFT RPC | `http://testnet.shinzo.network:26657` |
 | REST / LCD | `http://testnet.shinzo.network:1317` |
 | gRPC | port 9090 |
+
+For testnet SHNZ to pay transaction fees, use the [faucet](https://faucet.shinzo.network/). To browse on-chain activity, use the [Explorer](https://explorer.shinzo.network/). See [Tools](/reference/tools/) for the full list of web interfaces and endpoints.
 
 <!--
 ## What is not implemented yet

@@ -12,21 +12,21 @@ Track what's new across the Shinzo developer platform: network releases, SDK cha
 
 ## Aug 06, 2026 {#08-06-2026}
 
-### 🐳 Upgrade
+### Upgrade
 
-**Generator Client**
+#### Generator client
 
-```bash
+```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.3-ethereum-mainnet
 ```
 
-**Host Client**
+#### Host client
 
-```bash
+```shell
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.3-ethereum-mainnet
 ```
 
-### 🚀 Improvements
+### Improvements
 
 - {{ tag(name="Generator") }} Improved block signing performance by signing batched blocks directly from collected CIDs instead of performing a read-back query. ([PR #308](https://github.com/shinzonetwork/shinzo-generator-client/pull/308))
 - {{ tag(name="Generator") }} Fixed a hardcoded Shinzo Hub URL used during testnet deployments. ([PR #313](https://github.com/shinzonetwork/shinzo-generator-client/pull/313))
@@ -37,21 +37,21 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.3-ethereum-mainnet
 
 ## July 16, 2026 {#07-16-2026}
 
-### 🐳 Upgrade
+### Upgrade
 
-**Generator Client**
+#### Generator client
 
-```bash
+```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.2-ethereum-mainnet
 ```
 
-**Host Client**
+#### Host client
 
-```bash
+```shell
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.2-ethereum-mainnet
 ```
 
-### 🚀 Improvements
+### Improvements
 
 - {{ tag(name="Generator") }} Blocks are now signed only after all required block data has been received. ([PR #293](https://github.com/shinzonetwork/shinzo-generator-client/pull/293))
 - {{ tag(name="Generator") }} Pruning now skips invalid or incomplete records instead of stopping the entire process. ([PR #287](https://github.com/shinzonetwork/shinzo-generator-client/pull/287))
@@ -66,21 +66,21 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.2-ethereum-mainnet
 
 ## July 08, 2026 {#07-08-2026}
 
-### 🐳 Upgrade
+### Upgrade
 
-**Generator Client**
+#### Generator client
 
-```bash
+```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
-**Host Client**
+#### Host client
 
-```bash
+```shell
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
 ```
 
-### 🎉 Highlights
+### Highlights
 
 - Shinzō Testnet is now live.
 - {{ tag(name="Generator") }} Generator Client is available for Shinzo Testnet deployments. Installation instructions: [Generator Installation Guide](https://docs.shinzo.network/run/run-a-generator/install/)

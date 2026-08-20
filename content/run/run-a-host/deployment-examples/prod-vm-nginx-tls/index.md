@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you want to run a production Host on a VM with nginx as a reverse proxy, TLS termination, and persistent volumes for DefraDB data, keys, and lens files.
 
-These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported blockchain. Shinzo supports multiple blockchains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -39,7 +39,7 @@ nginx terminates incoming HTTPS traffic and proxies GraphQL and metrics requests
 
 ## Config file
 
-This config is drawn from `host-prod-setup.sh` in the `shinzo-host-client` repo. It sets the DefraDB URL, keyring secret, P2P bootstrap peers, and the ShinzoHub endpoint. The event filter is disabled, accepting all documents:
+This config is drawn from `host-prod-setup.sh` in the `shinzo-host-client` repo. It sets the DefraDB URL, keyring secret, P2P bootstrap peers, and the ShinzoHub endpoint. The event filter is disabled and accepts all documents:
 
 ```yaml
 defradb:
@@ -361,7 +361,7 @@ curl -s -X POST https://localhost/api/v0/graphql \
 - The `DEFRA_KEYRING_SECRET` env var uses the `DEFRA_` prefix. The Generator client uses `DEFRADB_KEYRING_SECRET` with the `DEFRADB_` prefix. If you are running both clients on the same VM, do not confuse the two env var names. See [environment variables](/run/run-a-host/config-reference#environment-variables).
 - The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from the config above. See [no-op keys](/run/run-a-host/config-reference#no-op-keys).
 - The `logger.level` field in the shipped config is not in the `LoggerConfig` struct and has no effect. It has been omitted. See [logger](/run/run-a-host/config-reference#logger).
-- The bootstrap peer IDs in this config are the three indexer peers from `host-prod-setup.sh` (identical to the shipped `config.yaml`) and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
+- The bootstrap peer IDs in this config are the three trustless indexer peers from `host-prod-setup.sh` (identical to the shipped `config.yaml`) and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
 - The nginx CORS config restricts origins to `https://explorer.shinzo.network`. If you need to allow other origins, add them to the `map` block in the nginx config.
 - The Host image tag in this compose file is `ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet`, matching `host-prod-setup.sh`. The [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`, and the [Watchtower setup](../watchtower-auto-deploy/) uses `:latest`. Pick one tag and be consistent across your deployment.
 

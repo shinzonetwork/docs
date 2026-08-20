@@ -3,7 +3,7 @@ title = "Create a View"
 aliases = ["/views/quickstart", "/views/install", "/build"]
 description = "Build and deploy your first Shinzo View with Viewkit — from install to local testing to devnet publishing."
 +++
-Viewkit is a CLI tool that helps you initialize, manage, and publish Shinzo views. In this guide we're going to build and install the `viewkit` executable, create a view, and publish it to the testnet.
+Viewkit is a CLI tool that helps you initialize, manage, and publish Shinzo views. In this guide we're going to build and install the `viewkit` executable, create a view, and publish it to the testnet. If you'd rather work from a browser UI instead of the CLI, [Shinzo Studio](https://studio.shinzo.network/) covers the same create → deploy → query flow for Views.
 
 ## Prerequisites
 
@@ -56,7 +56,7 @@ Viewkit is a CLI tool that helps you initialize, manage, and publish Shinzo view
     [...]
     ```
 
-1. Move the `viewkit` executable somewhere resonable and (optional):
+1. Move the `viewkit` executable somewhere reasonable (optional):
 
     ```shell
     sudo mv ./build/viewkit /usr/local/bin
@@ -70,8 +70,10 @@ Viewkit can execute WebAssembly lenses locally to validate and preview them.
 
 Under the hood, it uses `wasmer-go`, which depends on a native dynamic library (`libwasmer.dylib`). If your local system cannot find that library, any command that touches lenses will fail with an error like:
 
-> image not found
-> library not loaded: libwasmer.dylib
+```plaintext
+image not found
+library not loaded: libwasmer.dylib
+```
 
 1. Move back into the shinzo-view-creator repo if you moved out of it:
 
@@ -79,7 +81,7 @@ Under the hood, it uses `wasmer-go`, which depends on a native dynamic library (
     cd shinzo-view-creator
     ```
 
-1. Install the Wasmer Go module
+1. Install the Wasmer Go module:
 
     ```shell
     go get github.com/wasmerio/wasmer-go@v1.0.4
@@ -90,7 +92,7 @@ Under the hood, it uses `wasmer-go`, which depends on a native dynamic library (
     go: added github.com/wasmerio/wasmer-go v1.0.4
     ```
 
-    This ensures `wasmer-go` and its packaged native libraries are present in your `GOPATH`.
+    This makes `wasmer-go` and its packaged native libraries available in your `GOPATH`.
 
 ### Environment variables
 
@@ -189,7 +191,7 @@ Now that everything is set up, we can start creating and deploying views.
      - Updated At: 2026-07-09 09:34:27 +0000 UTC
     ```
 
-1. Next we're going to add a query (raw ingest shape). First, define the raw data shape to ingest, e.g. basic EVM logs:
+1. Next we're going to add a query (raw ingest shape). First, define the raw data shape to ingest, e.g. raw event logs:
 
     ```shell
     viewkit view add query \
@@ -293,9 +295,9 @@ Now that everything is set up, we can start creating and deploying views.
      - Updated At: 2026-07-09 09:37:24 +0000 UTC
     ```
 
-    It now shows both the **query** _and_ the **SDL**.
+    It now shows both the query and the SDL.
 
-1. Attach a WebAssembly lens that decodes event logs using an ABI. There are the flags we're using:
+1. Attach a WebAssembly lens that decodes event logs using an ABI.     These are the flags we're using:
 
     - `--args`: JSON passed to the lens (here, an ABI definition for the ERC-20 `Transfer` event).
     - `--label "decode"`: human-readable label for the lens.
@@ -339,7 +341,7 @@ Now that everything is set up, we can start creating and deploying views.
     # - lens "decode"
     ```
 
-    You should now see the **query**, **SDL**, _and_, the lens `decode`:
+    You should now see the query, SDL, and the `decode` lens:
 
     ```output
     📄 View: testdeploy
@@ -377,7 +379,7 @@ If you see `libwasmer.dylib` / "image not found" errors, revisit the Wasmer setu
 
 You need a wallet to sign deployments to `devnet`.
 
-1. Generate a one:
+1. Generate a new one:
 
     ```shell
     viewkit wallet generate
@@ -433,7 +435,7 @@ This section is optional, but it's a good idea to check the View within the buil
 
 1. Open the displayed URL in your browser, usually [127.0.0.1:9181](http://127.0.0.1:9181/).
 1. You should see a GraphQL Playground.
-1. Within thie Playground you can:
+1. Within this Playground you can:
     - Inspect the schema (e.g. see `FilteredAndDecodedLogs`).
     - Run test queries against your local view.
     - Verify that your lens is filtering logs as expected.
@@ -463,10 +465,10 @@ Once your view behaves correctly locally, you can deploy it to a shared network.
 
 ## More examples
 
-For progressively more complex View examples — decoding multiple event types, transaction-based views without lenses, materialized vs on-query views, editing and rolling back views — see [Query data](/build/query-data/), which includes both the view definitions and the GraphQL queries you run against them.
+For progressively more complex View examples (decoding multiple event types, transaction-based views without lenses, materialized vs on-query views, editing and rolling back views), see the [View examples](/build/create-a-view/examples/) page, which includes both the view definitions and the GraphQL queries you run against them.
 
-For a deeper dive on lenses, available modules, and how to chain them, see the [Lens reference](/reference/components/lens/). For troubleshooting and common errors, see [Operations: Troubleshooting](/run/operations/troubleshooting/).
+For the conceptual overview, see [Views for builders](/build/concepts/views-for-builders/). For the full command list, filter operators, VWL wire format, and deploy internals, see the [Viewkit reference](/reference/components/viewkit/). For a deeper dive on lenses, available modules, and how to chain them, see the [Lens reference](/reference/components/lens/). For troubleshooting and common errors, see [Operations: Troubleshooting](/run/operations/troubleshooting/).
 
-## Need Help
+## Need help
 
 {{ need_help(client="Viewkit", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}

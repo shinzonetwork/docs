@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you want your Host to store only specific contract events instead of every document from every Generator. This cuts storage and speeds up view processing.
 
-These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -183,7 +183,7 @@ For a step-by-step walkthrough of configuring a single USDT Transfer filter, see
 - `cascade_filters: true` means a `transaction` type filter on a contract address also filters logs and access-list entries from that address. If you want strict per-type matching, set it to false.
 - The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from this config. See [no-op keys](/run/run-a-host/config-reference#no-op-keys) for the full list.
 - The `topic0` for ERC-20 Transfer is the same across all tokens because it is derived from the function signature `Transfer(address,address,uint256)`, not from the contract address. To filter a different event, compute its keccak256 hash from the canonical signature.
-- The bootstrap peer IDs in this config are the three indexer peers from the shipped `config.yaml` and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
+- The bootstrap peer IDs in this config are the three trustless indexer peers from the shipped `config.yaml` and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
 
 ## Need help
 

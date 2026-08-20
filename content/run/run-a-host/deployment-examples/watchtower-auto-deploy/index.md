@@ -8,7 +8,7 @@ mermaid = true
 
 When to use this: you want pushes to `main` to automatically deploy to your Host VM. GitHub Actions builds and pushes the image to GHCR, then Watchtower on the VM detects the new image and restarts the container.
 
-These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains — see [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported blockchain. Shinzo supports multiple blockchains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -160,7 +160,7 @@ Replace `sha-abc1234` with the actual commit SHA tag you want to roll back to.
 ## Gotchas
 
 - The container must have the `com.centurylinklabs.watchtower.enable=true` label or Watchtower will ignore it. Verify with `docker inspect shinzo-host | grep watchtower`.
-- `DEFRA_URL` in the `docker run` commands overrides `defradb.url` and is read by the Host client (`config/config.go`), binding the DefraDB API to `0.0.0.0:9181`. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` are also kept from the original DEPLOYMENT.md but are not read by the Host client and have no effect. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
+- `DEFRA_URL` in the `docker run` commands overrides `defradb.url` and is read by the Host client (`config/config.go`) and binds the DefraDB API to `0.0.0.0:9181`. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` also come from the original DEPLOYMENT.md but are not read by the Host client and have no effect. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
 - The Host image tag `:latest` is used here. The [prod VM scenario](../prod-vm-nginx-tls/) uses `:v0.6.5-ethereum-mainnet`, and the [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`. If you use Watchtower with `:latest`, you get automatic updates. If you pin a specific tag, Watchtower will not detect new images.
 - Watchtower preserves the container's configuration (ports, volumes, env vars, labels) across restarts. It only replaces the image. If you need to change the container configuration, stop and remove it manually, then start a new container with the updated configuration.
 - The `DEFRA_KEYRING_SECRET` GitHub secret is used for tests in the CI pipeline, not for runtime. The runtime keyring secret comes from your `config.yaml` on the VM. See [defradb config](/run/run-a-host/config-reference#defradb).
