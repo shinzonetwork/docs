@@ -3,52 +3,52 @@ title = "Build an app"
 aliases = ["/guides", "/guides/building-apps-with-shinzo"]
 description = "Building dApps with Shinzo App SDK - local-first querying with embedded DefraDB integration"
 +++
-Building an app with Shinzo is made easy using our [app-sdk](https://github.com/shinzonetwork/app-sdk)!
+You can build an app with Shinzo using the [app-sdk](https://github.com/shinzonetwork/app-sdk).
 
-`go get github.com/shinzonetwork/app-sdk`
+```shell
+go get github.com/shinzonetwork/app-sdk
+```
 
 ## Concepts
 
-First, let's review some basic concepts behind working with Shinzo.
+When working with a centralized indexing service, you choose from a set of APIs they provide and use them in your application. The centralized indexing service builds complex caching strategies to return responses to your queries (which operate over a very large dataset) as quickly as possible. Then, in your application, you likely create your own cache that tracks the results of recent queries, so you can minimize latency in your app while minimizing API usage costs. Shinzo inverts this model.
 
-When working with a centralized indexing service, you must choose a from a set of APIs they provide to leverage in your application. The centralized indexing service will work to create complex caching strategies to provide you with responses to your queries (which operate over a very large datset) as quickly as possible. Then, in your application, you'll likely want to create a cache of your own that keeps track of the result of recent queries - that way you can work to minimize latency in your app while also, and importantly, minimizing API usage costs. Shinzo flips this script rather significantly.
+With Shinzo, you, the app developer, define the API you want to use. Your application client is then "pushed" the pre-processed result of that API, which forms a verifiably-correct cache for your application clients. Your application can make queries against its local cache of the data. You don't maintain a separate cache, re-query an API for the latest data, or run webhooks that can surprise you with costs. You query the data as frequently as you like. With Shinzo, you don't pay per query. You pay for access to transformed data.
 
-With Shinzo, you, the app developer, essentially define the API you want to use. Then, your application client is "pushed" the pre-processed result of that API - this essentially forms a verifiably-correct cache to your application clients. Now, your application can simply make queries against its local cache of the data. No need to maintain a separate cache. No need to re-query an API in order to get the latest data. No need to worry about running webhooks that may end up surprising you with their costs. You simply query the data as frequently as you like. With Shinzo, you don't pay per query, you pay for access to transformed data.
-
-Shinzo leverages [DefraDB](https://github.com/sourcenetwork/defradb) for a number of purposes. In general, it is expected that apps built using Shinzo will also leverage an embedded instance of Defra in their application. When working with Shinzo, you will create/describe or find a series of View(s). View(s) are collections of pre-processed data needed by applications. Then, your application will be "pushed" the pre-processed data from your View(s). 
+Shinzo uses [DefraDB](https://github.com/sourcenetwork/defradb) for several purposes. Apps built with Shinzo generally also use an embedded DefraDB instance. When working with Shinzo, you create, describe, or find a series of Views. Views are collections of pre-processed data needed by applications. Your application is then "pushed" the pre-processed data from your Views. 
 
 ### Example
 
-Let's propose a simple app as an example to illustrate how Shinzo works. This application will simply display a counter for the current number of instances of a specified ERC-20 token, let's say USDC. Let's also say, for arguments sake, that there does not exist a method on the contract where we can query to get the current supply of USDC. Instead, the only way to determine this is to parse through the mint and burn events emitted by the contract.
+Consider a simple app to illustrate how Shinzo works. The app displays a counter for the current number of instances of a specified ERC-20 token, such as USDC. For argument's sake, assume the contract has no method to query the current supply of USDC. The only way to determine the supply is to parse the mint and burn events emitted by the contract.
 
-To do this, you would first create a View, describing how to transform primitive data (blocks, logs, transactions, etc.) into a format that works for you. In this case, you would filter logs based on those involving the USDC contract address, decode the logs into events using the contracts ABI, and finally filter for only mint and burn events. The Shinzo Hosts and Generator clients will work together to get you the data you need. Your application client(s) will receive all the mint and burn events on that USDC contract. From here, you can make as many GraphQL queries against those events you've received in order to build your application. Your app client(s) won't receive the underlying primitives (blocks, transactions, logs, etc.), only the filtered and decoded events as described in your View.
+To do this, you first create a View that describes how to transform primitive data (blocks, logs, transactions, etc.) into a format you can use. In this case, you filter logs involving the USDC contract address, decode the logs into events using the contract's ABI, and finally filter for only mint and burn events. The Shinzo Hosts and Generator clients work together to deliver the data you need. Your application client(s) receive all the mint and burn events on that USDC contract. From here, you can make as many GraphQL queries against the events you've received to build your application. Your app client(s) won't receive the underlying primitives (blocks, transactions, logs, etc.), only the filtered and decoded events as described in your View.
 
 ## Usage
 
-Before using the app-sdk, you'll want to [use Viewkit to create the View(s)](/build/concepts/views-for-builders/) for your app, or build them in the [Shinzo Studio](https://studio.shinzo.network/) browser UI.
+Before using the app-sdk, [use Viewkit to create the Views](/build/concepts/views-for-builders/) for your app, or build them in the [Shinzo Studio](https://studio.shinzo.network/) browser UI.
 
 Once you've created your Views, the next step is to configure your app.
 
 ### Configuration
 
-The app-sdk exposes a variety of configuration options for your application and its embedded Defra instance. While most of these config options will only be useful in some niche cases for power users, some of them are worth calling out directly.
+The app-sdk exposes several configuration options for your application and its embedded Defra instance. Most are only useful in niche power-user cases, but a few are worth calling out.
 
-By far the most important configuration variable is `minimum_attestations`:
+The most important configuration variable is `minimum_attestations`:
 
 ```yaml
 shinzo:
   minimum_attestations: 1
 ```
 
-This will set the default minimum attestations required when querying your View(s). Please see the attestations section for more info.
+This sets the default minimum attestations required when querying your Views. See the attestations section for more info.
 
 ```yaml
 logger:
   development: true 
 ```
-This will enable all logs; if excluded, this defaults to false and will silence most of the Defra logs. In general, setting development to false (or omitting it) is highly recommended for production as Defra will produce a lot of logs otherwise.
+This enables all logs. If excluded, it defaults to false and silences most of the Defra logs. Setting development to false (or omitting it) is recommended for production, since Defra produces a lot of logs otherwise.
 
-Config can be handled in two different ways. You can simply create the config options by hand - the [app-sdk actually creates a default config](https://github.com/shinzonetwork/app-sdk/blob/main/pkg/defra/defra.go#L23) via this manner that is used in place of a nil config. You can also create a config.yaml file ([example](https://github.com/shinzonetwork/app-sdk/blob/main/config.yaml)) and load it with `config.LoadConfig`. To locate your config.yaml file, you may find `file.FindFile` to be really helpful, especially if working in a test context. e.g.
+Config can be handled in two ways. You can create the config options by hand. The [app-sdk creates a default config](https://github.com/shinzonetwork/app-sdk/blob/main/pkg/defra/defra.go#L23) this way, which is used in place of a nil config. You can also create a config.yaml file ([example](https://github.com/shinzonetwork/app-sdk/blob/main/config.yaml)) and load it with `config.LoadConfig`. To locate your config.yaml file, the `file.FindFile` helper is useful, especially in a test context. For example:
 
 ```go
 configPath, err := file.FindFile("config.yaml")
@@ -66,7 +66,7 @@ if err != nil {
 
 Once you've configured your app, you're ready to start your Defra instance.
 
-First, you'll need to create a `SchemaApplier`.
+First, create a `SchemaApplier`.
 
 ```go
 type SchemaApplier interface {
@@ -74,14 +74,14 @@ type SchemaApplier interface {
 }
 ```
 
-The app-sdk exposed all the implementations of `SchemaApplier` that we imagine you'll ever need, but you're of course welcome to add any new ones if needed.
+The app-sdk exposes all the `SchemaApplier` implementations you'll need, but you can add new ones if needed.
 
 ```go
 type SchemaApplierFromFile struct {
 	DefaultPath string
 }
 ```
-Is really useful if you'd like to provide your schema in a file. Again, you may find using `file.FindFile` to be really helpful with this, especially if working in a test context.
+This is useful when you want to provide your schema in a file. The `file.FindFile` helper is useful here, especially in a test context.
 
 ```go
 type SchemaApplierFromProvidedSchema struct {
@@ -94,7 +94,7 @@ func NewSchemaApplierFromProvidedSchema(schema string) *SchemaApplierFromProvide
 	}
 }
 ```
-Is useful if you want to simply provide your schema as a string.
+This is useful when you want to provide your schema as a string.
 
 Finally,
 
@@ -103,7 +103,7 @@ type MockSchemaApplierThatSucceeds struct{}
 ```
 This is what you'd use if you don't have a schema to apply.
 
-If you're planning to use DefraDB for other use cases besides Shinzo in your application, it is recommended that you provide these other schemas via your `SchemaApplier`. Otherwise, if you're only using Defra for Shinzo, you should use `MockSchemaApplierThatSucceeds`.
+If you plan to use DefraDB for other use cases besides Shinzo in your application, provide these other schemas via your `SchemaApplier`. If you're only using Defra for Shinzo, use `MockSchemaApplierThatSucceeds`.
 
 ```go
 myDefraInstance, err := defra.StartDefraInstance(shinzoConfig, &MockSchemaApplierThatSucceeds{})
@@ -112,7 +112,7 @@ if err != nil {
 }
 ```
 
-Don't forget to close your Defra instance when your app exits!
+Don't forget to close your Defra instance when your app exits.
 
 ```go
 myDefraInstance.Close(context.Background())
@@ -122,7 +122,7 @@ myDefraInstance.Close(context.Background())
 
 The first step to querying a View is to subscribe to it so that Hosts will begin pushing the View contents to your application client.
 
-You'll need to create View objects for each view.
+Create a View object for each view.
 
 ```go
 type View struct {
@@ -133,7 +133,7 @@ type View struct {
 ```
 All other fields in the View struct can be ignored.
 
-Then, call `SubscribeTo` on your View(s).
+Then, call `SubscribeTo` on your Views.
 
 ```go
 err := myView.SubscribeTo(context.Background(), myDefraInstance)
@@ -145,13 +145,13 @@ if err != nil {
     }
 }
 ```
-Note: the "collection already exists" error is common and expected if you have already subscribed to a View. It is for informational purposes and can be safely ignored. Other errors should not be ignored.
+Note: the "collection already exists" error is common and expected if you have already subscribed to a View. It is informational and can be safely ignored. Other errors should not be ignored.
 
-This will add the View collection's SDL to your Defra instance (allowing you to query the view) and will add the View as a topic of interest for Defra's passive replication system (communicating to the Hosts that they should send you data for the View).
+This adds the View collection's SDL to your Defra instance (allowing you to query the view) and adds the View as a topic of interest for Defra's passive replication system (communicating to the Hosts that they should send you data for the View).
 
-You'll now begin receiving data and can start to query against it.
+You now begin receiving data and can query against it.
 
-Query with either `QuerySingle` or `QueryArray` for individual objects or arrays. You'll need to provide a graphql query string and you'll need to define a struct representing the resulting object you hope to receive.
+Query with either `QuerySingle` or `QueryArray` for individual objects or arrays. Provide a GraphQL query string and define a struct representing the resulting object you expect to receive.
 
 ```go
 result, err := defra.QuerySingle[MyResultStruct](ctx, myNode, queryString)
@@ -161,11 +161,11 @@ results, err := defra.QueryArray[MyResultStruct](ctx, myNode, queryString)
 
 ### Attestations
 
-Perhaps one of the most unique features of Shinzo is that it allows you to validate your source info against multiple independent sources; instead of having one Generator who provides all the source primitive data, Shinzo uses multiple and allows you to validate your source data through "attestation records" that are signed off by the various Shinzo Generators that wrote the data. 
+A distinctive feature of Shinzo is that it lets you validate your source data against multiple independent sources. Instead of one Generator providing all the source primitive data, Shinzo uses multiple Generators and lets you validate your source data through "attestation records" signed off by the various Shinzo Generators that wrote the data.
 
-Using the app-sdk, you can filter out query results that do not meet your specified attestation threshold. For example, if you're dealing with high value transaction(s), you may want to filter out any query results where the underlying data was signed off by less than X Shinzo Generator clients.
+Using the app-sdk, you can filter out query results that do not meet your specified attestation threshold. For example, if you're dealing with high-value transactions, you may want to filter out any query results where the underlying data was signed off by fewer than X Shinzo Generator clients.
 
-Attestation Records, like Views, are pre-processed and pushed to your application client. Attestation Records are segmented based on the View (or Primitive) they are attesting to; this means that you can select which Views (or Primitives) you want to receive Attestation Records for. You will not receive Attestation Records for data you aren't interested in.
+Attestation Records, like Views, are pre-processed and pushed to your application client. They are segmented based on the View (or Primitive) they attest to, so you can select which Views (or Primitives) you want to receive Attestation Records for. You will not receive Attestation Records for data you aren't interested in.
 
 To access Attestation Records for a View (or Primitive), use the `AddAttestationRecordCollection` method.
 
@@ -179,9 +179,9 @@ if err != nil {
     }
 }
 ```
-Note: the "collection already exists" error is common and expected if you have already added Attestation Records for a View (or Primitive). It is for informational purposes and can be safely ignored. Other errors should not be ignored.
+Note: the "collection already exists" error is common and expected if you have already added Attestation Records for a View (or Primitive). It is informational and can be safely ignored. Other errors should not be ignored.
 
-This method works very similar to `view.SubscribeTo` - it will add the `AttestationRecord_YourView` collection to your Defra instance's SDL so that it can be queried against and it will add it as a topic for passive replication so that Hosts know to send your app client this data.
+This method works like `view.SubscribeTo`. It adds the `AttestationRecord_YourView` collection to your Defra instance's SDL so it can be queried against, and adds it as a topic for passive replication so Hosts know to send your app client this data.
 
 The app-sdk can be used to filter out results from queries that do not meet a specified attestation threshold. This can be pre-configured in your config.yaml:
 
@@ -189,8 +189,8 @@ The app-sdk can be used to filter out results from queries that do not meet a sp
 shinzo:
   minimum_attestations: 2
 ```
-Once configured, you can use `QuerySingleWithConfiguredAttestationFilter` or `QueryArrayWithConfiguredAttestationFilter` (from the `attestation` package) to query objects or arrays respectively. These work similarly to `QuerySingle` and `QueryArray` (from the `defra` package) respectively except they will also filter the results based on that minimum attestation record filter you specified in your config. 
+Once configured, you can use `QuerySingleWithConfiguredAttestationFilter` or `QueryArrayWithConfiguredAttestationFilter` (from the `attestation` package) to query objects or arrays. These work like `QuerySingle` and `QueryArray` (from the `defra` package), except they also filter the results based on the minimum attestation threshold you specified in your config.
 
-*Please make sure you have added the attestation record (using `AddAttestationRecordCollection`) for whatever collections you query using these methods!*
+Note: make sure you have added the attestation record (using `AddAttestationRecordCollection`) for whatever collections you query using these methods.
 
 Similarly, you can provide a minimum attestation record threshold as a parameter using `QuerySingleWithAttestationFilter` or `QueryArrayWithAttestationFilter` (from the `attestation` package) for objects or arrays respectively.
