@@ -36,14 +36,9 @@ Before you start, have the following ready:
 
 ### Assertion
 
-The Assertion step verifies that you control the validator you are registering as a Generator. You'll need to provide:
+The assertion verifies that you control the validator you are registering as a Generator. It is a prerequisite for this page, and it has its own dedicated walkthrough: see [Assert ownership of a validator](../assert-ownership/). Complete that first, then return here to register on-chain.
 
-- **Consensus public key**: The consensus public key of the validator you are registering (see [Consensus public key](/reference/components/outpost#consensus-public-key)).
-- **Source chain**: The blockchain your generator monitors (see [shinzo.network/chains](https://shinzo.network/chains) for supported chains).
-
-The assertion is authorized by your validator's withdrawal key, which proves control of the validator's stake. See [Validator assertions](/reference/components/outpost#validator-assertions) for how this works end to end.
-
-Click **Sign & Submit** to sign a message with your wallet, proving ownership of the generator's identity.
+You provide your validator's consensus public key and source chain, and sign the assertion digest with your withdrawal key using **Sign & Submit**. The full on-chain mechanism is documented under [Validator assertions](/reference/components/outpost#validator-assertions).
 
 ### Registration (register on-chain)
 
