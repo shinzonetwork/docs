@@ -463,9 +463,9 @@ Once your view behaves correctly locally, you can deploy it to a shared network.
 
 ## More examples
 
-For progressively more complex View examples — decoding multiple event types, transaction-based views without lenses, materialized vs on-query views, editing and rolling back views — see [Query data](/build/query-data/), which includes both the view definitions and the GraphQL queries you run against them.
+For progressively more complex View examples — decoding multiple event types, transaction-based views without lenses, materialized vs on-query views, editing and rolling back views — see the [View examples](/build/create-a-view/examples/) page, which includes both the view definitions and the GraphQL queries you run against them.
 
-For a deeper dive on lenses, available modules, and how to chain them, see the [Lens reference](/reference/components/lens/). For troubleshooting and common errors, see [Operations: Troubleshooting](/run/operations/troubleshooting/).
+For the conceptual overview, see [Views for builders](/build/concepts/views-for-builders/). For the full command list, filter operators, VWL wire format, and deploy internals, see the [Viewkit reference](/reference/components/viewkit/). For a deeper dive on lenses, available modules, and how to chain them, see the [Lens reference](/reference/components/lens/). For troubleshooting and common errors, see [Operations: Troubleshooting](/run/operations/troubleshooting/).
 
 ## Need Help
 

@@ -4,40 +4,9 @@ title = "Viewkit"
 mermaid = true
 +++
 
-Viewkit is a CLI tool for creating, testing, and deploying views. It does not process or serve data (hosts do that). It packages a view into a binary bundle on your machine and submits a transaction to ShinzoHub.
+Viewkit is the local CLI tool for creating, testing, and deploying Shinzo Views. It packages a view into a binary bundle (VWL) and submits a deploy transaction to ShinzoHub. It does not process, store, or serve data.
 
-## What Viewkit does and does not do
-
-What it does:
-
-- Define GraphQL SDL schemas for view output.
-- Configure WASM lens transforms for data mapping.
-- Pre-validate transforms locally using Wasmer runtime.
-- Package everything into a ViewBundle (VWL binary format).
-- Deploy to ShinzoHub.
-
-What it does not do:
-
-- Process data (hosts do this).
-- Store data (DefraDB does this).
-- Serve queries (hosts do this).
-- Run as a daemon (it is a CLI tool).
-
-## View definition
-
-A view has three pieces:
-
-1. A query that picks which primitive data to select (e.g., "all Logs from the USDC contract").
-1. An SDL, the GraphQL schema defining the output shape.
-1. A lens (optional), a WASM module that transforms the data.
-
-### The @materialized directive
-
-In the SDL, `@materialized(if: true)` tells DefraDB to pre-compute and store the view data. `@materialized(if: false)` computes it on query.
-
-`@materialized(if: true)` is recommended for now. Queries are faster because data is already materialized when the query arrives. The tradeoff is more storage on the Host client.
-
-Important: the `limit` parameter should be on the source query (e.g., `Log(limit: 100)`), not on the materialized view collection.
+This page is the technical reference for Viewkit: the full command list, filter operators, the deploy pipeline, the VWL wire format, view ID computation, and the on-disk layout of the source repo. For a hands-on walkthrough of building and deploying your first view, see the [Create a View](/build/create-a-view/) quickstart. For the conceptual overview of what Viewkit is and where it sits in the stack, see [Views for builders](/build/concepts/views-for-builders/).
 
 ## Command reference
 
@@ -146,57 +115,9 @@ TestView_0xae1bd91e83f5a71ed4c34e18470ea3c12b9ba3d4a69cfd98717e23cf27f4eccb
 
 Because the same computation runs in both places, the client can predict the view ID before the transaction confirms.
 
-## Lens authoring
+## Lenses
 
-Lenses are WASM binaries, typically written in Rust or AssemblyScript, that transform raw primitive data into structured output.
-
-A simplified Rust example:
-
-```rust
-fn transform(log: Log) -> Option<USDCTransfer> {
-    if log.address != USDC_ADDRESS { return None; }
-    if log.topics[0] != TRANSFER_SIG { return None; }
-    Some(USDCTransfer {
-        from: decode_address(log.topics[1]),
-        to: decode_address(log.topics[2]),
-        amount: decode_uint256(log.data),
-    })
-}
-```
-
-Lenses must be deterministic. Any Host client running the same lens on the same data should produce identical results.
-
-LensVM supports bidirectional transforms (the `inverse()` function in the WASM module), though most views use one-way transforms.
-
-### Binary size by language
-
-| Language | Typical WASM size | Notes |
-| --- | --- | --- |
-| Rust | ~200 KB | Preferred for production |
-| AssemblyScript | ~73 KB | Easier if you know TypeScript, smaller binary |
-
-Smaller binaries mean less P2P overhead.
-
-### Available lenses
-
-Stored in the [`wasm-bucket`](https://github.com/shinzonetwork/wasm-bucket) repository. Currently available on `main`:
-
-| Lens | Purpose | Arguments |
-| --- | --- | --- |
-| `decode_log` | ABI-decodes EVM log events into structured output | `{"abi": "[...]"}` |
-| `decode_log_str` | Same as `decode_log` but `arguments` is a JSON string for `_like` filtering | `{"abi": "[...]"}` |
-| `decode_function_call` | ABI-decodes function calls from transaction `input` data | `{"function_abi": "[...]", "event_abi": "[...]"}` |
-| `decode_function_call_str` | Same as `decode_function_call` but `arguments` is a JSON string | `{"function_abi": "[...]", "event_abi": "[...]"}` |
-
-See the [Lenses guide](/reference/components/lens/) for details on each lens, output fields, and usage examples.
-
-### Writing new lenses
-
-- Rust SDK: `source-gh/lens/sdk-rust/`.
-- AssemblyScript example: `source-gh/lens/tests/modules/as_wasm32_simple/`.
-- WASM runtime paths: `source-gh/lens/host-go/runtimes/wasmtime/`, `wasmer/`, `wazero/`.
-
-AssemblyScript lenses follow the same interface as Rust lenses. The Host client runtime does not care what language produced the WASM.
+Lenses are the WASM transforms that turn raw primitive data into a View's structured output. For the available lenses, their arguments and output fields, lens argument format, determinism requirements, and how to author your own, see the [Lens reference](/reference/components/lens/).
 
 ## The view lifecycle across repos
 
@@ -231,5 +152,3 @@ Generator clients are not involved in the View lifecycle. By the time a View is 
 | VWL header-only decode | `shinzo-gh/viewbundle-go/header.go` |
 | WASM lenses | `shinzo-gh/wasm-bucket/` |
 | Precompile (decode/validate) | `shinzohub/app/precompiles/viewregistry/methods.go` |
-| Rust lens SDK | `source-gh/lens/sdk-rust/` |
-| AssemblyScript lens example | `source-gh/lens/tests/modules/as_wasm32_simple/` |

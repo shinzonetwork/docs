@@ -252,7 +252,7 @@ SNAPSHOT_INTERVAL_SECONDS=60
 LOG_LEVEL=error
 ```
 
-`INDEXER_START_HEIGHT` is the block number to start indexing from on first run with no existing data. Setting the value to 0 will start indexing at the tip of any chain. For a specific block select please use that blocknumber.
+`INDEXER_START_HEIGHT` is the block number to start verifiable indexing from on first run with no existing data. Setting the value to 0 will start verifiable indexing at the tip of any chain. To start from a specific block, set the value to that block number.
 
 ## Chain abstraction (in progress)
 

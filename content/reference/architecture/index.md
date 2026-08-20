@@ -13,7 +13,7 @@ Neither layer works without the other. The on-chain layer controls who can parti
 
 {% mermaid() %}
 flowchart LR
-  Src["Source chains<br/>(EVM chains, Cosmos, …)"]
+  Src["Source chains<br/>(EVM chains, Cosmos, ...)"]
 
   subgraph OffChain["Off-chain data layer"]
     direction TB
@@ -138,12 +138,12 @@ ICA lets ShinzoHub control an account on SourceHub. When a precompile registrati
 flowchart TB
   subgraph ICA["ICA Packet"]
     subgraph TX["CosmosTx"]
-      M["<b>MsgDirectPolicyCmd</b><br/>creator: ICA account on SourceHub<br/>policy_id: Shinzo policy ID<br/>cmd: RegisterObjectCmd / SetRelationshipCmd / …"]
+      M["<b>MsgDirectPolicyCmd</b><br/>creator: ICA account on SourceHub<br/>policy_id: Shinzo policy ID<br/>cmd: RegisterObjectCmd / SetRelationshipCmd / ..."]
     end
   end
 {% end %}
 
-The Hermes relayer (Rust binary by [Informal Systems](https://hermes.informal.systems/) is the off-chain process that physically moves packets between chains. It reads outbound packets from ShinzoHub's state, fetches Merkle proofs, and submits them to SourceHub. It then reads acknowledgements from SourceHub and returns them to ShinzoHub. Hermes is stateless and trustless. It cannot fabricate packets because SourceHub verifies each packet against a state proof.
+The Hermes relayer (a Rust binary by [Informal Systems](https://hermes.informal.systems/)) is the off-chain process that physically moves packets between chains. It reads outbound packets from ShinzoHub's state, fetches Merkle proofs, and submits them to SourceHub. It then reads acknowledgements from SourceHub and returns them to ShinzoHub. Hermes is stateless and trustless. It cannot fabricate packets because SourceHub verifies each packet against a state proof.
 
 The ICA relay is asynchronous. When a precompile call triggers an ICA packet, the EVM transaction completes and returns a receipt before SourceHub has processed anything. If the ICA packet fails or times out, the EVM transaction still succeeded. The two outcomes are independent.
 
@@ -169,7 +169,7 @@ The EVM relayer is a Go process with two pipelines:
 1. The assertion pipeline subscribes to `AssertionSigned` events on the outpost's `GeneratorAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts `MsgGeneratorAssertion` to ShinzoHub. No block scanning and no dependency on who built the block.
 1. The payment pipeline subscribes to `PaymentCreated` log events from the outpost, extracts user `DID` and payment amount, and broadcasts `MsgRequestStreamAccess` to ShinzoHub.
 
-The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for gas.
+The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for transaction fees.
 
 {% admonition(type="note") %}
 The EVM relayer and the Hermes IBC relayer are completely different systems. The EVM relayer bridges EVM chains to ShinzoHub. The Hermes relayer bridges ShinzoHub to SourceHub over IBC. They share the word _relayer_ and nothing else.
@@ -264,6 +264,8 @@ sequenceDiagram
   SH-)Host: emit Registered event
   Host->>Host: download bundle,<br/>load WASM lens,<br/>start transforming
 {% end %}
+
+For the developer-side view of this flow (Viewkit → ShinzoHub → Host → app SDK), see [The view lifecycle across repos](/reference/components/viewkit/#the-view-lifecycle-across-repos) in the Viewkit reference.
 
 ## Transaction flow through a precompile
 

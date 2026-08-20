@@ -5,9 +5,9 @@ aliases = ["/reference/components"]
 mermaid = true
 +++
 
-The Host client receives indexed blockchain data from multiple Generator clients over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
+The Host client receives verifiable blockchain data from multiple Generator clients over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
 
-If Generator clients are data producers, Host clients are consumers and servers. The separation lets you scale serving independently from indexing.
+If Generator clients are data producers, Host clients are consumers and servers. The separation lets you scale serving independently from verifiable indexing.
 
 ## Architecture
 
@@ -189,7 +189,7 @@ The Host client runs LensVM (`source-gh/lens`) to execute WASM modules that tran
 flowchart LR
   In["Raw Log documents<br/>(from generator)"]
   Lens["<b>WASM Lens</b><br/>filter address · ABI-decode<br/>· map to view schema"]
-  Out["View documents<br/>(USDCTransfer, …)"]
+  Out["View documents<br/>(USDCTransfer, ...)"]
 
   In --> Lens --> Out
 {% end %}

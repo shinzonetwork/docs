@@ -54,7 +54,7 @@ The relayer maintains two connections:
 | Source chain | Read assertion and payment data |
 | ShinzoHub | Broadcast transactions |
 
-The relayer has its own wallet on ShinzoHub and needs SHNZ for gas to broadcast transactions. It maintains a persistent block cursor so it can resume exactly where it left off after a restart.
+The relayer has its own wallet on ShinzoHub and needs SHNZ for transaction fees to broadcast transactions. It maintains a persistent block cursor so it can resume exactly where it left off after a restart.
 
 ## Implementations
 
