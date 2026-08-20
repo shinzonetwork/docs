@@ -6,7 +6,7 @@ aliases = ["/generator/assert", "/generators/assert", "/generator/assertion", "/
 mermaid = true
 +++
 
-Before a Generator can register on ShinzoHub, its operator has to prove they control a validator on the source chain. That proof is the assertion. It happens once, on the source chain, and it is what lets ShinzoHub trust that the Generator belongs to a real validator.
+Before a Generator can register on ShinzoHub, its operator has to prove they control a validator on the source chain. That proof is the assertion. It happens once, on the source chain, and it is what lets ShinzoHub trust that the Generator client belongs to a real validator.
 
 This page walks through the user-facing flow in the Technical Registry. For the on-chain mechanism, how the outpost verifies the validator, and the exact fields that go into the signed digest, see [Validator assertions](/reference/components/outpost#validator-assertions).
 
@@ -31,7 +31,7 @@ The consensus public key and the withdrawal key are different things, even thoug
 
 ## Assertion flow
 
-You complete the assertion in the Technical Registry, the same app used for registration. If your node is on a private network or you would rather use the registration app bundled with the Generator client, it is also served locally at `http://localhost:8080/registration-app`. For a remote node, reach it over SSH local port forwarding: run `ssh -L 8080:localhost:8080 user@your-node-ip` on your local machine, then open `http://localhost:8080/registration-app` in your browser.
+You complete the assertion in the Technical Registry at [registration.shinzo.network](https://registration.shinzo.network/), the same app used for registration. If your node is on a private network or you would rather use the registration app bundled with the Generator client, it is also served locally at `http://localhost:8080/registration-app`. For a remote node, reach it over SSH local port forwarding: run `ssh -L 8080:localhost:8080 user@your-node-ip` on your local machine, then open `http://localhost:8080/registration-app` in your browser.
 
 1. Start your Generator client.
 1. Add the Shinzo Testnet to your browser wallet with the following values:
@@ -48,7 +48,7 @@ You complete the assertion in the Technical Registry, the same app used for regi
    - **Source chain**: the blockchain your Generator monitors (see [shinzo.network/chains](https://shinzo.network/chains) for supported chains).
 1. Click **Sign & Submit** to sign the assertion digest with your withdrawal key.
 
-What happens next, on-chain, is what makes the assertion trustworthy. The outpost contract verifies that the signing key controls the validator and that the validator is active and bonded, stores the signed assertion, and emits an `AssertionSigned` event. A relayer picks up the event and forwards the assertion to ShinzoHub, which verifies it again and records an authorization slip for the operator key. At that point the operator key is cleared to register a Generator.
+What happens next, on-chain, is what makes the assertion trustworthy. The outpost contract verifies that the signing key controls the validator and that the validator is active and bonded, stores the signed assertion, and emits an `AssertionSigned` event. A relayer picks up the event and forwards the assertion to ShinzoHub, which verifies it again and records an authorization slip for the operator key. At that point the operator key is cleared to register a Generator client.
 
 {% mermaid() %}
 sequenceDiagram
@@ -73,11 +73,9 @@ The diagram shows the EVM path. Other chain types use a different verification m
 
 ## After the assertion
 
-With the operator key authorized, the assertion step is done. Move on to registration, which records the Generator on-chain:
+With the operator key authorized, the assertion step is done. Move on to registration, which records the Generator on-chain. See [Register](../register/) for the on-chain registration step and how to confirm it succeeded.
 
-- See [Register](../register/) for the on-chain registration step and how to confirm it succeeded.
-
-The assertion is a one-time action per machine. You only repeat it when the validator key changes (see below) or you rotate the operator key.
+The assertion step is a one-time action per machine. You only repeat it when the validator key changes (see below) or you rotate the operator key.
 
 ## Key rotation
 
@@ -92,9 +90,5 @@ The window between shutdown and re-registration is a gap in submissions. It does
 If the operator key is lost with no backup, you will be unable to re-register the same identity until you complete a new assertion from the validator's withdrawal key. Back up the operator key the same way you back up your node identity key.
 
 {% admonition(type="info") %}
-This covers the operator and validator assertion keys only. General node identity key management, including backups and restores, is tracked separately and will live on the [Key & identity management](/run/operations/key-and-identity-management/) page.
+This covers the operator and validator assertion keys only. General node identity key management, including backups and restores, is tracked separately and will live on the [Key and identity management](/run/operations/key-and-identity-management/) page.
 {% end %}
-
-## Need help
-
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
