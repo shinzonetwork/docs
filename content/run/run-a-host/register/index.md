@@ -7,6 +7,8 @@ To participate in the Shinzo Network and make your View publicly available, you 
 
 ## Add the Shinzo Testnet to your wallet
 
+Add the Shinzo Testnet to your browser wallet with the following values:
+
 | Field | Value |
 | --- | --- |
 | Network name | `Shinzo` |
@@ -18,7 +20,7 @@ To participate in the Shinzo Network and make your View publicly available, you 
 
 The hosted [Registration app](https://registration.shinzo.network/) runs from any browser and doesn't require port forwarding, so it's the easiest path for Hosts reachable from the public internet.
 
-1. Start your Host client and confirm it's online.
+1. Start your Host client with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Hosts dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. If `8080` isn't reachable from the internet, your Host client shows as offline even while it's running fine.
 1. Open the [Registration app](https://registration.shinzo.network/) and select **Connect** to connect your wallet.
 1. Choose **Host** as the role and fill in the requested details.
 1. Submit your registration and confirm the transaction in your browser wallet. You should see a successful registration notification.
@@ -27,7 +29,7 @@ The hosted [Registration app](https://registration.shinzo.network/) runs from an
 
 If your Host is on a private network or you'd rather not route registration through the hosted app, the Host client serves its own registration app on port `8080`.
 
-1. Start your Host with the health/registration port published (`-p 8080:8080`). The default command in [Install](/run/run-a-host/install/) does not publish it.
+1. Start your Host client with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Hosts dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. If `8080` isn't reachable from the internet, your Host client shows as offline even while it's running fine.
 1. Open the [registration page](http://localhost:8080/registration-app) and select **Connect** to connect your wallet.
 
     {% admonition(type="info") %}

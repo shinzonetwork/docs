@@ -184,6 +184,24 @@ The Host client is running but can't sync from a Generator client. Check `docker
 
 See [Install](/run/run-a-host/install/#use-docker) for how to confirm a healthy connection.
 
+### My Host appears offline in the dashboard but is still running
+
+The dashboard determines if a node is online/offline by probing `http://<your-server-ip>:8080/health`, using the IP it reads from your registered connection string (the `/ip4/<IP>/...` part of your libp2p multiaddr). If port `8080` isn't reachable from the internet, the probe fails and your Host client shows as offline even though `docker ps` reports the container as healthy and the node is up and working normally.
+
+This is the most common reason a running Host appears offline, and it almost always comes down to `8080` not being published or opened:
+
+- **Docker:** the default `docker run` in [Install](/run/run-a-host/install/) does not publish `8080`. Add `-p 8080:8080` to that command and to your persistent-host command or Compose file.
+- **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
+- **Reverse proxy:** if you put nginx in front (as in the [Quickstart](/run/run-a-host/quickstart/)), make sure it routes `/health` to the Host client's health server on port `8080`, not to DefraDB on `9181`. Otherwise the probe reaches DefraDB, which doesn't answer `/health` the way the dashboard expects.
+
+Confirm the fix by running the same probe the dashboard runs, from outside your server:
+
+```shell
+curl -s http://<your-server-ip>:8080/health | jq -r '.status'
+```
+
+A healthy Host returns `healthy`. A connection refused or timeout means `8080` still isn't reachable from outside. The endpoint returns `"unhealthy"` (HTTP 503) only while the Host's DefraDB node or processing pipeline is still initializing. That clears once startup finishes.
+
 ## Viewkit
 
 ### `image not found / library not loaded: libwasmer.dylib`
