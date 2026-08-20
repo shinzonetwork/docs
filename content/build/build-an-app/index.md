@@ -21,7 +21,7 @@ Shinzo uses [DefraDB](https://github.com/sourcenetwork/defradb) for several purp
 
 Consider a simple app to illustrate how Shinzo works. The app displays a counter for the current number of instances of a specified ERC-20 token, such as USDC. For argument's sake, assume the contract has no method to query the current supply of USDC. The only way to determine the supply is to parse the mint and burn events emitted by the contract.
 
-To do this, you first create a View that describes how to transform primitive data (blocks, logs, transactions, etc.) into a format you can use. In this case, you filter logs involving the USDC contract address, decode the logs into events using the contract's ABI, and finally filter for only mint and burn events. The Shinzo Hosts and Generator clients work together to deliver the data you need. Your application client(s) receive all the mint and burn events on that USDC contract. From here, you can make as many GraphQL queries against the events you've received to build your application. Your app client(s) won't receive the underlying primitives (blocks, transactions, logs, etc.), only the filtered and decoded events as described in your View.
+To do this, you first create a View that describes how to transform primitive data (blocks, logs, transactions, etc.) into a format you can use. In this case, you filter logs involving the USDC contract address, decode the logs into events using the contract's ABI, and finally filter for only mint and burn events. The Shinzo Host and Generator clients work together to deliver the data you need. Your application client(s) receive all the mint and burn events on that USDC contract. From here, you can make as many GraphQL queries against the events you've received to build your application. Your app client(s) won't receive the underlying primitives (blocks, transactions, logs, etc.), only the filtered and decoded events as described in your View.
 
 ## Usage
 
@@ -45,7 +45,6 @@ This sets the default minimum attestations required when querying your Views. Se
 ```yaml
 logger:
   development: true 
-```
 This enables all logs. If excluded, it defaults to false and silences most of the Defra logs. Setting development to false (or omitting it) is recommended for production, since Defra produces a lot of logs otherwise.
 
 Config can be handled in two ways. You can create the config options by hand. The [app-sdk creates a default config](https://github.com/shinzonetwork/app-sdk/blob/main/pkg/defra/defra.go#L23) this way, which is used in place of a nil config. You can also create a config.yaml file ([example](https://github.com/shinzonetwork/app-sdk/blob/main/config.yaml)) and load it with `config.LoadConfig`. To locate your config.yaml file, the `file.FindFile` helper is useful, especially in a test context. For example:
