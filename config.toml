@@ -156,6 +156,7 @@ pages = [
   "run/run-a-generator/install/index.md",
   "run/run-a-generator/register/index.md",
   "run/run-a-generator/config-reference/index.md",
+  "run/run-a-generator/security/index.md",
 ]
 subsections = [
   { label = "Deployment Examples", pages = [
