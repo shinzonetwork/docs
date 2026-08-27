@@ -98,12 +98,13 @@ Key files: `app/precompiles/hostregistry/methods.go`
 
 ### Generator Registry (0x0212)
 
-Generators cannot self-register. They must go through the outpost + relayer assertion flow first:
+Generators cannot self-register. They must complete an assertion first:
 
-1. Validator proves identity on source chain via outpost contract.
-1. Relayer delivers `MsgGeneratorAssertion` to ShinzoHub.
+1. On the current testnet, the assertion is submitted to ShinzoHub as a `MsgGeneratorAssertion` message signed by an admin key. No outpost contract or relayer is involved.
 1. ShinzoHub's Generator module stores the assertion.
 1. Operator calls `register()`, registry verifies stored assertion, derives DID/PID, sends ICA to SourceHub.
+
+The planned flow uses an outpost contract on the source chain and a relayer to deliver the assertion to ShinzoHub. See [Outpost](../outpost#validator-assertions) for the full planned design.
 
 Key files: `app/precompiles/generatorregistry/methods.go`
 
