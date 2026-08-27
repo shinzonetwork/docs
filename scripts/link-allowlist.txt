@@ -1,0 +1,7 @@
+# Known broken internal links — fix and remove from this file.
+#
+# Currently empty. Add hrefs to suppress (one per line, # comments) to keep CI
+# green while known-broken links are being fixed. Remove entries as they are
+# fixed so the checker re-enforces them.
+#
+# See scripts/check-links.py for the checker that consumes this file.

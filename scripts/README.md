@@ -28,6 +28,31 @@ Zola installation behavior:
 - Otherwise the script downloads the Zola release matching `ZOLA_VERSION`.
 - `ZOLA_VERSION` is read from the environment first, then from `wrangler.toml`.
 
+#### Subcommands
+
+- `./scripts/build.sh` (or `./scripts/build.sh build`): production build. This is
+  what Cloudflare Pages runs.
+- `./scripts/build.sh check`: runs `zola check` (validates `@/` internal links
+  as errors per `[link_checker]` in `config.toml`, and external links as
+  warnings). Used by CI; does not write output.
+
+### check-links.py
+
+Checks internal links in the built site output (`public/`). Unlike
+`zola check`, which only validates `@/`-prefixed links, this script checks
+**all** internal links regardless of syntax — absolute (`/path/`), relative
+(`../path/`), and `@/`-prefixed — by inspecting the built HTML.
+
+Run it after `zola build`:
+
+```shell
+python3 scripts/check-links.py public
+```
+
+It verifies that every internal `<a href>` resolves to an existing file and
+that fragment anchors (`#section`) match an `id` in the target page. Exits
+non-zero if any broken links are found. Used by CI.
+
 ### generate-llms.sh
 
 Generates `llms.txt` and `llms-full.txt` into the build output directory (defaults to `./public`).
