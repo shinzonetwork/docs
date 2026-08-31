@@ -4,4 +4,4 @@
 # green while known-broken links are being fixed. Remove entries as they are
 # fixed so the checker re-enforces them.
 #
-# See scripts/check-links.py for the checker that consumes this file.
+# See scripts/check-links.sh for the checker that consumes this file.

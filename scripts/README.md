@@ -36,7 +36,7 @@ Zola installation behavior:
   as errors per `[link_checker]` in `config.toml`, and external links as
   warnings). Used by CI; does not write output.
 
-### check-links.py
+### check-links.sh
 
 Checks internal links in the built site output (`public/`). Unlike
 `zola check`, which only validates `@/`-prefixed links, this script checks
@@ -46,7 +46,7 @@ Checks internal links in the built site output (`public/`). Unlike
 Run it after `zola build`:
 
 ```shell
-python3 scripts/check-links.py public
+./scripts/check-links.sh public
 ```
 
 It verifies that every internal `<a href>` resolves to an existing file and
