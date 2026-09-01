@@ -66,8 +66,7 @@
   --code-diff-deleted-bg: #ffeef0;
   --code-diff-changed-bg: #ffebda;
 
-  // Admonition palettes (consumed by the &--info/--note/--tip/--warning
-  // blocks below so they re-tint in dark mode)
+  // Admonition palettes (consumed by the &--info/--note/--tip/--warning blocks below so they re-tint in dark mode)
   --admonition-info-bg: #e8f0fe;
   --admonition-info-border: #1a6fbb;
   --admonition-info-title: #1a6fbb;
@@ -95,10 +94,7 @@
   }
 }
 
-/* Dark theme overrides
-   Brand-derived dark palette: same brand reds (lightened for contrast on
-   dark surfaces), code tokens retuned off the dark code surface, and
-   admonition tints darkened so they don't glow. */
+/* Dark theme overrides - Brand-derived dark palette: same brand reds (lightened for contrast on dark surfaces), code tokens retuned off the dark code surface, and admonition tints darkened so they don't glow. */
 [data-theme="dark"] {
   --background: #1a1a1a;
   --foreground: #e8e8e8;
@@ -434,8 +430,7 @@ img.logo-dark {
   margin: 0;
   padding: 0;
 
-  // Indent the child links of every section so it's visually clear which
-  // section each link belongs under.
+  // Indent the child links of every section so it's visually clear which section each link belongs under.
   .menu__list {
     position: relative;
     padding-left: 1rem;
@@ -505,8 +500,7 @@ img.logo-dark {
 }
 
 /* Breadcrumbs */
-// `.markdown ul` adds a left padding to every list; override it here so the
-// breadcrumbs sit flush against the left edge of the content column.
+// `.markdown ul` adds a left padding to every list; override it here so the breadcrumbs sit flush against the left edge of the content column.
 .markdown ul.breadcrumbs,
 .breadcrumbs {
   margin: 30px 0 20px;
@@ -536,7 +530,10 @@ img.logo-dark {
 }
 
 /* Doc content column */
+// Named inline-size container: the table rules in .markdown use `@container docs (…)` so they respond to the width actually available to the content column (which shrinks when the sidebar/ToC are shown) rather than to the viewport. 
 .docs-content {
+  container-name: docs;
+  container-type: inline-size;
   flex: 1 1 auto;
   min-width: 0;
   padding: 1rem 2rem 3rem;
@@ -634,8 +631,8 @@ img.logo-dark {
     border-collapse: collapse;
     margin: 1rem 0;
 
-    // On mobile, wide tables overflow the viewport. Let them scroll within their own box instead of pushing the page horizontally. `width: 100%` keeps narrow tables full-width; wide tables still scroll when needed.
-    @media (max-width: 996px) {
+    // 41rem ≈ the widest table on the site (a 6-column config reference: unwrapped header row + cell padding). Below that width the content column cannot fit such a table, so let it scroll within its own box instead of overlapping the ToC. Querying the content column (not the viewport) keeps full-width rendering at every window size where the table still fits; this also replaces the old ≤996px media query, which only applied where the ToC was already hidden.
+    @container docs (max-width: 41rem) {
       display: block;
       width: 100%;
       max-width: 100%;
@@ -651,6 +648,23 @@ img.logo-dark {
     text-align: left;
   }
 
+  // A column is never narrower than its title: headers stay on one line and set the column's minimum width (fixes skinny "Default"/"Required" columns with titles wrapping mid-word).
+  th {
+    white-space: nowrap;
+  }
+
+  // Code tokens in cells (env var names, multiaddrs, URLs) contain no spaces, so they used to force their column — and with it the whole table — wider than the content column. `anywhere` (unlike `break-word`) makes the break opportunities count toward min-content sizing, so the auto table layout can shrink the column and wrap the token instead.
+  td {
+    overflow-wrap: anywhere;
+  }
+
+  // A code token that wraps across lines renders as connected border fragments; `clone` gives each wrapped line its own complete chip.
+  th code,
+  td code {
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
   thead {
     background: color-mix(in srgb, var(--foreground) 4%, transparent);
   }
@@ -660,8 +674,7 @@ img.logo-dark {
     height: auto;
   }
 
-  // Lists get the same trailing margin as paragraphs (p has margin 0 0 1rem),
-  // so a list followed by more content is spaced consistently.
+  // Lists get the same trailing margin as paragraphs (p has margin 0 0 1rem), so a list followed by more content is spaced consistently.
   ul,
   ol {
     padding-left: 1.5rem;
@@ -769,8 +782,7 @@ pre {
   }
 }
 
-// Reveal the button when hovering the code block (and keep it visible on
-// touch devices, which don't hover).
+// Reveal the button when hovering the code block (and keep it visible on touch devices, which don't hover).
 .code-block-wrapper:hover .copy-code-button,
 .copy-code-button--copied {
   opacity: 1;
@@ -823,9 +835,7 @@ pre {
   }
 }
 
-// Sit the visible panel flush against the tab bar and let the .tabs wrapper
-// supply the outer spacing. Scoped under .tabs (created by JS) so a lone,
-// ungrouped panel renders as normal block content.
+// Sit the visible panel flush against the tab bar and let the .tabs wrapper supply the outer spacing. Scoped under .tabs (created by JS) so a lone, ungrouped panel renders as normal block content.
 .tabs .tabs__panel {
   > *:first-child {
     margin-top: 0;
@@ -833,8 +843,7 @@ pre {
   > *:last-child {
     margin-bottom: 0;
   }
-  // copy-code.js wraps <pre> in .code-block-wrapper, whose <pre> keeps its own
-  // 1rem margins - zero those at the panel edges too.
+  // copy-code.js wraps <pre> in .code-block-wrapper, whose <pre> keeps its own 1rem margins - zero those at the panel edges too.
   > .code-block-wrapper:first-child > pre,
   > .code-block-wrapper:last-child > pre {
     margin-top: 0;
@@ -842,7 +851,7 @@ pre {
   }
 }
 
-/* ─── Output code blocks (```output) ─────────────────────────────────── */
+/* Output code blocks (```output) */
 // Registered via extra_grammars; see grammars/README.md.
 .markdown pre:has(code[data-lang="output"]) {
   position: relative;
@@ -866,11 +875,7 @@ pre {
   }
 }
 
-/* Collapse the gap between a code block and an immediately following output
-   block so they read as a single stacked unit. Handles both the raw
-   <pre>+<pre> case (before JS runs) and the .code-block-wrapper case (after
-   copy-code.js wraps the preceding <pre>). Output blocks preceded by anything
-   else (a <p>, a heading, etc.) keep their normal top margin. */
+/* Collapse the gap between a code block and an immediately following output block so they read as a single stacked unit. Handles both the raw <pre>+<pre> case (before JS runs) and the .code-block-wrapper case (after copy-code.js wraps the preceding <pre>). Output blocks preceded by anything else (a <p>, a heading, etc.) keep their normal top margin. */
 
 // Raw <pre> directly followed by an output <pre> (no-JS / same-structure).
 .markdown pre:has(+ pre > code[data-lang="output"]) {
@@ -1029,8 +1034,7 @@ pre {
 //     <sup class="footnote-definition-label">1</sup>
 //     <p>…</p>
 //   </div>
-// We turn each div into a flex row so the number sits beside the text,
-// and prepend a "Footnotes" label + rule above the FIRST one only.
+// We turn each div into a flex row so the number sits beside the text, and prepend a "Footnotes" label + rule above the FIRST one only.
 .markdown .footnote-definition {
   display: flex;
   flex-wrap: wrap;
@@ -1053,9 +1057,7 @@ pre {
     min-width: 0;
   }
 
-  // Title + separator, only above the first footnote. The ::before is a
-  // full-width flex item (forces its own line via flex-wrap); the `~`
-  // selector removes it from every footnote that follows another.
+  // Title + separator, only above the first footnote. The ::before is a full-width flex item (forces its own line via flex-wrap); the `~` selector removes it from every footnote that follows another.
   &::before {
     content: "Footnotes";
     flex: 0 0 100%;
@@ -1070,8 +1072,7 @@ pre {
     color: color-mix(in srgb, var(--foreground) 60%, transparent);
   }
 
-  // "First of class" hack: any footnote preceded by another footnote is
-  // NOT the first, so drop its title/rule.
+  // "First of class" hack: any footnote preceded by another footnote is NOT the first, so drop its title/rule.
   & ~ .footnote-definition::before {
     content: none;
     border-top: 0;
@@ -1494,8 +1495,7 @@ body.mobile-menu-open {
   .navbar__hamburger {
     display: flex;
   }
-  // Allow the right-hand cluster to shrink so the row never overflows;
-  // desktop sets flex:0 0 auto which would otherwise force overflow.
+  // Allow the right-hand cluster to shrink so the row never overflows; desktop sets flex:0 0 auto which would otherwise force overflow.
   .navbar__items--right {
     flex: 1 1 auto;
     min-width: 0;
@@ -1518,8 +1518,7 @@ body.mobile-menu-open {
   }
 }
 
-// The drawer is only ever shown on mobile; keep it out of the way on desktop
-// even if JS toggles it (e.g. before the resize handler runs).
+// The drawer is only ever shown on mobile; keep it out of the way on desktop even if JS toggles it (e.g. before the resize handler runs).
 @media (min-width: 997px) {
   .mobile-menu,
   .mobile-menu-backdrop {
