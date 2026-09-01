@@ -32,9 +32,18 @@ The Generator client is a write-only data producer. It reads blocks from the exe
 
 See the [Generator client reference](/reference/components/generator-client/#p2p-data-distribution) for details.
 
-### Independent resource budget
+### Resource isolation
 
-The Generator client is a lightweight sidecar: a ~50 MB binary with its own CPU and memory budget (4-8 CPU / 8-16 GB RAM for verifiable indexing of Ethereum Mainnet). It is sized independently of the execution node and the validator, so its load does not compete with consensus for resources when you run it as a separate process with its own limits. See [hardware requirements](../hardware-requirements/) for sizing.
+The Generator client is a lightweight sidecar: a ~50 MB binary with its own CPU and memory budget. It is CPU-light but storage-I/O-sensitive, because every block is fetched, structured, signed, and written to its local DefraDB instance before being published. The risk to a co-located validator is resource contention, not protocol interference. The Generator client does not touch consensus (see [Key separation](#key-separation)), so isolation is an operational concern, not a safety one.
+
+Size the machine for the execution node first, then add the Generator overhead on top. The execution node's footprint dwarfs the Generator client's: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. The Generator client with pruning enabled keeps its own data bounded at roughly 50 to 100 GB; provision 300 to 500 GB of disk to leave headroom for growth, snapshot serving, and P2P replication. See [hardware requirements](../hardware-requirements/) for the full table.
+
+To keep the two workloads from competing on a shared machine:
+
+1. Run the Generator in its own process or container with its own resource limits (Docker `--cpus` / `--memory` flags, or a cgroup). Do not let it borrow unbounded resources from the execution node under load.
+1. Give the Generator's DefraDB store (`storePath`) its own disk or SSD partition, separate from the execution node's data directory. The Generator is storage-I/O-bound; co-locating both data stores on the same device lets the two compete on the same I/O queue and can stall the execution node's block processing under catch-up load.
+1. Decide pruned versus archival deliberately. In archival mode (pruning disabled), the Generator's storage grows linearly with chain history. Running archival on a validator machine risks crowding the execution node's much larger data set. Pruned is the right choice for almost all validator-side deployments.
+1. Keep `DEFRADB_KEYRING_SECRET` stable across restarts. If it changes, the Generator cannot reload its existing DefraDB identity and will fail to start, a reliability risk to your data feed, not to consensus.
 
 For a worked same-machine example, see the [Validator with Geth](../deployment-examples/validator-with-geth/) deployment guide.
 
@@ -88,6 +97,16 @@ On the execution node side of the link, restrict its JSON-RPC and WebSocket port
 ### Schema endpoint auth
 
 The shipped production scripts set `SCHEMA_AUTH_MODE=none`, which disables authentication on the `/api/v1/schema` endpoints. This is acceptable when `8080` is already behind a reverse-proxy allowlist that only proxies known-safe paths. If you expose schema management more broadly, switch `SCHEMA_AUTH_MODE` to `token` and provide accepted tokens via `SCHEMA_API_KEYS`. See the [config reference](../config-reference/#indexer) for the full set of values.
+
+## MEV-boost and block construction
+
+A common question from validators running MEV-boost is whether the Generator interacts with block construction or depends on the block's `extraData` field. It does not.
+
+For example, on Ethereum Mainnet, MEV-boost builders construct the block header on the validator's behalf. The validator does not control `extraData` in that flow. Shinzo's validator-identity design deliberately avoids depending on it: identity is read from the `AssertionSigned` event emitted by the outpost contract on your source chain, then relayed to ShinzoHub, not from the block header. Because the assertion is signed by your withdrawal key and verified on-chain by the outpost, who built the block is irrelevant to how Shinzo identifies you.
+
+The practical consequence of this is that running the Generator does not change your MEV-boost setup, and MEV-boost does not change how Shinzo identifies you. You do not need to disable MEV-boost, modify your builder configuration, or tag `extraData` to participate in Shinzo.
+
+This point is covered in the [outpost reference](../../../reference/components/outpost), where the EVM implementation notes that there is no `extraData` tagging and no dependency on who built the block.
 
 ## Need help
 
