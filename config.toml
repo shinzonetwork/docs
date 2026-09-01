@@ -88,7 +88,7 @@ section = "reference"
 #   "build", "run", "reference"). The macro filters by the current path so
 #   only the active section's groups are shown. The home page has no sidebar.
 # - `label`: group heading text.
-# - `page`: optional path to a section _index.md; when set, the group label
+# - `page`: optional; path to a section _index.md; when set, the group label
 #   is a link to that landing page.
 # - `pages`: content paths relative to content/; page titles are resolved
 #   from front matter.
@@ -146,6 +146,7 @@ section = "run"
 label = "Quickstart"
 pages = [
   "run/get-started/index.md",
+  "run/add-the-testnet-to-your-wallet/index.md",
 ]
 
 [[extra.sidebar]]
