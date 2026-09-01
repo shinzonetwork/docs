@@ -106,8 +106,8 @@ object#relation@user
 For example:
 
 ```plaintext
-group:host#guest@did:key:z6MkHost7
-view:0xABC#subscriber@did:key:z6MkUser1
+group:host#guest@did:key:zQ3shHost7
+view:0xABC#subscriber@did:key:zQ3shUser1
 ```
 
 Permission checks evaluate whether a chain of tuples grants a specific action. Permissions are boolean expressions over relations: `admin + creator + subscriber - banned` means anyone with the admin, creator, or subscriber relation, unless they are also banned.

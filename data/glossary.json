@@ -171,7 +171,7 @@
     {
       "term": "DID",
       "abbreviation": "Decentralized Identifier",
-      "definition": "A self-sovereign identifier (e.g., `did:key:z6Mk...`) derived from a public key. Host clients, Generator clients, and users are identified by DIDs in SourceHub authorization tuples.",
+      "definition": "A self-sovereign identifier (e.g., `did:key:zQ3s...`) derived from a public key. Host clients, Generator clients, and users are identified by DIDs in SourceHub authorization tuples.",
       "relatedTerms": [
         "DID Key",
         "SourceHub",
@@ -180,7 +180,7 @@
     },
     {
       "term": "DID Key",
-      "definition": "A node identifier built directly from a cryptographic public key using the W3C `did:key` method. Shinzo Host and Generator clients derive their DID key from an ED25519 key pair and use it to sign documents and block batches, and as their identity in SourceHub authorization tuples. See [DID keys](/understand/core-concepts/did-keys/).",
+      "definition": "A node identifier built directly from a cryptographic public key using the W3C `did:key` method. Shinzo Host and Generator clients derive their DID key from a secp256k1 key pair and use it to sign documents and block batches, and as their identity in SourceHub authorization tuples. See [DID keys](/understand/core-concepts/did-keys/).",
       "relatedTerms": [
         "DID",
         "Orbis",

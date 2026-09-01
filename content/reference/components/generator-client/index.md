@@ -189,7 +189,7 @@ The signing flow:
             "cid": "bafyreig5...",
             "height": 1,
             "signature": {
-                "identity": "did:key:z6Mk...",
+                "identity": "did:key:zQ3s...",
                 "value": "0x3045022100..."
             }
         }
