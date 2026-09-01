@@ -1,6 +1,4 @@
-# Legacy path redirects to the current information architecture.
-# Paths handled by Zola aliases on content pages (/, /introduction, /understand)
-# are not duplicated here.
+# Legacy path redirects to the current information architecture. Paths handled by Zola aliases on content pages (/, /introduction, /understand) are not duplicated here.
 
 /guides               /build/create-a-view/
 /host                 /run/run-a-host/
@@ -18,3 +16,31 @@
 /view-creator/*       /build/create-a-view/:splat
 /reference            /reference/architecture/
 /reference/components /reference/components/
+
+# Original Docusaurus site served docs under the default "/docs" route prefix. Google still indexes those URLs, which now 404 on the Zola site. Permanent (301) redirects to the current pages. Both the bare and trailing-slash forms are covered so typed and indexed URLs both resolve.
+/docs/intro                                   /understand/what-is-shinzo/         301
+/docs/intro/*                                 /understand/what-is-shinzo/         301
+/docs/glossary                                /reference/glossary/                301
+/docs/glossary/*                              /reference/glossary/                301
+/docs/supported-networks                      https://shinzo.network/chains        301
+/docs/supported-networks/*                    https://shinzo.network/chains        301
+/docs/tokenomics                              /understand/what-is-shinzo/         301
+/docs/tokenomics/*                            /understand/what-is-shinzo/         301
+/docs/guides/building-apps-with-shinzo        /build/build-an-app/                301
+/docs/guides/building-apps-with-shinzo/*      /build/build-an-app/                301
+/docs/hosts/examples                          /build/query-data/                  301
+/docs/hosts/examples/*                        /build/query-data/                  301
+/docs/hosts/overview                          /run/run-a-host/                    301
+/docs/hosts/overview/*                        /run/run-a-host/                    301
+/docs/hosts/quickstart                        /run/run-a-host/quickstart/         301
+/docs/hosts/quickstart/*                      /run/run-a-host/quickstart/         301
+/docs/indexer/faq                             /run/operations/troubleshooting/    301
+/docs/indexer/faq/*                           /run/operations/troubleshooting/    301
+/docs/indexer/overview                        /run/run-a-generator/               301
+/docs/indexer/overview/*                      /run/run-a-generator/               301
+/docs/indexer/quickstart                      /run/get-started/                   301
+/docs/indexer/quickstart/*                    /run/get-started/                   301
+/docs/view-creator/overview                   /build/concepts/views-for-builders/ 301
+/docs/view-creator/overview/*                 /build/concepts/views-for-builders/ 301
+/docs/view-creator/quickstart                 /build/create-a-view/               301
+/docs/view-creator/quickstart/*               /build/create-a-view/               301
