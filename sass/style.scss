@@ -1,16 +1,8 @@
-// Shinzo Developer Portal - ported theme (light mode only).
-// Ported from docs/src/css/custom.scss + docs/src/theme/Footer/styles.module.css.
-// Infima is not present in Zola, so layout primitives that Docusaurus relied on
-// (navbar bar, sidebar grid, content column, breadcrumbs, admonitions, code
-// blocks) are reimplemented here using the original brand variables.
-
 @import "fonts";
 
 /* Theme variables
-   Light defaults live on :root; the `[data-theme="dark"]` block below
-   overrides them. A tiny inline script in <head> sets data-theme before
-   paint (no FOUC), and the toggle button lets the user override the
-   system preference (persisted in localStorage). */
+   Light defaults live on :root; the `[data-theme="dark"]` block below overrides them. A tiny inline script in <head> sets data-theme before paint (no FOUC), and the toggle button lets the user override the system preference (persisted in localStorage). */
+
 :root {
   --background: #fff;
   --foreground: #353535;
@@ -322,9 +314,7 @@ p {
   display: block;
 }
 
-// Theme-aware logo: show the matching variant. The dark (-w.svg) mark is
-// hidden by default and revealed only when [data-theme="dark"] is on :root.
-// Uses img.logo-* selectors (specificity 0,1,1) to override .navbar__logo img.
+// Theme-aware logo: show the matching variant. The dark (-w.svg) mark is hidden by default and revealed only when [data-theme="dark"] is on :root. Uses img.logo-* selectors (specificity 0,1,1) to override .navbar__logo img.
 img.logo-dark {
   display: none;
 }
@@ -1503,6 +1493,28 @@ body.mobile-menu-open {
   }
   .navbar__hamburger {
     display: flex;
+  }
+  // Allow the right-hand cluster to shrink so the row never overflows;
+  // desktop sets flex:0 0 auto which would otherwise force overflow.
+  .navbar__items--right {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .search-box {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  // Fluid input: fill whatever space is available instead of forcing 12rem.
+  .search-input {
+    width: 100%;
+    max-width: 12rem;
+  }
+}
+
+// Trim the logo on phones so the topbar row breathes more easily.
+@media (max-width: 480px) {
+  .navbar__logo img {
+    max-width: 100px;
   }
 }
 
