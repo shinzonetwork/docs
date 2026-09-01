@@ -310,7 +310,9 @@ p {
   display: block;
 }
 
-// Theme-aware logo: show the matching variant. The dark (-w.svg) mark is hidden by default and revealed only when [data-theme="dark"] is on :root. Uses img.logo-* selectors (specificity 0,1,1) to override .navbar__logo img. img.logo-dark { display: none;
+// Theme-aware logo: show the matching variant. The dark (-w.svg) mark is hidden by default and revealed only when [data-theme="dark"] is on :root. Uses img.logo-* selectors (specificity 0,1,1) to override .navbar__logo img.
+img.logo-dark {
+  display: none;
 }
 [data-theme="dark"] img.logo-light {
   display: none;
@@ -528,7 +530,9 @@ p {
 }
 
 /* Doc content column */
-// Named inline-size container: the table rules in .markdown use `@container docs (…)` so they respond to the width actually available to the content column (which shrinks when the sidebar/ToC are shown) rather than to the viewport. .docs-content { container-name: docs;
+// Named inline-size container: the table rules in .markdown use `@container docs (…)` so they respond to the width actually available to the content column (which shrinks when the sidebar/ToC are shown) rather than to the viewport. 
+.docs-content {
+  container-name: docs;
   container-type: inline-size;
   flex: 1 1 auto;
   min-width: 0;
