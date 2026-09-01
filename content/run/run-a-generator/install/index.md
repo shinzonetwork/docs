@@ -62,7 +62,7 @@ You do not need to be a validator, or to run a validator, just to install and ru
       -e DEFRADB_P2P_ENABLED=true \
       -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
       -e LOGGER_DEBUG=true \
-      -p 9181:9181 \
+      -p 127.0.0.1:9181:9181 \
       -p 9171:9171 \
       -p 8080:8080 \
       ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
@@ -174,13 +174,13 @@ Set `GETH_API_KEY_TYPE` to the header name your provider expects.
 
 ## Exposed ports
 
-The following ports must be exposed and available on the machine.
+The following ports must be available on the machine. Not all of them should be published to the network. See [Security](../security/) for the full exposure rules.
 
-| Port | Service |
-| --- | --- |
-| `8080` | Health endpoint (`/health`), metrics (`/metrics`), and registration (`/registration`). |
-| `9171` | DefraDB P2P. |
-| `9181` | DefraDB GraphQL API. |
+| Port | Service | Publish publicly? |
+| --- | --- | --- |
+| `8080` | Health (`/health`), metrics (`/metrics`), registration (`/registration`). | No. Keep private, or put behind a reverse-proxy allowlist in production. |
+| `9171` | DefraDB P2P. | Yes. This is how Hosts receive data. |
+| `9181` | DefraDB GraphQL API. | No. Localhost only. Raw, unauthenticated read/write access to the local database. |
 
 ## Troubleshooting
 
