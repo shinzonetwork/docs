@@ -13,5 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check site
+        run: ./scripts/build.sh check
+
       - name: Build site
         run: ./scripts/build.sh
+
+      - name: Check internal links
+        run: ./scripts/check-links.sh public scripts/link-allowlist.txt

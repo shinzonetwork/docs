@@ -72,11 +72,24 @@ main() {
 
   ensure_zola
 
-  echo "Building site with Zola..." >&2
-  zola build
+  local cmd="${1:-build}"
+  case "$cmd" in
+    build)
+      echo "Building site with Zola..." >&2
+      zola build
 
-  echo "Generating llms.txt outputs..." >&2
-  "$SCRIPT_DIR/generate-llms.sh"
+      echo "Generating llms.txt outputs..." >&2
+      "$SCRIPT_DIR/generate-llms.sh"
+      ;;
+    check)
+      echo "Checking site with Zola..." >&2
+      zola check
+      ;;
+    *)
+      echo "error: unknown command '$cmd' (expected: build|check)" >&2
+      return 1
+      ;;
+  esac
 }
 
 main "$@"

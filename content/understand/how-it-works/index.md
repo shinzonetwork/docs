@@ -169,7 +169,7 @@ Generator clients are the entry point. Reserved for validators at mainnet launch
 
 #### Hosts
 
-Hosts are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](/run/run-a-host/) for operational details and [Host Client reference](/reference/components/host-client/) for internals.
+Hosts are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](/run/run-a-host/hardware-requirements/) for operational details and [Host Client reference](/reference/components/host-client/) for internals.
 
 #### Developers
 

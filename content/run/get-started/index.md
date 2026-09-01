@@ -167,7 +167,7 @@ There are a few things in here worth calling out:
 
 - `defradb.url: localhost:9181` is the Host client's _internal_ DefraDB API, not the Generator client's. Inside the Host client container, DefraDB binds to `9181` on `localhost`. The Generator client's API happens to use the same number because they're both DefraDB; we'll remap the published ports in the next step so they don't collide.
 - `bootstrap_peers` is the only Generator-specific value. The Host client learns everything else (schemas, signed data) from the Generator client over P2P once it connects.
-- `minimum_attestations: 1` means the Host client will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients. See the [Host overview](/run/run-a-host/) for more on attestations.
+- `minimum_attestations: 1` means the Host client will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients. See the [Host overview](/run/run-a-host/hardware-requirements/) for more on attestations.
 - `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host client expects the field to be present.
 
 ## Start the Host client
