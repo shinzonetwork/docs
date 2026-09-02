@@ -111,6 +111,7 @@ pages = [
   "understand/core-concepts/pools/index.md",
   "understand/core-concepts/attestation/index.md",
   "understand/core-concepts/defradb/index.md",
+  "understand/core-concepts/did-keys/index.md",
   "understand/core-concepts/privacy/index.md"
 ]
 
