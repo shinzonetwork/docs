@@ -4,9 +4,13 @@ title = "Outpost"
 mermaid = true
 +++
 
-An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as Generator, and lets users pay for view access without interacting with ShinzoHub directly.
+An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as Generators, and lets users pay for view access without interacting with ShinzoHub directly.
 
 Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](../relayer) bridge the results to [ShinzoHub](../shinzohub).
+
+{% admonition(type="info") %}
+The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based assertion and payment flows described on this page are the planned design.
+{% end %}
 
 ## Why outposts exist
 
@@ -16,17 +20,33 @@ Outposts also handle payments. Users on external chains should be able to pay in
 
 ## Validator assertions
 
-An assertion is a cryptographic proof that a validator on an external chain is who they claim to be. This is a prerequisite for becoming a Generator. A validator cannot register a Generator client directly on ShinzoHub; they must go through the assertion process on their source chain first.
+An assertion ties a validator's identity to an operator (delegate) key, so the operator can register and run a Generator on ShinzoHub on the validator's behalf. A validator cannot register a Generator client directly on ShinzoHub; they must go through the assertion process first.
 
-The flow:
+### Current testnet flow
+
+On the current testnet, the outpost contract is not yet deployed. Assertions use a simplified admin-key approval flow:
+
+1. The Generator client generates an operator (delegate) key locally.
+1. The operator provides their validator's consensus public key, withdrawal address, and source chain through the Technical Registry.
+1. The assertion is submitted to ShinzoHub as a `MsgGeneratorAssertion` message, signed by a server-side admin key and broadcast directly to ShinzoHub. No outpost contract, withdrawal-key signature, or on-chain validator-status check is involved.
+1. ShinzoHub stores the assertion record and emits a `GeneratorAsserted` event.
+1. Once the assertion record exists on-chain, the operator can register in the Generator Registry (`0x0212`), signing the registration with their operator key.
+
+The requirement to participate with an active, bonded validator on your source chain still applies. What differs on the testnet is the enforcement mechanism: the admin-key flow approves assertions rather than an on-chain contract verifying validator status.
+
+### Planned contract-based assertion flow
+
+The full assertion flow runs through the outpost contract once it is deployed. The contract handles identity verification on the source chain, and a relayer bridges the result to ShinzoHub.
+
+The planned flow:
 
 1. The Generator client generates an operator (delegate) key locally.
 1. The validator's withdrawal key calls the outpost, providing their consensus public key and the operator pubkey, and signs the assertion digest.
-1. Outpost verifies the validator using the chain's native mechanism, stores the signed assertion, and emits an `AssertionSigned` event.
+1. The outpost verifies the validator using the chain's native mechanism, stores the signed assertion, and emits an `AssertionSigned` event.
 1. A [relayer](../relayer) picks up the event and broadcasts `MsgGeneratorAssertion` to ShinzoHub.
 1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The Generator can now register in the Generator Registry (`0x0212`), signing the registration with its operator key.
 
-### Consensus public key
+#### Consensus public key
 
 The consensus public key (sometimes just called the consensus key) is the validator's identity on a chain's consensus layer. The outpost reads it from the assertion to know which validator is asserting, then asks the chain to confirm that validator is active and bonded. It is not the same as the withdrawal key: the withdrawal key signs the assertion to prove control of the validator's stake, while the consensus public key names the validator being asserted.
 
@@ -36,13 +56,13 @@ The key type, format, and lookup tooling are all chain-specific. Each outpost im
 - **Cosmos SDK chains.** Typically an Ed25519 CometBFT pubkey. On the validator node, `<chaind> tendermint show-validator` prints it in the chain's `valconspub...` bech32 form. It can also be read from `<chaind> query staking validator <valoper-addr>` under `consensus_pubkey`.
 - **Other chains.** Each future outpost will define its own consensus key type and the corresponding lookup procedure.
 
-### The digest
+#### The digest
 
 The outpost generates a hash that both parties must sign. The digest includes the assertion ID, withdrawal address, delegate key, consensus key hash, creation time, and signature deadline.
 
 How the digest is computed depends on the implementation. Different chains have different hashing and signing conventions. The requirement is that the digest is deterministic and includes enough context to prevent replay attacks across chains.
 
-### EVM implementation
+#### EVM implementation
 
 On EVM chains, the outpost contract (`GeneratorAssertion`) uses EIP-712 typed data signatures. The validator opens an assertion with `createAssertion`, then submits the withdrawal-key signature with `submitAssertionSignature`. The contract emits `AssertionSigned`, which the relayer subscribes to:
 
@@ -61,7 +81,7 @@ sequenceDiagram
 
 The relayer reads the assertion fields from the event log and forwards them to ShinzoHub. There is no `extraData` tagging and no dependency on who built the block, which matters on mainnet where MEV-boost builders construct the block header (including `extraData`) on the validator's behalf.
 
-### Chain-specific verification
+#### Chain-specific verification
 
 The verification step is what makes each outpost implementation different. The concept is always the same (prove you are a validator), but the proof mechanism depends on the chain.
 

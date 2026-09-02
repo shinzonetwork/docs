@@ -1,5 +1,5 @@
 {
-  "description": "Glossary of terms and definitions for Shinzo Network's decentralized data indexing protocol",
+  "description": "Glossary of terms and definitions for Shinzo Network's trustless blockchain data read protocol",
   "terms": [
     {
       "term": "ABI",
@@ -29,7 +29,7 @@
     },
     {
       "term": "Assertion",
-      "definition": "A cryptographic proof, produced on a source chain, that a validator is who they claim to be. It ties the validator's consensus identity to an operator key. Without a valid assertion, a validator cannot register as a generator on ShinzoHub.",
+      "definition": "A record that ties a validator's consensus identity to an operator key, so the validator can register as a generator on ShinzoHub. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The planned contract-based flow will produce a cryptographic proof on the source chain through the outpost contract.",
       "relatedTerms": [
         "Outpost",
         "Operator Key",
@@ -102,7 +102,7 @@
     },
     {
       "term": "Consensus Public Key",
-      "definition": "Also called the consensus key. The public key a validator uses to sign blocks and participate in chain consensus, and the field that identifies which validator is asserting on the outpost. The key type is chain-specific: on Ethereum it is a 48-byte BLS12-381 pubkey used on the beacon chain; on Cosmos SDK chains it is typically an Ed25519 CometBFT pubkey. It is distinct from the withdrawal key, which controls stake withdrawals on the execution layer. During an assertion, this key is bound to an operator key so the generator can act on the validator's behalf on ShinzoHub.",
+      "definition": "Also called the consensus key. The public key a validator uses to sign blocks and participate in chain consensus, and the field that identifies which validator is asserting. The key type is chain-specific: on Ethereum it is a 48-byte BLS12-381 pubkey used on the beacon chain; on Cosmos SDK chains it is typically an Ed25519 CometBFT pubkey. It is distinct from the withdrawal key, which controls stake withdrawals on the execution layer. During an assertion, this key is bound to an operator key so the generator can act on the validator's behalf on ShinzoHub.",
       "relatedTerms": [
         "Validator",
         "Assertion",
@@ -207,7 +207,7 @@
     },
     {
       "term": "EIP-712",
-      "definition": "An Ethereum standard for signing structured, typed data in a form users can read before approving. The EVM outpost contract uses EIP-712 for the digest that a validator's withdrawal key signs during an assertion.",
+      "definition": "An Ethereum standard for signing structured, typed data in a form users can read before approving. The planned outpost contract will use EIP-712 for the digest that a validator's withdrawal key signs during an assertion.",
       "relatedTerms": [
         "Outpost",
         "Assertion",
@@ -234,7 +234,7 @@
     },
     {
       "term": "EVM Relayer",
-      "definition": "A Go process that bridges an external EVM chain (e.g. Ethereum) to ShinzoHub. It subscribes to outpost events, extracts assertion or payment data, and broadcasts the relevant Cosmos SDK messages to ShinzoHub. Not the same as the Hermes IBC relayer.",
+      "definition": "A Go process that bridges an external EVM chain (e.g. Ethereum) to ShinzoHub. It subscribes to outpost events, extracts assertion or payment data, and broadcasts the relevant Cosmos SDK messages to ShinzoHub. The assertion pipeline is not yet live on the testnet (assertions are submitted through an admin-key flow instead). Not the same as the Hermes IBC relayer.",
       "relatedTerms": [
         "Outpost",
         "Relayer",
@@ -315,7 +315,7 @@
     },
     {
       "term": "Generator Registry",
-      "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered generator. A generator cannot register here directly — it must first complete an assertion via an outpost contract. The registry verifies the stored assertion before accepting registration.",
+      "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered generator. A generator cannot register here directly. It must first complete an assertion. On the current testnet, assertions are submitted through an admin-key flow; the planned flow uses an outpost contract. The registry verifies the stored assertion before accepting registration.",
       "relatedTerms": [
         "Generator",
         "Precompile",
@@ -335,7 +335,7 @@
     {
       "term": "IPLD",
       "abbreviation": "Interplanetary Linked Data",
-      "definition": "A data model for decentralized systems (used by IPFS, among others). It structures data as Merkle DAGs so every object is content-addressed and verifiable.",
+      "definition": "A data model for distributed systems (used by IPFS, among others). It structures data as Merkle DAGs so every object is content-addressed and verifiable.",
       "relatedTerms": [
         "Merkle DAG",
         "Content Identifier",
@@ -424,7 +424,7 @@
     },
     {
       "term": "MEV-boost",
-      "definition": "A service on Ethereum that lets validators hand off block construction to external builders. Because those builders control the block's `extraData` field, Shinzo's assertion design does not rely on it — validator identity is read directly from the outpost event instead.",
+      "definition": "A service on Ethereum that lets validators hand off block construction to external builders. Because those builders control the block's `extraData` field, Shinzo's planned assertion design does not rely on it. Validator identity will be read directly from the outpost event instead.",
       "relatedTerms": [
         "Validator",
         "Outpost",
@@ -478,7 +478,7 @@
     },
     {
       "term": "Outpost",
-      "definition": "A smart contract deployed on a source chain. Validators call it to prove their identity before registering as generator; users call it to pay for view access in the source chain's native currency. Each chain type has its own outpost implementation.",
+      "definition": "A smart contract that will be deployed on a source chain. Validators will call it to prove their identity before registering as generator; users will call it to pay for view access in the source chain's native currency. Each chain type has its own outpost implementation. The outpost is not yet deployed on the testnet; assertions currently use an admin-key approval flow.",
       "relatedTerms": [
         "Smart Contract",
         "ShinzoHub",
@@ -689,7 +689,7 @@
     },
     {
       "term": "Validator",
-      "definition": "An entity that participates in a chain's consensus. On Ethereum, a validator's withdrawal key signs an EIP-712 message on the outpost to authorize an operator key as its generator.",
+      "definition": "An entity that participates in a chain's consensus. A validator's identity is tied to an operator key through an assertion, allowing the operator to register as a generator on ShinzoHub. On the planned contract-based flow, the validator's withdrawal key signs an EIP-712 message on the outpost to authorize the operator key.",
       "relatedTerms": [
         "Generator",
         "Assertion",
@@ -786,7 +786,7 @@
     },
     {
       "term": "Withdrawal Key",
-      "definition": "On Ethereum, the key that controls a validator's stake withdrawals. The outpost requires the withdrawal key to sign the EIP-712 assertion digest — it is the chain's strongest proof that a given party controls the validator.",
+      "definition": "On Ethereum, the key that controls a validator's stake withdrawals. The planned outpost contract will require the withdrawal key to sign the EIP-712 assertion digest, providing the chain's strongest proof that a given party controls the validator. On the current testnet, only the withdrawal address is needed (the assertion is admin-key-approved).",
       "relatedTerms": [
         "Validator",
         "Assertion",
