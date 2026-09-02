@@ -35,7 +35,7 @@ On first startup, the Host downloads signed snapshot files from a trustless inde
 ## Prerequisites
 
 - Docker installed on the VM.
-- A trustless indexer serving snapshots over HTTP. The trustless indexer must have `SNAPSHOT_ENABLED=true` and be reachable over HTTPS or HTTP. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-tls-snapshots/) for how to set up a trustless indexer that serves snapshots.
+- A trustless indexer serving snapshots over HTTP. The trustless indexer must have `SNAPSHOT_ENABLED=true` and be reachable over HTTPS or HTTP. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-with-snapshots/) for how to set up a trustless indexer that serves snapshots.
 - The block range you want to bootstrap. The trustless indexer must have snapshot files covering that range.
 
 ## Config file
@@ -139,7 +139,7 @@ You should see log lines indicating snapshot downloads and imports, followed by 
 
 - Snapshot bootstrap only runs on first startup when DefraDB has no existing data. If the Host already has data for the requested block range, bootstrap is skipped.
 - The `indexer_url` in the shipped `config.yaml` is `http://35.206.105.60:8080`. This is a development trustless indexer. Replace it with your own trustless indexer URL or a production trustless indexer that has snapshots enabled.
-- The trustless indexer must have `SNAPSHOT_ENABLED=true` on the Generator side. If the trustless indexer is not producing snapshot files, the `/snapshots` endpoint will return nothing and bootstrap will fail. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-tls-snapshots/) for setting up a trustless indexer that serves snapshots.
+- The trustless indexer must have `SNAPSHOT_ENABLED=true` on the Generator side. If the trustless indexer is not producing snapshot files, the `/snapshots` endpoint will return nothing and bootstrap will fail. See the [nginx with TLS scenario](/run/run-a-generator/deployment-examples/nginx-with-snapshots/) for setting up a trustless indexer that serves snapshots.
 - The `DEFRA_URL` env var overrides `defradb.url` at runtime and is read by the Host client (`config/config.go`). The `docker run` above does not set it, so the DefraDB URL comes from `defradb.url` in the YAML config. See [environment variables](/run/run-a-host/config-reference#environment-variables).
 - The `DEFRA_KEYRING_SECRET` env var uses the `DEFRA_` prefix. The Generator client uses `DEFRADB_KEYRING_SECRET` with the `DEFRADB_` prefix. The two clients use different env var names for the same concept. See [environment variables](/run/run-a-host/config-reference#environment-variables).
 - `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` env vars appear in some deployment scripts but are not read by the Host client. They have been omitted from the `docker run` above. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).

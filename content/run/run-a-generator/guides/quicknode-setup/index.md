@@ -239,7 +239,7 @@ chown -R 1001:1001 /root/shinzo-data
 | `GOMEMLIMIT=5GiB` | Go runtime soft memory limit; keep below `mem_limit`. Scale both up on bigger hosts. |
 
 {% admonition(type="info") %}
-See the [Generator client config reference](../../../run-a-generator/config-reference/index.md) for a detailed list of available configuration options.
+See the [Generator client config reference](../../../run-a-generator/config-reference/) for a detailed list of available configuration options.
 {% end %}
 
 ## Start the client

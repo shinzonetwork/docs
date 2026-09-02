@@ -107,7 +107,7 @@ The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is cor
 
 ### What is the difference between a Host and a Generator?
 
-Generator clients are the write side: they read raw blocks from an execution node, sign the data, gossip it over P2P, and provide attestations to prove the data is correct. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node, but a Host client never does. See the [Run a Host](/run/run-a-host/) overview for more.
+Generator clients are the write side: they read raw blocks from an execution node, sign the data, gossip it over P2P, and provide attestations to prove the data is correct. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node, but a Host client never does. See the [Run a Host](/run/run-a-host/hardware-requirements/) overview for more.
 
 ### Do I need to run my own Generator client to run a Host client?
 
