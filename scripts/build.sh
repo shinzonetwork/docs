@@ -72,8 +72,20 @@ main() {
 
   ensure_zola
 
+  # Zola bakes `base_url` (config.toml) into alias redirect pages as absolute
+  # URLs. On Cloudflare Pages preview deployments this sends visitors to the
+  # production site (issue #435). Override the base URL for non-production
+  # branches so alias redirects stay within the preview host.
+  local zola_args=()
+  if [[ "${CF_PAGES:-}" == "1" \
+        && "${CF_PAGES_BRANCH:-}" != "main" \
+        && -n "${CF_PAGES_URL:-}" ]]; then
+    echo "Cloudflare Pages preview build: overriding base_url to ${CF_PAGES_URL}" >&2
+    zola_args+=(--base-url "$CF_PAGES_URL")
+  fi
+
   echo "Building site with Zola..." >&2
-  zola build
+  zola build "${zola_args[@]}"
 
   echo "Generating llms.txt outputs..." >&2
   "$SCRIPT_DIR/generate-llms.sh"
