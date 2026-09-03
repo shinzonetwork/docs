@@ -70,7 +70,7 @@ section = "run"
 
 [[extra.navbar]]
 label = "Build apps"
-href = "/build/create-a-view/"
+href = "/build/"
 section = "build"
 
 [[extra.navbar]]
@@ -126,18 +126,37 @@ pages = [
 # Build apps
 [[extra.sidebar]]
 section = "build"
-label = "Develop"
+label = "Tutorials"
 pages = [
-  "build/create-a-view/index.md",
-  "build/build-an-app/index.md",
-  "build/query-data/index.md",
+  "build/tutorials/query-your-first-view/index.md",
+  "build/tutorials/create-your-first-view/index.md",
+  "build/tutorials/build-a-local-first-app/index.md",
 ]
 
 [[extra.sidebar]]
 section = "build"
-label = "Concepts"
+label = "How-to guides"
 pages = [
-  "build/concepts/views-for-builders/index.md",
+  "build/how-to/find-views-and-hosts/index.md",
+  "build/how-to/connect-to-a-host/index.md",
+  "build/how-to/query-data/index.md",
+  "build/how-to/view-recipes/index.md",
+  "build/how-to/use-shinzo-studio/index.md",
+  "build/how-to/write-a-lens/index.md",
+  "build/how-to/subscribe-to-views/index.md",
+  "build/how-to/configure-attestation-thresholds/index.md",
+  "build/how-to/verify-data/index.md",
+  "build/how-to/use-your-own-infrastructure/index.md",
+]
+
+[[extra.sidebar]]
+section = "build"
+label = "Explanation"
+pages = [
+  "build/explanation/the-app-model/index.md",
+  "build/explanation/choosing-an-architecture/index.md",
+  "build/explanation/views-for-builders/index.md",
+  "build/explanation/attestation-as-a-query-filter/index.md",
 ]
 
 # Run infrastructure
