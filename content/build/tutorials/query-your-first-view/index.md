@@ -5,12 +5,17 @@ description = "Tutorial: query a live View on the Shinzo testnet from a TypeScri
 
 In this tutorial you'll query a live View on the Shinzo testnet from a small TypeScript script. By the end, the script prints the 10 most recent rows of `Erc20Event`, a registered View that decodes `Transfer` events from fungible token contracts on Ethereum mainnet. Everything runs against public testnet infrastructure; the only things you install on your machine are npm packages.
 
-The script does four things: find the View in ShinzoHub's registry, pick a Host that serves it, sign the GraphQL request, and POST it to the Host's endpoint.
+The script we're about to create does four things: 
+
+1. Find the View in ShinzoHub's registry.
+1. Pick a Host that serves it.
+1. Sign the GraphQL request.
+1. POST it to the Host's endpoint.
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 20 or later.
-- npm, which comes with Node.js.
+- NPM, which comes with Node.js anyway.
 
 You don't need a wallet, tokens, or any local infrastructure.
 
