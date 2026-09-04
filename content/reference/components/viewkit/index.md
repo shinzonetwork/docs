@@ -37,14 +37,13 @@ When querying a deployed view's output collection, DefraDB supports these filter
 
 | Operator | Meaning | Example |
 | --- | --- | --- |
-| `_eq` | Equal | `{ logAddress: { _eq: "0x..." } }` |
-| `_ne` | Not equal | `{ event: { _ne: "Approval" } }` |
-| `_gt` / `_gte` | Greater than / greater than or equal | `{ blockNumber: { _gte: 19540000 } }` |
-| `_lt` / `_lte` | Less than / less than or equal | `{ blockNumber: { _lte: 19541000 } }` |
+| `_eq` / `_neq` | Equal / not equal | `{ logAddress: { _eq: "0x..." } }` |
+| `_gt` / `_geq` | Greater than / greater than or equal | `{ blockNumber: { _geq: 19540000 } }` |
+| `_lt` / `_leq` | Less than / less than or equal | `{ blockNumber: { _leq: 19541000 } }` |
+| `_in` / `_nin` | In / not in a list of values | `{ event: { _in: ["Transfer", "Approval"] } }` |
 | `_and` | Logical AND | `{ _and: [{ logAddress: { _eq: "0x..." } }, { event: { _eq: "Transfer" } }] }` |
 | `_or` | Logical OR | `{ _or: [{ from: { _eq: "0x..." } }, { to: { _eq: "0x..." } }] }` |
-| `_like` | Substring match (strings) | `{ arguments: { _like: "%0xAddress%" } }` |
-| `_any` | Any element in array matches | `{ topics: { _any: { _eq: "0xddf252..." } } }` |
+| `_like` / `_ilike` | Substring match, case-sensitive / case-insensitive (strings) | `{ arguments: { _like: "%0xAddress%" } }` |
 
 ## What happens during deploy
 
