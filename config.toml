@@ -131,6 +131,7 @@ pages = [
   "build/tutorials/query-your-first-view/index.md",
   "build/tutorials/create-your-first-view/index.md",
   "build/tutorials/build-a-local-first-app/index.md",
+  "build/tutorials/spinup-a-local-devnet/index.md",
 ]
 
 [[extra.sidebar]]
