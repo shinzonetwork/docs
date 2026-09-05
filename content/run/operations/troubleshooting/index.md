@@ -208,7 +208,7 @@ A healthy Host returns `healthy`. A connection refused or timeout means `8080` s
 
 Viewkit uses the Wasmer runtime to execute WASM lenses locally. If the native library can't be found, any command that touches lenses will fail.
 
-Fix: set the `WASMER_ROOT`, `WASMER_LIB_PATH`, and `DYLD_LIBRARY_PATH` (macOS) or `LD_LIBRARY_PATH` (Linux) environment variables. See [Create a View](/build/create-a-view/#wasmer-runtime) for full instructions.
+Fix: set the `WASMER_ROOT`, `WASMER_LIB_PATH`, and `DYLD_LIBRARY_PATH` (macOS) or `LD_LIBRARY_PATH` (Linux) environment variables. See [Create your first View](/build/tutorials/create-your-first-view/#wasmer-runtime) for full instructions.
 
 Quick check:
 

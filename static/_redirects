@@ -1,6 +1,6 @@
 # Legacy path redirects to the current information architecture. Paths handled by Zola aliases on content pages (/, /introduction, /understand) are not duplicated here.
 
-/guides               /build/create-a-view/
+/guides               /build/tutorials/create-your-first-view/
 /host                 /run/run-a-host/
 /host/*               /run/run-a-host/:splat
 /hosts                /run/run-a-host/
@@ -11,9 +11,9 @@
 /indexer/*            /run/run-a-generator/:splat
 /indexers             /run/run-a-generator/
 /indexers/*           /run/run-a-generator/:splat
-/views                /build/create-a-view/
-/view-creator         /build/create-a-view/
-/view-creator/*       /build/create-a-view/:splat
+/views                /build/tutorials/create-your-first-view/
+/view-creator         /build/tutorials/create-your-first-view/
+/view-creator/*       /build/tutorials/create-your-first-view/
 /reference            /reference/architecture/
 /reference/components /reference/components/
 
@@ -42,5 +42,5 @@
 /docs/indexer/quickstart/*                    /run/get-started/                   301
 /docs/view-creator/overview                   /build/concepts/views-for-builders/ 301
 /docs/view-creator/overview/*                 /build/concepts/views-for-builders/ 301
-/docs/view-creator/quickstart                 /build/create-a-view/               301
-/docs/view-creator/quickstart/*               /build/create-a-view/               301
+/docs/view-creator/quickstart                 /build/tutorials/create-your-first-view/  301
+/docs/view-creator/quickstart/*               /build/tutorials/create-your-first-view/  301

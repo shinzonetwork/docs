@@ -6,7 +6,7 @@ mermaid = true
 
 Viewkit is the local CLI tool for creating, testing, and deploying Shinzo Views. It packages a view into a binary bundle (VWL) and submits a deploy transaction to ShinzoHub. It does not process, store, or serve data.
 
-This page is the technical reference for Viewkit: the full command list, filter operators, the deploy pipeline, the VWL wire format, view ID computation, and the on-disk layout of the source repo. For a hands-on walkthrough of building and deploying your first view, see the [Create a View](/build/create-a-view/) quickstart. For the conceptual overview of what Viewkit is and where it sits in the stack, see [Views for builders](/build/concepts/views-for-builders/).
+This page is the technical reference for Viewkit: the full command list, filter operators, the deploy pipeline, the VWL wire format, view ID computation, and the on-disk layout of the source repo. For a hands-on walkthrough of building and deploying your first view, see the [Create your first View](/build/tutorials/create-your-first-view/) tutorial. For the conceptual overview of what Viewkit is and where it sits in the stack, see [Views for builders](/build/concepts/views-for-builders/).
 
 ## Command reference
 
