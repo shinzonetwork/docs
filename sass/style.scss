@@ -1653,3 +1653,37 @@ body.mobile-menu-open {
   opacity: 1;
   text-decoration: underline;
 }
+
+/* Glossary tooltips (issue #350): dotted-underline terms tagged by
+   glossary-tooltips.js, and the shared definition card it positions. */
+.glossary-term {
+  border-bottom: 1px dotted var(--color-primary);
+  cursor: help;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+}
+
+.glossary-tooltip {
+  position: absolute;
+  max-width: 22rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--szo-border);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-elevated);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  z-index: 400;
+
+  p {
+    margin: 0;
+  }
+
+  code {
+    font-size: 0.8rem;
+  }
+}
