@@ -14,10 +14,13 @@ GLOSSARY = json.loads((ROOT / "data/glossary.json").read_text())["terms"]
 DEFINED = {t["term"].lower(): t["definition"] for t in GLOSSARY if t.get("definition")}
 
 SKIP_TAGS = {"code", "pre", "a", "h1", "h2", "h3", "h4", "h5", "h6", "script", "style"}
+SKIP_CLASSES = {"mermaid", "breadcrumbs"}
 
-# Longest-first alternation, whole-word boundaries — mirrors the JS regex.
-NAMES = sorted(DEFINED, key=len, reverse=True)
-RE = re.compile(r"\b(" + "|".join(re.escape(n) for n in NAMES) + r")\b", re.I)
+# Canonical spellings, longest-first alternation, whole-word boundaries, and
+# no match touching a hyphen — mirrors the JS regex. Case-sensitive: "View"
+# is a term, "view" is not.
+NAMES = sorted((t["term"] for t in GLOSSARY if t.get("definition")), key=len, reverse=True)
+RE = re.compile(r"(?<!-)\b(" + "|".join(re.escape(n) for n in NAMES) + r")\b(?!-)")
 
 failures = 0
 def check(label, ok, detail=""):
@@ -36,15 +39,18 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.in_article = 0
         self.skip_depth = 0
-        self.visible_chunks = []   # text outside code/links/headings
-        self.hidden_chunks = []    # text inside them
+        self.stack = []            # (tag, opened_skip) frames, so nested non-skip
+        self.visible_chunks = []   # end tags (</li> etc.) don't leak skip depth
+        self.hidden_chunks = []    # text inside skipped subtrees
         self.injected_terms = None
 
     def handle_starttag(self, tag, attrs):
         cls = dict(attrs).get("class", "")
+        opens_skip = bool(self.in_article and (tag in SKIP_TAGS or cls and any(c in SKIP_CLASSES for c in cls.split())))
+        self.stack.append((tag, opens_skip))
         if tag == "article" and "markdown" in cls:
             self.in_article += 1
-        elif self.in_article and (tag in SKIP_TAGS or "mermaid" in cls):
+        elif opens_skip:
             self.skip_depth += 1
         elif tag == "script" and not dict(attrs).get("src"):
             self._capture = True
@@ -52,8 +58,12 @@ class Page(HTMLParser):
     def handle_endtag(self, tag):
         if tag == "article" and self.in_article:
             self.in_article -= 1
-        elif self.in_article and self.skip_depth:
-            self.skip_depth -= 1
+        while self.stack:
+            opened = self.stack.pop()
+            if opened[1]:
+                self.skip_depth -= 1
+            if opened[0] == tag:
+                break
 
     def handle_data(self, data):
         if self.in_article:
@@ -80,7 +90,7 @@ PAGES = [
     "reference/architecture",
     "understand/core-concepts/views",
     "reference/glossary",
-    "build/query-data",
+    "build/how-to/query-data",
     "run/run-a-generator/install",
 ]
 
@@ -119,14 +129,22 @@ check("glossary sync: definition content matches source",
 
 # Whole-word guarantee: a term that is a prefix of a longer word used in the
 # docs ("View" vs "ViewKit", "Host" vs "HostRegistry") must not match inside it.
-sample_false = ["review", "hostname", "LogEntry", "poolside", "Bonded", "Preview"]
+sample_false = ["review", "hostname", "LogEntry", "poolside", "Bonded", "Preview",
+                "ViewKit", "view", "shinzo-view-creator", "view-creator"]
 bad = [w for w in sample_false if RE.search(w)]
-check("regex: no match inside longer words (" + ", ".join(sample_false) + ")", not bad,
+check("regex: no match inside longer or hyphenated words (" + ", ".join(sample_false) + ")", not bad,
       "matched: " + ", ".join(bad))
+# Case sensitivity: "View" is a term, lowercase "view" is not.
+check("regex: case-sensitive (\"View\" matches, \"view\" does not)",
+      RE.search("View") is not None and not RE.search("view"))
 # Multi-word terms match as phrases.
-multi = [t for t in DEFINED if " " in t]
+multi = [t["term"] for t in GLOSSARY if " " in t["term"] and t.get("definition")]
 check("regex: multi-word terms match (" + str(len(multi)) + " phrases)",
       all(RE.search(t) for t in multi))
+# Hyphenated terms (EIP-2930, MEV-boost, ...) still match as whole tokens.
+hyph = [t["term"] for t in GLOSSARY if "-" in t["term"] and t.get("definition")]
+check("regex: hyphenated terms match (" + str(len(hyph)) + " terms)",
+      all(RE.search(t) for t in hyph))
 
 print("\n" + (str(failures) + " FAILURES" if failures else "ALL CHECKS PASSED"))
 sys.exit(1 if failures else 0)
