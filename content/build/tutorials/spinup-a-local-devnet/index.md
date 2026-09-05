@@ -1,6 +1,8 @@
 +++
 title = "Spinup a local devnet"
 description = "Tutorial: start a devnet locally on your machine to test basic Shinzo and blockchain functionality."
+[extra]
+mermaid = true
 +++
 
 This tutorial walks through spinning up a local Ethereum development network using Geth, deploying an ERC-20 smart contract to it, and connecting the Shinzo Generator client and Host so blockchain data is generated into DefraDB and queryable via GraphQL.
@@ -9,17 +11,13 @@ This tutorial walks through spinning up a local Ethereum development network usi
 
 Here's the basic flow for what we're about to build:
 
-```plaintext
-Geth (--dev) → mines blocks on demand
-      ↓
-Shinzo Generator client → watches for new blocks via HTTP/WS RPC
-      ↓
-DefraDB (embedded in Generator client) → stores generated block/transaction/log data
-      ↓ (P2P passive replication)
-DefraDB (embedded in Host) → receives replicated data
-      ↓
-GraphQL API (port 9182) → query the replicated data
-```
+{% mermaid() %}
+flowchart LR
+    Geth["Geth (--dev)<br/>mines blocks on demand"] --> Gen["Shinzo Generator client<br/>watches for new blocks via HTTP/WS RPC"]
+    Gen --> GenDB["DefraDB (embedded in Generator client)<br/>stores generated block/transaction/log data"]
+    GenDB -- "P2P passive replication" --> HostDB["DefraDB (embedded in Host)<br/>receives replicated data"]
+    HostDB --> GraphQL["GraphQL API (port 9182)<br/>query the replicated data"]
+{% end %}
 
 ### Prerequisites
 
