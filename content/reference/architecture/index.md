@@ -155,7 +155,11 @@ Two components connect external blockchains (EVM chains, Cosmos chains, etc.) to
 
 ### Outpost contracts
 
-Outpost contracts are deployed on each source chain. They handle two things:
+{% admonition(type="info") %}
+The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based flow described below is the planned design.
+{% end %}
+
+Outpost contracts will be deployed on each source chain. They handle two things:
 
 - Validator assertions: a validator proves their identity using chain-native mechanisms and authorises an operator (delegate) key to act as their Generator. On Ethereum, the validator's withdrawal key signs an EIP-712 message on the outpost contract that names the validator (consensus public key) and the operator pubkey. The contract verifies the signature, checks validator status, and emits an `AssertionSigned` event.
 - Payments: Users call `payment()` on the outpost. The contract stores a receipt and emits a `PaymentCreated` event.
@@ -166,7 +170,7 @@ The outpost design is chain agnostic. Each chain gets its own implementation usi
 
 The EVM relayer is a Go process with two pipelines:
 
-1. The assertion pipeline subscribes to `AssertionSigned` events on the outpost's `GeneratorAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts `MsgGeneratorAssertion` to ShinzoHub. No block scanning and no dependency on who built the block.
+1. The assertion pipeline (planned, not yet live on testnet) subscribes to `AssertionSigned` events on the outpost's `GeneratorAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts `MsgGeneratorAssertion` to ShinzoHub. No block scanning and no dependency on who built the block. On the current testnet, assertions are submitted directly through an admin-key flow, so this pipeline is not in use yet.
 1. The payment pipeline subscribes to `PaymentCreated` log events from the outpost, extracts user `DID` and payment amount, and broadcasts `MsgRequestStreamAccess` to ShinzoHub.
 
 The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for transaction fees.
@@ -211,7 +215,28 @@ Snapshots bundle multiple blocks into signed files for faster initial sync. The 
 
 ### Generator registration
 
-Spans two chains and a relayer. The Generator cannot register on ShinzoHub until the validator has signed an assertion that ties the Generator client's operator key to the validator's identity.
+The Generator cannot register on ShinzoHub until the validator has completed an assertion that ties the Generator client's operator key to the validator's identity.
+
+On the current testnet, the assertion is submitted through an admin-key approval flow:
+
+{% mermaid() %}
+sequenceDiagram
+  participant Idx as Generator<br/>(operator key)
+  participant SH as ShinzoHub<br/>(Generator Registry 0x0212)
+  participant Source as SourceHub
+
+  Idx->>Idx: generate operator/delegate<br/>key locally
+  Idx->>SH: MsgGeneratorAssertion<br/>(admin-key signed:<br/>consensus key, withdrawal addr,<br/>operator pubkey, source chain)
+  SH->>SH: store assertion record<br/>emit GeneratorAsserted
+  Idx->>SH: register() on 0x0212<br/>(signed by operator key)
+  SH->>SH: derive DID from<br/>operator pubkey
+  SH->>Source: ICA RegisterObject
+  Source->>Source: ACP adds DID<br/>to generator group
+{% end %}
+
+#### Planned contract-based flow
+
+Once the outpost contract is deployed, the assertion step will run through the outpost and an EVM relayer instead of the admin-key flow:
 
 {% mermaid() %}
 sequenceDiagram

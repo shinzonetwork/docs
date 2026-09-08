@@ -14,6 +14,10 @@ This is the EVM relayer, which bridges EVM chains to ShinzoHub. It is a complete
 
 ## Assertion relay
 
+{% admonition(type="info") %}
+The assertion relay is not yet live on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow, so the relayer's assertion pipeline is not in use. The description below covers the planned design.
+{% end %}
+
 When a signed assertion is detected on the source chain, the relayer:
 
 1. Extracts the assertion data (consensus key, delegate signature, digest, etc.).
