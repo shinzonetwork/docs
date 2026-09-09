@@ -8,6 +8,10 @@ Seven recipes for the Views people build most often, from a basic event decode u
 
 If you've never built a View, work through [Create your first View](/build/tutorials/create-your-first-view/) first. When none of the prebuilt lenses does what you need, see [Write and test a custom lens](/build/how-to/write-a-lens/).
 
+{% admonition(type="note") %}
+Every recipe ends with `view test` and `deploy --target local`, which spawn a local DefraDB node. That node and the lens runtime need the Wasmer environment variables from [Create your first View](/build/tutorials/create-your-first-view/#wasmer-runtime), and the node binds fixed ports 9181 and 9171 with no flags to change them. If local Generator and Host clients are running, stop them first or the test and deploy steps die at "Applying schema".
+{% end %}
+
 ## Primitive data
 
 Views query the primitive collections that Generator clients produce. All collection names are prefixed with `<Chain>__<Network>__`, derived from the Generator's `chain.name` and `chain.network` settings. Viewkit lets you use short names like `Log`, and the Host client auto-prefixes them at runtime.

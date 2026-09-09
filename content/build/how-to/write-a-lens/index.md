@@ -156,6 +156,10 @@ viewkit view test my-view
 viewkit view deploy my-view --target local
 ```
 
+{% admonition(type="note") %}
+Both commands spawn a local DefraDB node, and two things have to be in place first. The node and the lens runtime need the Wasmer environment variables set: [Create your first View](/build/tutorials/create-your-first-view/#wasmer-runtime) walks through the setup (`LD_LIBRARY_PATH` on Linux, `DYLD_LIBRARY_PATH` on macOS). And the node binds fixed ports, 9181 for the API and 9171 for P2P, with no flags to change them. If your local Generator and Host clients are already running, the bind fails and the command dies at "Applying schema" with `exit status 1`, so stop those clients first.
+{% end %}
+
 If the View compiles and the playground shows the filtered rows, the lens is doing its job. From here it's the usual cycle: edit, rebuild, `viewkit view test`, redeploy.
 
 ## Respect the determinism rules
