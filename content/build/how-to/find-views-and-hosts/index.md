@@ -14,7 +14,7 @@ Two fields come up constantly, so get to know them first:
 
 The [Shinzo Explorer](https://explorer.shinzo.network/shinzohub) renders the registry as web pages. Open it and switch between the **Blocks**, **Transactions**, **Generators**, **Hosts**, and **Validators** tabs.
 
-The **Hosts** tab lists every registered Host client with its connection details, and the **Generators** tab lists the registered Generator clients. Reach for the Explorer when you want to eyeball the network: who's online, what's registered, and whether anything changed recently.
+The **Hosts** tab lists every registered Host client with its connection details and which ones are online right now, and the **Generators** tab lists the registered Generator clients. When you need a Host to connect to, pick one shown as Online. Reach for the Explorer when you want to eyeball the network: who's online, what's registered, and whether anything changed recently.
 
 ## Browse the View catalog in Studio
 
@@ -50,6 +50,8 @@ curl -s "http://testnet.shinzo.network:1317/shinzonetwork/host/v1/hosts" \
 /ip4/34.63.186.249/tcp/9171/p2p/12D3KooWSqvLctTtcQLvqSVZU4sTCUWxCX9z4NeFpSHnmVWBiFMZ  http://34.63.186.249/api/v0/graphql
 ...
 ```
+
+Registry entries can outlive the Hosts behind them, so don't take the first address in the list. Check the [Explorer](https://explorer.shinzo.network/shinzohub/hosts) and pick a Host shown as Online.
 
 List registered Generator clients:
 
