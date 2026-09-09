@@ -38,7 +38,7 @@ logger:
   development: true
 ```
 
-Three keys deserve attention:
+A few keys matter more than the rest:
 
 - `defradb.keyring_secret` encrypts the local keyring that holds your node's identity, so the app keeps the same P2P identity across restarts. It can also come from the `DEFRA_KEYRING_SECRET` environment variable.
 - `defradb.p2p.enabled` must be `true`, or the instance starts with networking off and nothing can be pushed to it. `defradb.p2p.bootstrap_peers` lists the Host clients to dial; [Connect your app to a Host](/build/how-to/connect-to-a-host/) shows where to get theirs.
@@ -64,7 +64,7 @@ if err != nil {
 shinzoConfig, err := config.LoadConfig(configPath)
 ```
 
-If you pass `nil` instead of a loaded config, the SDK builds a default config for you. That is fine for a quick experiment, but real apps should manage a file: the defaults cannot know your bootstrap peers.
+If you pass `nil` instead of a loaded config, the SDK builds a default config for you. That's fine for a quick experiment, but real apps should manage a file: the defaults can't know your bootstrap peers.
 
 ## Start and stop the embedded instance
 
@@ -90,7 +90,7 @@ Pick the `SchemaApplier` that matches how you use DefraDB:
 - `MockSchemaApplierThatSucceeds` applies nothing. Use it when DefraDB only holds Shinzo data, which is the common case.
 - `SchemaApplierFromFile` reads a schema from a file, and `SchemaApplierFromProvidedSchema` takes a schema string. Use either when your app also stores its own documents in the same DefraDB instance; your collections go in the schema, and View collections arrive later through subscriptions.
 
-Whatever you start, close it. `myNode.Close(context.Background())` shuts the node down cleanly, and `defer` is the easiest way to guarantee it runs.
+Whatever you start, close it. `myNode.Close(context.Background())` shuts the node down cleanly, and `defer` is the easiest way to make sure it runs.
 
 ## Subscribe to a View
 
@@ -125,7 +125,7 @@ Only the `Name`, `Sdl`, and optionally `Query` fields of the `View` struct matte
 
 `SubscribeTo` does two things. It applies the View's SDL to your embedded instance, so the collection exists locally and can be queried. And it registers that collection as a topic in DefraDB's passive replication, which is the signal that tells connected Host clients to push the View's documents to you.
 
-The "collection already exists" error is common and expected: it means you have subscribed to this View before, so the collection is already in place. It is informational and safe to ignore. Other errors are real and should not be swallowed.
+The "collection already exists" error is common and expected: it means you've subscribed to this View before, so the collection is already in place. It's informational and safe to ignore. Other errors are real and shouldn't be swallowed.
 
 ## Query the pushed data
 

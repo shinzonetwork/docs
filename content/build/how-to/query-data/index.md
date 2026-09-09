@@ -61,7 +61,7 @@ When you already know a document's `_docID`, pass it as the `docID` argument to 
 }
 ```
 
-Documents are also content-addressed. Passing a commit CID as the `cid` argument resolves the document at that exact version:
+Documents are content-addressed too. Pass a commit CID as the `cid` argument and you get the document back at exactly that version:
 
 ```graphql
 {
@@ -191,7 +191,7 @@ The total transaction count is the returned `transactionIndex` plus 1.
 
 ## Check who signed a document
 
-Every document carries signed commits. Selecting `_version` returns the CID and signature for each commit, which is the starting point for verifying data:
+Every document carries signed commits. Select `_version` to get the CID and signature for each commit, which is where verifying data starts:
 
 ```graphql
 {

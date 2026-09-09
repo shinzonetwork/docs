@@ -3,7 +3,7 @@ title = "Connect your app to a Host"
 description = "How to connect an application to a Shinzo Host: P2P connection strings for embedded Go apps and GraphQL endpoints for direct-query TypeScript apps."
 +++
 
-How you connect to a Host depends on your architecture. A local-first Go app embeds DefraDB and peers with Hosts over libp2p, so it needs connection strings. A direct-query TypeScript app talks to a Host's GraphQL endpoint over HTTP, so it needs an endpoint URL. Both start with the discovery step in [Find Views and Hosts](/build/how-to/find-views-and-hosts/), which explains where each value comes from.
+How you connect to a Host depends on your architecture. A local-first Go app embeds DefraDB and peers with Hosts over libp2p, so it needs connection strings. A direct-query TypeScript app talks to a Host's GraphQL endpoint over HTTP, so it needs an endpoint URL. Both start with the discovery step in [Find Views and Hosts](/build/how-to/find-views-and-hosts/), which shows where each value comes from.
 
 A Host client exposes four interfaces:
 
@@ -14,7 +14,7 @@ A Host client exposes four interfaces:
 | 9171 | libp2p peering |
 | 8080 | Health and self-description endpoints |
 
-Public Hosts vary in how they publish these, so always read the actual `connection_string` and `endpoint_address` from the registry rather than assuming ports.
+Public Hosts vary in how they publish these, so always read the actual `connection_string` and `endpoint_address` from the registry instead of assuming ports.
 
 ## Check a Host's health first
 
@@ -31,7 +31,7 @@ curl -s -H "Accept: application/json" http://<host>:8080/health | jq '{status, c
 }
 ```
 
-The `Accept: application/json` header asks for the JSON form; a browser gets an HTML status page instead. A `healthy` status with a recent `current_block` means the Host is peered and syncing. The same server answers `GET /registration` with the Host's DID, `connection_string`, and `endpoint_address`, which is handy for confirming a Host's identity before you trust its data.
+The `Accept: application/json` header asks for the JSON form; a browser gets an HTML status page instead. A `healthy` status with a recent `current_block` means the Host is peered and syncing. The same server answers `GET /registration` with the Host's DID, `connection_string`, and `endpoint_address`, which is a quick way to confirm a Host's identity before you trust its data.
 
 ## Embedded app (Go)
 
@@ -53,7 +53,7 @@ defradb:
     listen_addr: "/ip4/127.0.0.1/tcp/9171"
 ```
 
-The full multiaddr form `/ip4/<ip>/tcp/9171/p2p/<peerID>` always works, but it is not required. Bare IPs (`34.66.172.230`) and `ip:port` pairs (`34.66.172.230:9171`) also work, because the client discovers the peer ID during the connection handshake and fills it in for you. Listing several bootstrap peers makes the first connection more reliable, since registered Hosts come and go on a testnet.
+The full multiaddr form `/ip4/<ip>/tcp/9171/p2p/<peerID>` always works, but you don't need it. Bare IPs (`34.66.172.230`) and `ip:port` pairs (`34.66.172.230:9171`) also work, because the client discovers the peer ID during the connection handshake and fills it in for you. Listing a few bootstrap peers makes the first connection more reliable, since registered Hosts come and go on a testnet.
 
 Once peered, subscribe to a View and data starts arriving. [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/) covers that flow.
 
@@ -74,7 +74,7 @@ curl -s -X POST "http://34.66.172.230/api/v0/graphql" \
   -d '{"query": "{ Erc20Event(limit: 1) { blockNumber } }", "extensions": { ... } }'
 ```
 
-View queries carry a signature in the `extensions` envelope, and one billed query maps to one pool: a request may touch only one View collection, and its `pool_address` extension names the pool it bills to. When a Host enforces billing, rejections come back as plain errors: `403` if the request signature is missing, stale, or fails verification, and `402` if the signer's query balance is too low. [Query your first View](/build/tutorials/query-your-first-view/) builds the signing flow end to end.
+View queries carry a signature in the `extensions` envelope, and one billed query maps to one pool: a request can touch only one View collection, and its `pool_address` extension names the pool it bills to. When a Host enforces billing, rejections come back as plain errors: `403` if the request signature is missing, stale, or fails verification, and `402` if the signer's query balance is too low. [Query your first View](/build/tutorials/query-your-first-view/) builds the signing flow end to end.
 
 {% admonition(type="note") %}
 Billing enforcement is rolling out on the testnet, so some Hosts still answer unsigned queries. Signed requests are the supported interface either way; treat unsigned access as a convenience that will go away.
@@ -82,7 +82,7 @@ Billing enforcement is rolling out on the testnet, so some Hosts still answer un
 
 ## Prefer your own Host
 
-Public Hosts are shared infrastructure. If you want guaranteed availability, or you do not want a third party to see your queries at all, you can point everything above at a Host you run yourself. See [Use your own infrastructure](/build/how-to/use-your-own-infrastructure/).
+Public Hosts are shared infrastructure. If you want guaranteed availability, or you'd rather no third party see your queries at all, you can point everything above at a Host you run yourself. See [Use your own infrastructure](/build/how-to/use-your-own-infrastructure/).
 
 ## Need help
 
