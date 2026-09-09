@@ -150,16 +150,6 @@ pages = [
   "build/how-to/use-your-own-infrastructure/index.md",
 ]
 
-[[extra.sidebar]]
-section = "build"
-label = "Explanation"
-pages = [
-  "build/explanation/the-app-model/index.md",
-  "build/explanation/choosing-an-architecture/index.md",
-  "build/explanation/views-for-builders/index.md",
-  "build/explanation/attestation-as-a-query-filter/index.md",
-]
-
 # Run infrastructure
 [[extra.sidebar]]
 section = "run"

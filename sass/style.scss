@@ -1654,6 +1654,104 @@ body.mobile-menu-open {
   text-decoration: underline;
 }
 
+/* Section landing pages (templates/portal.html) */
+
+// The intro strip on a section landing page: same centered measure as the
+// homepage's .portal-intro, but sized like body copy rather than a hero.
+.portal-intro--landing {
+  font-size: 1.05rem;
+  text-align: center;
+  margin: 1rem auto 2rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+// Wrong-audience redirect box sits directly under the intro; the admonition
+// supplies the styling, this just constrains and centers it.
+.portal-redirect {
+  max-width: 65ch;
+  margin: 0 auto 2.5rem;
+
+  ul {
+    margin: 0;
+  }
+}
+
+// Three-across variant of the homepage's 2-col track grid.
+.portal-tracks--3col {
+  grid-template-columns: repeat(3, 1fr);
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Spacing rhythm between landing sections, plus the small uppercase section
+// heading (same treatment as .portal-quicklinks__heading).
+.portal-section {
+  max-width: 1200px;
+  margin: 2.5rem auto 0;
+}
+
+.portal-section__heading {
+  margin: 0 0 0.75rem;
+  font-family: var(--heading-font-family);
+  font-size: 0.8rem;
+  font-weight: var(--heading-font-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+// Grouped how-to columns on section landing pages.
+.portal-linkgrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem 2.5rem;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-linkgroup__heading {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.portal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    margin-bottom: 0.35rem;
+  }
+}
+
+// Muted, unlinked "coming soon" titles.
+.portal-soon {
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.portal-soon__badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--szo-border);
+  border-radius: 0.25rem;
+  font-family: var(--font-family-monospace);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
 /* Glossary tooltips (issue #350): dotted-underline terms tagged by
    glossary-tooltips.js, and the shared definition card it positions. */
 .glossary-term {

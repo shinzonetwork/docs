@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% import "macros/sidebar.html" as sidebar %}
+
+{# Landing ("portal") template for section landing pages: hero-style intro,
+   featured track cards, grouped link lists, and quick links. Page-specific
+   copy lives in the page's frontmatter (title, description) and markdown
+   body (rendered as the intro strip); the layout below is shared. #}
+
+{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
+
+{% block body %}
+<main class="main-wrapper">
+  <div class="docs-layout">
+    <aside class="theme-doc-sidebar-container">
+      {{ sidebar::render(current=page.path) }}
+    </aside>
+
+    <div class="docs-content docs-content--portal">
+      <article class="docItemCol markdown">
+
+        <h1 class="doc-title">{{ page.title }}</h1>
+
+        {# Intro strip: the page's markdown body, centered. #}
+        <div class="portal-intro portal-intro--landing">
+          {{ page.content | safe }}
+        </div>
+
+        {# Wrong-audience redirect: bounce non-developers early. #}
+        <div class="admonition admonition--note portal-redirect">
+          <div class="admonition__title">Not what you're looking for?</div>
+          <div class="admonition__content">
+            <ul>
+              <li>To run a Generator or Host client, see <a href="/run/get-started/">Run infrastructure</a>.</li>
+              <li>For background on what Shinzo is and how it works, see <a href="/understand/what-is-shinzo/">Understand</a>.</li>
+            </ul>
+          </div>
+        </div>
+
+        {# Primary developer tracks #}
+        <section class="portal-section" aria-label="Choose your path">
+          <h2 class="portal-section__heading">Choose your path</h2>
+          <div class="portal-tracks portal-tracks--3col">
+            <a class="portal-card portal-card--featured" href="/build/tutorials/query-your-first-view/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <h3 class="portal-card__title">Query a View</h3>
+              <p class="portal-card__desc">Send signed GraphQL queries to live Views on the testnet from a TypeScript app. No infrastructure required.</p>
+            </a>
+
+            <a class="portal-card portal-card--featured" href="/build/tutorials/create-your-first-view/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              </div>
+              <h3 class="portal-card__title">Create a View</h3>
+              <p class="portal-card__desc">Define the data your app needs, transform it with lenses, and deploy it with Viewkit or Shinzo Studio.</p>
+            </a>
+
+            <a class="portal-card portal-card--featured" href="/build/tutorials/build-a-local-first-app/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <h3 class="portal-card__title">Build a local-first app</h3>
+              <p class="portal-card__desc">Embed the app-sdk in a Go app, subscribe to Views, and query attested data pushed straight to your app.</p>
+            </a>
+          </div>
+        </section>
+
+        {# Tutorials #}
+        <section class="portal-section" aria-label="Tutorials">
+          <h2 class="portal-section__heading">Tutorials</h2>
+          <ul class="portal-list">
+            <li><a href="/build/tutorials/query-your-first-view/">Query your first View</a></li>
+            <li><a href="/build/tutorials/create-your-first-view/">Create your first View</a></li>
+            <li><a href="/build/tutorials/build-a-local-first-app/">Build a local-first app</a></li>
+            <li><a href="/build/tutorials/spinup-a-local-devnet/">Spinup a local devnet</a></li>
+          </ul>
+        </section>
+
+        {# How-to guides, grouped by task #}
+        <section class="portal-section" aria-label="How-to guides">
+          <h2 class="portal-section__heading">How-to guides</h2>
+          <div class="portal-linkgrid">
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Read data</h3>
+              <ul class="portal-list">
+                <li><a href="/build/how-to/find-views-and-hosts/">Find Views and Hosts</a></li>
+                <li><a href="/build/how-to/connect-to-a-host/">Connect your app to a Host</a></li>
+                <li><a href="/build/how-to/query-data/">Query data</a></li>
+                <li><a href="/build/how-to/subscribe-to-views/">Subscribe to Views with the app-sdk</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Verify your data</h3>
+              <ul class="portal-list">
+                <li><a href="/build/how-to/verify-data/">Verify data with signatures and CIDs</a></li>
+                <li><a href="/build/how-to/configure-attestation-thresholds/">Configure attestation thresholds</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Create Views</h3>
+              <ul class="portal-list">
+                <li><a href="/build/how-to/view-recipes/">View recipes</a></li>
+                <li><a href="/build/how-to/use-shinzo-studio/">Create and deploy Views in Shinzo Studio</a></li>
+                <li><a href="/build/how-to/write-a-lens/">Write and test a custom lens</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Run your own setup</h3>
+              <ul class="portal-list">
+                <li><a href="/build/tutorials/spinup-a-local-devnet/">Spinup a local devnet</a></li>
+                <li><a href="/build/how-to/use-your-own-infrastructure/">Use your own infrastructure</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {# Explanation pages are stubs; listed unlinked until they're written. #}
+        <section class="portal-section" aria-label="Explanation">
+          <h2 class="portal-section__heading">Explanation <span class="portal-soon__badge">Coming soon</span></h2>
+          <ul class="portal-list portal-soon">
+            <li>The Shinzo app model</li>
+            <li>Choosing an app architecture</li>
+            <li>Views for builders</li>
+            <li>Attestation as a query filter</li>
+          </ul>
+        </section>
+
+        {# Quick links #}
+        <section class="portal-quicklinks" aria-label="Quick links">
+          <h2 class="portal-quicklinks__heading">Quick links</h2>
+          <ul class="portal-quicklinks__list">
+            <li><a class="portal-quicklinks__link" href="{{ config.extra.github_url }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a class="portal-quicklinks__link" href="/understand/get-help/">Get help</a></li>
+            <li><a class="portal-quicklinks__link" href="/reference/changelog/">Changelog</a></li>
+            <li><a class="portal-quicklinks__link" href="/reference/glossary/">Glossary</a></li>
+          </ul>
+        </section>
+
+      </article>
+    </div>
+  </div>
+</main>
+{% endblock body %}
+
+{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
