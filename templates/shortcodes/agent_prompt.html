@@ -1,0 +1,10 @@
+{# Usage: {{ agent_prompt(goal="bring up a Generator client and a Host on one machine") }}
+   Renders the "Using an agent?" callout at the top of a guide. The curl target
+   is the AGENTS.md instruction sheet co-located with this page (an
+   AGENTS.md file next to its index.md; Zola ignores it via ignored_content in
+   config.toml, and scripts/copy-agents-md.sh copies it into the output so it
+   is served at <this page's URL>/AGENTS.md). `goal` completes the sentence
+   "Run `curl -sL <url>` and use the returned instructions to <goal>." #}
+{%- set goal = goal | default(value="complete this guide") -%}
+{%- set agents_url = page.permalink ~ "AGENTS.md" -%}
+<aside class="agent-prompt"><span class="agent-prompt__eyebrow">Using an agent? Try this prompt</span><pre class="agent-prompt__code">Run <code class="agent-prompt__cmd">curl -sL {{ agents_url }}</code> and use the returned instructions to {{ goal }}.</pre><div class="agent-prompt__actions"><button type="button" class="agent-prompt__copy-btn">Copy prompt</button></div></aside>

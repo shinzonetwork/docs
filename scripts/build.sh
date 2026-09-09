@@ -92,6 +92,9 @@ main() {
 
       echo "Generating llms.txt outputs..." >&2
       "$SCRIPT_DIR/generate-llms.sh"
+
+      echo "Copying agent instruction sheets..." >&2
+      "$SCRIPT_DIR/copy-agents-md.sh"
       ;;
     check)
       echo "Checking site with Zola..." >&2

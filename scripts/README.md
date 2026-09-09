@@ -20,7 +20,7 @@ Runs a production build:
 
 1. Ensures `zola` is available.
 1. Runs `zola build` to generate `./public`.
-1. Runs post-build steps (currently `generate-llms.sh`).
+1. Runs post-build steps (currently `generate-llms.sh` and `copy-agents-md.sh`).
 
 Zola installation behavior:
 
@@ -61,3 +61,13 @@ Useful environment variables:
 
 - `OUTPUT_DIR`: where to write `llms.txt` and `llms-full.txt` (default: `./public`).
 - `BASE_URL`: base URL for generated links (default: `https://docs.shinzo.network`).
+
+### copy-agents-md.sh
+
+Copies the agent instruction sheets (`AGENTS.md` files co-located with a page's `index.md`) into the build output directory (defaults to `./public`), where the `{{ agent_prompt() }}` shortcode points AI agents at them — for example `content/run/get-started/AGENTS.md` is served at `https://docs.shinzo.network/run/get-started/AGENTS.md`.
+
+Zola itself skips these files (`ignored_content` in `config.toml`), so the copy only happens through this script. It also fails the build when a page calls `{{ agent_prompt() }}` without a co-located `AGENTS.md`, or has an `AGENTS.md` it never references. Note that `zola serve` does not run post-build steps, so the curl URL 404s in local development; verify it against a `zola build` plus this script.
+
+Useful environment variables:
+
+- `OUTPUT_DIR`: where to copy the sheets (default: `./public`).

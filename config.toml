@@ -11,6 +11,11 @@ minify_html = false
 # Generate redirect/alias pages, taxonomy-free.
 generate_feeds = false
 
+# Co-located agent instruction sheets (AGENTS.md next to a page's index.md) are
+# not pages. Zola skips them here; scripts/copy-agents-md.sh copies them into
+# the output so agents can curl them at <page-url>/AGENTS.md.
+ignored_content = ["**/AGENTS.md"]
+
 [link_checker]
 internal_level = "error"
 external_level = "warn"

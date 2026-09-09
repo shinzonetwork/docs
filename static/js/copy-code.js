@@ -75,6 +75,8 @@
       var code = pre.querySelector("code");
       if (code && code.getAttribute("data-lang") === "output") return;
       if (pre.closest(".mermaid-container")) return;
+      // The agent callout renders its own "Copy prompt" button (agent-prompt.js).
+      if (pre.closest(".agent-prompt")) return;
       addButton(pre);
     });
   }

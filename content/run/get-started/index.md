@@ -6,6 +6,8 @@ description = "Bring up a Generator client and a Host on one machine, peer them 
 mermaid = true
 +++
 
+{{ agent_prompt(goal="bring up a Generator client and a Host on this machine, peer them, and run a GraphQL query against the result") }}
+
 Run a Shinzo Generator client and a Host client on the same machine, peer them over libp2p, and query chain data through the Host client's GraphQL API. If your node is already reachable, the whole thing takes about ten minutes.
 
 When you're done you'll have:

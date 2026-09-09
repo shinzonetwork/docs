@@ -1001,6 +1001,72 @@ pre {
   }
 }
 
+/* Agent prompt callout ({{ agent_prompt() }} shortcode) */
+// Tip-tinted panel offering a curl prompt that loads the page's co-located
+// AGENTS.md instruction sheet into an AI agent. The "Copy prompt" button is
+// wired up by agent-prompt.js; the <pre> is skipped by copy-code.js.
+.agent-prompt {
+  border: 1px solid var(--szo-border);
+  border-left: 4px solid var(--admonition-tip-border);
+  background: var(--admonition-tip-bg);
+  padding: 1rem 1rem 0.875rem;
+  margin: 1.5rem 0;
+
+  &__eyebrow {
+    display: block;
+    font-family: var(--font-family-monospace);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--admonition-tip-title);
+    margin-bottom: 0.5rem;
+  }
+
+  // Sits inside the tinted panel, so a lighter border than the global 2px.
+  &__code {
+    margin: 0 0 0.75rem;
+    border-width: 1px;
+    padding: 0.75rem 1rem;
+    // Wrap long URLs instead of scrolling, unlike ordinary code blocks.
+    overflow-x: visible;
+    overflow-wrap: anywhere;
+
+    code {
+      color: var(--code-token-constant);
+    }
+  }
+
+  &__copy-btn {
+    padding: 0.25rem 0.6rem;
+    font-family: var(--font-family-monospace);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--foreground);
+    background: var(--background);
+    border: 1px solid var(--szo-border);
+    border-radius: 0.35rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 1px;
+    }
+
+    &--copied {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+  }
+}
+
 /* Mermaid containers */
 .mermaid-container {
   margin: 1.5rem 0;
