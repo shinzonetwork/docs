@@ -191,26 +191,22 @@ The total transaction count is the returned `transactionIndex` plus 1.
 
 ## Check who signed a document
 
-Every document carries signed commits. Select `_version` to get the CID and signature for each commit, which is where verifying data starts:
+Each document exposes the CIDs of its commits in `_version`. The `signature` field on those entries is part of the schema but is not populated today: Generator clients sign per block rather than per document. To see who signed, query the `BlockSignature` collection for the block your document belongs to:
 
 ```graphql
 {
-  <Chain>__<Network>__Block(limit: 10, order: { number: DESC }) {
-    number
-    _docID
-    _version {
-      cid
-      signature {
-        identity
-        value
-        type
-      }
-    }
+  <Chain>__<Network>__BlockSignature(filter: { blockNumber: { _eq: 25938055 } }) {
+    blockNumber
+    blockHash
+    merkleRoot
+    signatureIdentity
+    signatureType
+    signatureValue
   }
 }
 ```
 
-The `identity` field is the public key of the Generator client that signed the commit. For commit metadata, attestation records, and CID navigation, see [Verify data with signatures and CIDs](/build/how-to/verify-data/).
+`signatureIdentity` is the public key of the Generator client that produced the block, and `signatureValue` is its ES256K signature over the block's Merkle root of document CIDs. For what these signatures cover, attestation records, and CID navigation, see [Verify data with signatures and CIDs](/build/how-to/verify-data/).
 
 ## Need help
 

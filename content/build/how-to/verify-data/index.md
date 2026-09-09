@@ -3,7 +3,7 @@ title = "Verify data with signatures and CIDs"
 description = "How to verify who signed your data and navigate attestations, commits, and documents via CIDs."
 +++
 
-Every document a Shinzo client serves is content-addressed and signed, so you can check where a piece of data came from instead of just trusting the server that returned it. This page covers the verification queries: reading signatures off documents, tracing documents back to their attestations, and resolving CIDs to commits and documents.
+Every document a Shinzo client serves is content-addressed, and every block of documents is signed by the Generator client that produced it, so you can check where a piece of data came from instead of just trusting the server that returned it. This page covers the verification queries: reading block signatures, tracing documents back to their attestations, and resolving CIDs to commits and documents.
 
 The examples query primitive collections through a Host client, and the same queries work in a local-first app's embedded DefraDB instance. Both surfaces share the query language, as covered in [Query data](/build/how-to/query-data/).
 
@@ -13,7 +13,7 @@ Collection names are prefixed with `<Chain>__<Network>__`, derived from the `cha
 
 ## Check who signed a document
 
-Every document carries signed commits in its `_version` field. Each entry has the commit's `cid` and a `signature` with the signer's `identity` (a public key), the signature `value`, and the signature `type`.
+Each document exposes the CIDs of its commits in `_version`. The `signature` field on those entries is part of the schema but is not populated today: Generator clients sign per block rather than per document. Treat `_version` as a source of CIDs:
 
 ```graphql
 {
@@ -37,16 +37,12 @@ Every document carries signed commits in its `_version` field. Each entry has th
   "data": {
     "<Chain>__<Network>__Block": [
       {
-        "number": 23902272,
-        "_docID": "bae-91bd3f16-ccb1-5c35-b098-45672ee6fd48",
+        "number": 25938061,
+        "_docID": "bae-5053a533-80a4-52ec-b6ef-2908369dac26",
         "_version": [
           {
-            "cid": "bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy",
-            "signature": {
-              "identity": "0348621aed3cb78ade074e86a3d650dfdfad0c110b274c0633b331d1b0a41ddd99",
-              "type": "ES256K",
-              "value": "MEUCIQCjfh3m0RNv4j094aW5YPEeF+GCMFWEGy0hiAcga7HKbQIgc54AV7WSdXZVyGH7jOuLcXJ6w5fDQSUdrlzgZhDkBTw="
-            }
+            "cid": "bafyreih4na577644dgr5537nfoojhmpxlm35mfqsbyj5mf3mgvl4wf6hbi",
+            "signature": null
           }
         ]
       }
@@ -55,7 +51,39 @@ Every document carries signed commits in its `_version` field. Each entry has th
 }
 ```
 
-The `identity` is the public key of the Generator client that signed the commit. Comparing identities across documents tells you whether two pieces of data came from the same Generator client.
+The signature you can check today lives at the block level. Every block of documents comes with a `BlockSignature` document: `signatureIdentity` is the public key of the Generator client that produced the block, `signatureType` is the scheme (`ES256K`), and `signatureValue` signs the block's `merkleRoot`:
+
+```graphql
+{
+  <Chain>__<Network>__BlockSignature(limit: 1, order: { blockNumber: DESC }) {
+    blockNumber
+    blockHash
+    merkleRoot
+    signatureType
+    signatureIdentity
+    signatureValue
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "<Chain>__<Network>__BlockSignature": [
+      {
+        "blockNumber": 25938055,
+        "blockHash": "0x12e96fba0f8c4baf209baee487b20233776c7c69deb0208e22c2f6c6534aa788",
+        "merkleRoot": "7989b9049a5a87f2bea62f8ccf48e90a272ed952d10f93e260fd1628d04410d3",
+        "signatureType": "ES256K",
+        "signatureIdentity": "025b33affa6b716c8fd6ac8c176c9dde5fac85aa222b0d6a3c58a6283bdf042c8b",
+        "signatureValue": "3045022100bc7fcc72a8e33332a56dd84a720a04752d179a74a8426b5cd1efcb509b01fac102202dfa24bd7cfc28afe162e4e3a7477d13e9115f8483b0e55c278f92dc2bf8aa7b"
+      }
+    ]
+  }
+}
+```
+
+Comparing `signatureIdentity` across blocks tells you whether two blocks came from the same Generator client. To check a specific document, filter `BlockSignature` on its block's `blockNumber`. [Verify a whole block at once](#verify-a-whole-block-at-once) explains what one block-level signature covers.
 
 ## Trace a document back to its attestations
 
@@ -97,7 +125,7 @@ The fields matter for different reasons. `CIDs` links the record to the signed c
 
 A CID from `_version` or from an attestation record resolves in two directions.
 
-Query `_commits` for the commit-level metadata, including the signature over that exact commit:
+Query `_commits` for the commit-level metadata:
 
 ```graphql
 {
@@ -105,12 +133,7 @@ Query `_commits` for the commit-level metadata, including the signature over tha
     cid
     docID
     fieldName
-    schemaVersionId
-    signature {
-      type
-      value
-      identity
-    }
+    collectionVersionId
   }
 }
 ```
@@ -130,11 +153,11 @@ Or pass the same CID as the `cid` argument on the collection to resolve the docu
 }
 ```
 
-Because the CID is derived from the content, the document it resolves to is exactly the version that was signed. A Host that altered the data would produce a different CID.
+Because the CID is derived from the content, the document it resolves to is exactly the version that was committed. A Host that altered the data would produce a different CID, which would no longer match the block's signed Merkle root.
 
 ## Verify a whole block at once
 
-Signing every document individually would be slow, so Generator clients also sign per block. After writing a block's documents, the Generator client computes a Merkle root over their CIDs, signs the root, and writes a `BlockSignature` document. Snapshot signatures do the same across block ranges for faster initial sync. Verifying one block-level signature covers every primitive document in that block. The two-level Merkle structure is laid out in the [architecture reference](/reference/architecture/), and [Attestation](/understand/core-concepts/attestation/) explains how Host clients turn these signatures into attestation records.
+Signing every document individually would be slow, so Generator clients sign per block. After writing a block's documents, the Generator client computes a Merkle root over their CIDs, signs the root, and writes a `BlockSignature` document. Snapshot signatures do the same across block ranges for faster initial sync. Verifying one block-level signature covers every primitive document in that block. The two-level Merkle structure is laid out in the [architecture reference](/reference/architecture/), and [Attestation](/understand/core-concepts/attestation/) explains how Host clients turn these signatures into attestation records.
 
 {% admonition(type="note") %}
 Signatures and CIDs prove who produced your data and that it was not altered in transit. They do not prove completeness (that no matching documents were withheld from your result) or freshness (that you are seeing the latest state). Closing those gaps is roadmap work; see [Privacy](/understand/core-concepts/privacy/) for how Shinzo frames the remaining trust assumptions.
