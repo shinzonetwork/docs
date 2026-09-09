@@ -14,7 +14,7 @@ The attestation helpers described here live on the `Feature/attestationFilter` b
 Attestation records are segmented per View, so your app only receives records for the data it cares about. Opt in per View with `AddAttestationRecordCollection`:
 
 ```go
-import "github.com/shinzonetwork/shinzo-app-sdk/pkg/attestation"
+import "github.com/shinzonetwork/app-sdk/pkg/attestation"
 
 err := attestation.AddAttestationRecordCollection(context.Background(), myNode, myView.Name)
 if err != nil {
