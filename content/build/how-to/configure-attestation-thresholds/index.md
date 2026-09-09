@@ -9,6 +9,14 @@ Shinzo data is signed by the Generator clients that produced it, and Host client
 The attestation helpers described here live on the `Feature/attestationFilter` branch of the app-sdk and are not merged into `main` yet. They also depend on pushed replication, which is currently blocked by the DefraDB version mismatch described in [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/). This page documents the API as implemented on that branch so you can build against it ahead of the merge.
 {% end %}
 
+The branch name doesn't work as a `go get` version (Go rejects the uppercase letters), so pin the branch head by commit SHA:
+
+```shell
+go get github.com/shinzonetwork/app-sdk@29c4fd673ae2cdee6bb4ed0254e83b51c1db4e81
+```
+
+A `go mod replace` against a local clone of the branch works too.
+
 ## Add attestation records for a View
 
 Attestation records are segmented per View, so your app only receives records for the data it cares about. Opt in per View with `AddAttestationRecordCollection`:
