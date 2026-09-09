@@ -176,11 +176,11 @@ Set `GETH_API_KEY_TYPE` to the header name your provider expects.
 
 The following ports must be exposed and available on the machine.
 
-| Port | Service |
-| --- | --- |
-| `8080` | Health endpoint (`/health`), metrics (`/metrics`), and registration (`/registration`). |
-| `9171` | DefraDB P2P. |
-| `9181` | DefraDB GraphQL API. |
+| Port | Service | Notes |
+| --- | --- | --- |
+| `8080` | Health (`/health`), metrics (`/metrics`), and registration (`/registration`). | Published by the `docker run` above (`-p 8080:8080`). Open inbound TCP `8080` in your firewall so the public Generators dashboard can probe `/health` and show your Generator as online. If `8080` isn't reachable from the internet, your Generator shows as offline on the dashboard even while it's running fine. |
+| `9171` | DefraDB P2P. | Must be reachable from the internet. Open or forward this port. |
+| `9181` | DefraDB GraphQL API. | |
 
 ## Troubleshooting
 

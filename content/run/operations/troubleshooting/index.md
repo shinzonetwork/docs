@@ -99,6 +99,24 @@ docker-compose -f ~/docker-compose.yml start
 
 The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.
 
+### My Generator appears offline in the dashboard but is still running
+
+The dashboard determines if a node is online/offline by probing `http://<your-server-ip>:8080/health`, using the IP it reads from your registered connection string (the `/ip4/<IP>/...` part of your libp2p multiaddr). If port `8080` isn't reachable from the internet, the probe fails and your Generator shows as offline even though `docker ps` reports the container as healthy and the node is up and committing blocks normally.
+
+This is the most common reason a running Generator appears offline, and it almost always comes down to `8080` not being published or opened:
+
+- **Docker:** the default `docker run` in [Install](/run/run-a-generator/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
+- **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
+- **Reverse proxy:** if you put nginx in front (as in the [Nginx with snapshots](/run/run-a-generator/deployment-examples/nginx-with-snapshots/) example), make sure the dashboard's plaintext probe to `http://<your-server-ip>:8080/health` reaches the Generator's health server on port `8080`. If your proxy only listens on a TLS port such as `443`, also publish `8080` directly so the probe can reach it.
+
+Confirm the fix by running the same probe the dashboard runs, from outside your server:
+
+```shell
+curl -s http://<your-server-ip>:8080/health | jq -r '.status'
+```
+
+A healthy Generator returns `healthy`. A connection refused or timeout means `8080` still isn't reachable from outside. The endpoint returns `"unhealthy"` (HTTP 503) only while the Generator's DefraDB node or processing pipeline is still initializing. That clears once startup finishes.
+
 ## Host client
 
 ### What is the GitHub link for the Shinzo Host?
