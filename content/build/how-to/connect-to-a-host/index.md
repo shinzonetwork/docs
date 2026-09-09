@@ -73,10 +73,20 @@ The endpoint already includes the API path, so you POST straight to it:
 ```shell
 curl -s -X POST "http://34.66.172.230/api/v0/graphql" \
   -H "Content-Type: application/json" \
-  -d '{"query": "{ Erc20Event(limit: 1) { blockNumber } }", "extensions": { ... } }'
+  -d '{
+    "query": "{ Erc20Event(limit: 1) { blockNumber } }",
+    "extensions": {
+      "request_signature": "0x<signature>",
+      "query_hash": "0x<query-hash>",
+      "nonce": "0x<random-32-bytes>",
+      "request_timestamp": 1788433155,
+      "pool_address": "0x<pool-address>",
+      "fanout": 1
+    }
+  }'
 ```
 
-View queries carry a signature in the `extensions` envelope, and one billed query maps to one pool: a request can touch only one View collection, and its `pool_address` extension names the pool it bills to. When a Host enforces billing, rejections come back as plain errors: `403` if the request signature is missing, stale, or fails verification, and `402` if the signer's query balance is too low. [Query your first View](/build/tutorials/query-your-first-view/) builds the signing flow end to end.
+View queries carry a signature in the `extensions` envelope, and one billed query maps to one pool: a request can touch only one View collection, and its `pool_address` extension names the pool it bills to. The `0x<...>` values above are placeholders — the signature commits to this exact query, a fresh nonce, and a timestamp, so no static example can be valid; the tutorial generates a fresh envelope on every run. When a Host enforces billing, rejections come back as plain errors: `403` if the request signature is missing, stale, or fails verification, and `402` if the signer's query balance is too low. [Query your first View](/build/tutorials/query-your-first-view/) builds the signing flow end to end.
 
 {% admonition(type="note") %}
 Billing enforcement is rolling out on the testnet, so some Hosts still answer unsigned queries. Signed requests are the supported interface either way; treat unsigned access as a convenience that will go away.
