@@ -13,7 +13,7 @@ Pushed replication is currently blocked by a version mismatch. The app-sdk pins 
 
 ## Before you start
 
-- Go 1.25 or later.
+- Go 1.25.x. Go 1.26 currently fails inside a transitive dependency (`bytedance/sonic`), and the SDK pins `go 1.25.5`.
 - A C compiler such as gcc. DefraDB pulls in a native module, so builds need CGO enabled. On macOS and most Linux machines with a standard Go install this works out of the box.
 - About 15 minutes.
 
