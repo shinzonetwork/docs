@@ -2,14 +2,14 @@
 # Headless QA for glossary tooltips (issue #350): parses the built HTML in
 # public/, re-implements the same tag-skip rules the JS uses, and asserts the
 # acceptance criteria. Run from repo root after `zola build`:
-#   python3 qa-tooltips.py
+#   python3 scripts/qa-tooltips.py
 import json
 import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).parent.parent
 GLOSSARY = json.loads((ROOT / "data/glossary.json").read_text())["terms"]
 DEFINED = {t["term"].lower(): t["definition"] for t in GLOSSARY if t.get("definition")}
 

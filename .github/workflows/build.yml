@@ -21,3 +21,6 @@ jobs:
 
       - name: Check internal links
         run: ./scripts/check-links.sh public scripts/link-allowlist.txt
+
+      - name: Check glossary tooltips
+        run: python3 scripts/qa-tooltips.py
