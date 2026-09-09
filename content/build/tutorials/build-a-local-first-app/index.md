@@ -3,7 +3,7 @@ title = "Build a local-first app"
 description = "Tutorial: build a Go app that embeds DefraDB via the app-sdk, subscribes to a View, and queries pushed data locally."
 +++
 
-A local-first app gets its blockchain data pushed to it. You embed a DefraDB instance inside your Go app with the app-sdk, subscribe to a View, and Host clients push the View's pre-processed data to your app over P2P. After that, queries run against your local copy: no per-query API calls, and the data is verifiable because every document carries signatures from the Generator clients that wrote it. For the reasoning behind this model, see [The Shinzo app model](/build/explanation/the-app-model/).
+A local-first app gets its blockchain data pushed to it. You embed a DefraDB instance inside your Go app with the app-sdk, subscribe to a View, and Host clients push the View's pre-processed data to your app over P2P. After that, queries run against your local copy: no per-query API calls, and the data is verifiable because every block of documents is signed by the Generator client that produced it. For the reasoning behind this model, see [The Shinzo app model](/build/explanation/the-app-model/).
 
 By the end of this tutorial you have a running Go program that subscribes to a View hosted on the public testnet and answers queries locally. You do not need a wallet, and you do not run a Generator or Host client yourself. The only setup is the Go toolchain.
 
