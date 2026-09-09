@@ -165,6 +165,7 @@ section = "run"
 label = "Quickstart"
 pages = [
   "run/get-started/index.md",
+  "run/get-started/add-testnet-to-wallet.md",
 ]
 
 [[extra.sidebar]]
