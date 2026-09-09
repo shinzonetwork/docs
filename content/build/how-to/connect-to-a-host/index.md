@@ -53,7 +53,7 @@ defradb:
     listen_addr: "/ip4/127.0.0.1/tcp/9171"
 ```
 
-The full multiaddr form `/ip4/<ip>/tcp/9171/p2p/<peerID>` always works, but you don't need it. Bare IPs (`34.66.172.230`) and `ip:port` pairs (`34.66.172.230:9171`) also work, because the client discovers the peer ID during the connection handshake and fills it in for you. Listing a few bootstrap peers makes the first connection more reliable, since registered Hosts come and go on a testnet. Pick bootstrap peers from Hosts shown as Online in the [Explorer](https://explorer.shinzo.network/shinzohub/hosts).
+Use the full multiaddr form `/ip4/<ip>/tcp/9171/p2p/<peerID>` exactly as the registry returns it. Bare IPs (`34.66.172.230`), `ip:port` pairs (`34.66.172.230:9171`), and multiaddrs without a `/p2p/<peerID>` suffix do not work here: the embedded app passes each entry straight to DefraDB, which requires the peer ID, and the app ends up connected to 0 peers. (The peer-ID auto-discovery you may have read about is a Host client feature; it doesn't apply to an app-sdk config.) Listing a few bootstrap peers makes the first connection more reliable, since registered Hosts come and go on a testnet. Pick bootstrap peers from Hosts shown as Online in the [Explorer](https://explorer.shinzo.network/shinzohub/hosts).
 
 Once peered, subscribe to a View and data starts arriving. [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/) covers that flow.
 
