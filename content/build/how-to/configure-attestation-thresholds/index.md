@@ -74,31 +74,27 @@ Make sure you've added the attestation record collection for any View you query 
 
 ## Debug an empty result set
 
-If a filtered query returns nothing but the unfiltered equivalent has rows, the filter is doing its job and your data is under-attested. Inspect the records directly to see why. An attestation record ties one of your View's documents to the evidence behind it:
+If a filtered query returns nothing but the unfiltered equivalent has rows, the filter is doing its job and your data is under-attested. Inspect the records directly to see why. Each View you opt in with `AddAttestationRecordCollection` gets its own collection in your app, `AttestationRecord_<ViewName>`, with three fields:
 
 - `attested_doc` is the DocID of the View document being attested to.
 - `source_doc` links back to the source document the attestation came from.
 - `CIDs` are the signed commit CIDs backing the attestation.
-- `doc_type` names the attested collection.
-- `vote_count` is a CRDT counter that Host clients increment as they observe more Generator clients signing the same data.
 
 Query the records for the document that went missing:
 
 ```graphql
 {
-  <Chain>__<Network>__AttestationRecord(
+  AttestationRecord_<ViewName>(
     filter: { attested_doc: { _eq: "<doc-id>" } }
   ) {
     attested_doc
     source_doc
     CIDs
-    doc_type
-    vote_count
   }
 }
 ```
 
-If `vote_count` (or the number of records) is below your threshold, the filter correctly excluded the document. Lower the threshold, or wait for more Generator clients to attest. Keep in mind attestations only accumulate while Generator clients are actually signing the underlying data, so a quiet View on a testnet can legitimately sit at a low count.
+That is a different collection from the one on a Host. The Host-side `<Chain>__<Network>__AttestationRecord` collection carries two more fields, `doc_type` and `vote_count`, and on Hosts today every record is block-level: `doc_type` is `Block`, and `attested_doc` holds the block's `block:<height>:<merkleRoot>` key rather than a document DocID. Until View-keyed records exist, a DocID filter matches nothing and the helpers drop every result whatever the threshold, so treat empty output as expected for now rather than a bug in your query.
 
 To check signatures and CIDs by hand, see [Verify data with signatures and CIDs](/build/how-to/verify-data/). For the reasoning behind per-query trust, see [Attestation as a query filter](/build/explanation/attestation-as-a-query-filter/), and [Attestation](/understand/core-concepts/attestation/) for the platform-level picture.
 
