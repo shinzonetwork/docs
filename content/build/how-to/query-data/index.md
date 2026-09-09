@@ -49,7 +49,7 @@ When you already know a document's `_docID`, pass it as the `docID` argument to 
 
 ```graphql
 {
-  <Chain>__<Network>__Transaction(docID: "bae-25fb059c-f232-5305-8a5d-0162f01e43e6") {
+  <Chain>__<Network>__Transaction(docID: "bae-6ab5ece1-26a9-529d-a8af-3d10557672af") {
     _docID
     blockHash
     blockNumber
@@ -65,7 +65,7 @@ Documents are content-addressed too. Pass a commit CID as the `cid` argument and
 
 ```graphql
 {
-  <Chain>__<Network>__Transaction(cid: "bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy") {
+  <Chain>__<Network>__Transaction(cid: "bafyreifaiu62wsgf64tdgdeejyvnhuwio7yvkxfufadxe5yfjaf5w4cf6u") {
     _docID
     blockHash
     blockNumber
@@ -82,20 +82,20 @@ Documents are content-addressed too. Pass a commit CID as the `cid` argument and
   "data": {
     "<Chain>__<Network>__Transaction": [
       {
-        "_docID": "bae-25fb059c-f232-5305-8a5d-0162f01e43e6",
-        "blockHash": "0x9ea35b3bd9e71c57617cc30394b22f607b735f2eea7a0db974cf02ad54de98fb",
-        "blockNumber": 23902272,
-        "from": "0x654a6BCe2C6F0aF68eAdCFEaD06bB49C398B3F98",
-        "hash": "0x61b79fc417ef183e1798681c59481410dd79f919d11806a6e7e77ebd0a744f78",
-        "to": "0x677f857da5e7C42b823655290cc40ff401e138D3",
-        "value": "1000000000"
+        "_docID": "bae-6ab5ece1-26a9-529d-a8af-3d10557672af",
+        "blockHash": "0x118954c3455addda1889a648d56faf8a7a2ab67909b473b06c7a9cc1981e73bc",
+        "blockNumber": 25937618,
+        "from": "0xf30b758081001716bBF99688C5233F5C74530eb0",
+        "hash": "0x06b7ab30c7d5d705ffa142acba266de475013a9e5617f1b87903663a98760c73",
+        "to": "0xf15A1F564669d29045D50698778DD7dFA1e1D07a",
+        "value": "7341990419000"
       }
     ]
   }
 }
 ```
 
-You usually get a CID from a document's `_version` field or from an attestation record. [Verify data with signatures and CIDs](/build/how-to/verify-data/) covers that flow.
+You usually get a CID from a document's `_version` field or from an attestation record. [Verify data with signatures and CIDs](/build/how-to/verify-data/) covers that flow. The example DocIDs and CIDs on this page come from a live Host; Hosts prune old data over time, so if one no longer resolves, substitute a current one.
 
 ## Filter by field values
 

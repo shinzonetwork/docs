@@ -121,13 +121,13 @@ The fields tie the record back to the block's signature. `source_doc` lists the 
 
 ## Resolve a CID to its commit or document
 
-A CID from `_version` or from an attestation record resolves in two directions.
+A CID from `_version` or from an attestation record resolves in two directions. The example values on this page come from a live Host; Hosts prune old data over time, so if an example CID no longer resolves, substitute a current one.
 
 Query `_commits` for the commit-level metadata:
 
 ```graphql
 {
-  _commits(cid: "bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy") {
+  _commits(cid: "bafyreifaiu62wsgf64tdgdeejyvnhuwio7yvkxfufadxe5yfjaf5w4cf6u") {
     cid
     docID
     fieldName
@@ -140,7 +140,7 @@ Or pass the same CID as the `cid` argument on the collection to resolve the docu
 
 ```graphql
 {
-  <Chain>__<Network>__Transaction(cid: "bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy") {
+  <Chain>__<Network>__Transaction(cid: "bafyreifaiu62wsgf64tdgdeejyvnhuwio7yvkxfufadxe5yfjaf5w4cf6u") {
     _docID
     blockNumber
     hash
