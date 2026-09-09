@@ -3,7 +3,7 @@ title = "Write and test a custom lens"
 description = "How to author a WebAssembly lens with the Rust SDK, test it locally, and attach it to a View."
 +++
 
-Most Views never need a custom lens. The prebuilt lenses in the wasm-bucket cover log decoding and function-call decoding, and the [lens reference](/reference/components/lens/) lists them with their arguments. Write your own only when the transform you need does not exist.
+Most Views never need a custom lens. The prebuilt lenses in the wasm-bucket cover log decoding and function-call decoding, and the [lens reference](/reference/components/lens/) lists them with their arguments. Write your own only when the transform you need doesn't exist.
 
 A lens is a WebAssembly module that sits between a View's query and its output. Every Host client runs the same lens over the same documents through LensVM, so the output has to be identical everywhere. For each input document, the lens returns a transformed document, or drops the document entirely.
 
@@ -93,7 +93,7 @@ fn tagged_mem(type_id: i8, data: &[u8]) -> *mut u8 {
 }
 ```
 
-Two things to notice. The `next()` function is imported from the `lens` module: the runtime calls `transform`, and `transform` pulls the next input document by calling `next()`. And dropping a document is just returning a nil pointer, which is how filters are expressed as lenses.
+Two things to notice. The `next()` function is imported from the `lens` module: the runtime calls `transform`, and `transform` pulls the next input document by calling `next()`. And dropping a document is just returning a nil pointer, which is how you write a filter as a lens.
 
 Lenses that need arguments, like the `abi` parameter of `decode_log`, add a `set_param` export that deserializes a parameters struct once at load time. The [decode_log source](https://github.com/shinzonetwork/wasm-bucket/tree/main/bucket/decode_log) is the best real-world reference for that pattern.
 
@@ -156,11 +156,11 @@ viewkit view test my-view
 viewkit view deploy my-view --target local
 ```
 
-If the View compiles and the playground shows the filtered rows, the lens is doing its job. From here the usual cycle applies: edit, rebuild, `viewkit view test`, redeploy.
+If the View compiles and the playground shows the filtered rows, the lens is doing its job. From here it's the usual cycle: edit, rebuild, `viewkit view test`, redeploy.
 
 ## Respect the determinism rules
 
-Every Host client runs your lens over the same documents, and the results are compared. If two Hosts disagree, something is wrong, so a lens must produce exactly the same output on every run. That rules out:
+Every Host client runs your lens over the same documents, and the results get compared. If two Hosts disagree, something is wrong, so a lens must produce exactly the same output on every run. That rules out:
 
 - Reading the system clock or generating random numbers.
 - Making network calls.
@@ -171,7 +171,7 @@ The hardcoded `MIN_BLOCK` in the example is deliberate: a block height read from
 
 ## The AssemblyScript alternative
 
-Rust is the preferred path for production lenses: it has the best tooling and optimization, with output around 200 to 300 KB. If you would rather write something closer to TypeScript, the AssemblyScript SDK produces noticeably smaller modules, around 73 KB, which means less overhead when Host clients download the View bundle. Both SDKs live in the [sourcenetwork/lens](https://github.com/sourcenetwork/lens) repo, and the [lens reference](/reference/components/lens/) has the details.
+Rust is the preferred path for production lenses: it has the best tooling and optimization, with output around 200 to 300 KB. If you'd rather write something closer to TypeScript, the AssemblyScript SDK produces noticeably smaller modules, around 73 KB, which means less overhead when Host clients download the View bundle. Both SDKs live in the [sourcenetwork/lens](https://github.com/sourcenetwork/lens) repo, and the [lens reference](/reference/components/lens/) has the details.
 
 ## Need help
 

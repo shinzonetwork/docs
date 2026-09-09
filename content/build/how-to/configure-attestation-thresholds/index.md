@@ -3,7 +3,7 @@ title = "Configure attestation thresholds"
 description = "How to require a minimum number of Generator attestations before query results are returned in your app."
 +++
 
-Shinzo data is signed by the Generator clients that produced it, and Host clients keep attestation records that track how many independent Generator clients signed the same data. With the app-sdk you can set a bar: only return documents whose attestation count meets your threshold. The threshold is a query-time filter, not a system-wide setting, so one app can apply different bars to different queries.
+Shinzo data is signed by the Generator clients that produced it, and Host clients keep attestation records tracking how many independent Generator clients signed the same data. With the app-sdk you can set a bar: only return documents whose attestation count meets your threshold. The threshold is a query-time filter, not a system-wide setting, so one app can apply different bars to different queries.
 
 {% admonition(type="warning") %}
 The attestation helpers described here live on the `Feature/attestationFilter` branch of the app-sdk and are not merged into `main` yet. They also depend on pushed replication, which is currently blocked by the DefraDB version mismatch described in [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/). This page documents the API as implemented on that branch so you can build against it ahead of the merge.
@@ -62,7 +62,7 @@ Which style to use depends on how uniform your trust requirements are:
 | A high-value flow like a settlement or payout | Per-call threshold of 3 or more |
 | A mix of casual and critical reads in one app | Configured default, per-call overrides where it matters |
 
-Make sure you added the attestation record collection for any View you query through these helpers. Without it there are no records to filter on, and every result fails the check.
+Make sure you've added the attestation record collection for any View you query through these helpers. Without it there are no records to filter on, and every result fails the check.
 
 ## Debug an empty result set
 
@@ -90,7 +90,7 @@ Query the records for the document that went missing:
 }
 ```
 
-If `vote_count` (or the number of records) is below your threshold, the filter correctly excluded the document. Lower the threshold, or wait for more Generator clients to attest. Note that attestations only accumulate while Generator clients are actually signing the underlying data, so a quiet View on a testnet may legitimately sit at a low count.
+If `vote_count` (or the number of records) is below your threshold, the filter correctly excluded the document. Lower the threshold, or wait for more Generator clients to attest. Keep in mind attestations only accumulate while Generator clients are actually signing the underlying data, so a quiet View on a testnet can legitimately sit at a low count.
 
 To check signatures and CIDs by hand, see [Verify data with signatures and CIDs](/build/how-to/verify-data/). For the reasoning behind per-query trust, see [Attestation as a query filter](/build/explanation/attestation-as-a-query-filter/), and [Attestation](/understand/core-concepts/attestation/) for the platform-level picture.
 

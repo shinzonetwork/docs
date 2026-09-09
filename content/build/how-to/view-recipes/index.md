@@ -4,9 +4,9 @@ aliases = ["/views/examples", "/build/create-a-view/examples/"]
 description = "How to build common Views: decode event logs, filter by contract, decode multiple event types, transaction Views, and editing or rolling back a View."
 +++
 
-Seven recipes for the Views people build most often, from a basic event decode to editing and rolling back a deployed View. Each recipe states its goal, shows the View components (query, SDL, lens), gives the Viewkit commands to build it, and ends with the GraphQL query you run against the result.
+Seven recipes for the Views people build most often, from a basic event decode up to editing and rolling back a deployed View. Each recipe says what it's for, shows the View components (query, SDL, lens), gives you the Viewkit commands to build it, and ends with the GraphQL query you run against the result.
 
-If you have never built a View, work through [Create your first View](/build/tutorials/create-your-first-view/) first. When none of the prebuilt lenses does what you need, see [Write and test a custom lens](/build/how-to/write-a-lens/).
+If you've never built a View, work through [Create your first View](/build/tutorials/create-your-first-view/) first. When none of the prebuilt lenses does what you need, see [Write and test a custom lens](/build/how-to/write-a-lens/).
 
 ## Primitive data
 
@@ -19,11 +19,11 @@ Views query the primitive collections that Generator clients produce. All collec
 | `Block` | `number`, `hash`, `timestamp`, `miner`, `gasUsed`, `gasLimit` | Block-level metadata |
 | `AccessListEntry` | `address`, `storageKeys`, `blockNumber` | Access lists |
 
-There is no `Event` collection. Raw event data lives in `Log`, where `topics` holds indexed parameters and `data` holds non-indexed ones. A lens decodes those raw fields into structured output. For the full list of primitive collections, including `BlockSignature` and `SnapshotSignature`, see [Views for builders](/build/concepts/views-for-builders/#primitive-data-views-operate-on).
+There's no `Event` collection. Raw event data lives in `Log`, where `topics` holds indexed parameters and `data` holds the non-indexed ones. A lens decodes those raw fields into structured output. For the full list of primitive collections, including `BlockSignature` and `SnapshotSignature`, see [Views for builders](/build/concepts/views-for-builders/#primitive-data-views-operate-on).
 
 ## Decode event logs
 
-Goal: decode all `Transfer` events from fungible token contracts into structured records. This is the simplest useful View that includes a lens: it decodes raw log `topics` and `data` into named fields using an ABI.
+Goal: decode all `Transfer` events from fungible token contracts into structured records. This is the simplest useful View with a lens: it decodes raw log `topics` and `data` into named fields using an ABI.
 
 ### Query
 
@@ -146,7 +146,7 @@ This returns decoded `Transfer` events across all contracts. To narrow down to a
 
 ## Filter by contract address
 
-Goal: decode `Transfer` events from one specific contract only, such as a single token. Without a filter lens, `decode_log` processes every log on the chain. You filter the output using GraphQL queries against the `logAddress` field.
+Goal: decode `Transfer` events from one specific contract only, like a single token. Without a filter lens, `decode_log` processes every log on the chain. You filter the output with GraphQL queries against the `logAddress` field.
 
 ### Query and SDL
 
@@ -462,7 +462,7 @@ Use `@materialized(if: false)` while developing and iterating on a View. Switch 
 
 ## Edit and roll back a View
 
-Goal: modify an existing View without starting from scratch. This recipe builds on the `erc20-events` View from [Decode multiple event types](#decode-multiple-event-types) and shows the full edit lifecycle: swap a lens, inspect revisions, roll back, test, and redeploy.
+Goal: change an existing View without starting over. This recipe builds on the `erc20-events` View from [Decode multiple event types](#decode-multiple-event-types) and walks the full edit lifecycle: swap a lens, inspect revisions, roll back, test, and redeploy.
 
 ### Starting point
 
@@ -474,7 +474,7 @@ Assume you already have `erc20-events` deployed with:
 
 ### Swap the lens
 
-Remove the old lens, then add a new one with an updated ABI that decodes three event types (the third `Transfer` variant uses a `tokenId` parameter instead of `value`):
+Remove the old lens, then add a new one with an updated ABI that decodes three event types (the third `Transfer` variant takes a `tokenId` parameter instead of `value`):
 
 ```shell
 # remove the old lens
@@ -540,7 +540,7 @@ To remove a View bundle from your local machine entirely:
 viewkit view delete erc20-events
 ```
 
-This deletes the local bundle. It does not remove a View that has already been deployed to the network. On-chain registrations are permanent. To update a deployed View, deploy a new version with the same name.
+This deletes the local bundle. It does not remove a View that's already been deployed to the network. On-chain registrations are permanent. To update a deployed View, deploy a new version with the same name.
 
 ## Query a deployed View
 

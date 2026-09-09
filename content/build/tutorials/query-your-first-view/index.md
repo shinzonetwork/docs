@@ -14,7 +14,7 @@ The script we're about to create does four things:
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 20 or later.
+- [Node.js](https://nodejs.org/) 22 or later.
 - NPM, which comes with Node.js anyway.
 
 You don't need a wallet, tokens, or any local infrastructure.
@@ -37,82 +37,82 @@ You don't need a wallet, tokens, or any local infrastructure.
     mkdir query-view && cd query-view
     npm init -y
     npm pkg set type=module
-    npm install @shinzo/shinzohub @shinzo/querysig viem
+    npm install viem canonicalize
     npm install --save-dev tsx
     ```
 
-    `@shinzo/shinzohub` reads the ShinzoHub registry (Views, Hosts, and pools). `@shinzo/querysig` builds the signed request envelope a Host expects. `viem` creates the signing key and produces signatures. `tsx` runs TypeScript files directly. The `npm pkg set` line marks the project as ESM so the script can use top-level `await`.
+    `viem` creates the signing key, hashes the query, and produces the EIP-712 signature. `canonicalize` serializes the query payload into the canonical JSON form the signature commits to. `tsx` runs TypeScript files directly. The `npm pkg set` line marks the project as ESM so the script can use top-level `await`.
 
 ## Connect to ShinzoHub
 
-1. Create a file called `query.ts` with the imports and a client:
+1. Create a file called `query.ts` with the imports and the testnet details:
 
     ```ts
-    import { createPublicClient, http } from "viem";
+    import { keccak256, stringToHex } from "viem";
     import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-    import { shinzoHubActions } from "@shinzo/shinzohub";
-    import { shinzoHubTestnet } from "@shinzo/shinzohub/chains";
-    import { normalizeShinzoAddress, shinzoAddressToHex } from "@shinzo/shinzohub/addresses";
-    import { sign } from "@shinzo/querysig";
+    import canonicalize from "canonicalize";
 
-    const client = createPublicClient({
-      chain: shinzoHubTestnet,
-      transport: http(),
-    }).extend(shinzoHubActions);
+    const SHINZOHUB_REST = "http://testnet.shinzo.network:1317";
+    const SHINZOHUB_CHAIN_ID = 91273001;
     ```
 
-    `shinzoHubTestnet` carries the testnet chain ID (91273001) and its public endpoints. Extending the client with `shinzoHubActions` adds the registry read methods used below.
+    The ShinzoHub registry is readable over a public REST API, so plain `fetch` calls are all the discovery client this script needs. `SHINZOHUB_CHAIN_ID` is the testnet's chain ID; the request signature uses it later to bind the signature to this network.
 
 ## Find a View
 
 1. Add the discovery step to `query.ts`:
 
     ```ts
-    const { views } = await client.listViews({ limit: 25, includeMetadata: true });
-    const view = views.find((v) => v.name === "Erc20Event");
+    const viewsResponse = await fetch(
+      `${SHINZOHUB_REST}/shinzonetwork/view/v1/views?pagination.limit=25&include_metadata=true`,
+    ).then((r) => r.json());
+    const view = viewsResponse.views.find((v) => v.name === "Erc20Event");
     if (!view) {
       throw new Error("Erc20Event is not registered");
     }
-    console.log(`View: ${view.name} at ${view.viewAddress}`);
+    console.log(`View: ${view.name} at ${view.address}`);
     console.log(`SDL: ${view.metadata?.sdl}`);
     ```
 
-    `listViews` reads the View registry. Each entry has a `name`, a deterministic `viewAddress`, and, when `includeMetadata` is set, the parsed bundle: the source query, the SDL, and lens details. The script picks `Erc20Event` by name and prints its SDL, which lists the fields a query can ask for.
+    The views endpoint lists the View registry. Each entry has a `name`, a deterministic `address`, and, when `include_metadata` is set, the parsed bundle: the source query, the SDL, and lens details. The script picks `Erc20Event` by name and prints its SDL, which lists the fields a query can ask for.
 
     You can also browse registered Views in the [Shinzo Explorer](https://explorer.shinzo.network/shinzohub).
 
 ## Pick a Host
 
-A View is served by a pool of Hosts. `listViewPools` returns the pools that exist for a View, and a pool becomes active once at least 3 Hosts have joined it. Each registered Host advertises an `endpointAddress`, the full URL of its GraphQL API.
+A View is served by a pool of Hosts. The pools endpoint returns the pools that exist for a View, and a pool becomes active once at least 3 Hosts have joined it. Each registered Host advertises an `endpoint_address`, the full URL of its GraphQL API.
 
 1. Add the Host selection step:
 
     ```ts
-    const pools = await client.listViewPools({ viewAddress: view.viewAddress });
-    const pool = pools.find((p) => p.isActive) ?? pools[0];
-    if (!pool) {
+    const poolsResponse = await fetch(
+      `${SHINZOHUB_REST}/shinzonetwork/pool/v1/views/${view.address}/pools`,
+    ).then((r) => r.json());
+    const details = poolsResponse.details ?? [];
+    const detail = details.find((d) => d.is_active) ?? details[0];
+    if (!detail) {
       throw new Error("No pool exists yet for this View");
     }
-    console.log(`Pool: ${pool.poolAddress} with ${pool.hosts.length} Hosts (active: ${pool.isActive})`);
+    const poolAddress = detail.pool.pool_address;
+    const poolHosts = detail.hosts ?? [];
+    console.log(`Pool: ${poolAddress} with ${poolHosts.length} Hosts (active: ${detail.is_active})`);
 
-    const { hosts } = await client.listHosts({ limit: 100 });
-    const members = new Set(pool.hosts.map((h) => h.hostAddress.toLowerCase()));
-    const endpoints = hosts.flatMap((h) => {
-      if (!h.endpointAddress) return [];
-      try {
-        const hex = shinzoAddressToHex(normalizeShinzoAddress(h.address)).toLowerCase();
-        return [{ endpoint: h.endpointAddress, inPool: members.has(hex) }];
-      } catch {
-        return [];
-      }
-    });
+    const hostsResponse = await fetch(
+      `${SHINZOHUB_REST}/shinzonetwork/host/v1/hosts?pagination.limit=100`,
+    ).then((r) => r.json());
+    const members = new Set(poolHosts.map((h) => h.host_address));
+    const endpoints = hostsResponse.hosts.flatMap((h) =>
+      h.endpoint_address
+        ? [{ endpoint: h.endpoint_address, inPool: members.has(h.address) }]
+        : [],
+    );
     const candidates = [
       ...endpoints.filter((e) => e.inPool),
       ...endpoints.filter((e) => !e.inPool),
     ];
     ```
 
-    Pools track their members by EVM hex address, while the Host registry uses Shinzo bech32 addresses, so the script converts with `shinzoAddressToHex` before matching. The result is a candidate list with pool members first.
+    Pools track their members by Shinzo account address, which is the same bech32 address the Host registry returns, so matching pool members to endpoints is a plain string comparison. The result is a candidate list with pool members first.
 
     {% admonition(type="note") %}
     Registered endpoints can go stale on a testnet. The script tries pool members first, then falls back to any other registered Host that answers. Hosts replicate the Views they subscribe to, so the data is the same either way.
@@ -120,7 +120,7 @@ A View is served by a pool of Hosts. `listViewPools` returns the pools that exis
 
 ## Sign the query
 
-Hosts expect every View query to carry a signature. The `sign` function from `@shinzo/querysig` hashes your query (canonical JSON plus keccak256), builds an EIP-712 `QueryRequest` over the query hash, a nonce, a timestamp, and the pool address, then asks your signer for a signature. Here the signer is a freshly generated key wrapped in viem's `signTypedData`; in a browser app the same call goes to the user's wallet.
+Hosts expect every View query to carry a signature. The script hashes your query (the RFC 8785 canonical JSON form of `{ query, variables }`, run through keccak256), builds an EIP-712 `QueryRequest` over the query hash, a nonce, a timestamp, and the pool address, then asks the signer for a signature. Here the signer is a freshly generated key from viem; in a browser app the same typed data goes to the user's wallet.
 
 1. Add the query and the signing step:
 
@@ -134,10 +134,40 @@ Hosts expect every View query to carry a signature. The `sign` function from `@s
         arguments
       }
     }`;
-    const signed = await sign(
-      { chainId: shinzoHubTestnet.id, pool: pool.poolAddress, query },
-      (typedData) => account.signTypedData(typedData),
-    );
+    const variables = {};
+
+    const canonical = canonicalize({ query, variables }) as string;
+    const queryHash = keccak256(stringToHex(canonical));
+    const nonceBytes = crypto.getRandomValues(new Uint8Array(32));
+    const nonce = `0x${Array.from(nonceBytes, (b) => b.toString(16).padStart(2, "0")).join("")}`;
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    const signature = await account.signTypedData({
+      domain: { name: "ShinzoQueryBilling", version: "1", chainId: SHINZOHUB_CHAIN_ID },
+      types: {
+        QueryRequest: [
+          { name: "queryHash", type: "bytes32" },
+          { name: "nonce", type: "bytes32" },
+          { name: "timestamp", type: "uint256" },
+          { name: "pool", type: "address" },
+        ],
+      },
+      primaryType: "QueryRequest",
+      message: { queryHash, nonce, timestamp: BigInt(timestamp), pool: poolAddress },
+    });
+
+    const signed = {
+      query,
+      variables,
+      extensions: {
+        request_signature: signature,
+        nonce,
+        query_hash: queryHash,
+        request_timestamp: timestamp,
+        pool_address: poolAddress,
+        fanout: 1,
+      },
+    };
     console.log("Signed request extensions:");
     console.log(JSON.stringify(signed.extensions, null, 2));
     ```
@@ -238,4 +268,4 @@ Hosts expect every View query to carry a signature. The `sign` function from `@s
 
 ## Need help
 
-{{ need_help(client="Shinzo SDK", repo_name="web", repo="https://github.com/shinzonetwork/web/issues") }}
+{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
