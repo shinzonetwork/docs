@@ -53,7 +53,7 @@ defradb:
     listen_addr: "/ip4/127.0.0.1/tcp/9171"
 ```
 
-The full multiaddr form `/ip4/<ip>/tcp/9171/p2p/<peerID>` always works, but you don't need it. Bare IPs (`34.66.172.230`) and `ip:port` pairs (`34.66.172.230:9171`) also work, because the client discovers the peer ID during the connection handshake and fills it in for you. Listing a few bootstrap peers makes the first connection more reliable, since registered Hosts come and go on a testnet.
+The full multiaddr form `/ip4/<ip>/tcp/9171/p2p/<peerID>` always works, but you don't need it. Bare IPs (`34.66.172.230`) and `ip:port` pairs (`34.66.172.230:9171`) also work, because the client discovers the peer ID during the connection handshake and fills it in for you. Listing a few bootstrap peers makes the first connection more reliable, since registered Hosts come and go on a testnet. Pick bootstrap peers from Hosts shown as Online in the [Explorer](https://explorer.shinzo.network/shinzohub/hosts).
 
 Once peered, subscribe to a View and data starts arriving. [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/) covers that flow.
 
@@ -65,6 +65,8 @@ A direct-query app never peers with anything. It reads the Host's `endpoint_addr
 curl -s http://testnet.shinzo.network:1317/shinzonetwork/host/v1/hosts \
   | jq -r '.hosts[].endpoint_address'
 ```
+
+Registry entries can outlive the Hosts behind them, so pick a Host shown as Online in the [Explorer](https://explorer.shinzo.network/shinzohub/hosts) and use its `endpoint_address`.
 
 The endpoint already includes the API path, so you POST straight to it:
 
