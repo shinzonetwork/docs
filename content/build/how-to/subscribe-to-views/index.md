@@ -5,6 +5,8 @@ description = "How to configure and start an embedded DefraDB instance, subscrib
 
 A local-first app embeds a DefraDB instance through the [app-sdk](https://github.com/shinzonetwork/shinzo-app-sdk), subscribes to Views, and lets Host clients push pre-processed data to it over P2P. This page covers the mechanics: configuration, startup and shutdown, subscribing, and querying what arrives. For why the model works this way, see [The Shinzo app model](/build/explanation/the-app-model/). For filtering results by Generator attestations, see [Configure attestation thresholds](/build/how-to/configure-attestation-thresholds/).
 
+Build against Go 1.25.x. The SDK pins `go 1.25.5`, and Go 1.26 currently fails inside a transitive dependency (`bytedance/sonic`).
+
 Install the SDK with Go modules:
 
 ```shell
