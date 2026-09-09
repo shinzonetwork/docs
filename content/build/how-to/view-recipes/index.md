@@ -506,20 +506,24 @@ This shows the current state (query, SDL, lenses) and all past revisions, each w
 
 ### Roll back if something went wrong
 
-If the updated ABI doesn't work as expected, revert to the previous version:
+If the updated ABI doesn't work as expected, `rollback` steps the View back one revision. Every `add` and `remove` is its own revision, so the lens swap above is two revisions, and a bare rollback lands you in the in-between state: old lens removed, new lens not yet added.
 
 ```shell
-# roll back to the most recent previous version
+# undoes only the most recent revision
 viewkit view rollback erc20-events
 ```
 
-Or roll back to a specific version:
+Roll back twice to return to the state before the swap, or find the version you want with `viewkit view inspect erc20-events --verbose` and name it. Version numbers count every revision, so trust the history listing over your own arithmetic:
 
 ```shell
 viewkit view rollback erc20-events --version 3
 ```
 
+Rollback restores the View's definition but not its lens asset files. `remove lens` deletes `assets/<label>.wasm` from the bundle, so if you roll back to a revision that used the removed lens, re-add that lens with the same label, URL, and arguments to bring the file back, as shown in [Decode multiple event types](#decode-multiple-event-types). Skip that and the test step below fails with `no such file or directory` on the missing asset.
+
 ### Test and redeploy
+
+With the definition where you want it and the lens assets in place, the usual cycle applies:
 
 ```shell
 # validate the updated View compiles
