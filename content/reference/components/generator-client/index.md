@@ -180,18 +180,14 @@ The signing flow:
 1. The identity is injected into the Go context via `node.ContextWithBlockSigning(ctx, collector)`, which enables CID collection.
 1. As the block handler writes documents, DefraDB collects the CID of each document written.
 1. After all documents for a block are written, the Generator client calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.
-1. Each individual document also gets a `_version` entry with identity and signature:
+1. Each document's `_version` entries carry the commit CIDs, but their `signature` field is not populated today. The signature that exists is the block-level one from the previous step:
 
 ```json
 {
     "_version": [
         {
-            "cid": "bafyreig5...",
-            "height": 1,
-            "signature": {
-                "identity": "did:key:z6Mk...",
-                "value": "0x3045022100..."
-            }
+            "cid": "bafyreih4...",
+            "signature": null
         }
     ]
 }

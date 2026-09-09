@@ -10,7 +10,8 @@
 // so it won't.
 (function () {
   var terms = window.glossaryTerms;
-  if (!terms) return;
+  var names = window.glossaryTermNames;
+  if (!terms || !names) return;
 
   var article = document.querySelector("article.markdown");
   if (!article) return;
@@ -18,23 +19,29 @@
   // One alternation, longest first, so multi-word phrases ("Merkle Tree") win
   // over their prefixes and every occurrence on the page gets tagged, not just
   // the first. Whole-word boundaries on both ends keep "View" from matching
-  // inside "ViewKit" or "review".
-  var names = Object.keys(terms).sort(function (a, b) { return b.length - a.length; });
+  // inside "ViewKit" or "review", and the tagging loop below also rejects
+  // matches with a hyphen glued to either end, so "view" stays plain inside
+  // "shinzo-view-creator" while hyphenated terms like "EIP-2930" still match
+  // as whole tokens. Matching is case-sensitive — "View" is a term, "view" is
+  // not — so names keep their canonical spelling here while the term keys in
+  // window.glossaryTerms stay lowercase for lookups.
+  names = names.slice().sort(function (a, b) { return b.length - a.length; });
   if (!names.length) return;
   var escaped = names.map(function (n) {
     return n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   });
-  var re = new RegExp("\\b(" + escaped.join("|") + ")\\b", "gi");
+  var re = new RegExp("\\b(" + escaped.join("|") + ")\\b", "g");
 
   // Subtrees where a tooltip would get in the way: code blocks, inline code,
-  // existing links, headings (also keeps the page TOC clean), and Mermaid
-  // diagrams (tagging a node label corrupts the diagram source text).
+  // existing links, headings (also keeps the page TOC clean), Mermaid
+  // diagrams (tagging a node label corrupts the diagram source text), and the
+  // breadcrumbs (navigation chrome, not page prose).
   var SKIP = { CODE: 1, PRE: 1, A: 1, H1: 1, H2: 1, H3: 1, H4: 1, H5: 1, H6: 1, SCRIPT: 1, STYLE: 1 };
 
   function insideSkipped(node) {
     for (var n = node.parentNode; n && n !== article; n = n.parentNode) {
       if (SKIP[n.nodeName]) return true;
-      if (n.classList && n.classList.contains("mermaid")) return true;
+      if (n.classList && (n.classList.contains("mermaid") || n.classList.contains("breadcrumbs"))) return true;
     }
     return false;
   }
@@ -55,6 +62,9 @@
     var m;
     re.lastIndex = 0;
     while ((m = re.exec(text))) {
+      // A term must be the whole hyphen-delimited token: skip matches with a
+      // hyphen on either side ("view" inside "shinzo-view-creator").
+      if (text.charAt(m.index - 1) === "-" || text.charAt(m.index + m[0].length) === "-") continue;
       if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
       var span = document.createElement("span");
       span.className = "glossary-term";

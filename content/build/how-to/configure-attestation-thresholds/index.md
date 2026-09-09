@@ -1,0 +1,103 @@
++++
+title = "Configure attestation thresholds"
+description = "How to require a minimum number of Generator attestations before query results are returned in your app."
++++
+
+Shinzo data is signed by the Generator clients that produced it, and Host clients keep attestation records tracking how many independent Generator clients signed the same data. With the app-sdk you can set a bar: only return documents whose attestation count meets your threshold. The threshold is a query-time filter, not a system-wide setting, so one app can apply different bars to different queries.
+
+{% admonition(type="warning") %}
+The attestation helpers described here live on the `Feature/attestationFilter` branch of the app-sdk and are not merged into `main` yet. They also depend on pushed replication, which is currently blocked by the DefraDB version mismatch described in [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/). This page documents the API as implemented on that branch so you can build against it ahead of the merge.
+{% end %}
+
+The branch name doesn't work as a `go get` version (Go rejects the uppercase letters), so pin the branch head by commit SHA:
+
+```shell
+go get github.com/shinzonetwork/app-sdk@29c4fd673ae2cdee6bb4ed0254e83b51c1db4e81
+```
+
+A `go mod replace` against a local clone of the branch works too.
+
+## Add attestation records for a View
+
+Attestation records are segmented per View, so your app only receives records for the data it cares about. Opt in per View with `AddAttestationRecordCollection`:
+
+```go
+import "github.com/shinzonetwork/app-sdk/pkg/attestation"
+
+err := attestation.AddAttestationRecordCollection(context.Background(), myNode, myView.Name)
+if err != nil {
+    if strings.Contains(err.Error(), "collection already exists") {
+        // Records for this View were added before. Informational and safe to ignore.
+    } else {
+        panic(err)
+    }
+}
+```
+
+This works like `SubscribeTo`: it adds an `AttestationRecord_<ViewName>` collection to your embedded DefraDB instance and registers it for passive replication, so Host clients push the View's attestation records alongside its documents. Call it once per View you want to filter, after subscribing to the View itself.
+
+## Choose configured or per-query thresholds
+
+Four helpers cover the two ways to set the bar. All four work like `defra.QuerySingle` and `defra.QueryArray`, except they drop results that fail the attestation check. Your result struct needs a `DocID` field, because the filter matches documents to their attestation records by DocID.
+
+The configured pair reads the threshold from `shinzo.minimum_attestations` in your config:
+
+```go
+transfers, err := attestation.QueryArrayWithConfiguredAttestationFilter[Transfer](ctx, myNode, query)
+transfer, err := attestation.QuerySingleWithConfiguredAttestationFilter[Transfer](ctx, myNode, query)
+```
+
+The per-call pair takes the threshold as an argument:
+
+```go
+transfers, err := attestation.QueryArrayWithAttestationFilter[Transfer](ctx, myNode, query, 3)
+transfer, err := attestation.QuerySingleWithAttestationFilter[Transfer](ctx, myNode, query, 3)
+```
+
+Set the config default in `config.yaml`:
+
+```yaml
+shinzo:
+  minimum_attestations: 2
+```
+
+Which style to use depends on how uniform your trust requirements are:
+
+| Situation | Approach |
+| --- | --- |
+| One threshold covers the whole app | Configured helpers with `minimum_attestations` |
+| A wallet display where showing something fast beats certainty | Per-call threshold of 1 |
+| A high-value flow like a settlement or payout | Per-call threshold of 3 or more |
+| A mix of casual and critical reads in one app | Configured default, per-call overrides where it matters |
+
+Make sure you've added the attestation record collection for any View you query through these helpers. Without it there are no records to filter on, and every result fails the check.
+
+## Debug an empty result set
+
+If a filtered query returns nothing but the unfiltered equivalent has rows, the filter is doing its job and your data is under-attested. Inspect the records directly to see why. Each View you opt in with `AddAttestationRecordCollection` gets its own collection in your app, `AttestationRecord_<ViewName>`, with three fields:
+
+- `attested_doc` is the DocID of the View document being attested to.
+- `source_doc` links back to the source document the attestation came from.
+- `CIDs` are the signed commit CIDs backing the attestation.
+
+Query the records for the document that went missing:
+
+```graphql
+{
+  AttestationRecord_<ViewName>(
+    filter: { attested_doc: { _eq: "<doc-id>" } }
+  ) {
+    attested_doc
+    source_doc
+    CIDs
+  }
+}
+```
+
+That is a different collection from the one on a Host. The Host-side `<Chain>__<Network>__AttestationRecord` collection carries two more fields, `doc_type` and `vote_count`, and on Hosts today every record is block-level: `doc_type` is `Block`, and `attested_doc` holds the block's `block:<height>:<merkleRoot>` key rather than a document DocID. Until View-keyed records exist, a DocID filter matches nothing and the helpers drop every result whatever the threshold, so treat empty output as expected for now rather than a bug in your query.
+
+To check signatures and CIDs by hand, see [Verify data with signatures and CIDs](/build/how-to/verify-data/). For the reasoning behind per-query trust, see [Attestation as a query filter](/build/explanation/attestation-as-a-query-filter/), and [Attestation](/understand/core-concepts/attestation/) for the platform-level picture.
+
+## Need help
+
+{{ need_help(client="app-sdk", repo_name="app-sdk", repo="https://github.com/shinzonetwork/app-sdk/issues") }}

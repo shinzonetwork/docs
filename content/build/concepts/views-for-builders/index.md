@@ -77,11 +77,11 @@ The `Log` collection is the primary source for event-based Views. There is no `E
 
 Viewkit is a local-first CLI: you initialize a view bundle, incrementally add or update its query, SDL, and lenses, test it locally against a throwaway DefraDB instance, then deploy to local or devnet. Strong defaults, explicit versioning, and deterministic behavior mean developers focus on data semantics and transformations; Shinzo handles execution, distribution, and verification.
 
-For the hands-on walkthrough, see [Create a View](/build/create-a-view/). For the full command list, filter operators, and deploy internals, see the [Viewkit reference](/reference/components/viewkit/).
+For the hands-on walkthrough, see [Create your first View](/build/tutorials/create-your-first-view/). For the full command list, filter operators, and deploy internals, see the [Viewkit reference](/reference/components/viewkit/).
 
 ## Where to go next
 
-- [Create a View](/build/create-a-view/): step-by-step guide to building and deploying your first view.
+- [Create your first View](/build/tutorials/create-your-first-view/): step-by-step tutorial for building and deploying your first View.
 - [Pools](/understand/core-concepts/pools/): how developer demand for a View meets the Hosts that serve it.
 - [Build an app](/build/build-an-app/): use the app-sdk to subscribe to Views and query data locally.
 - [Query data](/build/query-data/): GraphQL query patterns for deployed Views.

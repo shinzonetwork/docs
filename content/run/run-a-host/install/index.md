@@ -6,7 +6,7 @@ aliases = ["/hosts/install"]
 A Host client pulls primitive blockchain data from Generator clients, runs Lens WASM transforms, and serves the resulting Views to subscriber nodes over an embedded DefraDB instance. This page is for operators who want to **run** a Host client.
 
 {% admonition(type="info") %}
-**Only want to query Shinzo data?** You don't need to run your own Host client. Connect to a public Host client instead. See [Querying Views](/build/create-a-view/). Running your own Host client is for serving data to the network, not for reading it.
+**Only want to query Shinzo data?** You don't need to run your own Host client. Connect to a public Host client instead. See [Query your first View](/build/tutorials/query-your-first-view/). Running your own Host client is for serving data to the network, not for reading it.
 {% end %}
 
 ## Prerequisites
@@ -95,7 +95,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     docker logs shinzo-host | grep -i peer
     ```
 
-    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. A public Generator client to point at is coming; this page will link a known-good endpoint and a ready-to-run query once it's live. See [query examples](/build/create-a-view/).
+    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. A public Generator client to point at is coming; this page will link a known-good endpoint and a ready-to-run query once it's live. See [query examples](/build/how-to/query-data/).
 
 1. To serve data to the network, register your Host client with ShinzoHub. See [Register a Host](/run/run-a-host/register/).
 

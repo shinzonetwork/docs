@@ -10,4 +10,11 @@ window.glossaryTerms = {
   {{ t.term | lower | json_encode | safe }}: {{ t.definition | markdown(inline=true) | json_encode | safe }}{% if not loop.last %},{% endif %}
 {%- endfor %}
 };
+{# Canonical spellings for the tagger's case-sensitive regex; the map keys
+   above stay lowercase so lookups work whatever the text's capitalisation. #}
+window.glossaryTermNames = [
+{%- for t in defined %}
+  {{ t.term | json_encode | safe }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+];
 </script>

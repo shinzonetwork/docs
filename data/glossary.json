@@ -134,8 +134,7 @@
       "relatedTerms": [
         "ShinzoHub",
         "SourceHub",
-        "CometBFT",
-        "Module"
+        "CometBFT"
       ]
     },
     {
@@ -347,7 +346,6 @@
       "definition": "In Cosmos SDK, a Go object that owns a module's state and provides the only sanctioned way to read or write it. Precompile code on ShinzoHub calls keepers directly — for example, to send an ICA packet — without going through Solidity bytecode.",
       "relatedTerms": [
         "Cosmos SDK",
-        "Module",
         "Precompile"
       ]
     },
@@ -429,15 +427,6 @@
         "Validator",
         "Outpost",
         "Assertion"
-      ]
-    },
-    {
-      "term": "Module",
-      "definition": "A Cosmos SDK building block that owns a slice of chain state, handles messages, and emits events. ShinzoHub adds five custom modules (`x/admin`, `x/sourcehub`, `x/host`, `x/generator`, `x/view`) on top of the standard Cosmos set.",
-      "relatedTerms": [
-        "Cosmos SDK",
-        "ShinzoHub",
-        "Keeper"
       ]
     },
     {
