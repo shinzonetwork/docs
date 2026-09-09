@@ -85,18 +85,17 @@ The signature you can check today lives at the block level. Every block of docum
 
 Comparing `signatureIdentity` across blocks tells you whether two blocks came from the same Generator client. To check a specific document, filter `BlockSignature` on its block's `blockNumber`. [Verify a whole block at once](#verify-a-whole-block-at-once) explains what one block-level signature covers.
 
-## Trace a document back to its attestations
+## Trace a block back to its attestations
 
-Host clients maintain attestation records that track which Generator clients signed off on a document. Query the `AttestationRecord` collection and filter by the document you care about:
+Host clients maintain attestation records that track which Generator clients signed off on each block. Records are keyed by block, not by document DocID: `attested_doc` holds `block:<height>:<merkleRoot>`, where the hash is the same signed Merkle root the block's [`BlockSignature`](#check-who-signed-a-document) carries. Filter by that key:
 
 ```graphql
 {
   <Chain>__<Network>__AttestationRecord(
-    filter: { attested_doc: { _eq: "bae-91bd3f16-ccb1-5c35-b098-45672ee6fd48" } }
+    filter: { attested_doc: { _eq: "block:25938055:7989b9049a5a87f2bea62f8ccf48e90a272ed952d10f93e260fd1628d04410d3" } }
   ) {
     attested_doc
     source_doc
-    CIDs
     doc_type
     vote_count
   }
@@ -108,10 +107,9 @@ Host clients maintain attestation records that track which Generator clients sig
   "data": {
     "<Chain>__<Network>__AttestationRecord": [
       {
-        "attested_doc": "bae-91bd3f16-ccb1-5c35-b098-45672ee6fd48",
-        "source_doc": ["bae-25fb059c-f232-5305-8a5d-0162f01e43e6"],
-        "CIDs": ["bafyreibtbym4uht5dppohohg4wg66tdg4r253ws2i4wshc2gtwje6e25sy"],
-        "doc_type": "<Chain>__<Network>__Block",
+        "attested_doc": "block:25938055:7989b9049a5a87f2bea62f8ccf48e90a272ed952d10f93e260fd1628d04410d3",
+        "source_doc": ["025b33affa6b716c8fd6ac8c176c9dde5fac85aa222b0d6a3c58a6283bdf042c8b"],
+        "doc_type": "Block",
         "vote_count": 1
       }
     ]
@@ -119,7 +117,7 @@ Host clients maintain attestation records that track which Generator clients sig
 }
 ```
 
-The fields matter for different reasons. `CIDs` links the record to the signed commits it attests to. `doc_type` names the attested collection. `vote_count` is a CRDT counter that goes up as more Generator clients are seen signing the same data, so it tells you how much independent agreement the document has. To filter query results by that count automatically, see [Configure attestation thresholds](/build/how-to/configure-attestation-thresholds/).
+The fields tie the record back to the block's signature. `source_doc` lists the public keys of the Generator clients that signed the block, the same keys that appear as `signatureIdentity` on the block's `BlockSignature` document. `doc_type` names what was attested, `Block` on Hosts today. `vote_count` is a CRDT counter that goes up as more Generator clients are seen signing the same data, so it tells you how much independent agreement the block has. The record also carries `CIDs`, the commit CIDs covered by the signed Merkle root; the list runs to hundreds of entries per block, so the query above leaves it out. To filter query results by vote count automatically, see [Configure attestation thresholds](/build/how-to/configure-attestation-thresholds/).
 
 ## Resolve a CID to its commit or document
 
