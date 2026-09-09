@@ -35,7 +35,7 @@ Goal: decode all `Transfer` events from fungible token contracts into structured
 Log { address topics data transactionHash blockNumber transaction { hash from to } }
 ```
 
-The query selects raw log fields plus the nested `transaction` relation. The `decode_log` lens uses `transaction.hash`, `transaction.from`, and `transaction.to` to populate the output's `hash`, `from`, and `to` fields.
+The query selects raw log fields plus the nested `transaction` relation, which the `decode_log` lens reads to fill the output's `hash`, `from`, and `to` fields. That relation isn't populated today, neither by Viewkit's local mock data nor on the live testnet, so those three fields come back empty. The decoded sender and receiver land in `arguments` instead.
 
 ### SDL
 
@@ -54,7 +54,7 @@ type EventView @materialized(if: true) {
 
 The `decode_log` lens outputs these fields:
 
-- `hash`, `from`, `to`: from the parent transaction.
+- `hash`, `from`, `to`: read from the parent transaction, but empty in practice today (see above).
 - `blockNumber`: block the log was emitted in.
 - `logAddress`: the contract that emitted the log.
 - `event`: decoded event name (e.g. `"Transfer"`).
@@ -184,7 +184,7 @@ The `logAddress` field contains the contract address that emitted the log. Filte
 
 ### Filter by sender or receiver
 
-The `from` and `to` fields come from the parent transaction, not the event's indexed parameters. To filter by the event's `from`/`to` (the actual transfer sender and receiver), use the `arguments` field. With `decode_log_str` (which serializes `arguments` as a JSON string), you can use `_like`:
+The `from` and `to` output fields are empty today, because the parent-transaction relation isn't populated. To filter by the actual transfer sender and receiver, use the `arguments` field. With `decode_log_str` (which serializes `arguments` as a JSON string), you can use `_like`:
 
 ```graphql
 {
@@ -629,6 +629,8 @@ Goal: run GraphQL queries against a deployed View's output collection. These exa
   }
 }
 ```
+
+This filter pins a single transfer once `hash` is populated. Today it matches nothing, because `hash` comes from the parent transaction relation, which isn't populated (see [Decode event logs](#decode-event-logs)).
 
 For the full list of Viewkit commands and GraphQL filter operators, see the [Viewkit reference](/reference/components/viewkit/). For the prebuilt lens catalog and how to chain lenses, see the [lens reference](/reference/components/lens/). For more query patterns, see [Query data](/build/how-to/query-data/). For troubleshooting and common errors, see the [FAQ](/run/operations/troubleshooting/).
 
