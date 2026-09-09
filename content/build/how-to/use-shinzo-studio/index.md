@@ -48,4 +48,4 @@ The results come straight from the Host you picked. To script the same flow outs
 
 ## Need help
 
-{{ need_help(client="Shinzo SDK", repo_name="web", repo="https://github.com/shinzonetwork/web/issues") }}
+{{ need_help(client="Studio", repo_name="shinzo-webapp-staging", repo="https://github.com/shinzonetwork/shinzo-webapp-staging/issues") }}
