@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% import "macros/sidebar.html" as sidebar %}
 
-{# Landing ("portal") template for section landing pages: hero-style intro,
-   featured track cards, grouped link lists, and quick links. Page-specific
-   copy lives in the page's frontmatter (title, description) and markdown
-   body (rendered as the intro strip); the layout below is shared. #}
+{# Landing ("portal") template for section landing pages: featured track
+   cards and grouped link lists. Page-specific copy lives in the page's
+   frontmatter (title, description) and markdown body (rendered as the intro
+   strip, when present); the layout below is shared. #}
 
 {% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
 {% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
@@ -22,21 +22,12 @@
 
         <h1 class="doc-title">{{ page.title }}</h1>
 
-        {# Intro strip: the page's markdown body, centered. #}
+        {# Intro strip: the page's markdown body, right-aligned. #}
+        {% if page.content %}
         <div class="portal-intro portal-intro--landing">
           {{ page.content | safe }}
         </div>
-
-        {# Wrong-audience redirect: bounce non-developers early. #}
-        <div class="admonition admonition--note portal-redirect">
-          <div class="admonition__title">Not what you're looking for?</div>
-          <div class="admonition__content">
-            <ul>
-              <li>To run a Generator or Host client, see <a href="/run/get-started/">Run infrastructure</a>.</li>
-              <li>For background on what Shinzo is and how it works, see <a href="/understand/what-is-shinzo/">Understand</a>.</li>
-            </ul>
-          </div>
-        </div>
+        {% endif %}
 
         {# Primary developer tracks #}
         <section class="portal-section" aria-label="Choose your path">
@@ -66,6 +57,17 @@
               <p class="portal-card__desc">Embed the app-sdk in a Go app, subscribe to Views, and query attested data pushed straight to your app.</p>
             </a>
           </div>
+        </section>
+
+        {# Concepts #}
+        <section class="portal-section" aria-label="Concepts">
+          <h2 class="portal-section__heading">Concepts</h2>
+          <ul class="portal-list">
+            <li><a href="/build/concepts/the-app-model/">The Shinzo app model</a></li>
+            <li><a href="/build/concepts/choosing-an-architecture/">Choosing an app architecture</a></li>
+            <li><a href="/build/concepts/views-for-builders/">Views for builders</a></li>
+            <li><a href="/build/concepts/attestation-as-a-query-filter/">Attestation as a query filter</a></li>
+          </ul>
         </section>
 
         {# Tutorials #}
@@ -117,27 +119,16 @@
           </div>
         </section>
 
-        {# Concepts #}
-        <section class="portal-section" aria-label="Concepts">
-          <h2 class="portal-section__heading">Concepts</h2>
-          <ul class="portal-list">
-            <li><a href="/build/concepts/the-app-model/">The Shinzo app model</a></li>
-            <li><a href="/build/concepts/choosing-an-architecture/">Choosing an app architecture</a></li>
-            <li><a href="/build/concepts/views-for-builders/">Views for builders</a></li>
-            <li><a href="/build/concepts/attestation-as-a-query-filter/">Attestation as a query filter</a></li>
-          </ul>
-        </section>
-
-        {# Quick links #}
-        <section class="portal-quicklinks" aria-label="Quick links">
-          <h2 class="portal-quicklinks__heading">Quick links</h2>
-          <ul class="portal-quicklinks__list">
-            <li><a class="portal-quicklinks__link" href="{{ config.extra.github_url }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-            <li><a class="portal-quicklinks__link" href="/understand/get-help/">Get help</a></li>
-            <li><a class="portal-quicklinks__link" href="/reference/changelog/">Changelog</a></li>
-            <li><a class="portal-quicklinks__link" href="/reference/glossary/">Glossary</a></li>
-          </ul>
-        </section>
+        {# Wrong-audience redirect #}
+        <div class="admonition admonition--note portal-redirect">
+          <div class="admonition__title">Not what you're looking for?</div>
+          <div class="admonition__content">
+            <ul>
+              <li>To run a Generator or Host client, see <a href="/run/get-started/">Run infrastructure</a>.</li>
+              <li>For background on what Shinzo is and how it works, see <a href="/understand/what-is-shinzo/">Understand</a>.</li>
+            </ul>
+          </div>
+        </div>
 
       </article>
     </div>

@@ -145,18 +145,28 @@ pages = [
 
 [[extra.sidebar]]
 section = "build"
-label = "How-to guides"
-pages = [
-  "build/how-to/find-views-and-hosts/index.md",
-  "build/how-to/connect-to-a-host/index.md",
-  "build/how-to/query-data/index.md",
-  "build/how-to/view-recipes/index.md",
-  "build/how-to/use-shinzo-studio/index.md",
-  "build/how-to/write-a-lens/index.md",
-  "build/how-to/subscribe-to-views/index.md",
-  "build/how-to/configure-attestation-thresholds/index.md",
-  "build/how-to/verify-data/index.md",
-  "build/how-to/use-your-own-infrastructure/index.md",
+label = "How-to"
+pages = []
+subsections = [
+  { label = "Read data", pages = [
+    "build/how-to/find-views-and-hosts/index.md",
+    "build/how-to/connect-to-a-host/index.md",
+    "build/how-to/query-data/index.md",
+    "build/how-to/subscribe-to-views/index.md",
+  ] },
+  { label = "Verify your data", pages = [
+    "build/how-to/verify-data/index.md",
+    "build/how-to/configure-attestation-thresholds/index.md",
+  ] },
+  { label = "Create Views", pages = [
+    "build/how-to/view-recipes/index.md",
+    "build/how-to/use-shinzo-studio/index.md",
+    "build/how-to/write-a-lens/index.md",
+  ] },
+  { label = "Run your own setup", pages = [
+    "build/tutorials/spinup-a-local-devnet/index.md",
+    "build/how-to/use-your-own-infrastructure/index.md",
+  ] },
 ]
 
 # Run infrastructure
