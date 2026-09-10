@@ -5,4 +5,9 @@ name = "shinzo-docs"
 pages_build_output_dir = "public"
 
 [vars]
-ZOLA_VERSION = "0.19.2"
+# Must be 0.22.0 or later: config.toml uses [markdown.highlighting] and
+# extra_grammars, introduced in Zola 0.22.0. Older Zola versions ignore these
+# settings and build the site without syntax highlighting.
+# Do not bump to 0.23.x: it removes shortcodes and macros (Tera v2), which
+# this site's templates and content rely on. Migrating is tracked separately.
+ZOLA_VERSION = "0.22.1"
