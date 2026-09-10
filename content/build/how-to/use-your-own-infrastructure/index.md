@@ -28,7 +28,7 @@ Expect to run real infrastructure: a synced source-chain node or a managed endpo
 ## Back to building
 
 - [Connect your app to a Host](/build/how-to/connect-to-a-host/): everything on that page works unchanged against your own Host.
-- [Choosing an app architecture](/build/explanation/choosing-an-architecture/): where running your own Host sits relative to the other two models.
+- [Choosing an app architecture](/build/concepts/choosing-an-architecture/): where running your own Host sits relative to the other two models.
 
 ## Need help
 

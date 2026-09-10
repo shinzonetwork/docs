@@ -1,7 +1,7 @@
 +++
 title = "The Shinzo app model"
 description = "How Shinzo inverts the traditional data-API model: you define the API, and pre-processed data is pushed to your application as a verifiable local cache."
-aliases = ["/guides", "/guides/building-apps-with-shinzo", "/build/build-an-app/"]
+aliases = ["/guides", "/guides/building-apps-with-shinzo", "/build/build-an-app/", "/build/explanation/the-app-model/"]
 [extra]
 mermaid = true
 +++
@@ -12,7 +12,7 @@ Shinzo inverts this model.
 
 ## You define the API
 
-With Shinzo, the app developer defines the API. A [View](/build/explanation/views-for-builders/) describes exactly the data your app needs: what to pull from the primitive collections, how to transform it, and what schema to expose the result as. Host clients then run that View continuously and push the pre-processed results to every app that subscribes.
+With Shinzo, the app developer defines the API. A [View](/build/concepts/views-for-builders/) describes exactly the data your app needs: what to pull from the primitive collections, how to transform it, and what schema to expose the result as. Host clients then run that View continuously and push the pre-processed results to every app that subscribes.
 
 So instead of pulling answers out of someone else's cache, your app maintains a local replica of exactly the data it asked for. Queries run against that replica, as often as you like, with no round trip. You do not maintain a separate cache, re-query an API for the latest data, or guess which endpoints exist. And rather than paying per query, you pay for access to the transformed data.
 
@@ -24,7 +24,7 @@ The local copy is not an ordinary cache, and your app does not have to trust the
 - Generator clients sign what they produce, so there is a verifiable record of who said what.
 - Attestation records travel alongside your Views, tracking how many independent Generator clients signed the same data, so your app can filter out anything below the bar it sets.
 
-Pushed data that is independently checkable is what makes the inversion safe: the Host client is a delivery mechanism, not an authority. [Attestation as a query filter](/build/explanation/attestation-as-a-query-filter/) goes deeper on the trust side.
+Pushed data that is independently checkable is what makes the inversion safe: the Host client is a delivery mechanism, not an authority. [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) goes deeper on the trust side.
 
 Delivery itself is passive replication. Subscribing to a View applies the View's schema to your embedded DefraDB and registers the collection as a replication topic, which tells Host clients to push new documents to you as they process new blocks. From the app's side, data simply appears.
 
@@ -59,11 +59,11 @@ Two things to notice. The API shape came from you, not from a provider's catalog
 
 The inversion comes with real trade-offs, and they are worth naming. Your app is pushed data for the Views it subscribes to rather than pulling arbitrary slices on demand, so you design around subscriptions instead of ad-hoc queries. The subscribed data lives in your process, which costs local storage and bandwidth. And freshness follows block production plus replication, not a per-query fetch of the latest state.
 
-For many apps these are good trades. For some, like a stateless web frontend that needs one occasional lookup, a direct signed query to a Host client fits better, and for privacy-critical work, running your own Host client beats both. [Choosing an app architecture](/build/explanation/choosing-an-architecture/) walks through the decision.
+For many apps these are good trades. For some, like a stateless web frontend that needs one occasional lookup, a direct signed query to a Host client fits better, and for privacy-critical work, running your own Host client beats both. [Choosing an app architecture](/build/concepts/choosing-an-architecture/) walks through the decision.
 
 ## Where to go next
 
-- [Views for builders](/build/explanation/views-for-builders/): what a View is and how Viewkit packages one.
-- [Attestation as a query filter](/build/explanation/attestation-as-a-query-filter/): how per-query trust thresholds work.
-- [Choosing an app architecture](/build/explanation/choosing-an-architecture/): this model versus the alternatives.
+- [Views for builders](/build/concepts/views-for-builders/): what a View is and how Viewkit packages one.
+- [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/): how per-query trust thresholds work.
+- [Choosing an app architecture](/build/concepts/choosing-an-architecture/): this model versus the alternatives.
 - [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/): the mechanics of embedding DefraDB and subscribing.

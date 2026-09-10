@@ -1,6 +1,7 @@
 +++
 title = "Choosing an app architecture"
 description = "Trade-offs between the three ways to build on Shinzo: direct signed queries to Hosts, an embedded local-first client, or your own private Host."
+aliases = ["/build/explanation/choosing-an-architecture/"]
 +++
 
 There are three ways to build an app on Shinzo, and they all read the same signed, verifiable data produced by the same Views. What changes is where the data sits relative to your app and who gets to observe your reads:
@@ -27,7 +28,7 @@ Your app signs each GraphQL request (the `@shinzo/querysig` and `@shinzo/shinzoh
 
 ## Embedded local-first
 
-Your app embeds a DefraDB instance via the app-sdk, subscribes to Views, and Host clients push pre-processed documents to it as new blocks land. After that, queries are local reads: no round trip, no rate limits, and attestation thresholds can filter results automatically so under-attested data never reaches your logic. The costs are real: your app holds the subscribed data in-process, keeps P2P connections open, and designs around subscriptions rather than ad-hoc queries. [The Shinzo app model](/build/explanation/the-app-model/) explains why this inversion exists.
+Your app embeds a DefraDB instance via the app-sdk, subscribes to Views, and Host clients push pre-processed documents to it as new blocks land. After that, queries are local reads: no round trip, no rate limits, and attestation thresholds can filter results automatically so under-attested data never reaches your logic. The costs are real: your app holds the subscribed data in-process, keeps P2P connections open, and designs around subscriptions rather than ad-hoc queries. [The Shinzo app model](/build/concepts/the-app-model/) explains why this inversion exists.
 
 ## Your own Host
 

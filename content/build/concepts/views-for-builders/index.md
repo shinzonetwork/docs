@@ -1,7 +1,7 @@
 +++
 title = "Views for builders"
 description = "What a Shinzo View is: a versioned bundle of query, SDL, and lenses, and how Viewkit turns primitive data into reusable data APIs."
-aliases = ["/view-creator", "/views", "/views/overview", "/build/concepts/views-for-builders/"]
+aliases = ["/view-creator", "/views", "/views/overview", "/build/explanation/views-for-builders/"]
 [extra]
 mermaid = true
 +++
