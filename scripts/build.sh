@@ -27,7 +27,7 @@ ensure_zola() {
 
   if [[ -z "$version" ]]; then
     echo "error: zola not found on PATH and ZOLA_VERSION is not set" >&2
-    echo "hint: set ZOLA_VERSION (e.g. 0.19.2) or install zola in the build environment" >&2
+    echo "hint: set ZOLA_VERSION (e.g. 0.22.1) or install zola in the build environment" >&2
     return 1
   fi
 
