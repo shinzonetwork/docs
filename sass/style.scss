@@ -1617,11 +1617,11 @@ body.mobile-menu-open {
 /* Section landing pages (templates/portal.html) */
 
 // The intro strip on a section landing page: same measure as the homepage's
-// .portal-intro, but right-aligned and sized like body copy rather than a hero.
+// .portal-intro, but left-aligned and sized like body copy rather than a hero.
 .portal-intro--landing {
   font-size: 1.05rem;
-  text-align: right;
-  margin: 1rem 0 2rem auto;
+  text-align: left;
+  margin: 1rem 0 2rem;
 
   p {
     margin: 0;
