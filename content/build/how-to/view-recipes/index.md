@@ -23,7 +23,7 @@ Views query the primitive collections that Generator clients produce. All collec
 | `Block` | `number`, `hash`, `timestamp`, `miner`, `gasUsed`, `gasLimit` | Block-level metadata |
 | `AccessListEntry` | `address`, `storageKeys`, `blockNumber` | Access lists |
 
-There's no `Event` collection. Raw event data lives in `Log`, where `topics` holds indexed parameters and `data` holds the non-indexed ones. A lens decodes those raw fields into structured output. For the full list of primitive collections, including `BlockSignature` and `SnapshotSignature`, see [Views for builders](/build/concepts/views-for-builders/#primitive-data-views-operate-on).
+There's no `Event` collection. Raw event data lives in `Log`, where `topics` holds indexed parameters and `data` holds the non-indexed ones. A lens decodes those raw fields into structured output. For the full list of primitive collections, including `BlockSignature` and `SnapshotSignature`, see [Views for builders](/build/explanation/views-for-builders/#primitive-data-views-operate-on).
 
 ## Decode event logs
 
