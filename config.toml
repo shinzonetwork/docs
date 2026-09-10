@@ -33,6 +33,8 @@ theme = "github-light"
 extra_grammars = ["grammars/output.json"]
 
 [search]
+# Fuse.js index (public/search_index.en.json), fetched lazily by static/js/search.js.
+index_format = "fuse_json"
 include_title = true
 include_description = true
 include_path = true
