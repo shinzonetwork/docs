@@ -1628,17 +1628,6 @@ body.mobile-menu-open {
   }
 }
 
-// Wrong-audience redirect box sits at the bottom of the landing page; the
-// admonition supplies the styling, this just constrains and centers it.
-.portal-redirect {
-  max-width: 65ch;
-  margin: 0 auto 2.5rem;
-
-  ul {
-    margin: 0;
-  }
-}
-
 // Three-across variant of the homepage's 2-col track grid.
 .portal-tracks--3col {
   grid-template-columns: repeat(3, 1fr);
