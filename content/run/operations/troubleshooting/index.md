@@ -341,13 +341,13 @@ For local development, you can iterate freely: update the query, SDL, and lenses
 
 ### How do applications query my deployed View?
 
-Applications use the [app-sdk](https://github.com/shinzonetwork/app-sdk) to embed a local DefraDB instance, subscribe to Views, and query them with GraphQL. The app receives pre-processed data pushed from Hosts over P2P, with no per-query API calls. See [Build an app](/build/build-an-app/) for details.
+Applications use the [app-sdk](https://github.com/shinzonetwork/app-sdk) to embed a local DefraDB instance, subscribe to Views, and query them with GraphQL. The app receives pre-processed data pushed from Hosts over P2P, with no per-query API calls. See [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/) for details.
 
 ### What are attestations and how do they relate to Views?
 
 When a Host receives the same block from multiple Generator clients, it creates an `AttestationRecord` tracking how many independent sources produced identical data. Each View gets its own attestation collection (e.g. `AttestationRecord_UsdcTransfer`). Applications can filter query results by attestation count to only trust data signed off by multiple generators.
 
-See [Build an app](/build/build-an-app/#attestations) for how to use attestation filters in queries.
+See [Configure attestation thresholds](/build/how-to/configure-attestation-thresholds/) for how to use attestation filters in queries.
 
 ## Tips
 

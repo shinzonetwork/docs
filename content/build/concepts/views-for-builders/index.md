@@ -1,13 +1,13 @@
 +++
 title = "Views for builders"
-aliases = ["/view-creator", "/views", "/views/overview"]
-description = "Viewkit is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views."
+description = "What a Shinzo View is: a versioned bundle of query, SDL, and lenses, and how Viewkit turns primitive data into reusable data APIs."
+aliases = ["/view-creator", "/views", "/views/overview", "/build/explanation/views-for-builders/"]
 [extra]
 mermaid = true
 +++
-Viewkit (also known as View Creator) is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views. It provides a workflow for turning raw indexed blockchain data into reusable, versioned data APIs that can be executed and served by Hosts. The same workflow is also available as a browser UI in [Shinzo Studio](https://studio.shinzo.network/), for developers who prefer not to use the CLI.
+Viewkit (also known as View Creator) is the developer-facing toolchain for defining, packaging, and deploying Shinzo Views. It provides a workflow for turning raw primitive blockchain data into reusable, versioned data APIs that can be executed and served by Hosts. The same workflow is also available as a browser UI in [Shinzo Studio](https://studio.shinzo.network/), for developers who prefer not to use the CLI.
 
-Viewkit sits between indexed primitive data and application-ready data interfaces. It lets developers declaratively specify what data to ingest, how to transform it, and how to expose it, without managing infrastructure, execution environments, or deployment mechanics directly.
+Viewkit sits between primitive data and application-ready data interfaces. It lets developers declaratively specify what data to ingest, how to transform it, and how to expose it, without managing infrastructure, execution environments, or deployment mechanics directly.
 
 ## Purpose and role in the stack
 
@@ -17,27 +17,27 @@ Within the Shinzo ecosystem, Viewkit sits above the Generator client and alongsi
 - Viewkit defines how that data should be queried, transformed, and exposed.
 - Host clients execute those definitions, serve results, and attest to correctness.
 
-Using Viewkit, developers write Views as versioned bundles that describe a complete data pipeline. These views are then deployed to a target environment (local or devnet, with mainnet support planned), where Hosts execute them deterministically against indexed data and serve the results to consumers.
+Using Viewkit, developers write Views as versioned bundles that describe a complete data pipeline. These Views are then deployed to a target environment (local or devnet, with mainnet support planned), where Hosts execute them deterministically against primitive data and serve the results to consumers.
 
 This separation enables:
 
-- Rapid iteration on data models without re-indexing chains.
+- Rapid iteration on data models without reprocessing the chain.
 - Deterministic, reproducible data APIs.
 - Decoupling of data definition from execution and infrastructure.
-- Portable views that can run on any compliant Host client.
+- Portable Views that can run on any compliant Host client.
 
 ## Core concepts
 
-A View is the fundamental unit produced by Viewkit. Each view is a self-contained, versioned bundle that may include:
+A View is the fundamental unit produced by Viewkit. Each View is a self-contained, versioned bundle that may include:
 
-- Queries: declarative definitions of the raw data shape to ingest from indexed primitives.
+- Queries: declarative definitions of the raw data shape to ingest from the primitive collections.
 - SDL (GraphQL): schemas describing how data is modeled, materialized, or exposed to consumers.
 - Lenses (WASM): composable WebAssembly transforms for filtering, decoding, enriching, or reshaping data.
 - Wallet: cryptographic credentials used to sign and authorize deployments to a target network.
 
-Conceptually, a view represents the pipeline:
+Conceptually, a View represents the pipeline:
 
-indexed primitive data → query → lenses (WASM) → GraphQL schema → consumable API
+primitive data → query → lenses (WASM) → GraphQL schema → consumable API
 
 {% mermaid() %}
 flowchart LR
@@ -63,7 +63,7 @@ Generator clients produce six primitive collection types, all prefixed with `<Ch
 | `BlockSignature` | `blockNumber`, `blockHash`, `merkleRoot`, `signatureValue` | Per-block aggregate signatures |
 | `SnapshotSignature` | `startBlock`, `endBlock`, `merkleRoot`, `signatureValue` | Range-level snapshot signatures |
 
-The `Log` collection is the primary source for event-based Views. There is no `Event` collection. Raw event data lives in `Log`, where `topics` holds indexed parameters and `data` holds non-indexed ones. A lens (typically `decode_log`) turns those raw fields into decoded, structured output. For copy-pasteable View examples that query each of these collections, see the [View examples](/build/create-a-view/examples/).
+The `Log` collection is the primary source for event-based Views. There is no `Event` collection. Raw event data lives in `Log`, where `topics` holds indexed parameters and `data` holds non-indexed ones. A lens (typically `decode_log`) turns those raw fields into decoded, structured output. For copy-pasteable View examples that query each of these collections, see the [View recipes](/build/how-to/view-recipes/).
 
 ## What you can build with Views
 
@@ -75,7 +75,7 @@ The `Log` collection is the primary source for event-based Views. There is no `E
 
 ## Developer experience
 
-Viewkit is a local-first CLI: you initialize a view bundle, incrementally add or update its query, SDL, and lenses, test it locally against a throwaway DefraDB instance, then deploy to local or devnet. Strong defaults, explicit versioning, and deterministic behavior mean developers focus on data semantics and transformations; Shinzo handles execution, distribution, and verification.
+Viewkit is a local-first CLI: you initialize a View bundle, incrementally add or update its query, SDL, and lenses, test it locally against a throwaway DefraDB instance, then deploy to local or devnet. Strong defaults, explicit versioning, and deterministic behavior mean developers focus on data semantics and transformations; Shinzo handles execution, distribution, and verification.
 
 For the hands-on walkthrough, see [Create your first View](/build/tutorials/create-your-first-view/). For the full command list, filter operators, and deploy internals, see the [Viewkit reference](/reference/components/viewkit/).
 
@@ -83,7 +83,7 @@ For the hands-on walkthrough, see [Create your first View](/build/tutorials/crea
 
 - [Create your first View](/build/tutorials/create-your-first-view/): step-by-step tutorial for building and deploying your first View.
 - [Pools](/understand/core-concepts/pools/): how developer demand for a View meets the Hosts that serve it.
-- [Build an app](/build/build-an-app/): use the app-sdk to subscribe to Views and query data locally.
-- [Query data](/build/query-data/): GraphQL query patterns for deployed Views.
+- [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/): receive View data pushed to your app and query it locally.
+- [Query data](/build/how-to/query-data/): GraphQL query patterns for deployed Views.
 - [Lens reference](/reference/components/lens/): how WASM transforms work, available lenses, and how to chain them.
 - [Viewkit reference](/reference/components/viewkit/): full command list, filter operators, VWL wire format, and deploy internals.

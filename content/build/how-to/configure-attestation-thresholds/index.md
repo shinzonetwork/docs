@@ -96,7 +96,7 @@ Query the records for the document that went missing:
 
 That is a different collection from the one on a Host. The Host-side `<Chain>__<Network>__AttestationRecord` collection carries two more fields, `doc_type` and `vote_count`, and on Hosts today every record is block-level: `doc_type` is `Block`, and `attested_doc` holds the block's `block:<height>:<merkleRoot>` key rather than a document DocID. Until View-keyed records exist, a DocID filter matches nothing and the helpers drop every result whatever the threshold, so treat empty output as expected for now rather than a bug in your query.
 
-To check signatures and CIDs by hand, see [Verify data with signatures and CIDs](/build/how-to/verify-data/). For the reasoning behind per-query trust, see [Attestation as a query filter](/build/explanation/attestation-as-a-query-filter/), and [Attestation](/understand/core-concepts/attestation/) for the platform-level picture.
+To check signatures and CIDs by hand, see [Verify data with signatures and CIDs](/build/how-to/verify-data/). For the reasoning behind per-query trust, see [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/), and [Attestation](/understand/core-concepts/attestation/) for the platform-level picture.
 
 ## Need help
 
