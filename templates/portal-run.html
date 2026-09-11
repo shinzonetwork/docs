@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% import "macros/sidebar.html" as sidebar %}
+
+{# Landing ("portal") template for the Run infrastructure section, mirroring
+   templates/portal.html (Build apps): featured path cards and grouped link
+   lists. Page-specific copy lives in the page's frontmatter (title,
+   description) and markdown body (rendered as the intro strip); the layout
+   below is shared. #}
+
+{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
+
+{% block body %}
+<main class="main-wrapper">
+  <div class="docs-layout">
+    <aside class="theme-doc-sidebar-container">
+      {{ sidebar::render(current=page.path) }}
+    </aside>
+
+    <div class="docs-content docs-content--portal">
+      <article class="docItemCol markdown">
+
+        <h1 class="doc-title">{{ page.title }}</h1>
+
+        {# Intro strip: the page's markdown body, left-aligned. #}
+        {% if page.content %}
+        <div class="portal-intro portal-intro--landing">
+          {{ page.content | safe }}
+        </div>
+        {% endif %}
+
+        {# Primary operator paths #}
+        <section class="portal-section" aria-label="Choose your path">
+          <h2 class="portal-section__heading">Choose your path</h2>
+          <div class="portal-tracks portal-tracks--3col">
+            <a class="portal-card portal-card--featured" href="/run/run-a-generator/install/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              </div>
+              <h3 class="portal-card__title">Run a Generator</h3>
+              <p class="portal-card__desc">Already run a blockchain node? Add a Generator client as a sidecar. It reads new blocks as they arrive, signs them, and gossips them out over P2P.</p>
+            </a>
+
+            <a class="portal-card portal-card--featured" href="/run/run-a-host/install/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </div>
+              <h3 class="portal-card__title">Run a Host</h3>
+              <p class="portal-card__desc">A Host client pulls signed data from Generator clients, applies Lens transforms, and serves the resulting Views to applications over GraphQL.</p>
+            </a>
+
+            <a class="portal-card portal-card--featured" href="/run/get-started/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <h3 class="portal-card__title">Run both</h3>
+              <p class="portal-card__desc">Try the whole pipeline on one machine: a Generator client and a Host client, peered over libp2p and queried over GraphQL. About ten minutes, and no registration needed.</p>
+            </a>
+          </div>
+        </section>
+
+        {# Generator docs #}
+        <section class="portal-section" aria-label="Run a Generator">
+          <h2 class="portal-section__heading">Run a Generator</h2>
+          <div class="portal-linkgrid">
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Setup</h3>
+              <ul class="portal-list">
+                <li><a href="/run/run-a-generator/hardware-requirements/">Hardware requirements</a></li>
+                <li><a href="/run/run-a-generator/install/">Install</a></li>
+                <li><a href="/run/run-a-generator/register/">Register</a></li>
+                <li><a href="/run/run-a-generator/config-reference/">Config reference</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Deployment examples</h3>
+              <ul class="portal-list">
+                <li><a href="/run/run-a-generator/deployment-examples/validator-with-geth/">Validator with Geth</a></li>
+                <li><a href="/run/run-a-generator/deployment-examples/managed-gcp-node/">Managed GCP node</a></li>
+                <li><a href="/run/run-a-generator/deployment-examples/nginx-with-snapshots/">Nginx with snapshots</a></li>
+                <li><a href="/run/run-a-generator/deployment-examples/high-throughput-tuning/">High-throughput tuning</a></li>
+                <li><a href="/run/run-a-generator/deployment-examples/archival-vs-pruned/">Archival versus pruned</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Guides</h3>
+              <ul class="portal-list">
+                <li><a href="/run/run-a-generator/guides/quicknode-setup/">Quicknode setup</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {# Host docs #}
+        <section class="portal-section" aria-label="Run a Host">
+          <h2 class="portal-section__heading">Run a Host</h2>
+          <div class="portal-linkgrid">
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Setup</h3>
+              <ul class="portal-list">
+                <li><a href="/run/run-a-host/hardware-requirements/">Hardware requirements</a></li>
+                <li><a href="/run/run-a-host/install/">Install</a></li>
+                <li><a href="/run/run-a-host/configure-event-filters/">Configure event filters</a></li>
+                <li><a href="/run/run-a-host/register/">Register</a></li>
+                <li><a href="/run/run-a-host/private-hosts/">Private Hosts</a></li>
+                <li><a href="/run/run-a-host/quickstart/">Quick Start</a></li>
+                <li><a href="/run/run-a-host/config-reference/">Config reference</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Deployment examples</h3>
+              <ul class="portal-list">
+                <li><a href="/run/run-a-host/deployment-examples/event-filter-allowlist/">Event filter with allowlist and blocklist</a></li>
+                <li><a href="/run/run-a-host/deployment-examples/snapshot-bootstrap/">Snapshot bootstrap from a trustless indexer</a></li>
+                <li><a href="/run/run-a-host/deployment-examples/prod-vm-nginx-tls/">Prod VM with nginx and TLS</a></li>
+                <li><a href="/run/run-a-host/deployment-examples/gcp-local-ssd-raid0/">GCP VM with local SSD RAID-0</a></li>
+                <li><a href="/run/run-a-host/deployment-examples/watchtower-auto-deploy/">Watchtower auto-deploy</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {# Operations #}
+        <section class="portal-section" aria-label="Operate">
+          <h2 class="portal-section__heading">Operate</h2>
+          <ul class="portal-list">
+            <li><a href="/run/operations/troubleshooting/">Troubleshooting</a></li>
+          </ul>
+        </section>
+
+      </article>
+    </div>
+  </div>
+</main>
+{% endblock body %}
+
+{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
