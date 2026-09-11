@@ -65,7 +65,7 @@ section = "understand"
 
 [[extra.navbar]]
 label = "Run infrastructure"
-href = "/run/get-started/"
+href = "/run/"
 section = "run"
 
 [[extra.navbar]]
