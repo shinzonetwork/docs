@@ -227,7 +227,8 @@ subsections = [
 section = "run"
 label = "Operations"
 pages = [
-  "run/operations/troubleshooting/index.md",
+  "run/operations/add-testnet-to-wallet/index.md",
+  "run/operations/troubleshooting/index.md"
 ]
 
 # Reference
