@@ -1614,67 +1614,16 @@ body.mobile-menu-open {
   font-size: 1rem;
 }
 
-// Portal quick links
-.portal-quicklinks {
-  max-width: 1200px;
-  margin: 2.5rem auto 0;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--szo-border);
-}
-
-.portal-quicklinks__heading {
-  margin: 0 0 0.75rem;
-  font-family: var(--heading-font-family);
-  font-size: 0.8rem;
-  font-weight: var(--heading-font-weight);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--foreground);
-  opacity: 0.7;
-}
-
-.portal-quicklinks__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem 1.75rem;
-}
-
-.portal-quicklinks__link {
-  color: var(--foreground);
-  text-decoration: none;
-  opacity: 0.8;
-}
-
-.portal-quicklinks__link:hover {
-  color: var(--color-primary);
-  opacity: 1;
-  text-decoration: underline;
-}
-
 /* Section landing pages (templates/portal.html) */
 
-// The intro strip on a section landing page: same centered measure as the
-// homepage's .portal-intro, but sized like body copy rather than a hero.
+// The intro strip on a section landing page: same measure as the homepage's
+// .portal-intro, but left-aligned and sized like body copy rather than a hero.
 .portal-intro--landing {
   font-size: 1.05rem;
-  text-align: center;
-  margin: 1rem auto 2rem;
+  text-align: left;
+  margin: 1rem 0 2rem;
 
   p {
-    margin: 0;
-  }
-}
-
-// Wrong-audience redirect box sits directly under the intro; the admonition
-// supplies the styling, this just constrains and centers it.
-.portal-redirect {
-  max-width: 65ch;
-  margin: 0 auto 2.5rem;
-
-  ul {
     margin: 0;
   }
 }
@@ -1689,7 +1638,7 @@ body.mobile-menu-open {
 }
 
 // Spacing rhythm between landing sections, plus the small uppercase section
-// heading (same treatment as .portal-quicklinks__heading).
+// heading.
 .portal-section {
   max-width: 1200px;
   margin: 2.5rem auto 0;

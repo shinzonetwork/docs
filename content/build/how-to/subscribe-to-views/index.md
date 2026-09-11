@@ -3,7 +3,7 @@ title = "Subscribe to Views with the app-sdk"
 description = "How to configure and start an embedded DefraDB instance, subscribe to Views, and receive pushed data in a Go application."
 +++
 
-A local-first app embeds a DefraDB instance through the [app-sdk](https://github.com/shinzonetwork/shinzo-app-sdk), subscribes to Views, and lets Host clients push pre-processed data to it over P2P. This page covers the mechanics: configuration, startup and shutdown, subscribing, and querying what arrives. For why the model works this way, see [The Shinzo app model](/build/explanation/the-app-model/). For filtering results by Generator attestations, see [Configure attestation thresholds](/build/how-to/configure-attestation-thresholds/).
+A local-first app embeds a DefraDB instance through the [app-sdk](https://github.com/shinzonetwork/shinzo-app-sdk), subscribes to Views, and lets Host clients push pre-processed data to it over P2P. This page covers the mechanics: configuration, startup and shutdown, subscribing, and querying what arrives. For why the model works this way, see [The Shinzo app model](/build/concepts/the-app-model/). For filtering results by Generator attestations, see [Configure attestation thresholds](/build/how-to/configure-attestation-thresholds/).
 
 Build against Go 1.25.x. The SDK pins `go 1.25.5`, and Go 1.26 currently fails inside a transitive dependency (`bytedance/sonic`).
 

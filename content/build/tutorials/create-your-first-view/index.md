@@ -411,7 +411,7 @@ Hosts subscribe to a View and serve it once it has a pool; a brand-new tutorial 
 
 For progressively more complex View examples (decoding multiple event types, transaction-based Views without lenses, materialized versus on-query Views, editing and rolling back Views), see [View recipes](/build/how-to/view-recipes/), which includes both the View definitions and the GraphQL queries you run against them.
 
-For the conceptual overview, see [Views for builders](/build/explanation/views-for-builders/). For the full command list, filter operators, VWL wire format, and deploy internals, see the [Viewkit reference](/reference/components/viewkit/). For a deeper dive on lenses, available modules, and how to chain them, see the [Lens reference](/reference/components/lens/). For troubleshooting and common errors, see [Operations: Troubleshooting](/run/operations/troubleshooting/).
+For the conceptual overview, see [Views for builders](/build/concepts/views-for-builders/). For the full command list, filter operators, VWL wire format, and deploy internals, see the [Viewkit reference](/reference/components/viewkit/). For a deeper dive on lenses, available modules, and how to chain them, see the [Lens reference](/reference/components/lens/). For troubleshooting and common errors, see [Operations: Troubleshooting](/run/operations/troubleshooting/).
 
 ## Need help
 

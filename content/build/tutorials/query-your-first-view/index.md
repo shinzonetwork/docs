@@ -264,7 +264,7 @@ Hosts expect every View query to carry a signature. The script hashes your query
 
 - [Create your first View](/build/tutorials/create-your-first-view/) to own the data: build and deploy a View of your own, then query it with this same script.
 - [Build a local-first app](/build/tutorials/build-a-local-first-app/) for the embedded version: subscribe to a View and query pushed data locally instead of per request.
-- [Choosing an app architecture](/build/explanation/choosing-an-architecture/) for the trade-offs between the two models.
+- [Choosing an app architecture](/build/concepts/choosing-an-architecture/) for the trade-offs between the two models.
 
 ## Need help
 

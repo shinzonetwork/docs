@@ -3,7 +3,7 @@ title = "Build a local-first app"
 description = "Tutorial: build a Go app that embeds DefraDB via the app-sdk, subscribes to a View, and queries pushed data locally."
 +++
 
-A local-first app gets its blockchain data pushed to it. You embed a DefraDB instance inside your Go app with the app-sdk, subscribe to a View, and Host clients push the View's pre-processed data to your app over P2P. After that, queries run against your local copy: no per-query API calls, and the data is verifiable because every block of documents is signed by the Generator client that produced it. For the reasoning behind this model, see [The Shinzo app model](/build/explanation/the-app-model/).
+A local-first app gets its blockchain data pushed to it. You embed a DefraDB instance inside your Go app with the app-sdk, subscribe to a View, and Host clients push the View's pre-processed data to your app over P2P. After that, queries run against your local copy: no per-query API calls, and the data is verifiable because every block of documents is signed by the Generator client that produced it. For the reasoning behind this model, see [The Shinzo app model](/build/concepts/the-app-model/).
 
 By the end of this tutorial you have a running Go program that subscribes to a View hosted on the public testnet and answers queries locally. You do not need a wallet, and you do not run a Generator or Host client yourself. The only setup is the Go toolchain.
 
@@ -213,8 +213,8 @@ That is the whole local-first flow: subscribe once, then treat the embedded Defr
 
 - [Create your first View](/build/tutorials/create-your-first-view/) to define your own data instead of using a public View.
 - [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/) for the full configuration surface, including schema appliers and clean shutdown.
-- [The Shinzo app model](/build/explanation/the-app-model/) for the concepts behind pushed data and local querying.
-- [Choosing an app architecture](/build/explanation/choosing-an-architecture/) to compare this with direct signed queries and running your own Host.
+- [The Shinzo app model](/build/concepts/the-app-model/) for the concepts behind pushed data and local querying.
+- [Choosing an app architecture](/build/concepts/choosing-an-architecture/) to compare this with direct signed queries and running your own Host.
 
 ## Need help
 
