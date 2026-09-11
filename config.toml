@@ -165,7 +165,6 @@ section = "run"
 label = "Quickstart"
 pages = [
   "run/get-started/index.md",
-  "run/get-started/add-testnet-to-wallet.md",
 ]
 
 [[extra.sidebar]]
@@ -216,7 +215,8 @@ subsections = [
 section = "run"
 label = "Operations"
 pages = [
-  "run/operations/troubleshooting/index.md",
+  "run/operations/add-testnet-to-wallet/index.md",
+  "run/operations/troubleshooting/index.md"
 ]
 
 # Reference
