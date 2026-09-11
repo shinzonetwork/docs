@@ -1,4 +1,4 @@
-# Legacy path redirects to the current information architecture. Paths handled by Zola aliases on content pages (/introduction, /understand) are not duplicated here.
+# Legacy path redirects to the current information architecture. Paths handled by Zola aliases on content pages (/, /introduction, /understand) are not duplicated here.
 
 /guides               /build/tutorials/create-your-first-view/
 /host                 /run/run-a-host/

@@ -58,7 +58,7 @@ google_analytics_id = "G-VC59JRWDBZ"
 # - label: link text.
 # - href: landing-page URL (literal path).
 # - section: path prefix for active highlighting: active when the current path starts with "/{section}/".
-# - root: optional; when true the entry is ALSO active at the site root ("/").
+# - root: optional; when true the entry is ALSO active at the site root ("/"), which redirects to the Home page.
 
 [[extra.navbar]]
 label = "Understand"
@@ -88,7 +88,8 @@ section = "reference"
 # Each [[extra.sidebar]] block is a group within a section's sidebar.
 # - `section`: which top-level section this group belongs to ("understand",
 #   "build", "run", "reference"). The macro filters by the current path so
-#   only the active section's groups are shown. The home page has no sidebar.
+#   only the active section's groups are shown. The site root ("/") is an
+#   alias to the Home page under Understand, which shows this sidebar.
 # - `label`: group heading text.
 # - `page`: optional path to a section _index.md; when set, the group label
 #   is a link to that landing page.
@@ -101,6 +102,7 @@ section = "reference"
 section = "understand"
 label = "Basics"
 pages = [
+  "understand/home/index.md",
   "understand/what-is-shinzo/index.md",
   "understand/how-it-works/index.md"
 ]
