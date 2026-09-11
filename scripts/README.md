@@ -61,3 +61,12 @@ Useful environment variables:
 
 - `OUTPUT_DIR`: where to write `llms.txt` and `llms-full.txt` (default: `./public`).
 - `BASE_URL`: base URL for generated links (default: `https://docs.shinzo.network`).
+
+## Vendored dependencies
+
+- `static/js/fuse.min.mjs` — Fuse.js 7.5.0 (ESM build), used by
+  `static/js/search.js` for docs search over Zola's `fuse_json` index
+  (`public/search_index.en.json`, see `[search]` in `config.toml`). To update,
+  download `https://cdn.jsdelivr.net/npm/fuse.js@<version>/dist/fuse.min.mjs`
+  over it, bump the version here, and check that search still behaves
+  (multi-word queries, typo tolerance, highlighted snippets).

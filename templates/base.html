@@ -111,10 +111,9 @@
 
 </div>
 
-{# Search index + library (Zola sets window.searchIndex) #}
-<script src="/search_index.en.js"></script>
-<script src="/elasticlunr.min.js"></script>
-<script src="/js/search.js"></script>
+{# Docs search: Fuse.js over Zola's generated search_index.en.json. Both the
+   library and the index are fetched lazily by search.js on first use. #}
+<script src="/js/search.js" defer></script>
 
 {# Table-of-contents scroll-spy (no-ops when there is no TOC) #}
 <script src="/js/toc-scrollspy.js" defer></script>
