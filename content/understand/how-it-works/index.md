@@ -50,7 +50,7 @@ flowchart LR
 
 Sitting next to the execution node is the Shinzo Generator client (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Generator client pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
 
-Those documents land in the Generator client's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
+Those documents land in the Generator client's embedded [DefraDB](../core-concepts/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
 
 {% mermaid() %}
 flowchart LR
