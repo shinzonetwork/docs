@@ -150,6 +150,63 @@ You can also build the Generator client binary from source instead of using Dock
 The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups. Environment variables in `.env` override values in `config.yaml`.
 {% end %}
 
+### Run as a systemd service
+
+`make start` runs the Generator client in your terminal session, so the process stops when you close it. A systemd service keeps the client running after you log out, restarts it after failures, and can start it when the machine boots.
+
+1. Create the service unit file. Set `User` to the user that runs the client, and `WorkingDirectory` to the directory where you cloned the Generator client repository.
+
+    ```shell
+    sudo tee /etc/systemd/system/shinzo-generator.service << EOF
+    [Unit]
+    Description=Shinzo Generator Client
+    Wants=network-online.target
+    After=network-online.target
+
+    [Service]
+    Type=simple
+    User=<service-user>
+    WorkingDirectory=<generator-install-directory>
+    ExecStart=make start
+    Restart=on-failure
+    RestartSec=3
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    ```
+
+    `WorkingDirectory` must be the repository root: the client loads its `.env` file and `config/config.yaml` relative to it.
+
+1. Reload systemd and start the service.
+
+    ```shell
+    sudo systemctl daemon-reload
+    sudo systemctl start shinzo-generator
+    ```
+
+1. Check that the service is running.
+
+    ```shell
+    systemctl status shinzo-generator
+    ```
+
+    Follow the logs with:
+
+    ```shell
+    sudo journalctl -u shinzo-generator -f
+    ```
+
+1. To start the Generator client automatically when the machine boots, enable the service.
+
+    ```shell
+    sudo systemctl enable shinzo-generator
+    ```
+
+{% admonition(type="info") %}
+Run the service as a dedicated user rather than root. The service user needs write access to the install directory: the Generator client writes its database to `.defra/` and its logs to `logs/`. If you created the user after building, give it ownership with `sudo chown -R <service-user>:<service-user> <generator-install-directory>`.
+{% end %}
+
 ### Registration
 
 Once your Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
