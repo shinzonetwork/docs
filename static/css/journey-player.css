@@ -1,0 +1,394 @@
+/* Step-through guided player (shortcode: journey_player.html) */
+
+.jp {
+  margin: 1.5rem 0 2rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.07);
+}
+
+.jp__stage {
+  background: color-mix(in srgb, var(--foreground) 2.5%, var(--background));
+  padding: 10px 12px 0;
+}
+
+.jp__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- panel: caption + controls --- */
+
+.jp__panel {
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  padding: 16px 18px 12px;
+}
+
+.jp__captionbox {
+  min-height: 96px;
+}
+
+.jp__caption-title {
+  margin: 0 0 0.4rem;
+}
+
+.jp__caption-body p {
+  margin: 0;
+}
+
+.jp__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.jp__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.jp__btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--foreground) 7%, transparent);
+}
+
+.jp__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.jp__btn--play {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.jp__btn--play:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.jp__btn--play .jp-icon-pause {
+  display: none;
+}
+
+.jp--playing .jp__btn--play .jp-icon-play {
+  display: none;
+}
+
+.jp--playing .jp__btn--play .jp-icon-pause {
+  display: inline;
+}
+
+.jp__dots {
+  display: flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.jp__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--foreground) 22%, transparent);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.jp__dot.jp-on {
+  background: var(--color-primary);
+  transform: scale(1.25);
+}
+
+.jp__count {
+  margin-left: auto;
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
+.jp__progress {
+  height: 3px;
+  margin: 12px -18px -12px;
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.jp__progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--color-primary);
+  transition: width 0.4s ease;
+}
+
+/* --- SVG scene --- */
+
+.jp-route {
+  stroke: color-mix(in srgb, var(--foreground) 22%, transparent);
+  stroke-width: 2;
+}
+
+.jp-route--side {
+  stroke: color-mix(in srgb, var(--foreground) 14%, transparent);
+  stroke-dasharray: 4 5;
+  stroke-width: 1.5;
+}
+
+.jp-hint {
+  font-family: var(--font-family-monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  fill: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+.jp-station .jp-box,
+.jp-station .jp-box-lip {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-width: 1.5;
+  transition: stroke 0.25s ease;
+}
+
+.jp-station.jp-on .jp-box,
+.jp-station.jp-on .jp-box-lip {
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+}
+
+.jp-block {
+  fill: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.jp-station.jp-on .jp-block {
+  fill: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.jp-sig {
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.jp-gate-post {
+  fill: color-mix(in srgb, var(--foreground) 28%, transparent);
+  transition: fill 0.25s ease;
+}
+
+.jp-station.jp-on .jp-gate-post {
+  fill: var(--color-primary);
+}
+
+.jp-dot-win {
+  fill: color-mix(in srgb, var(--foreground) 30%, transparent);
+}
+
+.jp-label {
+  font-family: var(--font-family-monospace);
+  font-size: 12.5px;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 72%, transparent);
+  transition: fill 0.25s ease;
+}
+
+.jp-label--small {
+  font-size: 11px;
+  text-anchor: start;
+  fill: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.jp-station.jp-on .jp-label {
+  fill: var(--foreground);
+}
+
+.jp-card {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.jp--s3 .jp-card,
+.jp--s4 .jp-card,
+.jp--s5 .jp-card,
+.jp--s6 .jp-card {
+  opacity: 1;
+}
+
+.jp-card rect {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 20%, transparent);
+  stroke-width: 1;
+}
+
+.jp-card-title {
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  font-size: 12px;
+  fill: var(--foreground);
+}
+
+.jp-card-mono {
+  font-family: var(--font-family-monospace);
+  font-size: 11px;
+  fill: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+.jp-votes {
+  fill: var(--color-primary);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.jp-vote-dot {
+  fill: transparent;
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-width: 1.5;
+  transition: fill 0.2s ease;
+}
+
+.jp-vote-dot.jp-filled {
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
+}
+
+/* GraphQL bubble + shield: visible on the last step only */
+.jp--s1 #jp-query,
+.jp--s1 #jp-shield,
+.jp--s2 #jp-query,
+.jp--s2 #jp-shield,
+.jp--s3 #jp-query,
+.jp--s3 #jp-shield,
+.jp--s4 #jp-query,
+.jp--s4 #jp-shield,
+.jp--s5 #jp-query,
+.jp--s5 #jp-shield {
+  opacity: 0;
+}
+
+#jp-query,
+#jp-shield {
+  transition: opacity 0.45s ease 0.3s;
+}
+
+.jp-shield-body {
+  fill: color-mix(in srgb, var(--color-primary) 12%, var(--background));
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+}
+
+.jp-shield-check {
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- packets --- */
+
+.jp-packet rect {
+  fill: var(--background);
+  stroke: var(--foreground);
+  stroke-width: 1.5;
+}
+
+.jp-packet-text {
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  text-anchor: middle;
+  fill: var(--foreground);
+}
+
+.jp-packet-text--view {
+  font-size: 9px;
+}
+
+.jp-view-rect {
+  stroke: var(--color-primary) !important;
+  fill: color-mix(in srgb, var(--color-primary) 7%, var(--background)) !important;
+}
+
+.jp-seal-dot {
+  fill: var(--color-primary);
+}
+
+.jp-seal-check {
+  stroke: var(--background);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Main packet positions per step */
+.jp-packet--main {
+  transform: translate(80px, 210px);
+  transition: transform 0.8s cubic-bezier(0.45, 0.05, 0.25, 1);
+}
+
+.jp--s2 .jp-packet--main { transform: translate(255px, 210px); }
+.jp--s3 .jp-packet--main,
+.jp--s4 .jp-packet--main { transform: translate(450px, 210px); }
+.jp--s5 .jp-packet--main { transform: translate(565px, 210px); }
+.jp--s6 .jp-packet--main { transform: translate(690px, 210px); }
+
+/* Signature seal: hidden until the Generator signs (step 2) */
+.jp-seal {
+  transform: translate(18px, -14px) scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s;
+}
+
+.jp--s2 .jp-seal,
+.jp--s3 .jp-seal,
+.jp--s4 .jp-seal,
+.jp--s5 .jp-seal,
+.jp--s6 .jp-seal {
+  transform: translate(18px, -14px) scale(1);
+}
+
+/* Raw log <-> transformed view cross-fade at the Lens gate (step 5) */
+#jp-packet-raw,
+#jp-packet-view {
+  transition: opacity 0.3s ease;
+}
+
+#jp-packet-view {
+  opacity: 0;
+}
+
+.jp--s5 #jp-packet-raw,
+.jp--s6 #jp-packet-raw {
+  opacity: 0;
+  transition-delay: 0.4s;
+}
+
+.jp--s5 #jp-packet-view,
+.jp--s6 #jp-packet-view {
+  opacity: 1;
+  transition-delay: 0.4s;
+}
+
+[data-theme="dark"] .jp {
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.5);
+}
+
+/* Reduced motion: state changes are instant, autoplay still works. */
+@media (prefers-reduced-motion: reduce) {
+  .jp *,
+  .jp *::before,
+  .jp *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
