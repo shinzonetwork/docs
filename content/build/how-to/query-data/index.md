@@ -43,6 +43,34 @@ The same shape works for a View. This query fetches the 10 most recent decoded e
 }
 ```
 
+## Page through results
+
+`offset` skips documents before `limit` applies, so stepping it walks a collection in pages:
+
+```graphql
+{
+  <Chain>__<Network>__Block(order: { number: DESC }, limit: 10, offset: 20) {
+    number
+    hash
+  }
+}
+```
+
+That returns items 21 through 30 of the ordering. There is no cursor pagination: `offset` is a plain skip. For steadily walking a growing collection, filter instead of skipping. Keep the last `number` you saw and ask for everything after it, which starts each page exactly where the last one ended:
+
+```graphql
+{
+  <Chain>__<Network>__Block(
+    filter: { number: { _gt: 25930000 } }
+    order: { number: ASC }
+    limit: 10
+  ) {
+    number
+    hash
+  }
+}
+```
+
 ## Fetch a document by DocID or CID
 
 When you already know a document's `_docID`, pass it as the `docID` argument to fetch exactly that document:
