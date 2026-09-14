@@ -7,13 +7,13 @@ To participate in the Shinzo Network, you must register your node. Registration 
 
 ## Prerequisites
 
-Running the Generator client only requires an execution node (see [Install](../install)). To register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step in which you prove control of a validator on your source chain. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
+Running the Generator client only requires an execution node (see [Install](../install)). To register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step that ties your generator's operator key to your validator identity. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
 
 Before you start, have the following ready:
 
-1. **An active, bonded chain validator.** The outpost checks that the validator named in your assertion is active and bonded on the source chain.
+1. **An active, bonded chain validator.** On the current testnet, the assertion is approved through an admin-key flow rather than an on-chain contract check. The planned outpost contract will verify validator status on-chain once deployed.
 1. **Your validator's consensus public key.** The key type, format, and lookup tooling are chain-specific. See [Consensus public key](/reference/components/outpost#consensus-public-key) for how to retrieve it on your chain. It is not your withdrawal address or an EVM address.
-1. **Access to your validator's withdrawal key.** The assertion is signed with the withdrawal key to prove control of the validator's stake, and the withdrawal address is included in the assertion. See [Validator assertions](/reference/components/outpost#validator-assertions) for the full flow.
+1. **Your validator's withdrawal address.** This is included in the assertion to identify your validator. On the current testnet you only need the address itself (the assertion is admin-key-approved). The planned contract-based flow will require the withdrawal key to sign the assertion. See [Validator assertions](/reference/components/outpost#validator-assertions) for the full flow.
 1. **A browser wallet** to sign the on-chain registration transaction.
 
 ## Register your Generator
@@ -36,14 +36,15 @@ Before you start, have the following ready:
 
 ### Assertion
 
-The Assertion step verifies that you control the validator you are registering as a Generator. You'll need to provide:
+The Assertion step ties your validator identity to your generator's operator key so ShinzoHub knows who you are. You'll need to provide:
 
-- **Consensus public key**: The consensus public key of the validator you are registering (see [Consensus public key](/reference/components/outpost#consensus-public-key)).
+- **Consensus public key**: The consensus public key of the validator you're registering (see [Consensus public key](/reference/components/outpost#consensus-public-key)).
+- **Withdrawal address**: The withdrawal address for your validator on the source chain.
 - **Source chain**: The blockchain your generator monitors (see [shinzo.network/chains](https://shinzo.network/chains) for supported chains).
 
-The assertion is authorized by your validator's withdrawal key, which proves control of the validator's stake. See [Validator assertions](/reference/components/outpost#validator-assertions) for how this works end to end.
+On the current testnet, the assertion goes through an admin-key approval flow rather than a smart contract. Your connected wallet address gets recorded as the generator's operator and payout address. The withdrawal-key signature and on-chain validator-status check described in [Validator assertions](/reference/components/outpost#validator-assertions) are part of the planned contract-based flow and aren't live on testnet yet.
 
-Click **Sign & Submit** to sign a message with your wallet, proving ownership of the generator's identity.
+Click **Sign & Submit** to submit the assertion.
 
 ### Registration (register on-chain)
 
