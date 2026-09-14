@@ -263,7 +263,7 @@ Hosts expect every View query to carry a signature. The script hashes your query
 ## Where to next
 
 - [Create your first View](/build/tutorials/create-your-first-view/) to own the data: build and deploy a View of your own, then query it with this same script.
-- [Build a local-first app](/build/tutorials/build-a-local-first-app/) for the embedded version: subscribe to a View and query pushed data locally instead of per request.
+- [Build a local-first app](/build/tutorials/build-a-local-first-app/) for the embedded version: subscribe to a View and query pushed data locally instead of per request. Pushed replication is currently blocked by an SDK version mismatch, so the app connects but nothing arrives yet; the tutorial's opening note has the details.
 - [Choosing an app architecture](/build/concepts/choosing-an-architecture/) for the trade-offs between the two models.
 
 ## Need help

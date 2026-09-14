@@ -43,5 +43,5 @@ Pricing and metering are deliberately out of scope here. The comparison above is
 ## Decide in ten seconds
 
 - Prototyping a web frontend or adding a dashboard: start with [Query your first View](/build/tutorials/query-your-first-view/).
-- A stateful service that reads the same data constantly: [Build a local-first app](/build/tutorials/build-a-local-first-app/).
+- A stateful service that reads the same data constantly: [Build a local-first app](/build/tutorials/build-a-local-first-app/). Pushed replication is currently blocked by an SDK version mismatch, so read the tutorial's opening note before committing to this path today.
 - Regulated, compliance-bound, or privacy-sensitive work: [Use your own infrastructure](/build/how-to/use-your-own-infrastructure/).
