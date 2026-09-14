@@ -1,0 +1,413 @@
+/* Ambient auto-playing living diagram (shortcode: journey_loop.html)
+ *
+ * The whole loop is CSS keyframes on a 6s cycle (three staggered packet
+ * convoys), so it runs with no JS at all. journey-loop.js only adds the
+ * pause button, offscreen pausing, and the vote counter.
+ */
+
+.jal {
+  position: relative;
+  margin: 1.5rem 0 2rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.07);
+}
+
+.jal__stage {
+  position: relative;
+  background: color-mix(in srgb, var(--foreground) 2.5%, var(--background));
+  padding: 10px 12px 4px;
+}
+
+.jal__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.jal__caption {
+  margin: 0;
+  padding: 10px 16px 12px;
+  text-align: center;
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
+.jal__pause {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  background: color-mix(in srgb, var(--background) 80%, transparent);
+  color: var(--foreground);
+  cursor: pointer;
+  padding: 0;
+}
+
+.jal__pause:hover {
+  background: var(--background);
+}
+
+.jal__pause .jal-icon-play {
+  display: none;
+}
+
+.jal--paused .jal__pause .jal-icon-pause {
+  display: none;
+}
+
+.jal--paused .jal__pause .jal-icon-play {
+  display: inline;
+}
+
+/* Pause everything when toggled or offscreen */
+.jal--paused .jal-anim,
+.jal--off .jal-anim {
+  animation-play-state: paused;
+}
+
+/* Screen-reader-only long description */
+.jal__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- SVG scene (static parts) --- */
+
+.jal-route {
+  stroke: color-mix(in srgb, var(--foreground) 22%, transparent);
+  stroke-width: 2;
+}
+
+.jal-route--side {
+  stroke: color-mix(in srgb, var(--foreground) 14%, transparent);
+  stroke-dasharray: 4 5;
+  stroke-width: 1.5;
+}
+
+.jal-hint {
+  font-family: var(--font-family-monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  fill: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+.jal-box,
+.jal-box-lip {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-width: 1.5;
+}
+
+.jal-block {
+  fill: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.jal-sig {
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.jal-gate-post {
+  fill: color-mix(in srgb, var(--foreground) 28%, transparent);
+}
+
+.jal-dot-win {
+  fill: color-mix(in srgb, var(--foreground) 30%, transparent);
+}
+
+.jal-label {
+  font-family: var(--font-family-monospace);
+  font-size: 12.5px;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 72%, transparent);
+}
+
+.jal-label--small {
+  font-size: 11px;
+  text-anchor: start;
+  fill: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.jal-card rect {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 20%, transparent);
+  stroke-width: 1;
+}
+
+.jal-card-title {
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  font-size: 12px;
+  fill: var(--foreground);
+}
+
+.jal-card-mono {
+  font-family: var(--font-family-monospace);
+  font-size: 11px;
+  fill: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+.jal-votes {
+  fill: var(--color-primary);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.jal-vote-dot {
+  fill: transparent;
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-width: 1.5;
+}
+
+.jal-vd1 {
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
+}
+
+.jal-packet rect,
+.jal-side rect,
+.jal-static rect {
+  fill: var(--background);
+  stroke: var(--foreground);
+  stroke-width: 1.5;
+}
+
+.jal-pview rect,
+.jal-static rect {
+  stroke: var(--color-primary);
+  fill: color-mix(in srgb, var(--color-primary) 7%, var(--background));
+}
+
+.jal-packet-text {
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  text-anchor: middle;
+  fill: var(--foreground);
+}
+
+.jal-packet-text--view {
+  font-size: 9px;
+}
+
+.jal-seal-dot {
+  fill: var(--color-primary);
+}
+
+.jal-seal-check {
+  stroke: var(--background);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.jal-shield-body {
+  fill: color-mix(in srgb, var(--color-primary) 12%, var(--background));
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+}
+
+.jal-shield-check {
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- animated parts --- */
+
+.jal-packet,
+.jal-side {
+  opacity: 0;
+}
+
+.jal-packet {
+  animation: jalMove 6s linear infinite, jalFade 6s linear infinite;
+}
+
+.jal-praw {
+  animation: jalRaw 6s linear infinite;
+}
+
+.jal-pview {
+  opacity: 0;
+  animation: jalView 6s linear infinite;
+}
+
+.jal-seal {
+  transform: translate(18px, -14px) scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: jalSeal 6s linear infinite;
+}
+
+/* Per-convoy stagger: same loop, three phases */
+.jal-d1 { animation-delay: -0.5s; }
+.jal-d2 { animation-delay: -2.5s; }
+.jal-d3 { animation-delay: -4.5s; }
+
+.jal-side {
+  transform-box: fill-box;
+  transform-origin: center;
+  offset-rotate: 0deg;
+  animation: jalSide 3s linear infinite;
+}
+
+.jal-side-1 {
+  offset-path: path("M 273 70 C 320 70, 390 120, 424 178");
+  animation-delay: -0.4s;
+}
+
+.jal-side-2 {
+  offset-path: path("M 273 350 C 320 350, 390 300, 424 242");
+  animation-delay: -1.6s;
+}
+
+.jal-sig.jal-anim {
+  stroke-dasharray: 40;
+  animation: jalDraw 6s linear infinite;
+  animation-delay: -0.5s;
+}
+
+.jal-b1 { animation: jalBlock 2.4s ease-in-out infinite; }
+.jal-b2 { animation: jalBlock 2.4s ease-in-out infinite; animation-delay: 0.4s; }
+.jal-b3 { animation: jalBlock 2.4s ease-in-out infinite; animation-delay: 0.8s; }
+
+.jal-gate-post.jal-anim {
+  animation: jalGate 3s ease-in-out infinite;
+}
+
+.jal-shield.jal-anim {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: jalShield 2.2s ease-in-out infinite;
+}
+
+.jal-vd2.jal-anim { animation: jalVd2 2.7s linear infinite; }
+.jal-vd3.jal-anim { animation: jalVd3 2.7s linear infinite; }
+
+.jal-static {
+  display: none;
+}
+
+/* --- keyframes: one 6s journey --- */
+
+@keyframes jalMove {
+  0%   { transform: translate(80px, 210px); animation-timing-function: ease-in-out; }
+  25%  { transform: translate(255px, 210px); animation-timing-function: ease-in-out; }
+  35%  { transform: translate(255px, 210px); animation-timing-function: ease-in-out; }
+  58%  { transform: translate(450px, 210px); animation-timing-function: ease-in-out; }
+  66%  { transform: translate(450px, 210px); animation-timing-function: ease-in-out; }
+  78%  { transform: translate(565px, 210px); animation-timing-function: ease-in-out; }
+  82%  { transform: translate(565px, 210px); animation-timing-function: ease-in-out; }
+  93%  { transform: translate(690px, 210px); }
+  100% { transform: translate(690px, 210px); }
+}
+
+@keyframes jalFade {
+  0%   { opacity: 0; }
+  4%   { opacity: 1; }
+  92%  { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+
+@keyframes jalRaw {
+  0%, 78%   { opacity: 1; }
+  82%, 100% { opacity: 0; }
+}
+
+@keyframes jalView {
+  0%, 78%   { opacity: 0; }
+  82%, 100% { opacity: 1; }
+}
+
+@keyframes jalSeal {
+  0%, 26%  { transform: translate(18px, -14px) scale(0); }
+  30%      { transform: translate(18px, -14px) scale(1.2); }
+  33%, 100% { transform: translate(18px, -14px) scale(1); }
+}
+
+@keyframes jalSide {
+  0%   { offset-distance: 0%; opacity: 0; }
+  12%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+@keyframes jalDraw {
+  0%, 24%  { stroke-dashoffset: 40; }
+  33%, 99% { stroke-dashoffset: 0; }
+  100%     { stroke-dashoffset: 40; }
+}
+
+@keyframes jalBlock {
+  0%, 100% { fill: color-mix(in srgb, var(--foreground) 16%, transparent); }
+  50%      { fill: color-mix(in srgb, var(--color-primary) 45%, transparent); }
+}
+
+@keyframes jalGate {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+@keyframes jalShield {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+@keyframes jalVd2 {
+  0%, 30%  { fill: transparent; stroke: color-mix(in srgb, var(--foreground) 35%, transparent); }
+  38%, 100% { fill: var(--color-primary); stroke: var(--color-primary); }
+}
+
+@keyframes jalVd3 {
+  0%, 63%  { fill: transparent; stroke: color-mix(in srgb, var(--foreground) 35%, transparent); }
+  71%, 100% { fill: var(--color-primary); stroke: var(--color-primary); }
+}
+
+[data-theme="dark"] .jal {
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.5);
+}
+
+/* Reduced motion: freeze the loop, show one completed packet at the app,
+   and light all three vote dots. */
+@media (prefers-reduced-motion: reduce) {
+  .jal .jal-anim {
+    animation: none;
+  }
+
+  .jal .jal-packet,
+  .jal .jal-side {
+    opacity: 0;
+  }
+
+  .jal .jal-static {
+    display: block;
+  }
+
+  .jal .jal-vd2,
+  .jal .jal-vd3 {
+    fill: var(--color-primary);
+    stroke: var(--color-primary);
+  }
+
+  .jal__pause {
+    display: none;
+  }
+}

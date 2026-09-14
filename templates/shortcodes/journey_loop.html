@@ -1,0 +1,166 @@
+{# Ambient auto-playing living diagram (shortcode body = accessible long
+   description, rendered visually-hidden and referenced via aria-describedby).
+   Assets: /css/journey-loop.css and /js/journey-loop.js.
+   The loop is pure CSS, so it runs without JS; the script only adds the
+   pause button, offscreen pausing, and the vote counter. #}
+<link rel="stylesheet" href="/css/journey-loop.css" />
+<div class="jal" id="jal">
+  <div class="jal__stage">
+    <button type="button" class="jal__pause" id="jal-pause" aria-pressed="false" aria-label="Pause animation">
+      <svg class="jal-icon-pause" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="3.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/><rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/></svg>
+      <svg class="jal-icon-play" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M 4 2.5 L 13 8 L 4 13.5 Z" fill="currentColor"/></svg>
+    </button>
+    <svg class="jal__svg" viewBox="0 0 760 430" role="img" aria-describedby="jal-sr"
+      aria-label="Looping animation of signed documents travelling from an execution node, through Generator clients, to a Host that tallies attestations, through a View transform, and into an application that verifies them.">
+      <!-- routes -->
+      <path class="jal-route" d="M 80 210 H 690" fill="none" />
+      <path class="jal-route jal-route--side" d="M 273 70 C 320 70, 390 120, 424 178" fill="none" />
+      <path class="jal-route jal-route--side" d="M 273 350 C 320 350, 390 300, 424 242" fill="none" />
+
+      <text class="jal-hint" x="300" y="188">P2P gossip</text>
+
+      <!-- Execution node -->
+      <g class="jal-station" transform="translate(80 210)">
+        <rect class="jal-box" x="-30" y="-30" width="60" height="60" rx="10" />
+        <rect class="jal-block jal-b1 jal-anim" x="-14" y="-16" width="28" height="8" rx="2" />
+        <rect class="jal-block jal-b2 jal-anim" x="-14" y="-4" width="28" height="8" rx="2" />
+        <rect class="jal-block jal-b3 jal-anim" x="-14" y="8" width="28" height="8" rx="2" />
+        <text class="jal-label" y="52">Execution node</text>
+      </g>
+
+      <!-- Generator client -->
+      <g class="jal-station" transform="translate(255 210)">
+        <circle class="jal-box" r="30" />
+        <path class="jal-sig jal-anim" pathLength="40" d="M -13 5 q 6 -15 11 -2 t 11 -2 t 11 -2" fill="none" />
+        <text class="jal-label" y="52">Generator client</text>
+      </g>
+
+      <!-- Other Generator clients -->
+      <g class="jal-station jal-station--small" transform="translate(255 70)">
+        <circle class="jal-box" r="18" />
+        <path class="jal-sig" d="M -8 3 q 4 -9 7 -1 t 7 -1" fill="none" />
+        <text class="jal-label jal-label--small" x="28" y="4">Generator client</text>
+      </g>
+      <g class="jal-station jal-station--small" transform="translate(255 350)">
+        <circle class="jal-box" r="18" />
+        <path class="jal-sig" d="M -8 3 q 4 -9 7 -1 t 7 -1" fill="none" />
+        <text class="jal-label jal-label--small" x="28" y="4">Generator client</text>
+      </g>
+
+      <!-- Host -->
+      <g class="jal-station" transform="translate(450 210)">
+        <path class="jal-box" d="M -26 -18 v 36 a 26 8 0 0 0 52 0 v -36 a 26 8 0 0 0 -52 0" />
+        <ellipse class="jal-box-lip" cx="0" cy="-18" rx="26" ry="8" />
+        <text class="jal-label" y="52">Host</text>
+      </g>
+
+      <!-- View / Lens gate -->
+      <g class="jal-station" transform="translate(565 210)">
+        <rect class="jal-gate-post jal-anim" x="-16" y="-34" width="9" height="68" rx="4" />
+        <rect class="jal-gate-post jal-anim" x="7" y="-34" width="9" height="68" rx="4" />
+        <text class="jal-label" y="58">Lens transform</text>
+      </g>
+
+      <!-- App -->
+      <g class="jal-station" transform="translate(690 210)">
+        <rect class="jal-box" x="-30" y="-24" width="60" height="48" rx="8" />
+        <circle class="jal-dot-win" cx="-19" cy="-13" r="2.5" />
+        <circle class="jal-dot-win" cx="-11" cy="-13" r="2.5" />
+        <circle class="jal-dot-win" cx="-3" cy="-13" r="2.5" />
+        <text class="jal-label" y="48">Your app</text>
+      </g>
+
+      <!-- Attestation record card -->
+      <g class="jal-card" transform="translate(450 74)">
+        <rect x="-88" y="-30" width="176" height="60" rx="10" />
+        <text class="jal-card-title" x="-76" y="-10">Attestation record</text>
+        <text class="jal-card-mono" x="-76" y="14">vote_count</text>
+        <text class="jal-card-mono jal-votes" id="jal-votes" x="24" y="14">3</text>
+        <circle class="jal-vote-dot jal-vd1" cx="52" cy="10" r="5.5" />
+        <circle class="jal-vote-dot jal-vd2 jal-anim" cx="68" cy="10" r="5.5" />
+        <circle class="jal-vote-dot jal-vd3 jal-anim" cx="84" cy="10" r="5.5" />
+      </g>
+
+      <!-- GraphQL bubble + verified shield at the app -->
+      <g class="jal-card" transform="translate(660 84)">
+        <rect x="-90" y="-32" width="180" height="58" rx="10" />
+        <text class="jal-card-title" x="-78" y="-10">GraphQL · TokenTransfer</text>
+        <text class="jal-card-mono" x="-78" y="12">attestation ≥ 3 ✓</text>
+      </g>
+      <g transform="translate(650 152)">
+        <g class="jal-shield jal-anim">
+          <path class="jal-shield-body" d="M 0 -15 L 13 -9 V 4 C 13 13 7 18 0 21 C -7 18 -13 13 -13 4 V -9 Z" />
+          <path class="jal-shield-check" d="M -5 1 L -1 6 L 6 -5" fill="none" />
+        </g>
+      </g>
+
+      <!-- Side packets: signed copies from the other Generator clients.
+           offset-path animates them along the dashed routes. -->
+      <g class="jal-side jal-anim jal-side-1">
+        <rect x="-13" y="-8" width="26" height="16" rx="4" />
+        <circle class="jal-seal-dot" cx="10" cy="-7" r="4" />
+      </g>
+      <g class="jal-side jal-anim jal-side-2">
+        <rect x="-13" y="-8" width="26" height="16" rx="4" />
+        <circle class="jal-seal-dot" cx="10" cy="-7" r="4" />
+      </g>
+
+      <!-- Three packet convoys, staggered around the 6s loop -->
+      <g class="jal-packet jal-anim jal-d1">
+        <g class="jal-praw jal-anim jal-d1">
+          <rect x="-23" y="-15" width="46" height="30" rx="6" />
+          <text class="jal-packet-text" y="4">{ }</text>
+        </g>
+        <g class="jal-pview jal-anim jal-d1">
+          <rect x="-28" y="-15" width="56" height="30" rx="6" />
+          <text class="jal-packet-text jal-packet-text--view" y="3.5">Transfer</text>
+        </g>
+        <g class="jal-seal jal-anim jal-d1" transform="translate(18 -14)">
+          <circle class="jal-seal-dot" r="9" />
+          <path class="jal-seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+        </g>
+      </g>
+      <g class="jal-packet jal-anim jal-d2">
+        <g class="jal-praw jal-anim jal-d2">
+          <rect x="-23" y="-15" width="46" height="30" rx="6" />
+          <text class="jal-packet-text" y="4">{ }</text>
+        </g>
+        <g class="jal-pview jal-anim jal-d2">
+          <rect x="-28" y="-15" width="56" height="30" rx="6" />
+          <text class="jal-packet-text jal-packet-text--view" y="3.5">Transfer</text>
+        </g>
+        <g class="jal-seal jal-anim jal-d2" transform="translate(18 -14)">
+          <circle class="jal-seal-dot" r="9" />
+          <path class="jal-seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+        </g>
+      </g>
+      <g class="jal-packet jal-anim jal-d3">
+        <g class="jal-praw jal-anim jal-d3">
+          <rect x="-23" y="-15" width="46" height="30" rx="6" />
+          <text class="jal-packet-text" y="4">{ }</text>
+        </g>
+        <g class="jal-pview jal-anim jal-d3">
+          <rect x="-28" y="-15" width="56" height="30" rx="6" />
+          <text class="jal-packet-text jal-packet-text--view" y="3.5">Transfer</text>
+        </g>
+        <g class="jal-seal jal-anim jal-d3" transform="translate(18 -14)">
+          <circle class="jal-seal-dot" r="9" />
+          <path class="jal-seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+        </g>
+      </g>
+
+      <!-- Static packet shown instead of the convoy under reduced motion -->
+      <g class="jal-static" transform="translate(690 210)">
+        <rect x="-28" y="-15" width="56" height="30" rx="6" />
+        <text class="jal-packet-text jal-packet-text--view" y="3.5">Transfer</text>
+        <g transform="translate(22 -14)">
+          <circle class="jal-seal-dot" r="9" />
+          <path class="jal-seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+        </g>
+      </g>
+    </svg>
+  </div>
+  <p class="jal__caption">Live loop — every read makes this trip, block after block.</p>
+  <div class="jal__sr" id="jal-sr">{{ body | safe }}</div>
+</div>
+<script src="/js/journey-loop.js" defer></script>
