@@ -33,7 +33,7 @@ A pool closes that gap. Registering demand for a View, and backing it with a bon
 
 A pool is created the first time someone registers demand for a View through the Pool Registry on ShinzoHub. The demand carries a bond in ushinzo (SHNZ's base unit), which has to be more than zero and is escrowed as a sign of real intent. If no pool exists yet for that View, one is created; later demand for the same View joins the existing pool rather than making a new one.
 
-A pool is identified by two things: the View it serves, and a small config. Today that config is a single field, the pool's `windowSize`. Changing it produces a different pool, so one View can have several pools under different configs. The View has to be registered first; you can't register demand against a View that doesn't exist yet. See [Create a View](/build/create-a-view/) for how to get that far.
+A pool is identified by two things: the View it serves, and a small config. Today that config is a single field, the pool's `windowSize`. Changing it produces a different pool, so one View can have several pools under different configs. The View has to be registered first; you can't register demand against a View that doesn't exist yet. See [Create your first View](/build/tutorials/create-your-first-view/) for how to get that far.
 
 ## Two faces of a pool
 

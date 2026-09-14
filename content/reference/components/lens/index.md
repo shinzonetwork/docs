@@ -204,7 +204,7 @@ This spins up a temporary local DefraDB instance, applies your schema, loads the
 viewkit view deploy my-view --target local
 ```
 
-See the [Quick Start](/build/create-a-view/) for Wasmer runtime setup if you encounter `libwasmer` errors during local testing.
+See the [Create your first View](/build/tutorials/create-your-first-view/) tutorial for Wasmer runtime setup if you encounter `libwasmer` errors during local testing.
 
 ## Authoring new lenses
 

@@ -9,7 +9,7 @@ Running the client only requires access to an execution node. You do not need to
 
 ## Hardware recommendations
 
-The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
+The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
 ## Using Docker
 

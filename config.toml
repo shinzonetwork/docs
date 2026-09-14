@@ -33,6 +33,8 @@ theme = "github-light"
 extra_grammars = ["grammars/output.json"]
 
 [search]
+# Fuse.js index (public/search_index.en.json), fetched lazily by static/js/search.js.
+index_format = "fuse_json"
 include_title = true
 include_description = true
 include_path = true
@@ -56,7 +58,7 @@ google_analytics_id = "G-VC59JRWDBZ"
 # - label: link text.
 # - href: landing-page URL (literal path).
 # - section: path prefix for active highlighting: active when the current path starts with "/{section}/".
-# - root: optional; when true the entry is ALSO active at the site root ("/").
+# - root: optional; when true the entry is ALSO active at the site root ("/"), which redirects to the Home page.
 
 [[extra.navbar]]
 label = "Understand"
@@ -65,12 +67,12 @@ section = "understand"
 
 [[extra.navbar]]
 label = "Run infrastructure"
-href = "/run/get-started/"
+href = "/run/"
 section = "run"
 
 [[extra.navbar]]
 label = "Build apps"
-href = "/build/create-a-view/"
+href = "/build/"
 section = "build"
 
 [[extra.navbar]]
@@ -86,7 +88,8 @@ section = "reference"
 # Each [[extra.sidebar]] block is a group within a section's sidebar.
 # - `section`: which top-level section this group belongs to ("understand",
 #   "build", "run", "reference"). The macro filters by the current path so
-#   only the active section's groups are shown. The home page has no sidebar.
+#   only the active section's groups are shown. The site root ("/") is an
+#   alias to the Home page under Understand, which shows this sidebar.
 # - `label`: group heading text.
 # - `page`: optional path to a section _index.md; when set, the group label
 #   is a link to that landing page.
@@ -99,6 +102,7 @@ section = "reference"
 section = "understand"
 label = "Basics"
 pages = [
+  "understand/home/index.md",
   "understand/what-is-shinzo/index.md",
   "understand/how-it-works/index.md"
 ]
@@ -123,21 +127,50 @@ pages = [
   "understand/contributing/index.md",
 ]
 
-# Build apps
-[[extra.sidebar]]
-section = "build"
-label = "Develop"
-pages = [
-  "build/create-a-view/index.md",
-  "build/build-an-app/index.md",
-  "build/query-data/index.md",
-]
-
 [[extra.sidebar]]
 section = "build"
 label = "Concepts"
 pages = [
+  "build/concepts/the-app-model/index.md",
+  "build/concepts/choosing-an-architecture/index.md",
   "build/concepts/views-for-builders/index.md",
+  "build/concepts/attestation-as-a-query-filter/index.md",
+]
+
+[[extra.sidebar]]
+section = "build"
+label = "Tutorials"
+pages = [
+  "build/tutorials/query-your-first-view/index.md",
+  "build/tutorials/create-your-first-view/index.md",
+  "build/tutorials/build-a-local-first-app/index.md",
+  "build/tutorials/spinup-a-local-devnet/index.md",
+]
+
+[[extra.sidebar]]
+section = "build"
+label = "How-to"
+pages = []
+subsections = [
+  { label = "Read data", pages = [
+    "build/how-to/find-views-and-hosts/index.md",
+    "build/how-to/connect-to-a-host/index.md",
+    "build/how-to/query-data/index.md",
+    "build/how-to/subscribe-to-views/index.md",
+  ] },
+  { label = "Verify your data", pages = [
+    "build/how-to/verify-data/index.md",
+    "build/how-to/configure-attestation-thresholds/index.md",
+  ] },
+  { label = "Create Views", pages = [
+    "build/how-to/view-recipes/index.md",
+    "build/how-to/use-shinzo-studio/index.md",
+    "build/how-to/write-a-lens/index.md",
+  ] },
+  { label = "Run your own setup", pages = [
+    "build/tutorials/spinup-a-local-devnet/index.md",
+    "build/how-to/use-your-own-infrastructure/index.md",
+  ] },
 ]
 
 # Run infrastructure
@@ -197,7 +230,8 @@ subsections = [
 section = "run"
 label = "Operations"
 pages = [
-  "run/operations/troubleshooting/index.md",
+  "run/operations/add-testnet-to-wallet/index.md",
+  "run/operations/troubleshooting/index.md"
 ]
 
 # Reference

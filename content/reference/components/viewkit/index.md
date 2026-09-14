@@ -6,7 +6,7 @@ mermaid = true
 
 Viewkit is the local CLI tool for creating, testing, and deploying Shinzo Views. It packages a view into a binary bundle (VWL) and submits a deploy transaction to ShinzoHub. It does not process, store, or serve data.
 
-This page is the technical reference for Viewkit: the full command list, filter operators, the deploy pipeline, the VWL wire format, view ID computation, and the on-disk layout of the source repo. For a hands-on walkthrough of building and deploying your first view, see the [Create a View](/build/create-a-view/) quickstart. For the conceptual overview of what Viewkit is and where it sits in the stack, see [Views for builders](/build/concepts/views-for-builders/).
+This page is the technical reference for Viewkit: the full command list, filter operators, the deploy pipeline, the VWL wire format, view ID computation, and the on-disk layout of the source repo. For a hands-on walkthrough of building and deploying your first view, see the [Create your first View](/build/tutorials/create-your-first-view/) tutorial. For the conceptual overview of what Viewkit is and where it sits in the stack, see [Views for builders](/build/concepts/views-for-builders/).
 
 ## Command reference
 
@@ -37,14 +37,13 @@ When querying a deployed view's output collection, DefraDB supports these filter
 
 | Operator | Meaning | Example |
 | --- | --- | --- |
-| `_eq` | Equal | `{ logAddress: { _eq: "0x..." } }` |
-| `_ne` | Not equal | `{ event: { _ne: "Approval" } }` |
-| `_gt` / `_gte` | Greater than / greater than or equal | `{ blockNumber: { _gte: 19540000 } }` |
-| `_lt` / `_lte` | Less than / less than or equal | `{ blockNumber: { _lte: 19541000 } }` |
+| `_eq` / `_neq` | Equal / not equal | `{ logAddress: { _eq: "0x..." } }` |
+| `_gt` / `_geq` | Greater than / greater than or equal | `{ blockNumber: { _geq: 19540000 } }` |
+| `_lt` / `_leq` | Less than / less than or equal | `{ blockNumber: { _leq: 19541000 } }` |
+| `_in` / `_nin` | In / not in a list of values | `{ event: { _in: ["Transfer", "Approval"] } }` |
 | `_and` | Logical AND | `{ _and: [{ logAddress: { _eq: "0x..." } }, { event: { _eq: "Transfer" } }] }` |
 | `_or` | Logical OR | `{ _or: [{ from: { _eq: "0x..." } }, { to: { _eq: "0x..." } }] }` |
-| `_like` | Substring match (strings) | `{ arguments: { _like: "%0xAddress%" } }` |
-| `_any` | Any element in array matches | `{ topics: { _any: { _eq: "0xddf252..." } } }` |
+| `_like` / `_ilike` | Substring match, case-sensitive / case-insensitive (strings) | `{ arguments: { _like: "%0xAddress%" } }` |
 
 ## What happens during deploy
 

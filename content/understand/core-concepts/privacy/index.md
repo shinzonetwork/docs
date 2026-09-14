@@ -19,7 +19,7 @@ A standard Host client ships configured for the public network. On startup it do
 - Dials the public bootstrap peers shipped in `config.yaml` to reach Generator clients it doesn't control.
 - Contacts ShinzoHub (`shinzo.hub_base_url`) to fetch every registered View and subscribe to live registration events.
 
-A third step is opt-in: registering on the [Host registry](../register) so other nodes can discover and replicate from it. This is a manual, wallet-signed action from the registration app, not something the Host client does on startup.
+A third step is opt-in: registering on the [Host registry](/run/run-a-host/register/) so other nodes can discover and replicate from it. This is a manual, wallet-signed action from the registration app, not something the Host client does on startup.
 
 A private Host client connection closes some or all of these. How many you close decides how private the setup is.
 

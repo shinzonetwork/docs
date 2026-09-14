@@ -18,7 +18,7 @@ All content lives under `content/` as Markdown files. The site configuration and
 
 ## Run the site locally
 
-You'll need Zola 0.19 or later. See the [Zola installation docs](https://www.getzola.org/documentation/getting-started/overview/) if you don't have it.
+You'll need Zola 0.22.1 or later. See the [Zola installation docs](https://www.getzola.org/documentation/getting-started/overview/) if you don't have it.
 
 ```shell
 zola serve

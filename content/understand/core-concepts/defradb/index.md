@@ -1,7 +1,8 @@
 +++
 title = "DefraDB"
 +++
-[DefraDB](https://github.com/sourcenetwork/defradb) is the database embedded in every component of the Shinzo stack. Generators, Hosts, and application clients each run their own instance. It's what makes the network peer-to-peer rather than client-server.
+
+DefraDB is the embedded database used throughout the Shinzo stack. It enables local storage, P2P replication, content-addressed data, and querying across Generators, Hosts, and application clients. DefraDB is a Source Network project. To explore its source code and full documentation, visit [GitHub](https://github.com/sourcenetwork/defradb)
 
 ## What it is
 

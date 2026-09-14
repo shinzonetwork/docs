@@ -8,7 +8,7 @@ Open an issue to discuss your proposed change before submitting a PR. This avoid
 
 ## Run the site locally
 
-This site is built with [Zola](https://www.getzola.org/) 0.19 or later. There's no Node tooling.
+This site is built with [Zola](https://www.getzola.org/) 0.22.1 or later. There's no Node tooling.
 
 ```shell
 zola serve

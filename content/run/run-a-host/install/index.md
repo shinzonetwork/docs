@@ -6,14 +6,14 @@ aliases = ["/hosts/install"]
 A Host client pulls primitive blockchain data from Generator clients, runs Lens WASM transforms, and serves the resulting Views to subscriber nodes over an embedded DefraDB instance. This page is for operators who want to **run** a Host client.
 
 {% admonition(type="info") %}
-**Only want to query Shinzo data?** You don't need to run your own Host client. Connect to a public Host client instead. See [Querying Views](/build/create-a-view/). Running your own Host client is for serving data to the network, not for reading it.
+**Only want to query Shinzo data?** You don't need to run your own Host client. Connect to a public Host client instead. See [Query your first View](/build/tutorials/query-your-first-view/). Running your own Host client is for serving data to the network, not for reading it.
 {% end %}
 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
 - **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A public Generator client you can point at is coming; this page will link it here once it's live. Until then, run your own. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
-- **Hardware** that meets the [recommendations](/run/run-a-host/).
+- **Hardware** that meets the [recommendations](/run/run-a-host/hardware-requirements/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
 
@@ -95,7 +95,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     docker logs shinzo-host | grep -i peer
     ```
 
-    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. A public Generator client to point at is coming; this page will link a known-good endpoint and a ready-to-run query once it's live. See [query examples](/build/create-a-view/).
+    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. A public Generator client to point at is coming; this page will link a known-good endpoint and a ready-to-run query once it's live. See [query examples](/build/how-to/query-data/).
 
 1. To serve data to the network, register your Host client with ShinzoHub. See [Register a Host](/run/run-a-host/register/).
 

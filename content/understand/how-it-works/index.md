@@ -50,7 +50,7 @@ flowchart LR
 
 Sitting next to the execution node is the Shinzo Generator client (a lightweight sidecar that subscribes to new blocks over WebSocket). As each block arrives, the Generator client pulls out the block metadata, transactions, logs, and access lists, normalizes them into structured documents, and cryptographically signs each one with its identity key. The USDC transfer shows up as a `Log` document with the transfer event topic, the sender, receiver, and amount, plus references back to the transaction and block it came from.
 
-Those documents land in the Generator client's embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
+Those documents land in the Generator client's embedded [DefraDB](../core-concepts/defradb) instance. DefraDB handles storage, versioning, and the peer-to-peer gossip that happens next.
 
 {% mermaid() %}
 flowchart LR
@@ -169,7 +169,7 @@ Generator clients are the entry point. Reserved for validators at mainnet launch
 
 #### Hosts
 
-Hosts are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](/run/run-a-host/) for operational details and [Host Client reference](/reference/components/host-client/) for internals.
+Hosts are the workhorses. They receive primitives, maintain attestation records, run Views, and serve the resulting view documents to subscribers. Anyone can run a Host. See [Run a Host](/run/run-a-host/hardware-requirements/) for operational details and [Host Client reference](/reference/components/host-client/) for internals.
 
 #### Developers
 

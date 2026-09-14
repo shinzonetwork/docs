@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- [Zola](https://www.getzola.org/)
+- [Zola](https://www.getzola.org/) 0.22.1 or later.
 
 ## Steps
 
@@ -19,10 +19,16 @@
     ./scripts/build.sh
     ```
 
-The build goes into `./public`.
+    The build goes into `./public`.
 
-`./scripts/build.sh` runs `zola build` and then any post-build generators (for example `llms.txt`).
+1. To validate the site without writing output, run:
 
+    ```shell
+    ./scripts/build.sh check
+    ```
+
+    This runs `zola check` with internal links treated as errors. CI runs this, then a full build, then `./scripts/check-links.sh` and `./scripts/qa-tooltips.py`. See [scripts/README.md](./scripts/README.md) for details on each script.
+ 
 ## Useful commands
 
 | Command | What it does |

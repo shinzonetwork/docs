@@ -119,6 +119,8 @@ Verify health. The health server listens on port 8080 inside the container but i
 docker compose exec shinzo-generator curl -f http://localhost:8080/health
 ```
 
+Because this compose doesn't publish `8080`, the public Generators dashboard can't probe `/health`, so your Generator will show as offline on the dashboard even while it's running fine. To have it appear online, publish `8080:8080` on the `shinzo-generator` service and open inbound TCP `8080` in your firewall. See [Troubleshooting](/run/operations/troubleshooting/#my-generator-appears-offline-in-the-dashboard-but-is-still-running).
+
 ## Registration
 
 Once the Generator is running, register it with the Shinzo Network. See [Registration](/run/run-a-generator/register/).
