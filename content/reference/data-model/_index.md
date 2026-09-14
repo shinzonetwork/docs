@@ -1,5 +1,4 @@
 +++
-draft = true
 title = "Data model"
 page_template = "page.html"
 +++

@@ -49,7 +49,7 @@ Each block goes through six stages:
 
 The Generator client produces six document types per block. The first four come directly from on-chain data. The last two are metadata that the Generator client itself produces.
 
-Collection names are prefixed with `<Chain>__<Network>__`, derived from your `chain.name` and `chain.network` settings. Schema definitions live in `pkg/schema/schema_standard.graphql`. There are two schema variants:
+Collection names are prefixed with `<Chain>__<Network>__`, derived from your `chain.name` and `chain.network` settings. Schema definitions live in `pkg/schema/collections/*.graphql`. There are two schema variants:
 
 - Standard: parallel transaction processing (default build).
 
@@ -271,5 +271,5 @@ The codebase is being refactored from EVM-only to support multiple chains. The a
 | `pkg/defra/block_handler.go` | Block processing and document creation |
 | `pkg/generator/replication_filter.go` | Rejects all incoming P2P replication |
 | `pkg/snapshot/snapshot.go` | Snapshot signature creation |
-| `pkg/schema/schema_standard.graphql` | Collection schemas for the 6 doc types |
+| `pkg/schema/collections/*.graphql` | Collection schemas for the 6 doc types |
 | `pkg/constants/collections.go` | Collection name constants (chain-prefixed) |

@@ -247,6 +247,19 @@ pages = [
 
 [[extra.sidebar]]
 section = "reference"
+label = "Data model"
+page = "reference/data-model/_index.md"
+pages = [
+  "reference/data-model/primitives/index.md",
+  "reference/data-model/signatures/index.md",
+  "reference/data-model/attestation-record/index.md",
+  "reference/data-model/naming-convention/index.md",
+  "reference/data-model/defradb-metadata/index.md",
+  "reference/data-model/schema-directives/index.md",
+]
+
+[[extra.sidebar]]
+section = "reference"
 label = "Components"
 pages = [
   "reference/components/generator-client/index.md",
