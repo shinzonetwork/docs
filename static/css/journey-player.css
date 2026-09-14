@@ -176,10 +176,20 @@
   fill: color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
-.jp-sig {
-  stroke: var(--color-primary);
-  stroke-width: 2;
-  stroke-linecap: round;
+/* Gears spin while their station is the active step. */
+.jp-gear {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.jp-station.jp-on .jp-gear {
+  animation: jpSpin 3.5s linear infinite;
+}
+
+@keyframes jpSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .jp-gate-arrow {
@@ -410,5 +420,6 @@
   .jp *::after {
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
+    animation: none !important;
   }
 }

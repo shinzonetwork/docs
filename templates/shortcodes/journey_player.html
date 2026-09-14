@@ -8,6 +8,21 @@
   <div class="jp__stage">
     <svg class="jp__svg" viewBox="0 0 760 430" role="img"
       aria-label="Diagram of a signed document travelling from an execution node, through a Generator client, to a Host that tallies attestations, through a View transform, and into an application that verifies it.">
+      <defs>
+        <g id="jp-gear-def">
+          <circle r="9" style="fill: var(--color-primary);" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(45)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(90)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(135)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(180)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(225)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(270)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(315)" />
+          <circle r="3" style="fill: var(--background);" />
+        </g>
+      </defs>
+
       <!-- routes -->
       <path class="jp-route" d="M 80 210 H 690" fill="none" />
       <path id="jp-side-path-1" class="jp-route jp-route--side" d="M 273 70 C 320 70, 390 120, 424 178" fill="none" />
@@ -27,19 +42,19 @@
       <!-- Generator client -->
       <g class="jp-station" id="jp-st-gen" transform="translate(255 210)">
         <circle class="jp-box" r="30" />
-        <path class="jp-sig" d="M -16.5 4.5 q 6 -15 11 -2 t 11 -2 t 11 -2" fill="none" />
+        <use href="#jp-gear-def" class="jp-gear" />
         <text class="jp-label" y="52">Generator client</text>
       </g>
 
       <!-- Other Generator clients -->
       <g class="jp-station jp-station--small" id="jp-st-gen2" transform="translate(255 70)">
         <circle class="jp-box" r="18" />
-        <path class="jp-sig" d="M -10.5 2.5 q 4 -9 7 -1 t 7 -1" fill="none" />
+        <g transform="scale(0.62)"><use href="#jp-gear-def" class="jp-gear" /></g>
         <text class="jp-label jp-label--small jp-label--end" x="-28" y="4">Generator client</text>
       </g>
       <g class="jp-station jp-station--small" id="jp-st-gen3" transform="translate(255 350)">
         <circle class="jp-box" r="18" />
-        <path class="jp-sig" d="M -10.5 2.5 q 4 -9 7 -1 t 7 -1" fill="none" />
+        <g transform="scale(0.62)"><use href="#jp-gear-def" class="jp-gear" /></g>
         <text class="jp-label jp-label--small jp-label--end" x="-28" y="4">Generator client</text>
       </g>
 
