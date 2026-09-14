@@ -182,13 +182,29 @@
   stroke-linecap: round;
 }
 
-.jp-gate-post {
-  fill: color-mix(in srgb, var(--foreground) 28%, transparent);
-  transition: fill 0.25s ease;
+.jp-gate-arrow {
+  stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.25s ease;
 }
 
-.jp-station.jp-on .jp-gate-post {
-  fill: var(--color-primary);
+.jp-station.jp-on .jp-gate-arrow {
+  stroke: var(--color-primary);
+}
+
+.jp-gate-raw {
+  font-family: var(--font-family-monospace);
+  font-size: 7px;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
+.jp-gate-lines {
+  stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
 }
 
 .jp-dot-win {
@@ -207,6 +223,10 @@
   font-size: 11px;
   text-anchor: start;
   fill: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.jp-label--end {
+  text-anchor: end;
 }
 
 .jp-station.jp-on .jp-label {
