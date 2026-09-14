@@ -31,7 +31,7 @@ The Generator and Geth share a single machine. The Generator connects to Geth ov
 
 - Docker installed on the validator machine.
 - Geth running and synced, with HTTP and WebSocket enabled on ports 8545 and 8546. See the [Geth documentation](https://geth.ethereum.org/docs/fundamentals/security) for configuration.
-- Ports 9171, 9181, and 8080 available on the validator machine. See [exposed ports](/run/run-a-generator/install#exposed-ports) for details.
+- Ports 9171, 9181, and 8080 available on the validator machine. See [exposed ports](/run/run-a-generator/install#exposed-ports) for details, and [Security](/run/run-a-generator/security/) for which of these to publish and which to keep private.
 
 ## Run the Generator
 
@@ -48,7 +48,7 @@ docker run -d \
   -e DEFRADB_P2P_ENABLED=true \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
   -e LOGGER_DEBUG=false \
-  -p 9181:9181 \
+  -p 127.0.0.1:9181:9181 \
   -p 9171:9171 \
   -p 8080:8080 \
   ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest

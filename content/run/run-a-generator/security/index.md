@@ -1,0 +1,113 @@
++++
+title = "Security"
+description = "Security guidance for placing the Generator client relative to your validator: same-machine vs separate-machine deployments, key separation, and port exposure."
+aliases = ["/generator/security", "/generators/security"]
+[extra]
+mermaid = true
++++
+
+The Generator client runs as a sidecar next to an execution node, not as part of your validator's consensus process. This page covers the security implications of the two deployment shapes operators ask about most: running the Generator on the same machine as your validator, and running it on a separate machine connected over a network.
+
+## Same-machine deployment
+
+Running the Generator client on the same machine as your validator (and its execution node) is the default shape and is safe. The Generator client is a separate process with its own key, its own resources, and a one-way relationship with the execution node. It does not touch consensus.
+
+### Key separation
+
+The Generator client generates and stores its own operator (delegate) key locally. It never reads, writes, or holds your validator's consensus key or withdrawal key:
+
+| Key | Held by | Used for |
+| --- | --- | --- |
+| Operator / delegate key | Generator client (local keyring) | Signing block batches, registering on ShinzoHub. |
+| Consensus key | Validator client | Signing blocks and participating in consensus. |
+| Withdrawal key | Browser wallet (off-machine) | Signing the one-time assertion that links the operator key to your validator during [registration](../register). |
+
+The withdrawal key is used exactly once, in a browser wallet, to sign the assertion that ties the operator key to the validator's identity. After that, the Generator client runs on the operator key alone. See [Registration](../register) and the [architecture reference](/reference/architecture/#generator-registration) for the full flow.
+
+Because no key material is shared, a compromise of the Generator client's operator key does not expose your validator's consensus or withdrawal keys.
+
+### Reject inbound replication
+
+The Generator client is a write-only data producer. It reads blocks from the execution node and publishes signed documents to Hosts over P2P, but it rejects all inbound P2P replication. This is enforced by a replication filter in `pkg/generator/replication_filter.go` and by `defradb.p2p.accept_incoming`, which defaults to `false`. The Generator client never accepts documents from peers, so even a peer that connects to it cannot push data into its database.
+
+See the [Generator client reference](/reference/components/generator-client/#p2p-data-distribution) for details.
+
+### Resource isolation
+
+The Generator client is a lightweight sidecar: a ~50 MB binary with its own CPU and memory budget. It is CPU-light but storage-I/O-sensitive, because every block is fetched, structured, signed, and written to its local DefraDB instance before being published. The risk to a co-located validator is resource contention, not protocol interference. The Generator client does not touch consensus (see [Key separation](#key-separation)), so isolation is an operational concern, not a safety one.
+
+Size the machine for the execution node first, then add the Generator overhead on top. The execution node's footprint dwarfs the Generator client's: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. The Generator client with pruning enabled keeps its own data bounded at roughly 50 to 100 GB; provision 300 to 500 GB of disk to leave headroom for growth, snapshot serving, and P2P replication. See [hardware requirements](../hardware-requirements/) for the full table.
+
+To keep the two workloads from competing on a shared machine:
+
+1. Run the Generator in its own process or container with its own resource limits (Docker `--cpus` / `--memory` flags, or a cgroup). Do not let it borrow unbounded resources from the execution node under load.
+1. Give the Generator's DefraDB store (`storePath`) its own disk or SSD partition, separate from the execution node's data directory. The Generator is storage-I/O-bound; co-locating both data stores on the same device lets the two compete on the same I/O queue and can stall the execution node's block processing under catch-up load.
+1. Decide pruned versus archival deliberately. In archival mode (pruning disabled), the Generator's storage grows linearly with chain history. Running archival on a validator machine risks crowding the execution node's much larger data set. Pruned is the right choice for almost all validator-side deployments.
+1. Keep `DEFRADB_KEYRING_SECRET` stable across restarts. If it changes, the Generator cannot reload its existing DefraDB identity and will fail to start, a reliability risk to your data feed, not to consensus.
+
+For a worked same-machine example, see the [Validator with Geth](../deployment-examples/validator-with-geth/) deployment guide.
+
+## Separate-machine deployment
+
+When the Generator client and the execution node (or validator) run on different machines, the question becomes which ports to expose across the network boundary. The rule of thumb: expose the P2P port, restrict the management API behind a reverse proxy, and keep the raw database API private.
+
+### Topology
+
+{% mermaid() %}
+flowchart LR
+  subgraph Exec["Execution node machine"]
+    Node["<b>Execution node</b><br/>:8545 JSON-RPC<br/>:8546 WebSocket"]
+  end
+
+  subgraph GenVM["Generator machine"]
+    direction TB
+    Nginx["<b>Reverse proxy</b><br/>:443 TLS<br/>path allowlist"]
+    Gen["<b>Generator client</b><br/>:9171 P2P<br/>:8080 health/metrics/registration<br/>:9181 DefraDB API (localhost)"]
+    Nginx -- "safe paths only" --> Gen
+  end
+
+  Hosts["Hosts"]
+  Ops["Operator / monitoring"]
+
+  Node -- "RPC + WS<br/>VPC, restricted to Gen IP" --> Gen
+  Gen -- "P2P (libp2p)<br/>:9171 public" --> Hosts
+  Ops -- "HTTPS<br/>/health /metrics /snapshots" --> Nginx
+{% end %}
+
+The execution node feeds the Generator client over a restricted private link. The Generator client publishes to Host clients over P2P on `9171`. Operators and monitoring reach only the safe management paths through a reverse proxy on `443`. The raw DefraDB API on `9181` stays bound to localhost and never crosses the firewall.
+
+### Port exposure
+
+| Port | Service | Expose publicly? | Recommendation |
+| --- | --- | --- | --- |
+| `9171` | DefraDB P2P (libp2p) | Yes | Open on the firewall. This is how Hosts subscribe and receive data. |
+| `8080` | Health, metrics, registration, schema | Only behind a reverse proxy | Do not publish raw. Put an nginx (or equivalent) allowlist in front that proxies only the safe paths (`/health`, `/registration`, `/registration-app`, `/metrics`, `/snapshots`, `/api/v1/schema`) and returns 404 for everything else. See the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config. |
+| `9181` | DefraDB GraphQL / REST API | No | Bind to localhost or a private network. This port gives raw, unauthenticated read/write access to the local DefraDB database. Publishing it to `0.0.0.0` lets anyone read or mutate the Generator's data. |
+
+The shipped production tooling (`docker-compose-prod.yml` and `indexer-prod-setup.sh` in the `shinzo-generator-client` repo) follows this pattern: it publishes `9171`, fronts `8080` with an nginx allowlist, and never publishes `9181`.
+
+### How this differs from a Host
+
+Host clients intentionally expose `9181` because serving GraphQL queries to subscribers is their job. Generator clients only produce data and have no reason to answer external queries, so their `9181` should stay closed. The two roles have opposite exposure profiles on the same port.
+
+### Execution-node side
+
+On the execution node side of the link, restrict its JSON-RPC and WebSocket ports (commonly `8545` and `8546`) to the Generator's IP via a private network or VPC firewall. The Generator client only reads from the node; it never writes to it. If the connection must cross a public boundary, authenticate it with an API key or a reverse proxy rather than exposing the node unauthenticated. See the [install page's API key guidance](../install/#do-you-need-an-api-key) for the header configuration.
+
+### Schema endpoint auth
+
+The shipped production scripts set `SCHEMA_AUTH_MODE=none`, which disables authentication on the `/api/v1/schema` endpoints. This is acceptable when `8080` is already behind a reverse-proxy allowlist that only proxies known-safe paths. If you expose schema management more broadly, switch `SCHEMA_AUTH_MODE` to `token` and provide accepted tokens via `SCHEMA_API_KEYS`. See the [config reference](../config-reference/#indexer) for the full set of values.
+
+## MEV-boost and block construction
+
+A common question from validators running MEV-boost is whether the Generator interacts with block construction or depends on the block's `extraData` field. It does not.
+
+For example, on Ethereum Mainnet, MEV-boost builders construct the block header on the validator's behalf. The validator does not control `extraData` in that flow. Shinzo's validator-identity design deliberately avoids depending on it: identity is read from the `AssertionSigned` event emitted by the outpost contract on your source chain, then relayed to ShinzoHub, not from the block header. Because the assertion is signed by your withdrawal key and verified on-chain by the outpost, who built the block is irrelevant to how Shinzo identifies you.
+
+The practical consequence of this is that running the Generator does not change your MEV-boost setup, and MEV-boost does not change how Shinzo identifies you. You do not need to disable MEV-boost, modify your builder configuration, or tag `extraData` to participate in Shinzo.
+
+This point is covered in the [outpost reference](../../../reference/components/outpost), where the EVM implementation notes that there is no `extraData` tagging and no dependency on who built the block.
+
+## Need help
+
+{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
