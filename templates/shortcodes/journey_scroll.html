@@ -1,0 +1,124 @@
+{# Scroll-scrubbed data journey: sticky SVG stage + scrolling step panels.
+   Assets: /css/journey-scroll.css and /js/journey-scroll.js.
+   Markup renders the FINAL frame so the diagram is complete without JS;
+   the script rewinds it to the reader's scroll position on load. #}
+<link rel="stylesheet" href="/css/journey-scroll.css" />
+<div class="sj" id="sj">
+  <div class="sj__stage">
+    <div class="sj__dots" aria-hidden="true">
+      <span class="sj__dot-nav sj-on"></span><span class="sj__dot-nav"></span><span class="sj__dot-nav"></span><span class="sj__dot-nav"></span><span class="sj__dot-nav"></span>
+    </div>
+    <svg class="sj__svg" viewBox="0 0 760 430" role="img"
+      aria-label="Animation of a signed document travelling from an execution node, through a Generator client, past Hosts that tally attestations, through a View transform, and into an application that verifies it.">
+      <!-- main route: node -> generator -> host -> lens -> app -->
+      <path id="sj-path" class="sj-route" d="M 80 210 H 690" fill="none" />
+      <!-- side routes from the other Generator clients -->
+      <path id="sj-side-path-1" class="sj-route sj-route--side" d="M 273 70 C 320 70, 390 120, 424 178" fill="none" />
+      <path id="sj-side-path-2" class="sj-route sj-route--side" d="M 273 350 C 320 350, 390 300, 424 242" fill="none" />
+
+      <text class="sj-hint" x="300" y="188">P2P gossip</text>
+
+      <!-- Execution node -->
+      <g class="sj-station" id="sj-st-node" transform="translate(80 210)">
+        <rect class="sj-box" x="-30" y="-30" width="60" height="60" rx="10" />
+        <rect class="sj-block" x="-14" y="-16" width="28" height="8" rx="2" />
+        <rect class="sj-block" x="-14" y="-4" width="28" height="8" rx="2" />
+        <rect class="sj-block" x="-14" y="8" width="28" height="8" rx="2" />
+        <text class="sj-label" y="52">Execution node</text>
+      </g>
+
+      <!-- Generator client -->
+      <g class="sj-station" id="sj-st-gen" transform="translate(255 210)">
+        <circle class="sj-box" r="30" />
+        <path class="sj-sig" d="M -13 5 q 6 -15 11 -2 t 11 -2 t 11 -2" fill="none" />
+        <text class="sj-label" y="52">Generator client</text>
+      </g>
+
+      <!-- Other Generator clients -->
+      <g class="sj-station sj-station--small" id="sj-st-gen2" transform="translate(255 70)">
+        <circle class="sj-box" r="18" />
+        <path class="sj-sig" d="M -8 3 q 4 -9 7 -1 t 7 -1" fill="none" />
+        <text class="sj-label sj-label--small" x="28" y="4">Generator client</text>
+      </g>
+      <g class="sj-station sj-station--small" id="sj-st-gen3" transform="translate(255 350)">
+        <circle class="sj-box" r="18" />
+        <path class="sj-sig" d="M -8 3 q 4 -9 7 -1 t 7 -1" fill="none" />
+        <text class="sj-label sj-label--small" x="28" y="4">Generator client</text>
+      </g>
+
+      <!-- Host -->
+      <g class="sj-station" id="sj-st-host" transform="translate(450 210)">
+        <path class="sj-box" d="M -26 -18 v 36 a 26 8 0 0 0 52 0 v -36 a 26 8 0 0 0 -52 0" />
+        <ellipse class="sj-box-lip" cx="0" cy="-18" rx="26" ry="8" />
+        <text class="sj-label" y="52">Host</text>
+      </g>
+
+      <!-- View / Lens gate -->
+      <g class="sj-station" id="sj-st-lens" transform="translate(565 210)">
+        <rect class="sj-gate-post" x="-16" y="-34" width="9" height="68" rx="4" />
+        <rect class="sj-gate-post" x="7" y="-34" width="9" height="68" rx="4" />
+        <text class="sj-label" y="58">Lens transform</text>
+      </g>
+
+      <!-- App -->
+      <g class="sj-station sj-on" id="sj-st-app" transform="translate(690 210)">
+        <rect class="sj-box" x="-30" y="-24" width="60" height="48" rx="8" />
+        <circle class="sj-dot-win" cx="-19" cy="-13" r="2.5" />
+        <circle class="sj-dot-win" cx="-11" cy="-13" r="2.5" />
+        <circle class="sj-dot-win" cx="-3" cy="-13" r="2.5" />
+        <text class="sj-label" y="48">Your app</text>
+      </g>
+
+      <!-- Attestation record card -->
+      <g class="sj-card" id="sj-att-card" transform="translate(450 74)" opacity="1">
+        <rect x="-88" y="-30" width="176" height="60" rx="10" />
+        <text class="sj-card-title" x="-76" y="-10">Attestation record</text>
+        <text class="sj-card-mono" x="-76" y="14">vote_count</text>
+        <text class="sj-card-mono sj-votes" id="sj-votes" x="24" y="14">3</text>
+        <circle class="sj-vote-dot sj-filled" id="sj-dot-1" cx="52" cy="10" r="5.5" />
+        <circle class="sj-vote-dot sj-filled" id="sj-dot-2" cx="68" cy="10" r="5.5" />
+        <circle class="sj-vote-dot sj-filled" id="sj-dot-3" cx="84" cy="10" r="5.5" />
+      </g>
+
+      <!-- GraphQL bubble + verified shield at the app -->
+      <g class="sj-card" id="sj-query" transform="translate(660 84)" opacity="1">
+        <rect x="-90" y="-32" width="180" height="58" rx="10" />
+        <text class="sj-card-title" x="-78" y="-10">GraphQL · TokenTransfer</text>
+        <text class="sj-card-mono" x="-78" y="12">attestation ≥ 3 ✓</text>
+      </g>
+      <g id="sj-shield" transform="translate(650 152)" opacity="1">
+        <path class="sj-shield-body" d="M 0 -15 L 13 -9 V 4 C 13 13 7 18 0 21 C -7 18 -13 13 -13 4 V -9 Z" />
+        <path class="sj-shield-check" d="M -5 1 L -1 6 L 6 -5" fill="none" />
+      </g>
+
+      <!-- Travelling packets -->
+      <g class="sj-packet" id="sj-side-1" opacity="0">
+        <rect x="-13" y="-8" width="26" height="16" rx="4" />
+        <circle class="sj-seal-dot" cx="10" cy="-7" r="4" />
+      </g>
+      <g class="sj-packet" id="sj-side-2" opacity="0">
+        <rect x="-13" y="-8" width="26" height="16" rx="4" />
+        <circle class="sj-seal-dot" cx="10" cy="-7" r="4" />
+      </g>
+      <g class="sj-packet" id="sj-packet-raw" transform="translate(690 210)" opacity="0">
+        <rect x="-23" y="-15" width="46" height="30" rx="6" />
+        <text class="sj-packet-text" y="4">{ }</text>
+        <g id="sj-seal" transform="translate(18 -14)">
+          <circle class="sj-seal-dot" r="9" />
+          <path class="sj-seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+        </g>
+      </g>
+      <g class="sj-packet sj-packet--view" id="sj-packet-view" transform="translate(690 210)" opacity="1">
+        <rect x="-28" y="-15" width="56" height="30" rx="6" />
+        <text class="sj-packet-text" y="3.5">Transfer</text>
+        <g transform="translate(22 -14)">
+          <circle class="sj-seal-dot" r="9" />
+          <path class="sj-seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="sj__steps">{{ body | safe }}</div>
+</div>
+<script src="/js/journey-scroll.js" defer></script>
