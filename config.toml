@@ -242,6 +242,7 @@ pages = [
   "reference/architecture/index.md",
   "reference/changelog/index.md",
   "reference/tools/index.md",
+  "reference/specs-and-limits/index.md",
   "reference/errors/index.md",
   "reference/glossary/index.md",
 ]
