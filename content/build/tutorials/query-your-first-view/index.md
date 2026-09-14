@@ -12,6 +12,10 @@ The script we're about to create does four things:
 1. Sign the GraphQL request.
 1. POST it to the Host's endpoint.
 
+## Early-phase testnet
+
+While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
+
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 22 or later.
