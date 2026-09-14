@@ -251,6 +251,7 @@
     },
     {
       "term": "GraphQL",
+      "definition": "The query language for reading Shinzo data. DefraDB exposes every collection, from primitives to View outputs, as GraphQL types over the /api/v0/graphql endpoint, with filters, ordering, and nested relation selections.",
       "relatedTerms": [
         "defraDB",
         "View"
