@@ -174,7 +174,7 @@ Hosts expect every View query to carry a signature. The script hashes your query
 
     The query asks for the block number, the event name, the contract that emitted the log (`logAddress`), and `arguments`, where the View's lens puts the decoded event parameters. The SDL also lists `hash`, `from`, and `to`, but this version of the View leaves those empty.
 
-    The result is the query plus an `extensions` envelope: `request_signature` is the EIP-712 signature, `query_hash` binds the signature to this exact query, `nonce` and `request_timestamp` keep the request fresh, and `pool_address` names the pool the query bills to. `fanout` is only read by the network gateway; Hosts ignore it.
+    The result is the query plus an `extensions` envelope: `request_signature` is the EIP-712 signature, `query_hash` binds the signature to this exact query, `nonce` and `request_timestamp` keep the request fresh, and `pool_address` names the pool the query bills to. `fanout` is only read by the network gateway; Hosts ignore it. Freshness is bounded: a Host accepts the signature only within two minutes of `request_timestamp`, so the script signs and sends in one step rather than reusing an envelope.
 
     {% admonition(type="note") %}
     Query billing is not enforced on the testnet yet, so a freshly generated key with no funds is enough here. Signed requests are still the supported interface: once Hosts enforce billing, they will reject unsigned View queries and check the signer's query balance.
