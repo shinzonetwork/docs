@@ -127,12 +127,13 @@ You can also build the Generator client binary from source instead of using Dock
     DEFRADB_P2P_ENABLED=true
     DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171
 
+    SCHEMA_AUTH_MODE=none
     INDEXER_START_HEIGHT=0
     LOGGER_DEBUG=true
     EOF
     ```
 
-    You [may not need to enter an API key](#do-you-need-an-api-key).
+    You [may not need to enter an API key](#do-you-need-an-api-key). The client fails to start without `SCHEMA_AUTH_MODE` set: the shipped `config.yaml` reads this variable from the environment. The value `none` matches the shipped Docker setup. See the [security page](../security/#schema-endpoint-auth) before exposing the schema endpoints.
 
 1. Build the binary.
 
