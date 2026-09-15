@@ -2,25 +2,36 @@
 title = "Pools"
 description = "Pools bind developer demand for a View to the Hosts willing to serve it. Demand creates a pool; Hosts joining it make it active."
 aliases = ["/concepts/pools", "/pools"]
-[extra]
-mermaid = true
 +++
 
 A pool is where developer demand for a View meets the Hosts that serve it. Demand creates a pool; a Host joining it makes that pool active.
 
-{% mermaid() %}
-flowchart LR
-  Dev["Developer<br/>registers demand + bond"]
-  Pool["Pool created"]
-  Join["Hosts join"]
-  Active["Active<br/>3+ Hosts"]
-  Inactive["Inactive<br/>under 3 Hosts"]
+Step through it below: press play, or move at your own pace.
 
-  Dev --> Pool
-  Pool --> Join
-  Join --> Active
-  Active --> Inactive
-  Inactive --> Active
+{% pool_player() %}
+<div class="pp__caption" data-title="A developer wants a View served">
+  <p>A registered View describes a data product, but registration alone doesn't guarantee anyone will serve it. So a developer registers demand for the View through the Pool Registry on ShinzoHub, and backs it with a bond in ushinzo (SHNZ's base unit).</p>
+</div>
+
+<div class="pp__caption" data-title="The registry escrows the bond">
+  <p>The bond has to be more than zero, and the registry escrows it as a sign of real intent. No pool exists for this View yet, so this first demand creates one.</p>
+</div>
+
+<div class="pp__caption" data-title="The pool comes into existence">
+  <p>A pool is identified by two things: the View it serves and its <code>windowSize</code> config, so one View can have several pools. Later demand for the same View and config joins this pool rather than making a new one.</p>
+</div>
+
+<div class="pp__caption" data-title="A Host joins">
+  <p>A registered Host sits on the network, but joining a pool is what commits it to running a particular View. The join goes through the pool's own contract, and one Host alone isn't enough to activate the pool.</p>
+</div>
+
+<div class="pp__caption" data-title="Hosts tally up">
+  <p>Two more Hosts make the same commitment, and the count climbs. The third arrival crosses the threshold: with three joined Hosts, the pool is active.</p>
+</div>
+
+<div class="pp__caption" data-title="Hosts come and go">
+  <p>Active isn't a permanent state. A Host exits through the pool's contract and the count drops below three, so the pool goes inactive. Another Host joins, the count recovers, and the pool is active again.</p>
+</div>
 {% end %}
 
 ## Why pools exist
