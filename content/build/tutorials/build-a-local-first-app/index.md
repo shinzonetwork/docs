@@ -17,6 +17,10 @@ Pushed replication is currently blocked by a version mismatch. The app-sdk pins 
 - A C compiler such as gcc. DefraDB pulls in a native module, so builds need CGO enabled. On macOS and most Linux machines with a standard Go install this works out of the box.
 - About 15 minutes.
 
+{% admonition(type="info", title="Early-phase testnet") %}
+While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
+{% end %}
+
 ## Scaffold the app
 
 1. Create a new module and pull the app-sdk:
