@@ -174,7 +174,7 @@ Hosts expect every View query to carry a signature. The script hashes your query
 
     The query asks for the block number, the event name, the contract that emitted the log (`logAddress`), and `arguments`, where the View's lens puts the decoded event parameters. The SDL also lists `hash`, `from`, and `to`, but this version of the View leaves those empty.
 
-    The result is the query plus an `extensions` envelope: `request_signature` is the EIP-712 signature, `query_hash` binds the signature to this exact query, `nonce` and `request_timestamp` keep the request fresh, and `pool_address` names the pool the query bills to. `fanout` is only read by the network gateway; Hosts ignore it.
+    The result is the query plus an `extensions` envelope: `request_signature` is the EIP-712 signature, `query_hash` binds the signature to this exact query, `nonce` and `request_timestamp` keep the request fresh, and `pool_address` names the pool the query bills to. `fanout` is only read by the network gateway; Hosts ignore it. Freshness is bounded: a Host accepts the signature only within two minutes of `request_timestamp`, so the script signs and sends in one step rather than reusing an envelope.
 
     {% admonition(type="note") %}
     Query billing is not enforced on the testnet yet, so a freshly generated key with no funds is enough here. Signed requests are still the supported interface: once Hosts enforce billing, they will reject unsigned View queries and check the signer's query balance.
@@ -263,7 +263,7 @@ Hosts expect every View query to carry a signature. The script hashes your query
 ## Where to next
 
 - [Create your first View](/build/tutorials/create-your-first-view/) to own the data: build and deploy a View of your own, then query it with this same script.
-- [Build a local-first app](/build/tutorials/build-a-local-first-app/) for the embedded version: subscribe to a View and query pushed data locally instead of per request.
+- [Build a local-first app](/build/tutorials/build-a-local-first-app/) for the embedded version: subscribe to a View and query pushed data locally instead of per request. Pushed replication is currently blocked by an SDK version mismatch, so the app connects but nothing arrives yet; the tutorial's opening note has the details.
 - [Choosing an app architecture](/build/concepts/choosing-an-architecture/) for the trade-offs between the two models.
 
 ## Need help
