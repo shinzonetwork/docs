@@ -40,7 +40,7 @@
     },
     {
       "term": "AttestationRecord",
-      "definition": "A document a host creates to track how many independent generator produced the same data for a given block. The `vote_count` field is a P-counter CRDT, so counts converge across hosts without any coordination step.",
+      "definition": "A document a host creates to track how many independent generators produced the same data for a given block. The `vote_count` field is a P-counter CRDT, so counts converge across hosts without any coordination step.",
       "relatedTerms": [
         "Host",
         "P-counter",
@@ -50,7 +50,7 @@
     },
     {
       "term": "Bech32",
-      "definition": "An address encoding format used on Cosmos SDK chains. ShinzoHub uses the `shinzo` prefix (e.g., `shinzo1ws69...`). The same underlying key produces both a hex address and a bech32 address — they are different representations, not different keys.",
+      "definition": "An address encoding format used on Cosmos SDK chains. ShinzoHub uses the `shinzo` prefix (e.g., `shinzo1ws69...`). The same underlying key produces both a hex address and a bech32 address; they are different representations, not different keys.",
       "relatedTerms": [
         "ShinzoHub",
         "Cosmos SDK"
@@ -140,7 +140,7 @@
     {
       "term": "CRDT",
       "abbreviation": "Conflict-free Replicated Data Type",
-      "definition": "A data structure that multiple nodes can update independently and then merge without coordination, always reaching the same result. defraDB uses CRDTs — specifically MerkleCRDTs — to merge document updates from peers.",
+      "definition": "A data structure that multiple nodes can update independently and then merge without coordination, always reaching the same result. defraDB uses CRDTs, specifically MerkleCRDTs, to merge document updates from peers.",
       "relatedTerms": [
         "MerkleCRDT",
         "P-counter",
@@ -170,7 +170,7 @@
     {
       "term": "DID",
       "abbreviation": "Decentralized Identifier",
-      "definition": "A self-sovereign identifier (e.g., `did:key:z6Mk...`) derived from a public key. Hosts, generator, and users are identified by DIDs in SourceHub authorization tuples.",
+      "definition": "A self-sovereign identifier (e.g., `did:key:z6Mk...`) derived from a public key. Hosts, generators, and users are identified by DIDs in SourceHub authorization tuples.",
       "relatedTerms": [
         "DID Key",
         "SourceHub",
@@ -270,7 +270,7 @@
     },
     {
       "term": "Host",
-      "definition": "A Shinzo node that receives indexed data from generator over P2P, verifies it, runs lens transforms to produce view documents, and serves those documents over GraphQL.",
+      "definition": "A Shinzo node that receives verifiable blockchain data from generators over P2P, verifies it, runs lens transforms to produce view documents, and serves those documents over GraphQL.",
       "relatedTerms": [
         "DID Key",
         "Orbis",
@@ -304,7 +304,7 @@
     },
     {
       "term": "Generator",
-      "definition": "A node that reads blockchain data from a source chain, parses it into structured documents, and writes them to defraDB. Generator are write-only: they push data out over P2P and reject all incoming replication.",
+      "definition": "A node that reads blockchain data from a source chain, parses it into structured documents, and writes them to defraDB. Generators are write-only: they push data out over P2P and reject all incoming replication.",
       "relatedTerms": [
         "Indexing",
         "defraDB",
@@ -315,7 +315,7 @@
     },
     {
       "term": "Generator Registry",
-      "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered generator. A generator cannot register here directly. It must first complete an assertion. On the current testnet, assertions are submitted through an admin-key flow; the planned flow uses an outpost contract. The registry verifies the stored assertion before accepting registration.",
+      "definition": "The ShinzoHub EVM precompile at `0x0212` that tracks registered generators. A generator cannot register here directly. It must first complete an assertion. On the current testnet, assertions are submitted through an admin-key flow; the planned flow uses an outpost contract. The registry verifies the stored assertion before accepting registration.",
       "relatedTerms": [
         "Generator",
         "Precompile",
@@ -325,7 +325,7 @@
     },
     {
       "term": "Indexing",
-      "definition": "The process of parsing blockchain data and storing it as structured, schema-compliant documents in defraDB.",
+      "definition": "The process of parsing blockchain data and storing it as structured, schema-compliant documents in defraDB. In Shinzo this is verifiable indexing: blocks of documents are signed by the generator that produced them, so anyone can check who the data came from.",
       "relatedTerms": [
         "Generator",
         "defraDB",
@@ -344,7 +344,7 @@
     },
     {
       "term": "Keeper",
-      "definition": "In Cosmos SDK, a Go object that owns a module's state and provides the only sanctioned way to read or write it. Precompile code on ShinzoHub calls keepers directly — for example, to send an ICA packet — without going through Solidity bytecode.",
+      "definition": "In Cosmos SDK, a Go object that owns a module's state and provides the only sanctioned way to read or write it. Precompile code on ShinzoHub calls keepers directly, for example to send an ICA packet, without going through Solidity bytecode.",
       "relatedTerms": [
         "Cosmos SDK",
         "Precompile"
@@ -373,7 +373,7 @@
     },
     {
       "term": "libp2p",
-      "definition": "A peer-to-peer networking library. defraDB uses it for peer discovery and document replication between generator and hosts.",
+      "definition": "A peer-to-peer networking library. defraDB uses it for peer discovery and document replication between generators and hosts.",
       "relatedTerms": [
         "defraDB"
       ]
@@ -468,7 +468,7 @@
     },
     {
       "term": "Outpost",
-      "definition": "A smart contract that will be deployed on a source chain. Validators will call it to prove their identity before registering as generator; users will call it to pay for view access in the source chain's native currency. Each chain type has its own outpost implementation. The outpost is not yet deployed on the testnet; assertions currently use an admin-key approval flow.",
+      "definition": "A smart contract that will be deployed on a source chain. Validators will call it to prove their identity before registering as a generator; users will call it to pay for view access in the source chain's native currency. Each chain type has its own outpost implementation. The outpost is not yet deployed on the testnet; assertions currently use an admin-key approval flow.",
       "relatedTerms": [
         "Smart Contract",
         "ShinzoHub",
@@ -517,7 +517,7 @@
     },
     {
       "term": "Pool Registry",
-      "definition": "The ShinzoHub EVM precompile at `0x0213` that creates and tracks pools. `registerDemandForView(view, config, bond)` materialises a pool at the deterministic address derived from (view, config) and records the caller's demand. Hosts do not join through the registry directly; they call `join()` on a pool's `Pool.sol` contract, which forwards to the registry.",
+      "definition": "The ShinzoHub EVM precompile at `0x0213` that creates and tracks pools. `registerDemandForView(view, config, bond)` materializes a pool at the deterministic address derived from (view, config) and records the caller's demand. Hosts do not join through the registry directly; they call `join()` on a pool's `Pool.sol` contract, which forwards to the registry.",
       "relatedTerms": [
         "Pool",
         "Precompile",
@@ -555,7 +555,7 @@
     },
     {
       "term": "Re-org",
-      "definition": "Short for chain reorganization: the canonical block at a given height changes. When this happens, different generator may briefly hold different versions of the same block. Hosts store each version as a separate document; applications pick the one with more attestation votes.",
+      "definition": "Short for chain reorganization: the canonical block at a given height changes. When this happens, different generators may briefly hold different versions of the same block. Hosts store each version as a separate document; applications pick the one with more attestation votes.",
       "relatedTerms": [
         "Generator",
         "AttestationRecord"
@@ -572,7 +572,7 @@
     },
     {
       "term": "Scheduler",
-      "definition": "A coordination service that reads registrations from ShinzoHub and matches generator to hosts. Like the gateway, it never handles actual data.",
+      "definition": "A coordination service that reads registrations from ShinzoHub and matches generators to hosts. Like the gateway, it never handles actual data.",
       "relatedTerms": [
         "Network Gateway",
         "Generator",
@@ -590,7 +590,7 @@
     },
     {
       "term": "ShinzoHub",
-      "definition": "Shinzo's coordination chain: a Cosmos SDK chain (v0.53.4) with an integrated EVM, running CometBFT consensus. It holds the view, host, and generator registries and the economic layer (staking, pricing, payments). It does not store or serve indexed blockchain data.",
+      "definition": "Shinzo's coordination chain: a Cosmos SDK chain (v0.53.4) with an integrated EVM, running CometBFT consensus. It holds the view, host, and generator registries and the economic layer (staking, pricing, payments). It does not store or serve blockchain data.",
       "relatedTerms": [
         "Host",
         "Outpost",
@@ -626,7 +626,7 @@
     },
     {
       "term": "Source chain",
-      "definition": "Any external blockchain that Shinzo indexes — Ethereum, an L2, a Cosmos chain, etc. A source chain hosts an outpost contract and is read by generator.",
+      "definition": "Any external blockchain that Shinzo reads data from, whether that is a base blockchain like Ethereum, one of its scaling layers, or a Cosmos chain. A source chain hosts an outpost contract and is read by generators.",
       "relatedTerms": [
         "Outpost",
         "Generator",
@@ -635,7 +635,7 @@
     },
     {
       "term": "SourceHub",
-      "definition": "A separate Cosmos SDK chain built by Source Network that handles authorization for Shinzo. It runs the ACP module (based on Google's Zanzibar model) and stores authorization tuples in the form `object#relation@user`. Users never call SourceHub directly — ShinzoHub sends commands to it via ICA.",
+      "definition": "A separate Cosmos SDK chain built by Source Network that handles authorization for Shinzo. It runs the ACP module (based on Google's Zanzibar model) and stores authorization tuples in the form `object#relation@user`. Users never call SourceHub directly; ShinzoHub sends commands to it via ICA.",
       "relatedTerms": [
         "ACP",
         "Host",
@@ -679,7 +679,7 @@
     },
     {
       "term": "Validator",
-      "definition": "An entity that participates in a chain's consensus. A validator's identity is tied to an operator key through an assertion, allowing the operator to register as a generator on ShinzoHub. On the planned contract-based flow, the validator's withdrawal key signs an EIP-712 message on the outpost to authorize the operator key.",
+      "definition": "An entity that participates in a chain's consensus. A validator's identity is tied to an operator key through an assertion, allowing the operator to register as a generator on ShinzoHub. In the planned contract-based flow, the validator's withdrawal key signs an EIP-712 message on the outpost to authorize the operator key.",
       "relatedTerms": [
         "Generator",
         "Assertion",
@@ -690,7 +690,7 @@
     },
     {
       "term": "View",
-      "definition": "A curated, SDL-defined representation of defraDB documents. Views transform raw indexed data into a structured output shape.",
+      "definition": "A curated, SDL-defined representation of defraDB documents. Views transform raw chain data into a structured output shape.",
       "relatedTerms": [
         "defraDB",
         "Schema Definition Language"
@@ -740,7 +740,7 @@
     {
       "term": "WASM",
       "abbreviation": "WebAssembly",
-      "definition": "A portable, sandboxed bytecode format. Lens transforms compile to WASM — typically from Rust or AssemblyScript — and hosts run them via LensVM.",
+      "definition": "A portable, sandboxed bytecode format. Lens transforms compile to WASM, typically from Rust or AssemblyScript, and hosts run them via LensVM.",
       "relatedTerms": [
         "Lens",
         "LensVM",
