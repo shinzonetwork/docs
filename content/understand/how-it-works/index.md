@@ -14,6 +14,8 @@ Shinzo has four kinds of moving parts:
 
 Data flows from left to right. Coordination happens on the side.
 
+_Want to watch it move instead? [The data journey](@/understand/data-journey/index.md) animates this flow end to end._
+
 ## The data's journey
 
 Here's a single USDC transfer on a supported chain, from the moment it lands on-chain to the moment an app shows it to a user.

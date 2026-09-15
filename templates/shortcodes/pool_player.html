@@ -1,0 +1,135 @@
+{# Step-through guided player: SVG scene + caption + transport controls.
+   Assets: /css/pool-player.css and /js/pool-player.js.
+   Step captions live in the shortcode body (hidden source divs) so they
+   stay editable in the markdown page. The scene is fully visible without
+   JS; the script wires up state and playback. #}
+<link rel="stylesheet" href="/css/pool-player.css" />
+<div class="pp pp--s1" id="pp">
+  <div class="pp__stage">
+    <svg class="pp__svg" viewBox="0 0 760 430" role="img"
+      aria-label="Diagram of a pool filling up: a developer registers demand and a bond with the Pool Registry on ShinzoHub, which creates a pool for the View; Hosts join the pool one at a time, and once three have joined the pool is active; when a Host exits and the count drops below three the pool goes inactive, until another Host joins and it is active again.">
+      <!-- routes -->
+      <path class="pp-route" d="M 85 250 H 402" fill="none" />
+      <path id="pp-join-1" class="pp-route pp-route--side" d="M 654 116 C 580 120, 495 160, 436 250" fill="none" />
+      <path id="pp-join-2" class="pp-route pp-route--side" d="M 654 208 C 596 212, 540 228, 480 250" fill="none" />
+      <path id="pp-join-3" class="pp-route pp-route--side" d="M 654 300 C 596 294, 552 272, 524 250" fill="none" />
+      <path id="pp-join-4" class="pp-route pp-route--side" d="M 654 392 C 585 384, 545 330, 524 250" fill="none" />
+
+      <text class="pp-hint" x="672" y="82">Hosts</text>
+      <text class="pp-hint" x="250" y="204">ShinzoHub</text>
+
+      <!-- Developer -->
+      <g class="pp-station" id="pp-st-dev" transform="translate(85 250)">
+        <circle class="pp-block" cx="0" cy="-10" r="9" />
+        <path class="pp-block" d="M -15 16 C -15 2, 15 2, 15 16 Z" />
+        <text class="pp-label" y="52">Developer</text>
+      </g>
+
+      <!-- Pool Registry -->
+      <g class="pp-station" id="pp-st-registry" transform="translate(250 250)">
+        <rect class="pp-box" x="-29" y="-29" width="58" height="58" rx="10" />
+        <rect class="pp-block" x="-17" y="-17" width="34" height="6" rx="2" />
+        <rect class="pp-block" x="-17" y="-3" width="34" height="6" rx="2" />
+        <rect class="pp-block" x="-17" y="11" width="34" height="6" rx="2" />
+        <text class="pp-label" y="52">Pool Registry</text>
+      </g>
+
+      <!-- Pool: dashed ghost until it is created, solid from step 3 -->
+      <g class="pp-station pp-pool" id="pp-st-pool" transform="translate(480 250)">
+        <rect class="pp-pool-box" x="-78" y="-32" width="156" height="64" rx="12" />
+        <circle class="pp-slot" cx="-44" cy="0" r="16" />
+        <circle class="pp-slot" cx="0" cy="0" r="16" />
+        <circle class="pp-slot" cx="44" cy="0" r="16" />
+        <text class="pp-label" y="54">Pool</text>
+        <text class="pp-label pp-label--sub" y="70">View &#183; windowSize</text>
+      </g>
+
+      <!-- Hosts: registered nodes on the network, waiting to join -->
+      <g class="pp-station pp-station--small" id="pp-st-h1" transform="translate(672 116)">
+        <path class="pp-box" d="M -16 -11 v 22 a 16 5 0 0 0 32 0 v -22 a 16 5 0 0 0 -32 0" />
+        <ellipse class="pp-box-lip" cx="0" cy="-11" rx="16" ry="5" />
+      </g>
+      <g class="pp-station pp-station--small" id="pp-st-h2" transform="translate(672 208)">
+        <path class="pp-box" d="M -16 -11 v 22 a 16 5 0 0 0 32 0 v -22 a 16 5 0 0 0 -32 0" />
+        <ellipse class="pp-box-lip" cx="0" cy="-11" rx="16" ry="5" />
+      </g>
+      <g class="pp-station pp-station--small" id="pp-st-h3" transform="translate(672 300)">
+        <path class="pp-box" d="M -16 -11 v 22 a 16 5 0 0 0 32 0 v -22 a 16 5 0 0 0 -32 0" />
+        <ellipse class="pp-box-lip" cx="0" cy="-11" rx="16" ry="5" />
+      </g>
+      <g class="pp-station pp-station--small" id="pp-st-h4" transform="translate(672 392)">
+        <path class="pp-box" d="M -16 -11 v 22 a 16 5 0 0 0 32 0 v -22 a 16 5 0 0 0 -32 0" />
+        <ellipse class="pp-box-lip" cx="0" cy="-11" rx="16" ry="5" />
+      </g>
+
+      <!-- Pool status card -->
+      <g class="pp-card" id="pp-card" transform="translate(480 88)">
+        <rect x="-108" y="-31" width="216" height="62" rx="10" />
+        <text class="pp-card-title" x="-94" y="-10">Pool status</text>
+        <g id="pp-badge">
+          <rect class="pp-badge-pill" x="34" y="-26" width="70" height="24" rx="12" />
+          <text class="pp-badge-text" id="pp-badge-on" x="69" y="-10">Active</text>
+          <text class="pp-badge-text" id="pp-badge-off" x="69" y="-10">Inactive</text>
+        </g>
+        <text class="pp-card-mono" x="-94" y="16">host_count</text>
+        <text class="pp-card-mono pp-hosts" id="pp-hosts" x="14" y="16">0</text>
+        <circle class="pp-host-dot" id="pp-dot-1" cx="46" cy="12" r="5.5" />
+        <circle class="pp-host-dot" id="pp-dot-2" cx="64" cy="12" r="5.5" />
+        <circle class="pp-host-dot" id="pp-dot-3" cx="82" cy="12" r="5.5" />
+      </g>
+
+      <!-- Demand packet: document + bond coin, cross-faded into the pool -->
+      <g class="pp-packet" id="pp-packet">
+        <rect class="pp-packet-rect" x="-23" y="-15" width="46" height="30" rx="6" />
+        <text class="pp-packet-text" y="3.5">demand</text>
+        <g class="pp-coin" id="pp-coin" transform="translate(18 -14)">
+          <circle class="pp-coin-rim" r="9" />
+          <circle class="pp-coin-core" r="4" />
+        </g>
+      </g>
+
+      <!-- Host tokens: tweened along the join paths by the script -->
+      <g class="pp-token" id="pp-token-1" opacity="0">
+        <path class="pp-token-body" d="M -13 -9 v 18 a 13 4.5 0 0 0 26 0 v -18 a 13 4.5 0 0 0 -26 0" />
+        <ellipse class="pp-token-lip" cx="0" cy="-9" rx="13" ry="4.5" />
+      </g>
+      <g class="pp-token" id="pp-token-2" opacity="0">
+        <path class="pp-token-body" d="M -13 -9 v 18 a 13 4.5 0 0 0 26 0 v -18 a 13 4.5 0 0 0 -26 0" />
+        <ellipse class="pp-token-lip" cx="0" cy="-9" rx="13" ry="4.5" />
+      </g>
+      <g class="pp-token" id="pp-token-3" opacity="0">
+        <path class="pp-token-body" d="M -13 -9 v 18 a 13 4.5 0 0 0 26 0 v -18 a 13 4.5 0 0 0 -26 0" />
+        <ellipse class="pp-token-lip" cx="0" cy="-9" rx="13" ry="4.5" />
+      </g>
+      <g class="pp-token" id="pp-token-4" opacity="0">
+        <path class="pp-token-body" d="M -13 -9 v 18 a 13 4.5 0 0 0 26 0 v -18 a 13 4.5 0 0 0 -26 0" />
+        <ellipse class="pp-token-lip" cx="0" cy="-9" rx="13" ry="4.5" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="pp__panel">
+    <div class="pp__captionbox" aria-live="polite">
+      <h3 class="pp__caption-title" id="pp-title"></h3>
+      <div class="pp__caption-body" id="pp-body"></div>
+    </div>
+    <div class="pp__controls">
+      <button type="button" class="pp__btn" id="pp-prev" aria-label="Previous step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 10 3 L 5 8 L 10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="pp__btn pp__btn--play" id="pp-play" aria-label="Play">
+        <svg class="pp-icon-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 4 2.5 L 13 8 L 4 13.5 Z" fill="currentColor"/></svg>
+        <svg class="pp-icon-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/><rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="pp__btn" id="pp-next" aria-label="Next step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 6 3 L 11 8 L 6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="pp__dots" id="pp-dots" role="tablist" aria-label="Steps"></div>
+      <span class="pp__count" id="pp-count">1 / 6</span>
+    </div>
+    <div class="pp__progress"><div class="pp__progress-bar" id="pp-progress"></div></div>
+  </div>
+
+  <div class="pp__captions" hidden>{{ body | safe }}</div>
+</div>
+<script src="/js/pool-player.js" defer></script>
