@@ -18,7 +18,7 @@ So instead of pulling answers out of someone else's cache, your app maintains a 
 
 ## A cache you can verify
 
-The local copy is not an ordinary cache, and your app does not have to trust the Host clients that fill it. The replica lives in an embedded [DefraDB](https://github.com/sourcenetwork/defradb) instance inside your app, and the data arriving in it carries its own evidence:
+The local copy is not an ordinary cache, and your app does not have to trust the Host clients that fill it. The replica lives in an embedded [DefraDB](../../../understand/core-concepts/defradb/) instance inside your app, and the data arriving in it carries its own evidence:
 
 - Documents are content-addressed. Every commit has a CID, so what you received can be checked against what was claimed.
 - Generator clients sign what they produce, so there is a verifiable record of who said what.
