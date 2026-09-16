@@ -13,7 +13,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 ## Topology
 
 {% mermaid() %}
-flowchart LR
+flowchart TB
   subgraph VM["Generator VM"]
     Gen["<b>Generator client</b><br/>:9171 P2P<br/>:8080 Health/Metrics"]
   end

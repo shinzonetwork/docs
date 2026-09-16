@@ -13,7 +13,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 ## Topology
 
 {% mermaid() %}
-flowchart LR
+flowchart TB
   subgraph VM["Prod VM"]
     direction LR
     Nginx["<b>Nginx</b><br/>:443 TLS"]
