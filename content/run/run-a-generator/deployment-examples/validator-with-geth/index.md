@@ -13,7 +13,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 ## Topology
 
 {% mermaid() %}
-flowchart LR
+flowchart TB 
   subgraph VM["Validator machine"]
     direction LR
     Geth["<b>Geth node</b><br/>:8545 HTTP<br/>:8546 WS"]
