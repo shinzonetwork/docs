@@ -1,6 +1,6 @@
 +++
 title = "How it works"
-aliases = ["/introduction/how-it-works"]
+aliases = ["/introduction/how-it-works", "/understand/data-journey"]
 [extra]
 mermaid = true
 +++
@@ -14,7 +14,33 @@ Shinzo has four kinds of moving parts:
 
 Data flows from left to right. Coordination happens on the side.
 
-_Want to watch it move instead? [The data journey](@/understand/data-journey/index.md) animates this flow end to end._
+Want to watch it move first? Step through one document's journey below: press play, or move at your own pace.
+
+{% journey_player() %}
+<div class="jp__caption" data-title="A block arrives">
+  <p>A validator's execution node produces a block. The data your app needs is already there, so Shinzo reads it at the source instead of a third-party service.</p>
+</div>
+
+<div class="jp__caption" data-title="The Generator signs it">
+  <p>The Generator client next to the node shapes the block into structured documents and signs each one with its identity key. From here on, the document carries a verifiable signature.</p>
+</div>
+
+<div class="jp__caption" data-title="The Host verifies">
+  <p>The signed document reaches a Host over the peer-to-peer network. The Host checks the signature and opens an attestation record for it: one vote so far.</p>
+</div>
+
+<div class="jp__caption" data-title="Attestations tally up">
+  <p>Two more Generator clients independently signed the same data. Each verified copy that arrives adds a vote to the attestation record.</p>
+</div>
+
+<div class="jp__caption" data-title="A View shapes the answer">
+  <p>The Host runs the View's Lens transform over the verified primitives and decodes the raw log into something the app can use: a <code>TokenTransfer</code>.</p>
+</div>
+
+<div class="jp__caption" data-title="Your app stays in control">
+  <p>The app subscribes to the View and queries its local database with GraphQL. Its attestation threshold decides what counts as trustworthy. Here, that means three votes.</p>
+</div>
+{% end %}
 
 ## The data's journey
 

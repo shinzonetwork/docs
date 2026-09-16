@@ -104,8 +104,7 @@ label = "Basics"
 pages = [
   "understand/home/index.md",
   "understand/what-is-shinzo/index.md",
-  "understand/how-it-works/index.md",
-  "understand/data-journey/index.md"
+  "understand/how-it-works/index.md"
 ]
 
 [[extra.sidebar]]
