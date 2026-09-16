@@ -11,6 +11,10 @@ If you want to participate in Shinzo by trustlessly reading and signing on-chain
 Installing and running the Generator client does not require you to be a validator. The separate Registration step, which makes the Generator a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
 {% end %}
 
+{% admonition(type="warning") %}
+The Generator client does not verify the data it reads from an endpoint. It signs whatever the node returns, so with a managed provider like QuickNode, your signatures vouch for their data. If that data is ever wrong or incomplete, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. See [Trust and verification](/understand/core-concepts/trust-and-verification/) for the full trust model.
+{% end %}
+
 ## Prerequisites
 
 - A [QuickNode](https://www.quicknode.com/) account.
