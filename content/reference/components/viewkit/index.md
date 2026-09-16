@@ -43,6 +43,7 @@ When querying a deployed view's output collection, DefraDB supports these filter
 | `_in` / `_nin` | In / not in a list of values | `{ event: { _in: ["Transfer", "Approval"] } }` |
 | `_and` | Logical AND | `{ _and: [{ logAddress: { _eq: "0x..." } }, { event: { _eq: "Transfer" } }] }` |
 | `_or` | Logical OR | `{ _or: [{ from: { _eq: "0x..." } }, { to: { _eq: "0x..." } }] }` |
+| `_any` / `_all` / `_none` | Match against a list field: any / all / no element satisfies the condition | `{ topics: { _any: { _eq: "0x..." } } }` |
 | `_like` / `_ilike` | Substring match, case-sensitive / case-insensitive (strings) | `{ arguments: { _like: "%0xAddress%" } }` |
 
 ## What happens during deploy

@@ -43,6 +43,34 @@ The same shape works for a View. This query fetches the 10 most recent decoded e
 }
 ```
 
+## Page through results
+
+`offset` skips documents before `limit` applies, so stepping it walks a collection in pages:
+
+```graphql
+{
+  <Chain>__<Network>__Block(order: { number: DESC }, limit: 10, offset: 20) {
+    number
+    hash
+  }
+}
+```
+
+That returns items 21 through 30 of the ordering. There is no cursor pagination: `offset` is a plain skip. For steadily walking a growing collection, filter instead of skipping. Keep the last `number` you saw and ask for everything after it, which starts each page exactly where the last one ended:
+
+```graphql
+{
+  <Chain>__<Network>__Block(
+    filter: { number: { _gt: 25930000 } }
+    order: { number: ASC }
+    limit: 10
+  ) {
+    number
+    hash
+  }
+}
+```
+
 ## Fetch a document by DocID or CID
 
 When you already know a document's `_docID`, pass it as the `docID` argument to fetch exactly that document:
@@ -133,7 +161,74 @@ Combine conditions with `_and`. This query returns `Transfer` events decoded fro
 }
 ```
 
+Conditions inside `_or` behave like `_and`'s opposite: a document matches when any one of them holds. This pattern finds both sides of a transfer, where the address is either the sender or the recipient:
+
+```graphql
+query TransactionsInvolving($address: String!) {
+  <Chain>__<Network>__Transaction(
+    filter: {
+      _or: [
+        { from: { _eq: $address } }
+        { to: { _eq: $address } }
+      ]
+    }
+    limit: 10
+  ) {
+    hash
+    blockNumber
+    from
+    to
+    value
+  }
+}
+```
+
+List fields take a quantifier. `_any` matches when at least one element satisfies the condition, which is the usual way to filter `Log.topics`. Since `topics[0]` is the event signature hash, this query pulls every log of one event type:
+
+```graphql
+query LogsByTopic($topic: String!) {
+  <Chain>__<Network>__Log(filter: { topics: { _any: { _eq: $topic } } }) {
+    address
+    topics
+    data
+    blockNumber
+    transactionHash
+  }
+}
+```
+
 The full operator table lives in the [Viewkit reference](/reference/components/viewkit/#filter-operators).
+
+## Reuse queries with variables
+
+Named queries take variables, so one query serves any block number or address:
+
+```graphql
+query BlockByNumber($blockNumber: Int!) {
+  <Chain>__<Network>__Block(filter: { number: { _eq: $blockNumber } }) {
+    hash
+    number
+    timestamp
+    transactions {
+      hash
+      from
+      to
+      value
+    }
+  }
+}
+```
+
+A direct-query app passes the values in the standard `variables` field of the request body:
+
+```json
+{
+  "query": "query BlockByNumber($blockNumber: Int!) { ... }",
+  "variables": { "blockNumber": 23901130 }
+}
+```
+
+One thing to know on the signed path: the request signature commits to the canonical JSON of `query` and `variables` together, so a new variable value means a new signature. Generate the envelope per request rather than caching one. [Query your first View](/build/tutorials/query-your-first-view/) shows the hashing step. An embedded app does no signing, so it can reuse queries freely.
 
 ## Get a block with nested data
 
@@ -207,6 +302,22 @@ Each document exposes the CIDs of its commits in `_version`. The `signature` fie
 ```
 
 `signatureIdentity` is the public key of the Generator client that produced the block, and `signatureValue` is its ES256K signature over the block's Merkle root of document CIDs. For what these signatures cover, attestation records, and CID navigation, see [Verify data with signatures and CIDs](/build/how-to/verify-data/).
+
+## What a failed query looks like
+
+A query that fails inside GraphQL returns the standard error envelope, with `data` absent or partial:
+
+```json
+{
+  "errors": [
+    {
+      "message": "..."
+    }
+  ]
+}
+```
+
+Check for `errors` before trusting `data`. Rejections at the billing gate look different: a plain HTTP status with a plain text body, such as `403` with `forbidden: stale or future request`. [Errors](/reference/errors/) covers both layers with the full status tables.
 
 ## Need help
 

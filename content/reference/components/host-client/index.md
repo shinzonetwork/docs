@@ -143,7 +143,7 @@ The Host client creates separate attestation collections per view:
 collectionName := fmt.Sprintf("<Chain>__<Network>__AttestationRecord_%s", viewName)
 ```
 
-So you get `AttestationRecord_Block` for primitive attestations and `AttestationRecord_TokenTransfer` for a specific view.
+So a View named `TokenTransfer` gets `AttestationRecord_TokenTransfer`, while block attestations stay in the base `AttestationRecord` collection.
 
 ### CID array merging doesn't work right
 

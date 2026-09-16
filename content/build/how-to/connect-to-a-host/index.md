@@ -86,7 +86,9 @@ curl -s -X POST "http://34.66.172.230/api/v0/graphql" \
   }'
 ```
 
-View queries carry a signature in the `extensions` envelope, and one billed query maps to one pool: a request can touch only one View collection, and its `pool_address` extension names the pool it bills to. The `0x<...>` values above are placeholders — the signature commits to this exact query, a fresh nonce, and a timestamp, so no static example can be valid; the tutorial generates a fresh envelope on every run. When a Host enforces billing, rejections come back as plain errors: `403` if the request signature is missing, stale, or fails verification, and `402` if the signer's query balance is too low. [Query your first View](/build/tutorials/query-your-first-view/) builds the signing flow end to end.
+View queries carry a signature in the `extensions` envelope, and one billed query maps to one pool: a request can touch only one View collection, and its `pool_address` extension names the pool it bills to. The `0x<...>` values above are placeholders: the signature commits to this exact query, a fresh nonce, and a timestamp, so no static example can be valid. The tutorial generates a fresh envelope on every run.
+
+Two details of the envelope are easy to miss. It is only valid for two minutes either side of `request_timestamp`, so sign right before you send, and expect a stale rejection if your clock drifts far from the Host's. And it only travels in a POST body: the GET form of the GraphQL endpoint cannot carry `extensions`, so a billed query has to use the POST shape above. When a Host enforces billing, rejections come back as plain errors: `403` if the request signature is missing, stale, or fails verification, and `402` if the signer's query balance is too low. [Errors](/reference/errors/) lists the full set with causes, and [Query your first View](/build/tutorials/query-your-first-view/) builds the signing flow end to end.
 
 {% admonition(type="note") %}
 Billing enforcement is rolling out on the testnet, so some Hosts still answer unsigned queries. Signed requests are the supported interface either way; treat unsigned access as a convenience that will go away.
