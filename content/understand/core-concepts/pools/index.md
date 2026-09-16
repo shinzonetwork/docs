@@ -6,8 +6,6 @@ aliases = ["/concepts/pools", "/pools"]
 
 A pool is where developer demand for a View meets the Hosts that serve it. Demand creates a pool; a Host joining it makes that pool active.
 
-Step through it below: press play, or move at your own pace.
-
 {% pool_player() %}
 <div class="pp__caption" data-title="A developer wants a View served">
   <p>A registered View describes a data product, but registration alone doesn't guarantee anyone will serve it. So a developer registers demand for the View through the Pool Registry on ShinzoHub, and backs it with a bond in ushinzo (SHNZ's base unit).</p>

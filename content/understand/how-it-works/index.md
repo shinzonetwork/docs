@@ -12,8 +12,6 @@ Shinzo has four kinds of moving parts:
 1. **Applications** that consume that data.
 1. **ShinzoHub**, a coordination layer that tells everyone what's going on.
 
-Data flows from left to right. Coordination happens on the side.
-
 ## The data's journey
 
 {% journey_player() %}
