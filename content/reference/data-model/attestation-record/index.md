@@ -3,7 +3,7 @@ title = "AttestationRecord"
 description = "The attestation record type, its fields, and CRDT semantics."
 +++
 
-When a Host receives the same block from multiple Generator clients, it records how many independent sources vouch for it in an `AttestationRecord`. The count is a CRDT counter, so Hosts that replicate with each other converge on the same number with no coordinator in the middle. [Attestations](/understand/core-concepts/attestation/) covers the concept; this page is the type reference.
+When a Host receives the same block from multiple Generator clients, it records how many independent sources vouch for it in an `AttestationRecord`. The count is a CRDT counter, so Hosts that replicate with each other converge on the same number with no coordinator in the middle. [Attestations](/understand/core-concepts/attestations/) covers the concept; this page is the type reference.
 
 ## Schema
 

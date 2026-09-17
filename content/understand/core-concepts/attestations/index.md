@@ -1,5 +1,6 @@
 +++
 title = "Attestations"
+aliases = ["/understand/core-concepts/attestation/"]
 +++
 
 Attestation is how Shinzo tracks how much of the network has independently agreed on a piece of data.

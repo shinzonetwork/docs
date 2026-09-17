@@ -52,7 +52,7 @@ When a Host client receives a block from a Generator, it verifies the signature 
 
 This is the mechanism that catches a wrong or dishonest data source. Independent Generator clients reading their own nodes sign identical data, and the block's attestation count climbs with each match. A Generator whose node fed it bad data produces a different root and accumulates no corroboration, so any app asking for two or more attestations filters it out. The same math smooths over honest disagreement: chains re-org, and requiring more than one attestation keeps your app from acting on a block that just got reorganized out.
 
-[Attestations](/understand/core-concepts/attestation/) covers the record itself and how the counting works, and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) covers how apps set per-query thresholds.
+[Attestations](/understand/core-concepts/attestations/) covers the record itself and how the counting works, and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) covers how apps set per-query thresholds.
 
 ## The lens gap
 
@@ -68,7 +68,7 @@ Policing and economic penalties for manipulative Hosts are part of the protocol 
 
 ## Where to go next
 
-- [Attestations](/understand/core-concepts/attestation/): how vote counts on data work.
+- [Attestations](/understand/core-concepts/attestations/): how vote counts on data work.
 - [Verify data with signatures and CIDs](/build/how-to/verify-data/): the hands-on queries for checking data yourself.
 - [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/): setting per-query trust thresholds in your app.
 - [Generator security](/run/run-a-generator/security/): deployment shapes and key separation for operators.
