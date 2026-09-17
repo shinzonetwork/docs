@@ -38,7 +38,7 @@ There is also a mundane reason thresholds help even when nobody is malicious. Ge
 
 ## Where the signatures come from
 
-Signing every document individually would be slow, so Generator clients sign per block: a `BlockSignature` document commits to a Merkle root covering every primitive in the block, and snapshot signatures do the same across block ranges for faster sync. One block-level signature vouches for everything in that block, which is what lets attestation records stay small. For the platform-level picture, see [Attestation](/understand/core-concepts/attestation/).
+Signing every document individually would be slow, so Generator clients sign per block: a `BlockSignature` document commits to a Merkle root covering every primitive in the block, and snapshot signatures do the same across block ranges for faster sync. One block-level signature vouches for everything in that block, which is what lets attestation records stay small. For the platform-level picture, see [Attestations](/understand/core-concepts/attestations/).
 
 ## Where to go next
 

@@ -10,6 +10,10 @@ When to use this: you want to run the Generator client against GCP Blockchain No
 
 These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
 
+{% admonition(type="warning") %}
+The Generator client does not verify the data it reads from an endpoint. It signs whatever the node returns, so with a managed provider like GCP Blockchain Node Engine, your signatures vouch for their data. If that data is ever wrong or incomplete, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. See [Trust and verification](/understand/core-concepts/trust-verification/) for the full trust model.
+{% end %}
+
 ## Topology
 
 {% mermaid() %}
