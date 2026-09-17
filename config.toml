@@ -113,8 +113,8 @@ label = "Core concepts"
 pages = [
   "understand/core-concepts/views/index.md",
   "understand/core-concepts/pools/index.md",
-  "understand/core-concepts/attestation/index.md",
-  "understand/core-concepts/trust-and-verification/index.md",
+  "understand/core-concepts/trust-verification/index.md",
+  "understand/core-concepts/attestations/index.md",
   "understand/core-concepts/defradb/index.md",
   "understand/core-concepts/privacy/index.md"
 ]

@@ -1,5 +1,5 @@
 +++
-title = "Trust and verification"
+title = "Trust & verification"
 description = "What each link in Shinzo's data path actually proves, what it doesn't, and where the remaining trust sits today."
 [extra]
 mermaid = true
@@ -13,6 +13,16 @@ flowchart LR
   Gen -->|"signed blocks + CIDs<br/><b>verifiable</b>"| Host["Host client"]
   Host -->|"view documents +<br/>attestation records"| App["Your app"]
 {% end %}
+
+## The short version
+
+| Hop | What backs it | What it doesn't cover |
+| --- | --- | --- |
+| Execution node -> Generator | Trust (your own node, or your provider's) | Wrong or incomplete source data gets signed as-is |
+| Validator <-> Generator identity | On-chain assertion signed by the withdrawal key | Says nothing about data quality |
+| Generator -> Host | Per-block signature over a Merkle root of CIDs | Chain-correctness, completeness, freshness |
+| Generator <-> Generator | Attestation records and vote counts | Needs thresholds above one to filter a lone bad source |
+| Host -> App (view data) | Host's signature, deterministic lenses, audit trail | Independent re-verification of the transform itself |
 
 ## The execution node to the Generator
 
@@ -40,9 +50,9 @@ Just as important is what the signature does _not_ prove. It doesn't prove the d
 
 When a Host client receives a block from a Generator, it verifies the signature and recomputes the Merkle root from the document CIDs. Only then does it open (or update) an attestation record for that block, keyed by the block height and the signed root.
 
-This is the mechanism that catches a wrong or dishonest data source. If several independent Generator clients each read their own node and sign identical data, their roots match, and the record's vote count climbs. A Generator whose node fed it bad data produces a different root, lands on its own record with a count of one, and gets filtered out by any app asking for two or more attestations. The same math smooths over honest disagreement: chains re-org, and requiring more than one attestation keeps your app from acting on a block that just got reorganized out.
+This is the mechanism that catches a wrong or dishonest data source. Independent Generator clients reading their own nodes sign identical data, and the block's attestation count climbs with each match. A Generator whose node fed it bad data produces a different root and accumulates no corroboration, so any app asking for two or more attestations filters it out. The same math smooths over honest disagreement: chains re-org, and requiring more than one attestation keeps your app from acting on a block that just got reorganized out.
 
-The threshold is a query-time dial each app sets for itself. [Attestations](/understand/core-concepts/attestation/) covers the record format, and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) covers the reasoning behind per-query thresholds.
+[Attestations](/understand/core-concepts/attestation/) covers the record itself and how the counting works, and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) covers how apps set per-query thresholds.
 
 ## The lens gap
 
@@ -55,16 +65,6 @@ If your app pays a third-party Host for view data, you cannot independently veri
 - The strongest option is to serve yourself. Running your own Host puts no third party in the path at all. See [Use your own infrastructure](/build/how-to/use-your-own-infrastructure/) and [Privacy](/understand/core-concepts/privacy/).
 
 Policing and economic penalties for manipulative Hosts are part of the protocol design but are not live today. Treat third-party view data as "trusted, auditable later" rather than "verified on receipt."
-
-## The short version
-
-| Hop | What backs it | What it doesn't cover |
-| --- | --- | --- |
-| Execution node → Generator | Trust (your own node, or your provider's) | Wrong or incomplete source data gets signed as-is |
-| Validator ↔ Generator identity | On-chain assertion signed by the withdrawal key | Says nothing about data quality |
-| Generator → Host | Per-block signature over a Merkle root of CIDs | Chain-correctness, completeness, freshness |
-| Generator ↔ Generator | Attestation records and vote counts | Needs thresholds above one to filter a lone bad source |
-| Host → App (view data) | Host's signature, deterministic lenses, audit trail | Independent re-verification of the transform itself |
 
 ## Where to go next
 
