@@ -39,8 +39,12 @@
   <link rel="stylesheet" href="/giallo.css" />
   <link rel="stylesheet" href="/css/code-theme.css" />
 
-  {# Plausible analytics (migrated from docusaurus.config scripts) #}
-  <script defer data-domain="{{ config.extra.plausible_domain }}" src="{{ config.extra.plausible_src }}"></script>
+  {# Plausible analytics (migrated from docusaurus.config scripts).
+     async (not defer): this host has gone down before and stalled the whole
+     deferred-script queue, delaying Mermaid rendering and every UI script by
+     the ~15s TCP timeout. async keeps a dead analytics host from blocking
+     the page. #}
+  <script async data-domain="{{ config.extra.plausible_domain }}" src="{{ config.extra.plausible_src }}"></script>
 
   {# Google Analytics 4 (gtag.js) #}
   <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.extra.google_analytics_id }}"></script>
