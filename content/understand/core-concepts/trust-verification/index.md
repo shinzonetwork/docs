@@ -18,11 +18,11 @@ flowchart LR
 
 | Hop | What backs it | What it doesn't cover |
 | --- | --- | --- |
-| Execution node -> Generator | Trust (your own node, or your provider's) | Wrong or incomplete source data gets signed as-is |
-| Validator <-> Generator identity | On-chain assertion signed by the withdrawal key | Says nothing about data quality |
-| Generator -> Host | Per-block signature over a Merkle root of CIDs | Chain-correctness, completeness, freshness |
-| Generator <-> Generator | Attestation records and vote counts | Needs thresholds above one to filter a lone bad source |
-| Host -> App (view data) | Host's signature, deterministic lenses, audit trail | Independent re-verification of the transform itself |
+| Execution node to Generator | Trust (your own node, or your provider's) | Wrong or incomplete source data gets signed as-is |
+| Validator and Generator identity each-way | On-chain assertion signed by the withdrawal key | Says nothing about data quality |
+| Generator to Host | Per-block signature over a Merkle root of CIDs | Chain-correctness, completeness, freshness |
+| Generator Generator each-way | Attestation records and vote counts | Needs thresholds above one to filter a lone bad source |
+| Host to App (view data) | Host's signature, deterministic lenses, audit trail | Independent re-verification of the transform itself |
 
 ## The execution node to the Generator
 
