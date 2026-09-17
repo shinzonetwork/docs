@@ -1,6 +1,6 @@
 +++
 title = "What is Shinzo?"
-aliases = ["/", "/introduction", "/understand"]
+aliases = ["/introduction", "/understand"]
 page_template = "page.html"
 [extra]
 mermaid = true
@@ -64,7 +64,7 @@ flowchart LR
   View4 --> App2
 {% end %}
 
-Underneath all of this is [DefraDB](https://github.com/sourcenetwork/defradb), a peer-to-peer document database that handles replication, access control, and GraphQL queries. Applications embed DefraDB locally and query it the way they'd query any other database, meaning no per-read round trip to an external API.
+Underneath all of this is [DefraDB](../core-concepts/defradb), a peer-to-peer document database that handles replication, access control, and GraphQL queries. Applications embed DefraDB locally and query it the way they'd query any other database, meaning no per-read round trip to an external API.
 
 ## How to get involved
 

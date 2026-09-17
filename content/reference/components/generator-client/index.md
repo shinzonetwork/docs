@@ -49,7 +49,7 @@ Each block goes through six stages:
 
 The Generator client produces six document types per block. The first four come directly from on-chain data. The last two are metadata that the Generator client itself produces.
 
-Collection names are prefixed with `<Chain>__<Network>__`, derived from your `chain.name` and `chain.network` settings. Schema definitions live in `pkg/schema/schema_standard.graphql`. There are two schema variants:
+Collection names are prefixed with `<Chain>__<Network>__`, derived from your `chain.name` and `chain.network` settings. Schema definitions live in `pkg/schema/collections/*.graphql`. There are two schema variants:
 
 - Standard: parallel transaction processing (default build).
 
@@ -180,18 +180,14 @@ The signing flow:
 1. The identity is injected into the Go context via `node.ContextWithBlockSigning(ctx, collector)`, which enables CID collection.
 1. As the block handler writes documents, DefraDB collects the CID of each document written.
 1. After all documents for a block are written, the Generator client calls `node.SignBlock`, which computes a Merkle root over the collected CIDs, signs it, and writes the `BlockSignature` document.
-1. Each individual document also gets a `_version` entry with identity and signature:
+1. Each document's `_version` entries carry the commit CIDs, but their `signature` field is not populated today. The signature that exists is the block-level one from the previous step:
 
 ```json
 {
     "_version": [
         {
-            "cid": "bafyreig5...",
-            "height": 1,
-            "signature": {
-                "identity": "did:key:zQ3s...",
-                "value": "0x3045022100..."
-            }
+            "cid": "bafyreih4...",
+            "signature": null
         }
     ]
 }
@@ -239,6 +235,10 @@ Bootstrap peers are configured in the DefraDB config. Peers are also discovered 
 
 See the [hardware requirements page](/run/run-a-generator/hardware-requirements/) for current minimum and recommended specs.
 
+## Security
+
+The [Security](/run/run-a-generator/security/) page covers deployment security: key separation from the validator, the write-only P2P model, and which ports to expose versus keep private.
+
 ## Configuration
 
 ```plaintext
@@ -271,5 +271,5 @@ The codebase is being refactored from EVM-only to support multiple chains. The a
 | `pkg/defra/block_handler.go` | Block processing and document creation |
 | `pkg/generator/replication_filter.go` | Rejects all incoming P2P replication |
 | `pkg/snapshot/snapshot.go` | Snapshot signature creation |
-| `pkg/schema/schema_standard.graphql` | Collection schemas for the 6 doc types |
+| `pkg/schema/collections/*.graphql` | Collection schemas for the 6 doc types |
 | `pkg/constants/collections.go` | Collection name constants (chain-prefixed) |

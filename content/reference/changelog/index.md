@@ -10,9 +10,58 @@ page_template = "changelog.html"
 
 Track what's new across the Shinzo developer platform: network releases, SDK changes, tooling updates and documentation improvements.
 
-## Aug 06, 2026 {#08-06-2026}
+## Sep 16, 2026 {#09-16-2026}
 
 ### Upgrade
+
+#### Generator client
+
+```shell
+docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.4-ethereum-mainnet
+```
+
+#### Host client
+
+```shell
+docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.4-ethereum-mainnet
+```
+
+### 💡 Improvements
+
+- {{ tag(name="Generator") }} Improved indexing and pruning performance to reduce chain lag and help Generators stay closer to the chain tip. ([PR #333](https://github.com/shinzonetwork/shinzo-generator-client/pull/333)) ([PR #335](https://github.com/shinzonetwork/shinzo-generator-client/pull/335))
+- {{ tag(name="Generator") }} Secondary indexes are now rebuilt correctly after importing data, improving data consistency after restores or migrations. ([PR #338](https://github.com/shinzonetwork/shinzo-generator-client/pull/338))
+- {{ tag(name="Generator") }} Chain configuration has been generalized to improve support for different chain configurations. ([PR #329](https://github.com/shinzonetwork/shinzo-generator-client/pull/329))
+- {{ tag(name="Generator") }}{{ tag(name="Host") }} Health checks now actively probe DefraDB, providing a more accurate indication of client health. ([PR #364](https://github.com/shinzonetwork/shinzo-generator-client/pull/364)) ([PR #382](https://github.com/shinzonetwork/shinzo-host-client/pull/382))
+- {{ tag(name="Generator") }}{{ tag(name="Host") }} Registration no longer suggests addresses that are unreachable by other network participants. ([PR #366](https://github.com/shinzonetwork/shinzo-generator-client/pull/366)) ([PR #367](https://github.com/shinzonetwork/shinzo-host-client/pull/367))
+- {{ tag(name="Host") }} Improved pruning behavior with cleaner shutdown handling and bounded pruning cycles. ([PR #357](https://github.com/shinzonetwork/shinzo-host-client/pull/357)) ([PR #360](https://github.com/shinzonetwork/shinzo-host-client/pull/360))
+- {{ tag(name="Host") }} Added a warning state to Host metrics for better operational visibility. ([PR #370](https://github.com/shinzonetwork/shinzo-host-client/pull/370))
+- {{ tag(name="Host") }} Fixed registration to preserve the forwarded Host port correctly. ([PR #383](https://github.com/shinzonetwork/shinzo-host-client/pull/383))
+
+**⚠️ Generator Upgrade Note**
+
+Generator operators upgrading to `v0.6.5.4-ethereum-mainnet` need to reset their DefraDB data.
+
+Back up your node identity key before removing the existing DefraDB directory. If the key is not preserved, you will need to register the Generator again.
+
+```bash
+# Back up the identity key
+cp shinzo-data/defradb/keys/node-identity-key ./path/to/new/location
+
+# Reset DefraDB
+rm -rf shinzo-data/defradb
+
+# Recreate the keys directory
+mkdir -p shinzo-data/defradb/keys
+
+# Restore the identity key
+cp ./path/to/new/location/node-identity-key shinzo-data/defradb/keys/
+```
+
+Once the existing identity key has been restored, you can start the upgraded Generator without re-registering.
+
+## Aug 06, 2026 {#08-06-2026}
+
+### 🐳 Upgrade
 
 #### Generator client
 
@@ -26,7 +75,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.3-ethereum-main
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.3-ethereum-mainnet
 ```
 
-### Improvements
+### 💡 Improvements
 
 - {{ tag(name="Generator") }} Improved block signing performance by signing batched blocks directly from collected CIDs instead of performing a read-back query. ([PR #308](https://github.com/shinzonetwork/shinzo-generator-client/pull/308))
 - {{ tag(name="Generator") }} Fixed a hardcoded Shinzo Hub URL used during testnet deployments. ([PR #313](https://github.com/shinzonetwork/shinzo-generator-client/pull/313))
@@ -37,7 +86,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.3-ethereum-mainnet
 
 ## July 16, 2026 {#07-16-2026}
 
-### Upgrade
+### 🐳 Upgrade
 
 #### Generator client
 
@@ -51,7 +100,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.2-ethereum-main
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.2-ethereum-mainnet
 ```
 
-### Improvements
+### 💡 Improvements
 
 - {{ tag(name="Generator") }} Blocks are now signed only after all required block data has been received. ([PR #293](https://github.com/shinzonetwork/shinzo-generator-client/pull/293))
 - {{ tag(name="Generator") }} Pruning now skips invalid or incomplete records instead of stopping the entire process. ([PR #287](https://github.com/shinzonetwork/shinzo-generator-client/pull/287))
@@ -66,7 +115,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.2-ethereum-mainnet
 
 ## July 08, 2026 {#07-08-2026}
 
-### Upgrade
+### 🐳 Upgrade
 
 #### Generator client
 
@@ -80,7 +129,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-lates
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
 ```
 
-### Highlights
+### ✨ Highlights
 
 - Shinzō Testnet is now live.
 - {{ tag(name="Generator") }} Generator Client is available for Shinzo Testnet deployments. Installation instructions: [Generator Installation Guide](https://docs.shinzo.network/run/run-a-generator/install/)

@@ -9,7 +9,7 @@ Running the client only requires access to an execution node. You do not need to
 
 ## Hardware recommendations
 
-The Generator client is a lightweight sidecar (the binary is approximately 50 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
+The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
 ## Using Docker
 
@@ -62,7 +62,7 @@ You do not need to be a validator, or to run a validator, just to install and ru
       -e DEFRADB_P2P_ENABLED=true \
       -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
       -e LOGGER_DEBUG=true \
-      -p 9181:9181 \
+      -p 127.0.0.1:9181:9181 \
       -p 9171:9171 \
       -p 8080:8080 \
       ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
@@ -127,12 +127,13 @@ You can also build the Generator client binary from source instead of using Dock
     DEFRADB_P2P_ENABLED=true
     DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171
 
+    SCHEMA_AUTH_MODE=none
     INDEXER_START_HEIGHT=0
     LOGGER_DEBUG=true
     EOF
     ```
 
-    You [may not need to enter an API key](#do-you-need-an-api-key).
+    You [may not need to enter an API key](#do-you-need-an-api-key). The client fails to start without `SCHEMA_AUTH_MODE` set: the shipped `config.yaml` reads this variable from the environment. The value `none` matches the shipped Docker setup. See the [security page](../security/#schema-endpoint-auth) before exposing the schema endpoints.
 
 1. Build the binary.
 
@@ -148,6 +149,63 @@ You can also build the Generator client binary from source instead of using Dock
 
 {% admonition(type="info") %}
 The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups. Environment variables in `.env` override values in `config.yaml`.
+{% end %}
+
+### Run as a systemd service
+
+`make start` runs the Generator client in your terminal session, so the process stops when you close it. A systemd service keeps the client running after you log out, restarts it after failures, and can start it when the machine boots.
+
+1. Create the service unit file. Set `User` to the user that runs the client, and `WorkingDirectory` to the directory where you cloned the Generator client repository.
+
+    ```shell
+    sudo tee /etc/systemd/system/shinzo-generator.service << EOF
+    [Unit]
+    Description=Shinzo Generator Client
+    Wants=network-online.target
+    After=network-online.target
+
+    [Service]
+    Type=simple
+    User=<service-user>
+    WorkingDirectory=<generator-install-directory>
+    ExecStart=make start
+    Restart=on-failure
+    RestartSec=3
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    ```
+
+    `WorkingDirectory` must be the repository root: the client loads its `.env` file and `config/config.yaml` relative to it.
+
+1. Reload systemd and start the service.
+
+    ```shell
+    sudo systemctl daemon-reload
+    sudo systemctl start shinzo-generator
+    ```
+
+1. Check that the service is running.
+
+    ```shell
+    systemctl status shinzo-generator
+    ```
+
+    Follow the logs with:
+
+    ```shell
+    sudo journalctl -u shinzo-generator -f
+    ```
+
+1. To start the Generator client automatically when the machine boots, enable the service.
+
+    ```shell
+    sudo systemctl enable shinzo-generator
+    ```
+
+{% admonition(type="info") %}
+Run the service as a dedicated user rather than root. The service user needs write access to the install directory: the Generator client writes its database to `.defra/` and its logs to `logs/`. If you created the user after building, give it ownership with `sudo chown -R <service-user>:<service-user> <generator-install-directory>`.
 {% end %}
 
 ### Registration
@@ -174,13 +232,13 @@ Set `GETH_API_KEY_TYPE` to the header name your provider expects.
 
 ## Exposed ports
 
-The following ports must be exposed and available on the machine.
+The following ports must be available on the machine. Not all of them should be published to the network. See [Security](../security/) for the full exposure rules.
 
-| Port | Service |
-| --- | --- |
-| `8080` | Health endpoint (`/health`), metrics (`/metrics`), and registration (`/registration`). |
-| `9171` | DefraDB P2P. |
-| `9181` | DefraDB GraphQL API. |
+| Port | Service | Publish publicly? |
+| --- | --- | --- |
+| `8080` | Health (`/health`), metrics (`/metrics`), registration (`/registration`). | No. Keep private, or put behind a reverse-proxy allowlist in production. |
+| `9171` | DefraDB P2P. | Yes. This is how Hosts receive data. |
+| `9181` | DefraDB GraphQL API. | No. Localhost only. Raw, unauthenticated read/write access to the local database. |
 
 ## Troubleshooting
 

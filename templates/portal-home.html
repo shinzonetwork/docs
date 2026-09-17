@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% import "macros/sidebar.html" as sidebar %}
+
+{# Landing ("portal") template for the Home page, mirroring templates/portal.html
+    (Build apps) and templates/portal-run.html (Run infrastructure): featured path
+    cards and grouped link lists, with the standard docs sidebar. Page-specific
+    copy lives in the page's frontmatter (title, description) and markdown body
+    (rendered as the intro strip); the layout below is shared. #}
+
+{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
+
+{% block body %}
+<main class="main-wrapper">
+  <div class="docs-layout">
+    <aside class="theme-doc-sidebar-container">
+      {{ sidebar::render(current=page.path) }}
+    </aside>
+
+    <div class="docs-content docs-content--portal">
+      <article class="docItemCol markdown">
+
+        <h1 class="doc-title">{{ page.title }}</h1>
+
+        {# Intro strip: the page's markdown body, left-aligned. #}
+        {% if page.content %}
+        <div class="portal-intro portal-intro--landing">
+          {{ page.content | safe }}
+        </div>
+        {% endif %}
+
+        {# The three doc funnels #}
+        <section class="portal-section" aria-label="Choose your path">
+          <h2 class="portal-section__heading">Choose your path</h2>
+          <div class="portal-tracks portal-tracks--3col">
+            <a class="portal-card portal-card--featured" href="/understand/what-is-shinzo/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <h3 class="portal-card__title">Understand Shinzo</h3>
+              <p class="portal-card__desc">New here? Learn what the Shinzo network is, why it exists, and how it works end to end.</p>
+            </a>
+
+            <a class="portal-card portal-card--featured" href="/build/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </div>
+              <h3 class="portal-card__title">Build apps</h3>
+              <p class="portal-card__desc">Query live Views with signed GraphQL requests, create your own Views, or build a local-first app with verifiable data reads.</p>
+            </a>
+
+            <a class="portal-card portal-card--featured" href="/run/">
+              <div class="portal-card__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              </div>
+              <h3 class="portal-card__title">Run infrastructure</h3>
+              <p class="portal-card__desc">Run a Generator client beside a blockchain node you already operate, serve Views with a Host client, or try both on one machine.</p>
+            </a>
+          </div>
+        </section>
+
+        {# Key pages per funnel #}
+        <section class="portal-section" aria-label="Explore the docs">
+          <h2 class="portal-section__heading">Explore the docs</h2>
+          <div class="portal-linkgrid">
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Understand</h3>
+              <ul class="portal-list">
+                <li><a href="/understand/what-is-shinzo/">What is Shinzo?</a></li>
+                <li><a href="/understand/how-it-works/">How it works</a></li>
+                <li><a href="/understand/core-concepts/views/">Views</a></li>
+                <li><a href="/understand/core-concepts/attestation/">Attestations</a></li>
+                <li><a href="/understand/core-concepts/privacy/">Privacy</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Build apps</h3>
+              <ul class="portal-list">
+                <li><a href="/build/concepts/the-app-model/">The Shinzo app model</a></li>
+                <li><a href="/build/tutorials/query-your-first-view/">Query your first View</a></li>
+                <li><a href="/build/tutorials/create-your-first-view/">Create your first View</a></li>
+                <li><a href="/build/tutorials/build-a-local-first-app/">Build a local-first app</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Run infrastructure</h3>
+              <ul class="portal-list">
+                <li><a href="/run/get-started/">Get started</a></li>
+                <li><a href="/run/run-a-generator/install/">Run a Generator</a></li>
+                <li><a href="/run/run-a-host/install/">Run a Host</a></li>
+                <li><a href="/run/operations/troubleshooting/">Troubleshooting</a></li>
+              </ul>
+            </div>
+            <div class="portal-linkgroup">
+              <h3 class="portal-linkgroup__heading">Reference</h3>
+              <ul class="portal-list">
+                <li><a href="/reference/architecture/">Architecture</a></li>
+                <li><a href="/reference/tools/">Tools</a></li>
+                <li><a href="/reference/glossary/">Glossary</a></li>
+                <li><a href="/reference/changelog/">Changelog</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {# Community #}
+        <section class="portal-section" aria-label="Community">
+          <h2 class="portal-section__heading">Community</h2>
+          <ul class="portal-list">
+            <li><a href="/understand/get-help/">Get help</a></li>
+            <li><a href="/understand/join-the-community/">Join the community</a></li>
+            <li><a href="/understand/contributing/">Contributing</a></li>
+            <li><a href="{{ config.extra.github_url }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </section>
+
+      </article>
+    </div>
+  </div>
+</main>
+{% endblock body %}
+
+{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
