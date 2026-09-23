@@ -233,7 +233,7 @@ Bootstrap peers are configured in the DefraDB config. Peers are also discovered 
 
 ## Resource requirements
 
-See the [hardware requirements page](/run/run-a-generator/hardware-requirements/) for current minimum and recommended specs.
+See the [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements) for current minimum and recommended specs.
 
 ## Security
 

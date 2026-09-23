@@ -36,7 +36,7 @@ See the [Generator client reference](/reference/components/generator-client/#p2p
 
 The Generator client is a lightweight sidecar: a ~50 MB binary with its own CPU and memory budget. It is CPU-light but storage-I/O-sensitive, because every block is fetched, structured, signed, and written to its local DefraDB instance before being published. The risk to a co-located validator is resource contention, not protocol interference. The Generator client does not touch consensus (see [Key separation](#key-separation)), so isolation is an operational concern, not a safety one.
 
-Size the machine for the execution node first, then add the Generator overhead on top. The execution node's footprint dwarfs the Generator client's: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. The Generator client with pruning enabled keeps its own data bounded at roughly 50 to 100 GB; provision 300 to 500 GB of disk to leave headroom for growth, snapshot serving, and P2P replication. See [hardware requirements](../hardware-requirements/) for the full table.
+Size the machine for the execution node first, then add the Generator overhead on top. The execution node's footprint dwarfs the Generator client's: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. The Generator client with pruning enabled keeps its own data bounded at roughly 50 to 100 GB; provision 300 to 500 GB of disk to leave headroom for growth, snapshot serving, and P2P replication. See [hardware requirements](../prerequisites#hardware-requirements) for the full table.
 
 To keep the two workloads from competing on a shared machine:
 

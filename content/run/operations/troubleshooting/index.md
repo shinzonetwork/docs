@@ -16,7 +16,7 @@ No. The Generator client is a sidecar that connects to an existing execution nod
 
 ### What hardware is recommended for deploying Shinzo?
 
-The Generator client is lightweight on CPU, but storage performance and host stability matter for reliable operation. See the [hardware requirements page](/run/run-a-generator/hardware-requirements/) for the full table.
+The Generator client is lightweight on CPU, but storage performance and host stability matter for reliable operation. See the [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements) for the full table.
 
 ### Which RPC methods does the Generator client call on the upstream node?
 
@@ -61,7 +61,7 @@ The Generator client reads all blockchain data, including blocks, transactions, 
 
 ### How much space do I need?
 
-With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet; we recommend provisioning 300 to 500 GB to leave headroom (see [hardware requirements](/run/run-a-generator/hardware-requirements/)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history. Storage figures differ by chain. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
+With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet; we recommend provisioning 300 to 500 GB to leave headroom (see [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history. Storage figures differ by chain. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
 
 ### How long does it take to sync?
 
