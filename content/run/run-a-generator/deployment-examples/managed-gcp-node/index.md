@@ -87,7 +87,7 @@ services:
 - `GETH_API_KEY_TYPE=x-goog-api-key`: The header name GCP BNE expects for authentication. See [geth config](/run/run-a-generator/config-reference#geth).
 - `INDEXER_START_HEIGHT=0`: Start verifiable indexing from the chain tip. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `DEFRADB_KEYRING_SECRET=pingpong`: Encryption secret for the DefraDB keyring. Change this to your own secret and keep it consistent across restarts. See [defradb config](/run/run-a-generator/config-reference#defradb).
-- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit. Set below the container `mem_limit` to leave headroom for non-Go memory. See [env vars](/run/run-a-generator/config-reference#environment-variables).
+- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
 - `SNAPSHOT_ENABLED=false`: Disable snapshots. Enable if you want the Generator to produce snapshot files for Host bootstrap. See [snapshot config](/run/run-a-generator/config-reference#snapshot).
 - `SCHEMA_AUTH_MODE=none`: Disable authentication on the `/api/v1/schema` endpoints. The code default is `token`, which requires keys via `SCHEMA_API_KEYS` or every schema request returns 503. The repo's `docker-compose-prod.yml` sets `none`. See [indexer config](/run/run-a-generator/config-reference#indexer).
 
@@ -130,7 +130,7 @@ Once the Generator is running, register it with the Shinzo Network. See [Registr
 - The image tag `ghcr.io/shinzonetwork/shinzo-generator-client:standard` in this compose matches `docker-compose-prod.yml`. The repo's `indexer-prod-setup.sh` pins a versioned tag (`ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.1-ethereum-mainnet`), and the [install page](/run/run-a-generator/install/) uses `ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest`. Docker pull/run tag strategy is being consolidated in issues #326 and #327; align with whatever those land on rather than mixing tags across deployments.
 - `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `docker-compose-prod.yml` but are not read by the Generator client, so they are omitted here. `SCHEMA_AUTH_MODE=none` is kept because the Generator client does read it. Log level is controlled by `LOGGER_DEBUG`. See the [env vars table](/run/run-a-generator/config-reference#environment-variables) for details.
 - The `GETH_WS_URL` in this compose file uses `wss://` (secure WebSocket) because GCP BNE requires TLS on all connections. If you switch to a non-TLS WebSocket provider, use `ws://` instead.
-- `GOMEMLIMIT` is not a Generator client config var. It is a Go runtime soft memory limit, honored by the Go runtime itself. Set it below the container memory limit to control garbage collection under pressure.
+- `GOMEMLIMIT` is not a Generator client config var. It is a Go runtime soft memory limit, set below the container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
 
 ## Need help
 

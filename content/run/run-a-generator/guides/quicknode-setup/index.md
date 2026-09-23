@@ -236,7 +236,7 @@ chown -R 1001:1001 /root/shinzo-data
 | `DEFRADB_KEYRING_SECRET` | Encryption secret for the embedded DefraDB keyring. Keep it stable across restarts. |
 | `DEFRADB_PLAYGROUND=true` | Enables GraphQL introspection on the API. |
 | `SCHEMA_AUTH_MODE=none` | Disables token auth on `/api/v1/schema` (fine for a single-operator node). |
-| `GOMEMLIMIT=5GiB` | Go runtime soft memory limit; keep below `mem_limit`. Scale both up on bigger hosts. |
+| `GOMEMLIMIT=5GiB` | Go runtime soft memory limit, set below the 6g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit). |
 
 {% admonition(type="info") %}
 See the [Generator client config reference](../../../run-a-generator/config-reference/) for a detailed list of available configuration options.
@@ -365,7 +365,7 @@ Running `rm -rf` is irreversible. Data deleted this way cannot be recovered.
 - **`DEFRADB_KEYRING_SECRET` must be stable.** If it changes between restarts, DefraDB can't load its existing identity and the container will fail to start with "Failed to load existing DefraDB identity." Restore the original value. Generate it once with `openssl rand -hex 32` and treat it like a password.
 - **Data dir ownership.** The container runs as UID `1001`, but the bind-mounted data dir is often root-owned on first create. If you see "Permission denied on `.defra/keys`", fix it with `chown -R 1001:1001 /root/shinzo-data/defradb`.
 - **`INDEXER_START_HEIGHT=0` means "start near tip," not "start at genesis."** The Generator auto-detects chain tip and begins ~100 blocks back (configurable via `indexer.start_buffer`), then catches up. If you actually want a deep historical backfill, set an explicit block number, and expect it to take a long time and need a lot more disk.
-- **Memory limits.** The repo's `docker-compose-prod.yml` targets a 16 GB host (`mem_limit: 16g`, `GOMEMLIMIT=14GiB`). On an ~8 GB VM, scale both down (this guide uses `6g` / `5GiB`). `GOMEMLIMIT` is a Go runtime soft cap, not a Generator config var, so keep it below `mem_limit`.
+- **Memory limits.** The repo's `docker-compose-prod.yml` targets a 16 GB host (`mem_limit: 16g`, `GOMEMLIMIT=14GiB`). On an ~8 GB VM, scale both down (this guide uses `6g` / `5GiB`). See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
 - **Image tags are being consolidated.** The install docs use `:ethereum-mainnet-latest`, the prod compose uses `:standard`, and the prod setup script pins versioned tags like `:v0.6.5.1-ethereum-mainnet`. Pick one strategy and don't mix tags across deployments. This guide uses the mainnet-latest tag from the install docs.
 - **WebSocket fallback.** If `GETH_WS_URL` is wrong or unreachable, the Generator falls back to HTTP polling ("WebSocket unavailable, will use HTTP-only mode"). It still works, just slightly slower. The logs above show a successful WSS connection; if you don't see that line, check the URL and token.
 - **Port 9171 (P2P).** Only needed for Hosts to pull from your Generator. For this guide you can leave it firewalled; the Generator still reads and signs data locally. Open it (and ideally advertise a public IP) before registration.

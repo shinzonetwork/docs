@@ -18,6 +18,8 @@ The Host client has specific hardware requirements depending on the linked Gener
 | Storage | 300 GB | 500 GB |
 | Network | 100 Mbps | 1 Gbps |
 
+The 16 GB recommendation assumes a 16g container limit with `GOMEMLIMIT` at 14GiB. Scale the limits along with the RAM. See [memory limits](/run/run-a-host/config-reference#gomemlimit).
+
 ## Storage
 
 Host storage depends almost entirely on how many Views you serve and how aggressively you prune. A Host serving a few filtered Views with pruning enabled stays close to the minimum. A Host that accepts all primitive data and serves many materialized Views will trend toward the recommended figure and beyond. Pruning is enabled by default and retains roughly the last 2,000 blocks. Because the Host receives primitives from Generator clients, its storage growth tracks the throughput of the source chain. Chains with higher transaction volume produce more documents per block. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.

@@ -89,6 +89,10 @@ Eventually your Generator client will catch up with the validator node and start
 2026-05-11T11:05:09.338Z	INFO	Block 25071451 not available yet, waiting...
 ```
 
+{% admonition(type="info") %}
+The `docker run` example is a throwaway first run, so it sets no memory limits. For anything long-lived, set a container memory limit and `GOMEMLIMIT` below it. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+{% end %}
+
 ### Registration
 
 Once the Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.

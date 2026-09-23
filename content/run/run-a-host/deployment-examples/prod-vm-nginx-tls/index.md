@@ -323,7 +323,7 @@ http {
 
 - `user: "1001:1001"`: The container runs as UID 1001, GID 1001. Update this to match your user and group ID on the VM (the repo script notes this). The data directories must be owned by this UID and GID.
 - `DEFRA_URL=0.0.0.0:9181`: Overrides `defradb.url` so the DefraDB API binds to all interfaces instead of the loopback-only YAML default. Read in `config/config.go`. See [environment variables](/run/run-a-host/config-reference#environment-variables).
-- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [env vars](/run/run-a-host/config-reference#environment-variables).
+- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-host/config-reference#gomemlimit).
 - `ALLOWED_ORIGINS=https://*.shinzo.network`: CORS origins the Host accepts.
 - `~/data/defradb:/app/.defra`: Persistent volume for DefraDB data. See [defradb store](/run/run-a-host/config-reference#defradb-store).
 - `~/data/keys:/app/.defra/keys`: Persistent volume for DefraDB keyring keys. See [defradb](/run/run-a-host/config-reference#defradb).
