@@ -241,9 +241,9 @@ Smaller binaries mean less P2P overhead when Hosts download the View bundle.
 
 | Resource | Location |
 | --- | --- |
-| Rust lens SDK | [source-gh/lens/sdk-rust/](https://github.com/sourcenetwork/lens) |
-| AssemblyScript lens example | [source-gh/lens/tests/modules/as_wasm32_simple/](https://github.com/sourcenetwork/lens) |
-| WASM runtime implementations | [source-gh/lens/host-go/runtimes/](https://github.com/sourcenetwork/lens) |
+| Rust lens SDK | [`sourcenetwork/lens/sdk-rust/`](https://github.com/sourcenetwork/lens) |
+| AssemblyScript lens example | [`sourcenetwork/lens/tests/modules/as_wasm32_simple/`](https://github.com/sourcenetwork/lens) |
+| WASM runtime implementations | [`sourcenetwork/lens/host-go/runtimes/`](https://github.com/sourcenetwork/lens) |
 
 The Host client's LensVM runtime does not care what language produced the WASM. Any compliant WASM module will work.
 
