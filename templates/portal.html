@@ -10,7 +10,10 @@
 {% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
 {% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
 
+
 {% block body %}
+
+{% set cta_arrow = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' %}
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
@@ -39,6 +42,7 @@
               </div>
               <h3 class="portal-card__title">Query a View</h3>
               <p class="portal-card__desc">Send signed GraphQL queries to live Views on the testnet from a TypeScript app. No infrastructure required.</p>
+              <span class="portal-card__cta">Start the tutorial {{ cta_arrow | safe }}</span>
             </a>
 
             <a class="portal-card portal-card--featured" href="/build/tutorials/create-your-first-view/">
@@ -47,6 +51,7 @@
               </div>
               <h3 class="portal-card__title">Create a View</h3>
               <p class="portal-card__desc">Define the data your app needs, transform it with lenses, and deploy it with Viewkit or Shinzo Studio.</p>
+              <span class="portal-card__cta">Create a View {{ cta_arrow | safe }}</span>
             </a>
 
             <a class="portal-card portal-card--featured" href="/build/tutorials/build-a-local-first-app/">
@@ -55,6 +60,7 @@
               </div>
               <h3 class="portal-card__title">Build a local-first app</h3>
               <p class="portal-card__desc">Embed the app-sdk in a Go app, subscribe to Views, and query attested data pushed straight to your app.</p>
+              <span class="portal-card__cta">Build an app {{ cta_arrow | safe }}</span>
             </a>
           </div>
         </section>

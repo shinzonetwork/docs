@@ -1,2 +1,6 @@
-// Geist + Geist Mono - same Google Fonts import used by the Docusaurus site.
-@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap");
+// Typography: institutional register.
+//   - Inter: UI chrome, body prose, navigation.
+//   - Source Serif 4: page titles and display headlines (the "paper of record"
+//     cue that separates this from a hackathon template).
+//   - JetBrains Mono: code and literal data only.
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap");
