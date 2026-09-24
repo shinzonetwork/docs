@@ -227,7 +227,15 @@ The following env vars appear in some deployment artifacts but are not read by t
 | `LOG_LEVEL` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. Log level is controlled by `logger.development`. |
 | `LOG_SOURCE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
 | `LOG_STACKTRACE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
-| `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. This is a Go runtime soft memory limit, honored by the Go runtime itself. Set it to control garbage collection behavior under memory pressure. |
+| `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/run-a-host/config-reference#gomemlimit). |
+
+### GOMEMLIMIT
+
+Set `GOMEMLIMIT` below the container's memory limit. The production compose files ship `GOMEMLIMIT=14GiB` against `mem_limit: 16g`. Scale the two together on larger or smaller hosts.
+
+Without it, the garbage collector has no ceiling to work against. The Go runtime does not read the container's memory limit, so the heap grows until the kernel OOM-kills the container. The inbound message queue suffers too. DefraDB gives that queue a byte budget of one quarter of the runtime's memory limit, and falls back to a flat 1 GiB when no limit is set. On a 16 GB host, an unset `GOMEMLIMIT` means dropped P2P messages on a node with RAM to spare.
+
+Keep the container limit as well. `mem_limit` is a hard ceiling the kernel enforces over all container memory, while `GOMEMLIMIT` only covers what the Go runtime manages. The Host client holds memory the runtime does not account for, including the Wasmtime and Wasmer runtimes that execute lenses and the database files Badger memory-maps. The gap between the two limits is headroom for that memory.
 
 ## Need help
 

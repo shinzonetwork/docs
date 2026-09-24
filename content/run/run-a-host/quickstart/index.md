@@ -313,6 +313,10 @@ services:
     restart: unless-stopped
 ```
 
+{% admonition(type="info") %}
+This compose file pairs `mem_limit: 16g` with `GOMEMLIMIT=14GiB`. Scale both together if your VM has more or less RAM. See [memory limits](/run/run-a-host/config-reference#gomemlimit) for what each limit covers.
+{% end %}
+
 ### Start the Host client
 
 ```shell
