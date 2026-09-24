@@ -187,7 +187,7 @@ pages = [
 section = "run"
 label = "Run a Generator"
 pages = [
-  "run/run-a-generator/hardware-requirements/index.md",
+  "run/run-a-generator/prerequisites/index.md",
   "run/run-a-generator/install/index.md",
   "run/run-a-generator/register/index.md",
   "run/run-a-generator/config-reference/index.md",

@@ -72,7 +72,7 @@ There are several ways you can join the Shinzo network.
 
 ### Run a Generator client
 
-If you already run a blockchain node (a validator, a full node, or an archive node), adding a Generator client is cheap and easy. The Generator client itself is a sidecar, not a separate heavyweight service. It attaches to your existing execution client, reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/run/run-a-generator/hardware-requirements/) for sizing.
+If you already run a blockchain node (a validator, a full node, or an archive node), adding a Generator client is cheap and easy. The Generator client itself is a sidecar, not a separate heavyweight service. It attaches to your existing execution client, reads blocks as they come in, signs them, and gossips them out over P2P. See the [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements) for sizing.
 
 ### Run a Host
 
