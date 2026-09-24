@@ -5,11 +5,11 @@ aliases = ["/generator/install", "/generators/install"]
 
 This page covers installing a Shinzo Generator client with Docker or from source. To complete the Generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
 
-Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration prerequisites](../register#prerequisites) for details.
+Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration requirements](../prerequisites#registration-requirements) for details.
 
 ## Hardware recommendations
 
-The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
+The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See [Hardware requirements](../prerequisites#hardware-requirements) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
 ## Using Docker
 
@@ -120,6 +120,10 @@ The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership 
 {% end %}
 
 `DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator client can't load its existing identity and fails to start.
+
+{% admonition(type="info") %}
+The `docker run` example is a throwaway first run, so it sets no memory limits. For anything long-lived, set a container memory limit and `GOMEMLIMIT` below it. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+{% end %}
 
 ### Registration
 

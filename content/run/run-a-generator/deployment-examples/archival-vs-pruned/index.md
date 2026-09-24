@@ -208,6 +208,8 @@ services:
       start_period: 60s
 ```
 
+`GOMEMLIMIT=14GiB` is a Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+
 ## Gotchas
 
 - `pruner.prune_threshold` appears in the shipped `config.yaml` with value 1. It is deprecated and unused by the pruner. It has been omitted from both configs above. See [pruner config](/run/run-a-generator/config-reference#pruner).

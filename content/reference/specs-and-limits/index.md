@@ -43,7 +43,7 @@ There is no aggregate count field in the GraphQL API. [Query data](/build/how-to
 
 The Generator client reads EVM-compatible chains. The shipped config lists Ethereum, Arbitrum, Optimism, and Avalanche, and any other EVM-compatible chain can likely be read by setting `chain.name` and `chain.network` and pointing the Generator at a compatible RPC endpoint. See the [chain config](/run/run-a-generator/config-reference#chain) and [shinzo.network/chains](https://shinzo.network/chains) for the current list, and [Chain abstraction](/reference/components/generator-client#chain-abstraction-in-progress) for the multi-chain work in progress.
 
-Hardware requirements for operators are on their own pages: [Generator](/run/run-a-generator/hardware-requirements/) and [Host](/run/run-a-host/hardware-requirements/).
+Hardware requirements for operators are on their own pages: [Generator](/run/run-a-generator/prerequisites#hardware-requirements) and [Host](/run/run-a-host/hardware-requirements/).
 
 ## Generator-side pacing
 

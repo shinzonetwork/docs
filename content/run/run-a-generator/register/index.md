@@ -9,12 +9,11 @@ To participate in the Shinzo Network, you must register your node. Registration 
 
 Running the Generator client only requires an execution node (see [Install](../install)). To register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step that ties your generator's operator key to your validator identity. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
 
-Before you start, have the following ready:
+Before you start, have the items in [Registration requirements](../prerequisites#registration-requirements) ready: 
 
-1. **An active, bonded chain validator.** On the current testnet, the assertion is approved through an admin-key flow rather than an on-chain contract check. The planned outpost contract will verify validator status on-chain once deployed.
-1. **Your validator's consensus public key.** The key type, format, and lookup tooling are chain-specific. See [Consensus public key](/reference/components/outpost#consensus-public-key) for how to retrieve it on your chain. It is not your withdrawal address or an EVM address.
-1. **Your validator's withdrawal address.** This is included in the assertion to identify your validator. On the current testnet you only need the address itself (the assertion is admin-key-approved). The planned contract-based flow will require the withdrawal key to sign the assertion. See [Validator assertions](/reference/components/outpost#validator-assertions) for the full flow.
-1. **A browser wallet** to sign the on-chain registration transaction.
+- Your validator's consensus public key. 
+- Your validator's withdrawal address
+- A browser wallet to sign the on-chain registration transaction.
 
 ## Register your Generator
 

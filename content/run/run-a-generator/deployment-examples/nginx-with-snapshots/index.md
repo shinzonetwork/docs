@@ -206,7 +206,7 @@ http {
 - `SNAPSHOT_ENABLED=true`: The Generator produces signed snapshot files before pruning. The original `docker-compose-prod.yml` sets this to `false`. This scenario enables it so Hosts can bootstrap from snapshots. See [snapshot config](/run/run-a-generator/config-reference#snapshot).
 - `SCHEMA_AUTH_MODE=none`: Disables authentication on the `/api/v1/schema` endpoints that Nginx proxies. The code default is `token`, which requires keys via `SCHEMA_API_KEYS` or every schema request returns 503. The repo's `docker-compose-prod.yml` sets `none`. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `GETH_API_KEY_TYPE=x-goog-api-key`: Header name for GCP BNE authentication. See [geth config](/run/run-a-generator/config-reference#geth).
-- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [env vars](/run/run-a-generator/config-reference#environment-variables).
+- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
 - The Nginx `proxy_buffering off` and extended timeouts on `/snapshots/(.+)$` prevent Nginx from buffering large snapshot downloads. `client_max_body_size 0` removes the request body size limit.
 
 ## Start the Generator
