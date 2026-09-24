@@ -112,7 +112,7 @@ docker run -d \
   -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
   -v ~/data/defradb:/app/.defra/data \
   -v ~/data/keys:/app/.defra/keys \
-  -v ~/data/lens:/app/.lens \
+  -v ~/data/lens:/app/.defra/lens \
   -p 9181:9181 \
   -p 9182:9182 \
   -p 9171:9171 \
