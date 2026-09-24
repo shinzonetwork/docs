@@ -606,7 +606,6 @@ img.logo-dark {
     text-decoration: none;
   }
 
-  // Scroll-spy active state: highlights the section currently in view.
   &--active {
     color: var(--color-primary);
     border-left-color: var(--color-primary);
@@ -620,7 +619,6 @@ img.logo-dark {
     font-size: 2.5rem;
   }
 
-  // The page title (from front-matter) sits above the content; give it the same top spacing the first body heading used to have.
   .doc-title {
     margin-top: 0.5rem;
   }
@@ -631,7 +629,6 @@ img.logo-dark {
     border-collapse: collapse;
     margin: 1rem 0;
 
-    // 41rem ≈ the widest table on the site (a 6-column config reference: unwrapped header row + cell padding). Below that width the content column cannot fit such a table, so let it scroll within its own box instead of overlapping the ToC. Querying the content column (not the viewport) keeps full-width rendering at every window size where the table still fits; this also replaces the old ≤996px media query, which only applied where the ToC was already hidden.
     @container docs (max-width: 41rem) {
       display: block;
       width: 100%;
@@ -648,19 +645,13 @@ img.logo-dark {
     text-align: left;
   }
 
-  // A column is never narrower than its title: headers stay on one line and set the column's minimum width (fixes skinny "Default"/"Required" columns with titles wrapping mid-word).
   th {
-    white-space: nowrap;
+    white-space: normal;
   }
 
-  // Code tokens in cells (env var names, multiaddrs, URLs) contain no spaces, so they used to force their column — and with it the whole table — wider than the content column. `anywhere` (unlike `break-word`) makes the break opportunities count toward min-content sizing, so the auto table layout can shrink the column and wrap the token instead.
-  td {
-    overflow-wrap: anywhere;
-  }
-
-  // A code token that wraps across lines renders as connected border fragments; `clone` gives each wrapped line its own complete chip.
   th code,
   td code {
+    overflow-wrap: anywhere;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
   }
@@ -674,7 +665,6 @@ img.logo-dark {
     height: auto;
   }
 
-  // Lists get the same trailing margin as paragraphs (p has margin 0 0 1rem), so a list followed by more content is spaced consistently.
   ul,
   ol {
     padding-left: 1.5rem;
