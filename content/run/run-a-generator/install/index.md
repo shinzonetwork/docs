@@ -51,7 +51,7 @@ You do not need to be a validator, or to run a validator, just to install and ru
 1. Start the Generator client by filling in your details and running:
 
     ```shell
-    docker run --rm \
+    docker run \
       -e GETH_RPC_URL={{ YOUR RPC URL }}\
       -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
       -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
@@ -88,6 +88,38 @@ Eventually your Generator client will catch up with the validator node and start
 2026-05-11T11:05:09.338Z	DEBUG	HTTP request successful, status: 200 OK
 2026-05-11T11:05:09.338Z	INFO	Block 25071451 not available yet, waiting...
 ```
+
+### Running a persistent Generator
+
+The command above stores everything inside the container, so removing the container discards its database and node identity. That's fine for testing. For a long-running Generator client, persist the data directory on the host machine:
+
+```shell
+mkdir -p ~/shinzo-data/defradb
+sudo chown -R 1001:1001 ~/shinzo-data/defradb
+
+docker run -d \
+  --name shinzo-generator \
+  -e GETH_RPC_URL={{ YOUR RPC URL }}\
+  -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
+  -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
+  -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
+  -e INDEXER_START_HEIGHT=0 \
+  -e DEFRADB_KEYRING_SECRET={{ YOUR STRONG SECRET }} \
+  -e DEFRADB_P2P_ENABLED=true \
+  -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
+  -e LOGGER_DEBUG=true \
+  -v ~/shinzo-data/defradb:/app/.defra \
+  -p 127.0.0.1:9181:9181 \
+  -p 9171:9171 \
+  -p 8080:8080 \
+  ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
+```
+
+{% admonition(type="warning") %}
+The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Generator client can't write to the mount and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
+{% end %}
+
+`DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator client can't load its existing identity and fails to start.
 
 {% admonition(type="info") %}
 The `docker run` example is a throwaway first run, so it sets no memory limits. For anything long-lived, set a container memory limit and `GOMEMLIMIT` below it. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
@@ -248,17 +280,17 @@ The following ports must be available on the machine. Not all of them should be 
 
 ### Permission denied on `.defra/keys`
 
-The data directories are owned by root but the container runs as UID 1001. Stop the container, fix the ownership, then start again:
+The data directory is owned by root but the container runs as UID 1001. Stop the container, fix the ownership, then start again:
 
 ```shell
-docker-compose -f ~/docker-compose.yml stop
-chown -R 1001:1001 ~/data/defradb ~/data/lens
-docker-compose -f ~/docker-compose.yml start
+docker stop shinzo-generator
+sudo chown -R 1001:1001 ~/shinzo-data/defradb
+docker start shinzo-generator
 ```
 
 ### Failed to load existing DefraDB identity
 
-`DEFRADB_KEYRING_SECRET` has changed since the first run. Restore the original value in your compose file and restart.
+`DEFRADB_KEYRING_SECRET` has changed since the first run. Restore the original value in your `docker run` command and restart the container.
 
 ### WebSocket unavailable, will use HTTP-only mode
 
