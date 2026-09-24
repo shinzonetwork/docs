@@ -14,7 +14,7 @@ Because Views are architecture-neutral, this is not a one-way door. A View you d
 
 ## At a glance
 
-| | Direct signed query | Embedded local-first | Your own Host |
+| Scenario | Direct signed query | Embedded local-first | Your own Host |
 | --- | --- | --- | --- |
 | Latency profile | Network round trip per query | Local database read | Round trip to your own infrastructure |
 | Operational footprint | None; npm packages | An embedded library in your Go process, plus local storage | You run Generator and Host clients |
