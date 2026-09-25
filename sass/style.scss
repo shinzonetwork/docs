@@ -37,7 +37,7 @@
 
   // Typography
   --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-family-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-family-display: "Source Serif 4", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-family-monospace: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --heading-font-family: var(--font-family-base);
   --heading-font-weight: 600;
@@ -393,12 +393,13 @@ img.logo-dark {
 }
 
 .navbar__link {
+  position: relative;
   display: block;
   color: var(--foreground-muted);
   font-size: 0.9rem;
   font-weight: 500;
   padding: 0.45rem 0.8rem;
-  border-radius: var(--radius-sm);
+  // border-radius: var(--radius-sm);
 
   &:hover {
     color: var(--foreground);
@@ -408,9 +409,17 @@ img.logo-dark {
 
 .navbar__link--active {
   color: var(--foreground);
-  background: color-mix(in srgb, var(--foreground) 6%, transparent);
-  box-shadow: inset 0 -2px 0 0 var(--color-primary);
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 0.15rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-primary);
+  }
 }
 
 .header-github-link {
@@ -445,7 +454,7 @@ img.logo-dark {
   border: 1px solid transparent;
   cursor: pointer;
   color: var(--foreground-muted);
-  border-radius: var(--radius-sm);
+  // border-radius: var(--radius-sm);
   transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 
   &:hover {
@@ -541,7 +550,7 @@ img.logo-dark {
   line-height: 1.45;
   color: var(--menu-color);
   padding: 0.32rem 0.75rem;
-  border-radius: var(--radius-sm);
+  // border-radius: var(--radius-sm);
 
   &:hover {
     color: var(--foreground);
@@ -681,19 +690,16 @@ a.menu__link--category:hover {
   display: block;
   font-size: 0.8125rem;
   line-height: 1.45;
-  padding: 0.2rem 0 0.2rem 0.75rem;
-  margin-left: -0.75rem;
-  border-left: 2px solid var(--docs-menu-border);
+  padding: 0.2rem 0;
   color: var(--foreground-muted);
 
   &:hover {
     color: var(--foreground);
   }
 
-  // Scroll-spy active state: highlights the section currently in view.
+  // Scroll-spy active state: the current section turns red.
   &--active {
     color: var(--color-primary);
-    border-left-color: var(--color-primary);
     font-weight: 500;
   }
 }
@@ -716,6 +722,7 @@ a.menu__link--category:hover {
   .doc-title {
     margin: 0 0 1.25rem;
   }
+
 
   // Body links: red, with a light underline that deepens on hover. Card and
   // pagination anchors are chrome, not prose — they opt out below.
@@ -850,7 +857,7 @@ code {
 :not(pre) > code {
   background: var(--surface-sunken);
   border: 1px solid var(--szo-border);
-  border-radius: var(--radius-sm);
+  // border-radius: var(--radius-sm);
   padding: 0.08rem 0.35rem;
   color: var(--foreground);
 }
@@ -859,7 +866,7 @@ pre {
   white-space: pre-wrap;
   border: 1px solid var(--code-border);
   background: var(--code-background);
-  border-radius: var(--code-border-radius);
+  // border-radius: var(--code-border-radius);
   padding: var(--pre-padding);
   overflow-x: auto;
   margin: 1.25rem 0;
@@ -896,7 +903,7 @@ pre {
   color: var(--foreground-muted);
   background: var(--surface-raised);
   border: 1px solid var(--szo-border);
-  border-radius: var(--radius-sm);
+  // border-radius: var(--radius-sm);
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
@@ -1074,7 +1081,7 @@ pre {
   font-weight: 600;
   letter-spacing: 0.02em;
   padding: 0.18em 0.55em;
-  border-radius: 999px;
+  // border-radius: 999px;
   margin-right: 0.4rem;
   vertical-align: baseline;
 
@@ -1102,7 +1109,7 @@ pre {
 /* Admonitions (:::info / :::warning / :::note / :::tip) */
 .admonition {
   border: 1px solid var(--szo-border);
-  border-radius: var(--alert-border-radius);
+  // border-radius: var(--alert-border-radius);
   border-left-width: 3px;
   padding: 0.9rem 1.1rem 0.5rem;
   margin: 1.25rem 0;
@@ -1156,7 +1163,7 @@ pre {
   text-align: center;
   overflow-x: auto;
   border: 1px solid var(--szo-border);
-  border-radius: var(--radius-md);
+  // border-radius: var(--radius-md);
   background: var(--surface-raised);
 
   svg {
@@ -1240,7 +1247,7 @@ pre {
 .pagination-nav__link {
   flex: 1;
   border: 1px solid var(--szo-border);
-  border-radius: var(--radius-md);
+  // border-radius: var(--radius-md);
   padding: 0.85rem 1.1rem;
   color: var(--foreground);
   background: var(--surface-raised);
@@ -1280,7 +1287,7 @@ pre {
   font-size: 0.85rem;
   padding: 0.42rem 0.8rem;
   border: 1px solid var(--szo-border);
-  border-radius: var(--radius-md);
+  // border-radius: var(--radius-md);
   background: var(--surface-sunken);
   color: var(--foreground);
   width: 13rem;
@@ -1309,7 +1316,7 @@ pre {
   overflow-y: auto;
   background: var(--surface-raised);
   border: 1px solid var(--szo-border);
-  border-radius: var(--radius-md);
+  // border-radius: var(--radius-md);
   box-shadow: var(--shadow-elevated);
   z-index: 300;
   display: none;
@@ -1323,7 +1330,7 @@ pre {
 .search-result {
   display: block;
   padding: 0.55rem 0.7rem;
-  border-radius: var(--radius-sm);
+  // border-radius: var(--radius-sm);
   color: var(--foreground);
 
   &:hover {
@@ -1344,7 +1351,7 @@ pre {
     background: color-mix(in srgb, var(--color-primary) 18%, transparent);
     color: inherit;
     padding: 0 0.1rem;
-    border-radius: 0.15rem;
+    // border-radius: 0.15rem;
   }
 }
 
@@ -1735,7 +1742,6 @@ body.mobile-menu-open {
   flex-direction: column;
   padding: 1.5rem;
   border: 1px solid var(--card-border);
-  border-radius: var(--radius-lg);
   background: var(--card-background);
   color: inherit;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
@@ -1753,7 +1759,7 @@ body.mobile-menu-open {
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--radius-md);
+  // border-radius: var(--radius-md);
   background: var(--color-primary-tint);
   color: var(--color-primary);
   margin-bottom: 1rem;
@@ -1884,7 +1890,7 @@ body.mobile-menu-open {
   margin-left: 0.5rem;
   padding: 0.1em 0.55em;
   border: 1px solid var(--szo-border);
-  border-radius: 999px;
+  // border-radius: 999px;
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -1925,3 +1931,4 @@ body.mobile-menu-open {
     font-size: 0.8rem;
   }
 }
+
