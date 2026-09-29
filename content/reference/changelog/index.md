@@ -10,9 +10,60 @@ page_template = "changelog.html"
 
 Track what's new across the Shinzo developer platform: network releases, SDK changes, tooling updates and documentation improvements.
 
+## Sep 29, 2026 {#09-29-2026}
+
+### 🐳 Upgrade
+
+#### Generator client
+
+```shell
+docker pull ghcr.io/shinzonetwork/shinzo-generator-client:v0.7.0-ethereum-mainnet
+```
+
+#### Host client
+
+```shell
+docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.7.0-ethereum-mainnet
+```
+
+### 💡 Improvements
+
+- {{ tag(name="Generator") }} Generator now uses the new chain abstraction architecture, separating chain-specific logic and enabling support for additional chains. ([PR #348](https://github.com/shinzonetwork/shinzo-generator-client/pull/348))
+- {{ tag(name="Generator") }} LinkStamper errors now stop processing instead of allowing corrupted records to be indexed. ([PR #367](https://github.com/shinzonetwork/shinzo-generator-client/pull/367))
+- {{ tag(name="Generator") }} CID waits are now cancellable and document fields are read directly from DefraDB. ([PR #371](https://github.com/shinzonetwork/shinzo-generator-client/pull/371))
+- {{ tag(name="Generator") }} In-flight indexing and signing operations now complete before DefraDB shuts down. ([PR #390](https://github.com/shinzonetwork/shinzo-generator-client/pull/390)) ([PR #391](https://github.com/shinzonetwork/shinzo-generator-client/pull/391))
+- {{ tag(name="Generator") }} DefraDB’s libp2p protocol now enforces resource limits. ([PR #384](https://github.com/shinzonetwork/shinzo-generator-client/pull/384))
+- {{ tag(name="Generator") }} Generator version is now logged at startup, making the running version directly visible in logs. ([PR #383](https://github.com/shinzonetwork/shinzo-generator-client/pull/383))
+- {{ tag(name="Host") }} Attestation records now include an indexed block number for more efficient block-based operations. ([PR #386](https://github.com/shinzonetwork/shinzo-host-client/pull/386))
+- {{ tag(name="Host") }} Pruning now operates by block height, improving how historical data is identified and removed. ([PR #426](https://github.com/shinzonetwork/shinzo-host-client/pull/426))
+- {{ tag(name="Host") }} Added resource limits to the DefraDB libp2p protocol to improve resource management and network stability. ([PR #411](https://github.com/shinzonetwork/shinzo-host-client/pull/411))
+
+**⚠️ Generator Upgrade Note**
+
+Generator operators upgrading to `v0.7.0-ethereum-mainnet` need to reset their DefraDB data.
+
+Back up your node identity key before removing the existing DefraDB directory. If the key is not preserved, you will need to register the Generator again.
+
+```bash
+# Back up the identity key
+cp shinzo-data/defradb/keys/node-identity-key ./path/to/new/location
+
+# Reset DefraDB
+rm -rf shinzo-data/defradb
+
+# Recreate the keys directory
+mkdir -p shinzo-data/defradb/keys
+
+# Restore the identity key
+cp ./path/to/new/location/node-identity-key shinzo-data/defradb/keys/
+```
+
+Once the existing identity key has been restored, you can start the upgraded Generator without re-registering.
+
+
 ## Sep 16, 2026 {#09-16-2026}
 
-### Upgrade
+### 🐳 Upgrade
 
 #### Generator client
 
