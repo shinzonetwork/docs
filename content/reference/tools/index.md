@@ -15,6 +15,7 @@ A reference list of web interfaces and endpoints for the Shinzo network.
 
 - [Shinzo Studio](https://studio.shinzo.network/) (create, deploy, and query Views from the browser, no CLI required).
 - [Registration app](https://registration.shinzo.network/) (register a Host or Generator on ShinzoHub; optional for private or direct infrastructure).
+- [Status](https://status.shinzo.network/) (view general status of the network).
 
 ## RPC endpoints
 
