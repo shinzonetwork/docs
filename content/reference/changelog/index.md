@@ -56,10 +56,25 @@ mkdir -p shinzo-data/defradb/keys
 
 # Restore the identity key
 cp ./path/to/new/location/node-identity-key shinzo-data/defradb/keys/
+
+# Set the correct ownership to prevent identity and permission errors
+sudo chown -R 1001:1001 ~/shinzo-data/defradb ~/shinzo-data/lens
 ```
 
 Once the existing identity key has been restored, you can start the upgraded Generator without re-registering.
 
+**⚠️ Host Upgrade Note**
+
+```bash
+# Reset DefraDB
+rm -rf data/defradb
+
+# Recreate the required data directories
+sudo mkdir -p ~/data/defradb
+
+# Set the correct ownership to prevent permission errors
+sudo chown -R 1001:1001 ~/data/ ~/data/defradb ~/data/lens ~/data/keys
+```
 
 ## Sep 16, 2026 {#09-16-2026}
 
