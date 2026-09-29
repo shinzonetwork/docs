@@ -122,8 +122,6 @@ rm -rf data/defradb
 # Recreate the required data directories
 sudo mkdir -p ~/data/defradb
 
-# Restore the required key files
-cp ...
 
 # Set the correct ownership to prevent permission errors
 sudo chown -R 1001:1001 ~/data/ ~/data/defradb ~/data/lens ~/data/keys
