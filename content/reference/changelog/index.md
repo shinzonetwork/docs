@@ -120,7 +120,7 @@ Once the existing identity key has been restored, you can start the upgraded Gen
 rm -rf data/defradb
 
 # Recreate the required data directories
-sudo mkdir -p ~/data/defradb ~/data/lens ~/data/keys
+sudo mkdir -p ~/data/defradb
 
 # Restore the required key files
 cp ...
