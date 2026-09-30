@@ -58,7 +58,7 @@ Shinzo-specific host configuration: attestation processing, view management, doc
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
 | `minimum_attestations` | int | 1 | no | (none) | Loaded from YAML but not consumed in the host startup path. Shipped `config.yaml` sets 1. |
-| `hub_base_url` | string | empty | no | (none) | ShinzoHub CometBFT RPC URL. Used to construct the RPC, WebSocket, and LCD endpoints. Shipped `config.yaml` sets `testnet.shinzo.network:26657`. |
+| `hub_base_url` | string | empty | no | (none) | ShinzoHub hostname — no scheme, no port. Used to construct the RPC, WebSocket, and LCD endpoints (the host appends the ports itself). Shipped `config.yaml` sets `testnet.shinzo.network`. |
 | `start_height` | uint64 | 0 | no | `START_HEIGHT` | Block number to start from. 0 means auto-detect from chain tip. |
 | `cache_queue_size` | int | 50000 | no | (none) | Job queue size for document processing. Shipped `config.yaml` sets 50000. |
 | `batch_writer_count` | int | 8 | no | (none) | Number of batch writers for attestation processing. Shipped `config.yaml` sets 8. |
