@@ -1,0 +1,411 @@
+/* Step-through guided player (shortcode: view_player.html) */
+
+.vp {
+  margin: 1.5rem 0 2rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.07);
+}
+
+.vp__stage {
+  background: color-mix(in srgb, var(--foreground) 2.5%, var(--background));
+  padding: 10px 12px 0;
+}
+
+.vp__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- panel: caption + controls --- */
+
+.vp__panel {
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  padding: 16px 18px 12px;
+}
+
+.vp__captionbox {
+  min-height: 96px;
+}
+
+.vp__caption-title {
+  margin: 0 0 0.4rem;
+}
+
+.vp__caption-body p {
+  margin: 0;
+}
+
+.vp__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.vp__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.vp__btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--foreground) 7%, transparent);
+}
+
+.vp__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.vp__btn--play {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.vp__btn--play:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.vp__btn--play .vp-icon-pause {
+  display: none;
+}
+
+.vp--playing .vp__btn--play .vp-icon-play {
+  display: none;
+}
+
+.vp--playing .vp__btn--play .vp-icon-pause {
+  display: inline;
+}
+
+.vp__dots {
+  display: flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.vp__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--foreground) 22%, transparent);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.vp__dot.vp-on {
+  background: var(--color-primary);
+  transform: scale(1.25);
+}
+
+.vp__count {
+  margin-left: auto;
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
+.vp__progress {
+  height: 3px;
+  margin: 12px -18px -12px;
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.vp__progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--color-primary);
+  transition: width 0.4s ease;
+}
+
+/* --- SVG scene --- */
+
+.vp-route {
+  stroke: color-mix(in srgb, var(--foreground) 22%, transparent);
+  stroke-width: 2;
+}
+
+.vp-route--side {
+  stroke: color-mix(in srgb, var(--foreground) 14%, transparent);
+  stroke-dasharray: 4 5;
+  stroke-width: 1.5;
+}
+
+.vp-hint {
+  font-family: var(--font-family-monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  fill: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+.vp-station .vp-box,
+.vp-station .vp-box-lip {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-width: 1.5;
+  transition: stroke 0.25s ease;
+}
+
+.vp-station.vp-on .vp-box,
+.vp-station.vp-on .vp-box-lip {
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+}
+
+.vp-block {
+  fill: color-mix(in srgb, var(--foreground) 16%, transparent);
+  transition: fill 0.25s ease;
+}
+
+.vp-station.vp-on .vp-block {
+  fill: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+/* Gears spin while their station is the active step. */
+.vp-gear {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.vp-station.vp-on .vp-gear {
+  animation: vpSpin 3.5s linear infinite;
+}
+
+@keyframes vpSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vp-gate-arrow {
+  stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.25s ease;
+}
+
+.vp-station.vp-on .vp-gate-arrow {
+  stroke: var(--color-primary);
+}
+
+.vp-gate-raw {
+  font-family: var(--font-family-monospace);
+  font-size: 7px;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
+.vp-gate-lines {
+  stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.vp-dot-win {
+  fill: color-mix(in srgb, var(--foreground) 30%, transparent);
+}
+
+.vp-label {
+  font-family: var(--font-family-monospace);
+  font-size: 12.5px;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 72%, transparent);
+  transition: fill 0.25s ease;
+}
+
+.vp-label--small {
+  font-size: 11px;
+  text-anchor: start;
+  fill: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.vp-label--end {
+  text-anchor: end;
+}
+
+.vp-station.vp-on .vp-label {
+  fill: var(--foreground);
+}
+
+/* Registry card: visible once the View is registered (step 4). */
+.vp-card {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.vp--s4 #vp-registry,
+.vp--s5 #vp-registry,
+.vp--s6 #vp-registry {
+  opacity: 1;
+}
+
+.vp-card rect {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 20%, transparent);
+  stroke-width: 1;
+}
+
+.vp-card-title {
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  font-size: 12px;
+  fill: var(--foreground);
+}
+
+.vp-card-mono {
+  font-family: var(--font-family-monospace);
+  font-size: 11px;
+  fill: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+/* GraphQL bubble at the app: visible on the last step only */
+#vp-query {
+  transition: opacity 0.45s ease 0.3s;
+}
+
+.vp--s6 #vp-query {
+  opacity: 1;
+}
+
+/* --- packets --- */
+
+.vp-packet rect {
+  fill: var(--background);
+  stroke: var(--foreground);
+  stroke-width: 1.5;
+}
+
+/* Code glyph: the packet carries the View as a <> symbol, matching the
+   "describes the pipeline as code" caption. */
+.vp-packet .vp-code {
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.vp-packet-text {
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  text-anchor: middle;
+  fill: var(--foreground);
+}
+
+.vp-packet-text--doc {
+  font-size: 9px;
+}
+
+.vp-side-text {
+  font-family: var(--font-family-monospace);
+  font-size: 7px;
+  text-anchor: middle;
+  fill: var(--foreground);
+}
+
+.vp-view-rect {
+  stroke: var(--color-primary) !important;
+  fill: color-mix(in srgb, var(--color-primary) 7%, var(--background)) !important;
+}
+
+.vp-seal-dot {
+  fill: var(--color-primary);
+}
+
+.vp-seal-text {
+  font-family: var(--font-family-monospace);
+  font-size: 7px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--background);
+}
+
+/* Main packet positions per step. Hidden until the developer writes the
+   View (step 2), then rides the route to the app. */
+.vp-packet--main {
+  transform: translate(80px, 210px);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 0.4s ease;
+}
+
+.vp--s2 .vp-packet--main,
+.vp--s3 .vp-packet--main,
+.vp--s4 .vp-packet--main,
+.vp--s5 .vp-packet--main,
+.vp--s6 .vp-packet--main {
+  opacity: 1;
+}
+
+.vp--s3 .vp-packet--main { transform: translate(255px, 210px); }
+.vp--s4 .vp-packet--main { transform: translate(450px, 210px); }
+.vp--s5 .vp-packet--main { transform: translate(598px, 210px); }
+.vp--s6 .vp-packet--main { transform: translate(690px, 210px); }
+
+/* Version seal: hidden until Viewkit versions and signs the bundle (step 3) */
+.vp-seal {
+  transform: translate(18px, -14px) scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s;
+}
+
+.vp--s3 .vp-seal,
+.vp--s4 .vp-seal,
+.vp--s5 .vp-seal,
+.vp--s6 .vp-seal {
+  transform: translate(18px, -14px) scale(1);
+}
+
+/* Bundle <-> view document cross-fade while the Host runs it (step 5) */
+#vp-packet-bundle,
+#vp-packet-doc {
+  transition: opacity 0.3s ease;
+}
+
+#vp-packet-doc {
+  opacity: 0;
+}
+
+.vp--s5 #vp-packet-bundle,
+.vp--s6 #vp-packet-bundle {
+  opacity: 0;
+  transition-delay: 0.4s;
+}
+
+.vp--s5 #vp-packet-doc,
+.vp--s6 #vp-packet-doc {
+  opacity: 1;
+  transition-delay: 0.4s;
+}
+
+[data-theme="dark"] .vp {
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.5);
+}
+
+/* Reduced motion: state changes are instant, autoplay still works. */
+@media (prefers-reduced-motion: reduce) {
+  .vp *,
+  .vp *::before,
+  .vp *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation: none !important;
+  }
+}
