@@ -1,0 +1,42 @@
+{# Generic step-through guided player. Usage:
+     {% player(scene="views") %}
+     <div class="player__caption" data-title="...">...</div>
+     {% end %}
+   Scenes live in templates/player-scenes/<scene>.html (SVG + inline <style>
+   for per-step state). Register a new scene with one more elif below.
+   Assets: /css/player.css and /js/player.js. The scene is fully visible
+   without JS; the script wires up state and playback. #}
+<link rel="stylesheet" href="/css/player.css" />
+<div class="player player--s1" data-player>
+  <div class="player__stage">
+    {% if scene == "journey" %}{% include "player-scenes/journey.html" %}
+    {% elif scene == "pools" %}{% include "player-scenes/pools.html" %}
+    {% elif scene == "views" %}{% include "player-scenes/views.html" %}
+    {% else %}{{ throw(message="player: unknown scene `" ~ scene ~ "`") }}{% endif %}
+  </div>
+
+  <div class="player__panel">
+    <div class="player__captionbox" aria-live="polite">
+      <h3 class="player__caption-title js-title"></h3>
+      <div class="player__caption-body js-body"></div>
+    </div>
+    <div class="player__controls">
+      <button type="button" class="player__btn js-prev" aria-label="Previous step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 10 3 L 5 8 L 10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="player__btn player__btn--play js-play" aria-label="Play">
+        <svg class="player-icon-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 4 2.5 L 13 8 L 4 13.5 Z" fill="currentColor"/></svg>
+        <svg class="player-icon-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/><rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="player__btn js-next" aria-label="Next step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 6 3 L 11 8 L 6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="player__dots js-dots" role="tablist" aria-label="Steps"></div>
+      <span class="player__count js-count"></span>
+    </div>
+    <div class="player__progress"><div class="player__progress-bar js-progress"></div></div>
+  </div>
+
+  {{ body | safe }}
+</div>
+<script src="/js/player.js" defer></script>
