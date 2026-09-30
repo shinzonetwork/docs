@@ -1,0 +1,160 @@
+{# Step-through guided player: SVG scene + caption + transport controls.
+   Assets: /css/view-player.css and /js/view-player.js.
+   Step captions live in the shortcode body (hidden source divs) so they
+   stay editable in the markdown page. The scene is fully visible without
+   JS; the script wires up state and playback. #}
+<link rel="stylesheet" href="/css/view-player.css" />
+<div class="vp vp--s1" id="vp">
+  <div class="vp__stage">
+    <svg class="vp__svg" viewBox="0 0 760 430" role="img"
+      aria-label="Diagram of a View's journey: a developer writes a View with Viewkit, which packages it into a signed, versioned bundle; ShinzoHub validates and registers it in the View registry; a Host runs the View's query, lenses, and SDL over primitive data from Generator clients; and the resulting view documents flow to an application that queries them locally.">
+      <defs>
+        <g id="vp-gear-def">
+          <circle r="9" style="fill: var(--color-primary);" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(45)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(90)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(135)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(180)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(225)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(270)" />
+          <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(315)" />
+          <circle r="3" style="fill: var(--background);" />
+        </g>
+      </defs>
+
+      <!-- routes -->
+      <path class="vp-route" d="M 80 210 H 690" fill="none" />
+      <path id="vp-side-path-1" class="vp-route vp-route--side" d="M 273 70 C 300 75, 420 135, 507 178" fill="none" />
+      <path id="vp-side-path-2" class="vp-route vp-route--side" d="M 273 350 C 300 345, 420 285, 507 242" fill="none" />
+
+      <text class="vp-hint" x="350" y="120">primitives</text>
+
+      <!-- Developer -->
+      <g class="vp-station" id="vp-st-dev" transform="translate(80 210)">
+        <circle class="vp-block" cx="0" cy="-10" r="9" />
+        <path class="vp-block" d="M -15 16 C -15 2, 15 2, 15 16 Z" />
+        <text class="vp-label" y="52">Developer</text>
+      </g>
+
+      <!-- View bundle -->
+      <g class="vp-station" id="vp-st-bundle" transform="translate(255 210)">
+        <rect class="vp-box" x="-29" y="-29" width="58" height="58" rx="10" />
+        <rect class="vp-block" x="-17" y="-19" width="34" height="8" rx="2" />
+        <rect class="vp-block" x="-17" y="-5" width="24" height="8" rx="2" />
+        <rect class="vp-block" x="-17" y="9" width="29" height="8" rx="2" />
+        <text class="vp-label" y="52">View bundle</text>
+      </g>
+
+      <!-- Generator clients feeding the Host with primitives -->
+      <g class="vp-station vp-station--small" id="vp-st-gen2" transform="translate(255 70)">
+        <circle class="vp-box" r="18" />
+        <g transform="scale(0.62)"><use href="#vp-gear-def" class="vp-gear" /></g>
+        <text class="vp-label vp-label--small vp-label--end" x="-28" y="4">Generator client</text>
+      </g>
+      <g class="vp-station vp-station--small" id="vp-st-gen3" transform="translate(255 350)">
+        <circle class="vp-box" r="18" />
+        <g transform="scale(0.62)"><use href="#vp-gear-def" class="vp-gear" /></g>
+        <text class="vp-label vp-label--small vp-label--end" x="-28" y="4">Generator client</text>
+      </g>
+
+      <!-- ShinzoHub -->
+      <g class="vp-station" id="vp-st-hub" transform="translate(450 210)">
+        <rect class="vp-box" x="-29" y="-29" width="58" height="58" rx="10" />
+        <rect class="vp-block" x="-17" y="-17" width="34" height="6" rx="2" />
+        <rect class="vp-block" x="-17" y="-3" width="34" height="6" rx="2" />
+        <rect class="vp-block" x="-17" y="11" width="34" height="6" rx="2" />
+        <text class="vp-label" y="52">ShinzoHub</text>
+      </g>
+
+      <!-- Host: stores primitives, runs the View's query -> lens -> SDL pipeline -->
+      <g class="vp-station" id="vp-st-host" transform="translate(565 210)">
+        <path class="vp-box" d="M -58 -18 v 36 a 26 8 0 0 0 52 0 v -36 a 26 8 0 0 0 -52 0" />
+        <ellipse class="vp-box-lip" cx="-32" cy="-18" rx="26" ry="8" />
+        <g transform="translate(33 0)">
+          <rect class="vp-box" x="-32" y="-14" width="18" height="24" rx="2" />
+          <text class="vp-gate-raw" x="-23" y="3">{ }</text>
+          <path class="vp-gate-arrow" d="M -9 0 H 9 M 4 -5 L 9 0 L 4 5" fill="none" />
+          <rect class="vp-box" x="14" y="-14" width="18" height="24" rx="2" />
+          <path class="vp-gate-lines" d="M 17 -6 H 29 M 17 0 H 29 M 17 6 H 24" fill="none" />
+        </g>
+        <text class="vp-label" y="52">Host</text>
+      </g>
+
+      <!-- App -->
+      <g class="vp-station" id="vp-st-app" transform="translate(690 210)">
+        <rect class="vp-box" x="-30" y="-24" width="60" height="48" rx="8" />
+        <circle class="vp-dot-win" cx="-19" cy="-13" r="2.5" />
+        <circle class="vp-dot-win" cx="-11" cy="-13" r="2.5" />
+        <circle class="vp-dot-win" cx="-3" cy="-13" r="2.5" />
+        <text class="vp-label" y="48">Your app</text>
+      </g>
+
+      <!-- View registry card -->
+      <g class="vp-card" id="vp-registry" transform="translate(450 68)">
+        <rect x="-100" y="-28" width="200" height="56" rx="10" />
+        <text class="vp-card-title" x="-88" y="-8">View registry</text>
+        <text class="vp-card-mono" x="-88" y="16">v1 · registered ✓</text>
+      </g>
+
+      <!-- GraphQL bubble at the app -->
+      <g class="vp-card" id="vp-query" transform="translate(660 84)">
+        <rect x="-90" y="-32" width="180" height="58" rx="10" />
+        <text class="vp-card-title" x="-78" y="-10">GraphQL · TokenTransfer</text>
+        <text class="vp-card-mono" x="-78" y="12">your local DefraDB</text>
+      </g>
+
+      <!-- Travelling primitive packets (sides are positioned by the script) -->
+      <g class="vp-packet" id="vp-side-1" opacity="0">
+        <rect x="-13" y="-8" width="26" height="16" rx="4" />
+        <text class="vp-side-text" y="2.5">{ }</text>
+      </g>
+      <g class="vp-packet" id="vp-side-2" opacity="0">
+        <rect x="-13" y="-8" width="26" height="16" rx="4" />
+        <text class="vp-side-text" y="2.5">{ }</text>
+      </g>
+
+      <!-- Main packet: View bundle cross-fading into a view document -->
+      <g class="vp-packet vp-packet--main" id="vp-packet">
+        <g id="vp-packet-bundle">
+          <rect x="-23" y="-15" width="46" height="30" rx="6" />
+          <path class="vp-code" d="M -5.5 -6 L -12 0 L -5.5 6" fill="none" />
+          <path class="vp-code" d="M 5.5 -6 L 12 0 L 5.5 6" fill="none" />
+        </g>
+        <g id="vp-packet-doc">
+          <rect class="vp-view-rect" x="-28" y="-15" width="56" height="30" rx="6" />
+          <text class="vp-packet-text vp-packet-text--doc" y="3.5">Transfer</text>
+        </g>
+        <g class="vp-seal" id="vp-seal" transform="translate(18 -14)">
+          <circle class="vp-seal-dot" r="9" />
+          <text class="vp-seal-text" y="2.5">v1</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="vp__panel">
+    <div class="vp__captionbox" aria-live="polite">
+      <h3 class="vp__caption-title" id="vp-title"></h3>
+      <div class="vp__caption-body" id="vp-body"></div>
+    </div>
+    <div class="vp__controls">
+      <button type="button" class="vp__btn" id="vp-prev" aria-label="Previous step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 10 3 L 5 8 L 10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="vp__btn vp__btn--play" id="vp-play" aria-label="Play">
+        <svg class="vp-icon-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 4 2.5 L 13 8 L 4 13.5 Z" fill="currentColor"/></svg>
+        <svg class="vp-icon-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/><rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="vp__btn" id="vp-next" aria-label="Next step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 6 3 L 11 8 L 6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="vp__dots" id="vp-dots" role="tablist" aria-label="Steps"></div>
+      <span class="vp__count" id="vp-count">1 / 6</span>
+    </div>
+    <div class="vp__progress"><div class="vp__progress-bar" id="vp-progress"></div></div>
+  </div>
+
+  <div class="vp__captions" hidden>{{ body | safe }}</div>
+</div>
+<script src="/js/view-player.js" defer></script>
