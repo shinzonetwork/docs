@@ -1,8 +1,5 @@
 <!--
-  This README covers local setup, Docker, and deployment only.
-  Do not add: architecture explanations, API reference, configuration 
-  deep-dives, or troubleshooting guides. Those belong in the Shinzo 
-  docs site. If you're tempted to add a section, link to the docs instead.
+  This README covers local setup, Docker, and site deployment only. DO NOT ADD: architecture explanations, API reference, configuration deep-dives, or troubleshooting guides. Those belong in the Shinzo docs site. If you're tempted to add a section, link to the docs instead.
 -->
 
 # Shinzo Docs
@@ -14,7 +11,7 @@ Markdown content and web code for the Shinzo developer docs site at [docs.shinzo
 
 ## Getting started
 
-1. Install [Zola](https://www.getzola.org/) 0.22.1 or later. Older versions silently ignore the site's syntax-highlighting configuration and build a site without code highlighting.
+1. Install [Zola](https://www.getzola.org/) 0.22.1 or later.
 1. Clone the repo and move inside:
 
     ```shell

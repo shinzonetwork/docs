@@ -1,0 +1,185 @@
+{# Scene for {% player(scene="views") %}: a View's journey — developer writes
+   it, Viewkit versions and signs the bundle, ShinzoHub registers it, a Host
+   runs the pipeline over primitives from Generator clients, and the app
+   queries the results locally. Per-step state lives in the inline <style>;
+   the primitive packets' motion is declared via data-*. #}
+<svg class="player__svg" viewBox="0 0 760 430" role="img"
+  aria-label="Diagram of a View's journey: a developer writes a View with Viewkit, which packages it into a signed, versioned bundle; ShinzoHub validates and registers it in the View registry; a Host runs the View's query, lenses, and SDL over primitive data from Generator clients; and the resulting view documents flow to an application that queries them locally.">
+  <defs>
+    <g id="v-gear-def">
+      <circle r="9" style="fill: var(--color-primary);" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(45)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(90)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(135)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(180)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(225)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(270)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(315)" />
+      <circle r="3" style="fill: var(--background);" />
+    </g>
+  </defs>
+
+  <!-- routes -->
+  <path class="route" d="M 80 210 H 690" fill="none" />
+  <path id="v-prim-path-1" class="route route--side" d="M 273 70 C 300 75, 420 135, 507 178" fill="none" />
+  <path id="v-prim-path-2" class="route route--side" d="M 273 350 C 300 345, 420 285, 507 242" fill="none" />
+
+  <text class="hint" x="381" y="120">primitives</text>
+
+  <!-- Developer -->
+  <g class="station" id="v-st-dev" data-steps="2" transform="translate(80 210)">
+    <circle class="block" cx="0" cy="-10" r="9" />
+    <path class="block" d="M -15 16 C -15 2, 15 2, 15 16 Z" />
+    <text class="label" y="52">Developer</text>
+  </g>
+
+  <!-- View bundle -->
+  <g class="station" id="v-st-bundle" data-steps="3" transform="translate(255 210)">
+    <rect class="box" x="-29" y="-29" width="58" height="58" rx="10" />
+    <rect class="block" x="-17" y="-19" width="34" height="8" rx="2" />
+    <rect class="block" x="-17" y="-5" width="24" height="8" rx="2" />
+    <rect class="block" x="-17" y="9" width="29" height="8" rx="2" />
+    <text class="label" y="52">View bundle</text>
+  </g>
+
+  <!-- Generator clients feeding the Host with primitives -->
+  <g class="station station--small" id="v-st-gen2" data-steps="1,5" transform="translate(255 70)">
+    <circle class="box" r="18" />
+    <g transform="scale(0.62)"><use href="#v-gear-def" class="gear" /></g>
+    <text class="label label--small label--end" x="-28" y="4">Generator client</text>
+  </g>
+  <g class="station station--small" id="v-st-gen3" data-steps="1,5" transform="translate(255 350)">
+    <circle class="box" r="18" />
+    <g transform="scale(0.62)"><use href="#v-gear-def" class="gear" /></g>
+    <text class="label label--small label--end" x="-28" y="4">Generator client</text>
+  </g>
+
+  <!-- ShinzoHub -->
+  <g class="station" id="v-st-hub" data-steps="4" transform="translate(450 210)">
+    <rect class="box" x="-29" y="-29" width="58" height="58" rx="10" />
+    <rect class="block" x="-17" y="-17" width="34" height="6" rx="2" />
+    <rect class="block" x="-17" y="-3" width="34" height="6" rx="2" />
+    <rect class="block" x="-17" y="11" width="34" height="6" rx="2" />
+    <text class="label" y="52">ShinzoHub</text>
+  </g>
+
+  <!-- Host: stores primitives, runs the View's query -> lens -> SDL pipeline -->
+  <g class="station" id="v-st-host" data-steps="5" transform="translate(565 210)">
+    <path class="box" d="M -58 -18 v 36 a 26 8 0 0 0 52 0 v -36 a 26 8 0 0 0 -52 0" />
+    <ellipse class="box-lip" cx="-32" cy="-18" rx="26" ry="8" />
+    <g transform="translate(33 0)">
+      <rect class="box" x="-32" y="-14" width="18" height="24" rx="2" />
+      <text class="gate-raw" x="-23" y="3">{ }</text>
+      <path class="gate-arrow" d="M -9 0 H 9 M 4 -5 L 9 0 L 4 5" fill="none" />
+      <rect class="box" x="14" y="-14" width="18" height="24" rx="2" />
+      <path class="gate-lines" d="M 17 -6 H 29 M 17 0 H 29 M 17 6 H 24" fill="none" />
+    </g>
+    <text class="label" y="52">Host</text>
+  </g>
+
+  <!-- App -->
+  <g class="station" id="v-st-app" data-steps="6" transform="translate(690 210)">
+    <rect class="box" x="-30" y="-24" width="60" height="48" rx="8" />
+    <circle class="dot-win" cx="-19" cy="-13" r="2.5" />
+    <circle class="dot-win" cx="-11" cy="-13" r="2.5" />
+    <circle class="dot-win" cx="-3" cy="-13" r="2.5" />
+    <text class="label" y="48">Your app</text>
+  </g>
+
+  <!-- View registry card -->
+  <g class="card" id="v-registry" transform="translate(450 68)">
+    <rect x="-100" y="-28" width="200" height="56" rx="10" />
+    <text class="card-title" x="-88" y="-8">View registry</text>
+    <text class="card-mono" x="-88" y="16">v1 · registered ✓</text>
+  </g>
+
+  <!-- GraphQL bubble at the app -->
+  <g class="card" id="v-query" transform="translate(660 84)">
+    <rect x="-90" y="-32" width="180" height="58" rx="10" />
+    <text class="card-title" x="-78" y="-10">GraphQL · TokenTransfer</text>
+    <text class="card-mono" x="-78" y="12">your local DefraDB</text>
+  </g>
+
+  <!-- Travelling primitive packets -->
+  <g class="packet" id="v-side-1" opacity="0"
+    data-fly="#v-prim-path-1" data-fly-steps="1,5" data-fly-delay="350">
+    <rect x="-13" y="-8" width="26" height="16" rx="4" />
+    <text class="side-text" y="2.5">{ }</text>
+  </g>
+  <g class="packet" id="v-side-2" opacity="0"
+    data-fly="#v-prim-path-2" data-fly-steps="1,5" data-fly-delay="1050">
+    <rect x="-13" y="-8" width="26" height="16" rx="4" />
+    <text class="side-text" y="2.5">{ }</text>
+  </g>
+
+  <!-- Main packet: View bundle cross-fading into a view document -->
+  <g class="packet packet--main" id="v-packet">
+    <g id="v-packet-bundle">
+      <rect x="-23" y="-15" width="46" height="30" rx="6" />
+      <path class="code" d="M -5.5 -6 L -12 0 L -5.5 6" fill="none" />
+      <path class="code" d="M 5.5 -6 L 12 0 L 5.5 6" fill="none" />
+    </g>
+    <g id="v-packet-doc">
+      <rect class="doc-rect" x="-28" y="-15" width="56" height="30" rx="6" />
+      <text class="packet-text packet-text--sm" y="3.5">Transfer</text>
+    </g>
+    <g class="seal" id="v-seal" transform="translate(18 -14)">
+      <circle class="seal-dot" r="9" />
+      <text class="seal-text" y="2.5">v1</text>
+    </g>
+  </g>
+</svg>
+
+<style>
+  /* Code glyph: the packet carries the View as a <> symbol, matching the
+     "describes the pipeline as code" caption. */
+  .code {
+    stroke: var(--color-primary);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .side-text {
+    font-family: var(--font-family-monospace);
+    font-size: 7px;
+    text-anchor: middle;
+    fill: var(--foreground);
+  }
+
+  /* Main packet: hidden until the developer writes the View (step 2) */
+  #v-packet { opacity: 0; transform: translate(80px, 210px); }
+  .player--s2 #v-packet,
+  .player--s3 #v-packet,
+  .player--s4 #v-packet,
+  .player--s5 #v-packet,
+  .player--s6 #v-packet { opacity: 1; }
+  .player--s3 #v-packet { transform: translate(255px, 210px); }
+  .player--s4 #v-packet { transform: translate(450px, 210px); }
+  .player--s5 #v-packet { transform: translate(598px, 210px); }
+  .player--s6 #v-packet { transform: translate(690px, 210px); }
+
+  /* Version seal: appears once Viewkit versions and signs (step 3) */
+  .player--s3 #v-seal,
+  .player--s4 #v-seal,
+  .player--s5 #v-seal,
+  .player--s6 #v-seal { transform: translate(18px, -14px) scale(1); }
+
+  /* Bundle <-> view document cross-fade while the Host runs it (step 5) */
+  #v-packet-bundle,
+  #v-packet-doc { transition: opacity 0.3s ease; }
+  #v-packet-doc { opacity: 0; }
+  .player--s5 #v-packet-bundle,
+  .player--s6 #v-packet-bundle { opacity: 0; transition-delay: 0.4s; }
+  .player--s5 #v-packet-doc,
+  .player--s6 #v-packet-doc { opacity: 1; transition-delay: 0.4s; }
+
+  /* Registry card once registered; GraphQL bubble on the last step */
+  .player--s4 #v-registry,
+  .player--s5 #v-registry,
+  .player--s6 #v-registry { opacity: 1; }
+
+  #v-query { transition: opacity 0.45s ease 0.3s; }
+  .player--s6 #v-query { opacity: 1; }
+</style>

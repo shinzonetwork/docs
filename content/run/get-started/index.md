@@ -88,6 +88,10 @@ docker run -d \
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
+{% admonition(type="note") %}
+This quickstart mounts no volumes, so the Generator client's database and node identity are discarded if you remove the container. That's fine here. For a setup that survives restarts, see [running a persistent Generator](/run/run-a-generator/install/#running-a-persistent-generator).
+{% end %}
+
 ## Read the Generator client's P2P address
 
 The Host client needs two things to connect:
@@ -152,7 +156,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: testnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network
   minimum_attestations: 1
   start_height: 0
 logger:
@@ -168,7 +172,7 @@ There are a few things in here worth calling out:
 - `defradb.url: localhost:9181` is the Host client's _internal_ DefraDB API, not the Generator client's. Inside the Host client container, DefraDB binds to `9181` on `localhost`. The Generator client's API happens to use the same number because they're both DefraDB; we'll remap the published ports in the next step so they don't collide.
 - `bootstrap_peers` is the only Generator-specific value. The Host client learns everything else (schemas, signed data) from the Generator client over P2P once it connects.
 - `minimum_attestations: 1` means the Host client will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients. See the [Host overview](/run/run-a-host/hardware-requirements/) for more on attestations.
-- `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host client expects the field to be present.
+- `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host client still opens a WebSocket to ShinzoHub on startup and panics if it can't connect. If you're running fully offline, set `hub_base_url: ""` and the Host client skips ShinzoHub entirely. See [Fully air-gapped Host client](/run/run-a-host/private-hosts/#fully-air-gapped-host-client).
 
 ## Start the Host client
 
@@ -192,6 +196,10 @@ docker run -d \
 ```
 
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
+
+{% admonition(type="note") %}
+The Host client stores its data inside the container too. To keep it across restarts, see [running a persistent Host](/run/run-a-host/install/#running-a-persistent-host).
+{% end %}
 
 ## Verify the peering
 

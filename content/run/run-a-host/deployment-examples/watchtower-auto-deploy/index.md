@@ -79,7 +79,6 @@ docker run -d \
   -p 9182:9182 \
   -p 9171:9171 \
   -v $(pwd)/data/defradb:/app/.defra \
-  -v $(pwd)/data/lens:/app/.lens \
   -v $(pwd)/config.yaml:/app/config.yaml:ro \
   -e DEFRA_URL=0.0.0.0:9181 \
   -e LOG_LEVEL=error \
@@ -146,7 +145,6 @@ docker run -d \
   -p 9182:9182 \
   -p 9171:9171 \
   -v $(pwd)/data/defradb:/app/.defra \
-  -v $(pwd)/data/lens:/app/.lens \
   -v $(pwd)/config.yaml:/app/config.yaml:ro \
   -e DEFRA_URL=0.0.0.0:9181 \
   -e LOG_LEVEL=error \

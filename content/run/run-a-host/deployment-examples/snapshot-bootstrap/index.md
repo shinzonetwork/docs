@@ -67,7 +67,7 @@ defradb:
 
 shinzo:
   start_height: 0
-  hub_base_url: testnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network
   cache_queue_size: 50000
   batch_writer_count: 8
   batch_size: 500
