@@ -35,6 +35,13 @@ The Generator and Geth share a single machine. The Generator connects to Geth ov
 
 ## Run the Generator
 
+Create a data directory on the host so the database and node identity survive container recreation. The container runs as UID `1001:1001`, and the directory needs the same ownership:
+
+```shell
+mkdir -p ~/shinzo-data/defradb
+sudo chown -R 1001:1001 ~/shinzo-data/defradb
+```
+
 Start the Generator client with a direct localhost connection to Geth. No API key or API key type is needed:
 
 ```shell
@@ -48,6 +55,7 @@ docker run -d \
   -e DEFRADB_P2P_ENABLED=true \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
   -e LOGGER_DEBUG=false \
+  -v ~/shinzo-data/defradb:/app/.defra \
   -p 127.0.0.1:9181:9181 \
   -p 9171:9171 \
   -p 8080:8080 \
@@ -63,6 +71,7 @@ docker run -d \
 - `DEFRADB_P2P_ENABLED=true`: Enable P2P networking so the Generator can push data to Hosts. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).
 - `DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171`: Listen on all interfaces so Hosts outside the machine can connect. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).
 - `LOGGER_DEBUG=false`: Production log level. Set to `true` for debug-level output during setup. See [logger config](/run/run-a-generator/config-reference#logger).
+- `-v ~/shinzo-data/defradb:/app/.defra`: Keeps the database, node identity, and snapshots on the host. Without the mount, an image update or a `docker rm` discards them.
 
 ## Verify the connection
 

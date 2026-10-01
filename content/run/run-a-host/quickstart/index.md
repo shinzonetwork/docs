@@ -147,8 +147,8 @@ sudo apt-get install -y docker.io docker-compose nginx
 ### Create the data directory
 
 ```shell
-sudo mkdir -p ~/data/defradb ~/data/lens
-sudo chown -R 1001:1001 ~/data/defradb ~/data/lens
+sudo mkdir -p ~/data/defradb ~/data/keys ~/data/lens
+sudo chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens
 ```
 
 ### Generate SSL certificates
@@ -285,7 +285,8 @@ services:
       - "9171:9171"   # P2P networking
     volumes:
       - ~/data/defradb:/app/.defra/data
-      - ~/data/lens:/app/.lens
+      - ~/data/keys:/app/.defra/keys
+      - ~/data/lens:/app/.defra/lens
       - ~/config.yaml:/app/config.yaml:ro
     environment:
       - DEFRA_URL=0.0.0.0:9181

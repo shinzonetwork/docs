@@ -88,6 +88,10 @@ docker run -d \
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
+{% admonition(type="note") %}
+This quickstart mounts no volumes, so the Generator client's database and node identity are discarded if you remove the container. That's fine here. For a setup that survives restarts, see [running a persistent Generator](/run/run-a-generator/install/#running-a-persistent-generator).
+{% end %}
+
 ## Read the Generator client's P2P address
 
 The Host client needs two things to connect:
@@ -192,6 +196,10 @@ docker run -d \
 ```
 
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
+
+{% admonition(type="note") %}
+The Host client stores its data inside the container too. To keep it across restarts, see [running a persistent Host](/run/run-a-host/install/#running-a-persistent-host).
+{% end %}
 
 ## Verify the peering
 
