@@ -14,28 +14,28 @@ Shinzo has four kinds of moving parts:
 
 ## The data's journey
 
-{% journey_player() %}
-<div class="jp__caption" data-title="A block arrives">
+{% player(scene="journey") %}
+<div class="player__caption" data-title="A block arrives">
   <p>A validator's execution node produces a block. The data your app needs is already there, so Shinzo reads it at the source instead of a third-party service.</p>
 </div>
 
-<div class="jp__caption" data-title="The Generator signs it">
+<div class="player__caption" data-title="The Generator signs it">
   <p>The Generator client next to the node shapes the block into structured documents and signs each one with its identity key. From here on, the document carries a verifiable signature.</p>
 </div>
 
-<div class="jp__caption" data-title="The Host verifies">
+<div class="player__caption" data-title="The Host verifies">
   <p>The signed document reaches a Host over the peer-to-peer network. The Host checks the signature and opens an attestation record for it: one vote so far.</p>
 </div>
 
-<div class="jp__caption" data-title="Attestations tally up">
+<div class="player__caption" data-title="Attestations tally up">
   <p>Two more Generator clients independently signed the same data. Each verified copy that arrives adds a vote to the attestation record.</p>
 </div>
 
-<div class="jp__caption" data-title="A View shapes the answer">
+<div class="player__caption" data-title="A View shapes the answer">
   <p>The Host runs the View's Lens transform over the verified primitives and decodes the raw log into something the app can use: a <code>TokenTransfer</code>.</p>
 </div>
 
-<div class="jp__caption" data-title="Your app stays in control">
+<div class="player__caption" data-title="Your app stays in control">
   <p>The app subscribes to the View and queries its local database with GraphQL. Its attestation threshold decides what counts as trustworthy. Here, that means three votes.</p>
 </div>
 {% end %}

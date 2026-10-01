@@ -17,28 +17,28 @@ Within the Shinzo ecosystem, Viewkit sits above the Generator client and alongsi
 - Viewkit defines how that data should be queried, transformed, and exposed.
 - Host clients execute those definitions, serve results, and attest to correctness.
 
-{% view_player() %}
-<div class="vp__caption" data-title="Primitives flow in">
+{% player(scene="views") %}
+<div class="player__caption" data-title="Primitives flow in">
   <p>Generator clients turn chain data into primitive documents, all normalized and deterministic: blocks, transactions, and logs. They flow to Hosts over the peer-to-peer network, but on their own they're raw material. Nothing about a raw log says how your app wants to read it.</p>
 </div>
 
-<div class="vp__caption" data-title="A developer writes a View">
+<div class="player__caption" data-title="A developer writes a View">
   <p>A developer describes the pipeline as code with Viewkit: a query that selects the raw fields, lenses that decode and reshape them, and an SDL that defines the output. A View is pure definition: nothing has executed, and no chain data has been touched.</p>
 </div>
 
-<div class="vp__caption" data-title="Viewkit versions and signs it">
+<div class="player__caption" data-title="Viewkit versions and signs it">
   <p>Viewkit packages the query, lenses, and SDL into a single versioned bundle and signs it with the developer's wallet. From here on the View carries a version: change any piece and the bundle becomes a new version.</p>
 </div>
 
-<div class="vp__caption" data-title="ShinzoHub registers it">
+<div class="player__caption" data-title="ShinzoHub registers it">
   <p>The developer deploys the bundle to the target network, local or devnet today. ShinzoHub validates it, registers it in the View registry, and emits an event that Hosts listen for.</p>
 </div>
 
-<div class="vp__caption" data-title="A Host executes it">
+<div class="player__caption" data-title="A Host executes it">
   <p>A Host picks up the registered View and runs it over the primitives as they arrive: the query selects, the lens decodes, the SDL materializes. Execution is deterministic, so every compliant Host produces the same view documents from the same primitives. Here, that output is a <code>TokenTransfer</code>.</p>
 </div>
 
-<div class="vp__caption" data-title="Your app queries locally">
+<div class="player__caption" data-title="Your app queries locally">
   <p>The Host serves the view documents to subscribers, and your app receives them over P2P into its embedded DefraDB. A query is a local database lookup with GraphQL. When the data model needs to change, the developer ships v2 of the View and iterates without reprocessing the chain.</p>
 </div>
 {% end %}
