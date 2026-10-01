@@ -371,7 +371,7 @@ A few notes on this:
 - `defradb.url: localhost:9181` is the Host's _internal_ DefraDB API, not the Generator's. Inside the Host container, DefraDB binds to `9181` on `localhost`. The Generator's API happens to use the same port number because they're both DefraDB; the published ports are remapped in the next step so they don't collide on the host machine.
 - `bootstrap_peers` uses the `$BOOTSTRAP_PEER` value you built in the Generator section above. The Host learns everything else (schemas, signed data) from the Generator over P2P once it connects.
 - `minimum_attestations: 1` means the Host will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients.
-- `hub_base_url` points at ShinzoHub's testnet endpoint. This devnet setup isn't registering with the Hub, but the Host still opens a WebSocket to ShinzoHub on startup and panics if it can't connect, so the machine needs to be able to reach the testnet endpoint. For a fully offline setup, set `hub_base_url: ""` and the Host skips ShinzoHub entirely.
+- `hub_base_url` points at ShinzoHub's testnet endpoint. This devnet setup isn't registering with the Hub, but the Host still opens a WebSocket to ShinzoHub on startup and panics if it can't connect, so the machine needs to reach the testnet endpoint. For a fully offline setup, set `hub_base_url: ""` and the Host skips ShinzoHub entirely.
 
 ### Run the Host
 
