@@ -180,7 +180,7 @@ defradb:
   store:
     path: "./.defra"
 shinzo:
-  hub_base_url: testnet.shinzo.network:26657
+  hub_base_url: testnet.shinzo.network
   minimum_attestations: 1
 logger:
   development: false
