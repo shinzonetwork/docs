@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 {% import "macros/sidebar.html" as sidebar %}
 
-{# Landing ("portal") template for the Home page, mirroring templates/portal.html
-    (Build apps) and templates/portal-run.html (Run infrastructure): featured path
-    cards and grouped link lists, with the standard docs sidebar. Page-specific
-    copy lives in the page's frontmatter (title, description) and markdown body
-    (rendered as the intro strip); the layout below is shared. #}
+{# Landing ("portal") template for the Home page: a serif-display hero, the
+   three primary doc tracks as cards, and grouped link lists. Page-specific
+   copy lives in the page's frontmatter (title, description) and markdown body
+   (rendered as the hero lead); the layout below is shared. #}
 
 {% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
 {% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
 {% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
 
+
 {% block body %}
+
+{% set cta_arrow = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' %}
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
@@ -21,14 +23,14 @@
     <div class="docs-content docs-content--portal">
       <article class="docItemCol markdown">
 
-        <h1 class="doc-title">{{ page.title }}</h1>
-
-        {# Intro strip: the page's markdown body, left-aligned. #}
-        {% if page.content %}
-        <div class="portal-intro portal-intro--landing">
-          {{ page.content | safe }}
-        </div>
-        {% endif %}
+        {# Hero: serif display title + the page's markdown body as the lead. #}
+        <header class="hero">
+          <p class="hero__eyebrow">Developer Documentation</p>
+          <h1 class="hero__title">Shinzo Network</h1>
+          {% if page.content %}
+          <p class="hero__lead">{{ page.content | safe | striptags }}</p>
+          {% endif %}
+        </header>
 
         {# The three doc funnels #}
         <section class="portal-section" aria-label="Choose your path">
@@ -40,6 +42,7 @@
               </div>
               <h3 class="portal-card__title">Understand Shinzo</h3>
               <p class="portal-card__desc">New here? Learn what the Shinzo network is, why it exists, and how it works end to end.</p>
+              <span class="portal-card__cta">Start reading {{ cta_arrow | safe }}</span>
             </a>
 
             <a class="portal-card portal-card--featured" href="/build/">
@@ -48,6 +51,7 @@
               </div>
               <h3 class="portal-card__title">Build apps</h3>
               <p class="portal-card__desc">Query live Views with signed GraphQL requests, create your own Views, or build a local-first app with verifiable data reads.</p>
+              <span class="portal-card__cta">Start building {{ cta_arrow | safe }}</span>
             </a>
 
             <a class="portal-card portal-card--featured" href="/run/">
@@ -56,6 +60,7 @@
               </div>
               <h3 class="portal-card__title">Run infrastructure</h3>
               <p class="portal-card__desc">Run a Generator client beside a blockchain node you already operate, serve Views with a Host client, or try both on one machine.</p>
+              <span class="portal-card__cta">Run a node {{ cta_arrow | safe }}</span>
             </a>
           </div>
         </section>

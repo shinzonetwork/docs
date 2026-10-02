@@ -49,7 +49,7 @@ For a worked same-machine example, see the [Validator with Geth](../deployment-e
 
 ## Separate-machine deployment
 
-When the Generator client and the execution node (or validator) run on different machines, the question becomes which ports to expose across the network boundary. The rule of thumb: expose the P2P port, restrict the management API behind a reverse proxy, and keep the raw database API private.
+When the Generator client and the execution node (or validator) run on different machines, the question becomes which ports to expose across the network boundary. The rule of thumb: expose the P2P port, publish `8080` so the public dashboard can reach `/health`, and keep the raw database API private.
 
 ### Topology
 
@@ -68,23 +68,25 @@ flowchart LR
 
   Hosts["Hosts"]
   Ops["Operator / monitoring"]
+  Dash["Shinzo dashboard"]
 
   Node -- "RPC + WS<br/>VPC, restricted to Gen IP" --> Gen
   Gen -- "P2P (libp2p)<br/>:9171 public" --> Hosts
-  Ops -- "HTTPS<br/>/health /metrics /snapshots" --> Nginx
+  Ops -- "HTTPS<br/>/metrics /snapshots /api/v1/schema" --> Nginx
+  Dash -- "plaintext HTTP<br/>:8080 /health" --> Gen
 {% end %}
 
-The execution node feeds the Generator client over a restricted private link. The Generator client publishes to Host clients over P2P on `9171`. Operators and monitoring reach only the safe management paths through a reverse proxy on `443`. The raw DefraDB API on `9181` stays bound to localhost and never crosses the firewall.
+The execution node feeds the Generator client over a restricted private link. The Generator client publishes to Host clients over P2P on `9171`. The public Shinzo dashboard probes `http://<your-server-ip>:8080/health` over plaintext HTTP to decide whether your Generator shows as online, so that one path must be reachable from the internet. Operators and monitoring can reach the other management paths through a reverse proxy on `443`. The raw DefraDB API on `9181` stays bound to localhost and never crosses the firewall.
 
 ### Port exposure
 
 | Port | Service | Expose publicly? | Recommendation |
 | --- | --- | --- | --- |
 | `9171` | DefraDB P2P (libp2p) | Yes | Open on the firewall. This is how Hosts subscribe and receive data. |
-| `8080` | Health, metrics, registration, schema | Only behind a reverse proxy | Do not publish raw. Put an nginx (or equivalent) allowlist in front that proxies only the safe paths (`/health`, `/registration`, `/registration-app`, `/metrics`, `/snapshots`, `/api/v1/schema`) and returns 404 for everything else. See the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config. |
+| `8080` | Health, metrics, registration, schema | Yes, at least for `/health` | The dashboard's online check probes `http://<your-server-ip>:8080/health` over plaintext HTTP, and it can't follow a redirect to TLS. If `8080` isn't reachable, your Generator shows as offline on the dashboard even while it's running fine. The tradeoff: publishing `8080` raw also exposes `/metrics`, `/registration`, `/api/v1/schema`, and anything else on the port. If you want the online status without that surface, put nginx (or equivalent) on `8080` proxying only `/health`, and serve the remaining paths over TLS on `443`. See the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config. |
 | `9181` | DefraDB GraphQL / REST API | No | Bind to localhost or a private network. This port gives raw, unauthenticated read/write access to the local DefraDB database. Publishing it to `0.0.0.0` lets anyone read or mutate the Generator's data. |
 
-The shipped production tooling (`docker-compose-prod.yml` and `indexer-prod-setup.sh` in the `shinzo-generator-client` repo) follows this pattern: it publishes `9171`, fronts `8080` with an nginx allowlist, and never publishes `9181`.
+The shipped production tooling (`docker-compose-prod.yml` and `indexer-prod-setup.sh` in the `shinzo-generator-client` repo) follows this pattern: it publishes `9171` and `8080`, fronts the management paths with an nginx allowlist, and never publishes `9181`.
 
 ### How this differs from a Host
 
@@ -96,7 +98,7 @@ On the execution node side of the link, restrict its JSON-RPC and WebSocket port
 
 ### Schema endpoint auth
 
-The shipped production scripts set `SCHEMA_AUTH_MODE=none`, which disables authentication on the `/api/v1/schema` endpoints. This is acceptable when `8080` is already behind a reverse-proxy allowlist that only proxies known-safe paths. If you expose schema management more broadly, switch `SCHEMA_AUTH_MODE` to `token` and provide accepted tokens via `SCHEMA_API_KEYS`. See the [config reference](../config-reference/#indexer) for the full set of values.
+The shipped production scripts set `SCHEMA_AUTH_MODE=none`, which disables authentication on the `/api/v1/schema` endpoints. That's acceptable when nginx publishes only `/health` on `8080` and proxies the schema endpoints only over TLS with its own access controls. If you publish `8080` raw, every path on it is reachable, including schema management, so switch `SCHEMA_AUTH_MODE` to `token` and provide accepted tokens via `SCHEMA_API_KEYS`. See the [config reference](../config-reference/#indexer) for the full set of values.
 
 ## MEV-boost and block construction
 
