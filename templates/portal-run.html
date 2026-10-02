@@ -11,7 +11,10 @@
 {% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
 {% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
 
+
 {% block body %}
+
+{% set cta_arrow = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' %}
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
@@ -40,6 +43,7 @@
               </div>
               <h3 class="portal-card__title">Run a Generator</h3>
               <p class="portal-card__desc">Already run a blockchain node? Add a Generator client as a sidecar. It reads new blocks as they arrive, signs them, and gossips them out over P2P.</p>
+              <span class="portal-card__cta">Install a Generator {{ cta_arrow | safe }}</span>
             </a>
 
             <a class="portal-card portal-card--featured" href="/run/run-a-host/install/">
@@ -48,6 +52,7 @@
               </div>
               <h3 class="portal-card__title">Run a Host</h3>
               <p class="portal-card__desc">A Host client pulls signed data from Generator clients, applies Lens transforms, and serves the resulting Views to applications over GraphQL.</p>
+              <span class="portal-card__cta">Install a Host {{ cta_arrow | safe }}</span>
             </a>
 
             <a class="portal-card portal-card--featured" href="/run/get-started/">
@@ -56,6 +61,7 @@
               </div>
               <h3 class="portal-card__title">Run both</h3>
               <p class="portal-card__desc">Try the whole pipeline on one machine: a Generator client and a Host client, peered over libp2p and queried over GraphQL. About ten minutes, and no registration needed.</p>
+              <span class="portal-card__cta">Try it locally {{ cta_arrow | safe }}</span>
             </a>
           </div>
         </section>
@@ -67,7 +73,7 @@
             <div class="portal-linkgroup">
               <h3 class="portal-linkgroup__heading">Setup</h3>
               <ul class="portal-list">
-                <li><a href="/run/run-a-generator/prerequisites/">Prerequisites</a></li>
+                <li><a href="/run/run-a-generator/hardware-requirements/">Hardware requirements</a></li>
                 <li><a href="/run/run-a-generator/install/">Install</a></li>
                 <li><a href="/run/run-a-generator/register/">Register</a></li>
                 <li><a href="/run/run-a-generator/config-reference/">Config reference</a></li>
