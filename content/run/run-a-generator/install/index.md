@@ -11,6 +11,47 @@ Running the client only requires access to an execution node. You do not need to
 
 The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See [Hardware requirements](../prerequisites#hardware-requirements) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
+## One-line install
+
+The fastest way to get a Generator client running is the install script:
+
+```shell
+curl -fsSL https://docs.shinzo.network/install-generator.sh | sh
+```
+
+The script handles the mechanical setup, then stops and asks you your execution node details. The script itself does the following:
+
+1. Checks that Docker and the compose plugin are installed and running, and tells you how to fix it if not.
+1. Prompts for your execution node's RPC and WebSocket URLs, plus an API key if the node requires one. To skip the prompts, set `GETH_RPC_URL`, `GETH_WS_URL`, and `GETH_API_KEY` before the pipe.
+1. Creates a `shinzo-generator` directory (in `pwd`) with a `docker-compose.yml` and an `.env` file, with a random `DEFRADB_KEYRING_SECRET` generated for you so your node identity is unique and persists across restarts.
+1. Creates the persistent data directory (`~/shinzo-data/defradb`) with write access for the container, so you don't hit the [permission error](#permission-denied-on-defra-keys) on first run.
+1. Pulls the Generator client image and starts it.
+
+The node prompt is the one manual part. The script can't guess which node you want the Generator to read. Any node that exposes JSON-RPC and WebSocket works: one you run yourself, one co-located with your validator, or a managed provider.
+
+It's safe to run the script more than once. If a Generator client is already set up in the current directory, it tells you and changes nothing.
+
+When it's done:
+
+```shell
+# Health check
+curl -s http://localhost:8080/health
+
+# Logs
+docker logs -f shinzo-generator
+
+# Stop
+docker compose -f shinzo-generator/docker-compose.yml down
+
+# Uninstall (deletes the client's data)
+docker compose -f shinzo-generator/docker-compose.yml down -v
+rm -rf shinzo-generator ~/shinzo-data
+```
+
+{% admonition(type="info") %}
+This script does not register your Generator client. Check the [registration requirements](../prerequisites#registration-requirements) for details on how to register a client.
+{% end %}
+
 ## Using Docker
 
 These steps use Docker to run the Shinzo Generator client. To build the Generator client from source, see [Building from source](#building-from-source) below.
