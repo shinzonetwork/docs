@@ -30,7 +30,7 @@ The Generator client reads blocks from an execution node over JSON-RPC and does 
 
 That is safe in the default deployment, where the Generator is a sidecar next to the operator's own node, often on the same machine. You don't need to verify your own infrastructure.
 
-It matters the moment the Generator points at someone else's node, such as a managed RPC provider. In that setup your signature vouches for the provider's data. If the provider ever serves wrong or incomplete data, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. The [security guidance](/run/run-a-generator/security/) covers deployment shapes, and the managed-provider guides ([QuickNode](/run/run-a-generator/guides/quicknode-setup/), [GCP](/run/run-a-generator/deployment-examples/managed-gcp-node/)) carry the same warning.
+It matters the moment the Generator points at someone else's node, such as a managed RPC provider. In that setup your signature vouches for the provider's data. If the provider ever serves wrong or incomplete data, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. The [security guidance](/run/run-a-generator/security/) covers deployment shapes and carries the same warning.
 
 ## Who a Generator is
 
