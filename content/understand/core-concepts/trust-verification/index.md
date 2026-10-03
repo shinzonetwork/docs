@@ -18,10 +18,10 @@ flowchart LR
 
 | Hop | What backs it | What it doesn't cover |
 | --- | --- | --- |
-| Execution node to Generator | Trust (your own node, or your provider's) | Wrong or incomplete source data gets signed as-is |
+| Execution node to Generator | The Generator operator's own validator infrastructure | Wrong or incomplete source data gets signed as-is |
 | Validator and Generator identity each-way | On-chain assertion signed by the withdrawal key | Says nothing about data quality |
 | Generator to Host | Per-block signature over a Merkle root of CIDs | Chain-correctness, completeness, freshness |
-| Generator Generator each-way | Attestation records and vote counts | Needs thresholds above one to filter a lone bad source |
+| Cross-Generator agreement | Attestations that Host clients hold and count | Needs thresholds above one to filter a lone bad source |
 | Host to App (view data) | Host's signature, deterministic lenses, audit trail | Independent re-verification of the transform itself |
 
 ## The execution node to the Generator
@@ -48,11 +48,11 @@ Just as important is what the signature does _not_ prove. It doesn't prove the d
 
 ## Hosts and attestations
 
-When a Host client receives a block from a Generator, it verifies the signature and recomputes the Merkle root from the document CIDs. Only then does it open (or update) an attestation record for that block, keyed by the block height and the signed root.
+Attestations live on Host clients, and they exist for one job: telling apart multiple Generator sources. When a Host client receives a block from a Generator, it verifies the signature and recomputes the Merkle root from the document CIDs. Only then does it open (or update) an attestation record for that block, keyed by the block height and the signed root.
 
-This is the mechanism that catches a wrong or dishonest data source. Independent Generator clients reading their own nodes sign identical data, and the block's attestation count climbs with each match. A Generator whose node fed it bad data produces a different root and accumulates no corroboration, so any app asking for two or more attestations filters it out. The same math smooths over honest disagreement: chains re-org, and requiring more than one attestation keeps your app from acting on a block that just got reorganized out.
+Say three Generators, each run by a different validator on its own node, all process block 19,000,000. Two of them sign the same Merkle root, so the Host's attestation record for that root reaches a vote count of two. The third Generator's node served it a bad block, so it signs a different root and its record sits at one. An app that asks for blocks with at least two attestations reads the correct data and never sees the outlier, without having to know which source was wrong.
 
-[Attestations](/understand/core-concepts/attestations/) covers the record itself and how the counting works, and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) covers how apps set per-query thresholds.
+The same math smooths over honest disagreement: chains re-org, and requiring more than one attestation keeps your app from acting on a block that just got reorganized out. [Attestations](/understand/core-concepts/attestations/) covers the record itself and how the counting works, and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) covers how apps set per-query thresholds.
 
 ## The lens gap
 
