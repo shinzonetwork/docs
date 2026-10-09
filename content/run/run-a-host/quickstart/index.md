@@ -1,6 +1,5 @@
 +++
 title = "Quick Start"
-aliases = ["/hosts/quickstart"]
 description = "Run a Shinzo Host to transform blockchain data into verifiable Views"
 +++
 

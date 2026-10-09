@@ -1,6 +1,5 @@
 +++
 title = "Get started"
-aliases = ["/guides/operator-quickstart"]
 description = "Bring up a Generator client and a Host on one machine, peer them over libp2p, and query the result."
 [extra]
 mermaid = true

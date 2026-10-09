@@ -1,6 +1,5 @@
 +++
 title = "How it works"
-aliases = ["/introduction/how-it-works", "/understand/data-journey"]
 [extra]
 mermaid = true
 +++

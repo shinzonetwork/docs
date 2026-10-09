@@ -1,6 +1,5 @@
 +++
 title = "Lens"
-aliases = ["/views/lenses"]
 description = "How WASM lens transforms work in Shinzo Views: available lenses, arguments, chaining, and authoring new ones."
 +++
 

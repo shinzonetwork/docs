@@ -1,6 +1,5 @@
 +++
 title = "Private Hosts"
-aliases = ["/run/run-a-host/private", "/run/run-a-host/direct-client"]
 description = "Run a Shinzo Host client privately, peered only to your own Generator and publicizing nothing to the network."
 [extra]
 mermaid = true

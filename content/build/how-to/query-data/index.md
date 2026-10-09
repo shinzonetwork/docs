@@ -1,6 +1,5 @@
 +++
 title = "Query data"
-aliases = ["/hosts/examples", "/build/query-data/"]
 description = "How to query Shinzo data with GraphQL: filters, ordering, nested documents, DocIDs, CIDs, and signatures."
 +++
 

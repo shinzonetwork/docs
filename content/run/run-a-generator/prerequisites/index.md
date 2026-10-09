@@ -1,12 +1,5 @@
 +++
 title = "Prerequisites"
-aliases = [
-  "/run/run-a-generator/hardware-requirements",
-  "/generator/hardware-requirements",
-  "/generators/hardware-requirements",
-  "/generator/prerequisites",
-  "/generators/prerequisites",
-]
 +++
 
 This page is the starting point for running a Generator. Two kinds of prerequisites apply: the hardware the Generator client runs on, and the items you need to register it with the Shinzo Network.

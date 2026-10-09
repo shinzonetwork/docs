@@ -1,7 +1,6 @@
 +++
 title = "Event filter with allowlist and blocklist"
 description = "Configure a Host to store only specific contract events using the event filter in allowlist mode, with a blocklist variant and an optional block range gate."
-aliases = ["/hosts/deployment-examples/event-filter-allowlist"]
 [extra]
 mermaid = true
 +++

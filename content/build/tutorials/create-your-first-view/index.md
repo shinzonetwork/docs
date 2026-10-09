@@ -1,6 +1,5 @@
 +++
 title = "Create your first View"
-aliases = ["/views/quickstart", "/views/install", "/build/create-a-view/"]
 description = "Tutorial: build, test, and deploy a Shinzo View with Viewkit, from install to querying it on the public testnet."
 +++
 

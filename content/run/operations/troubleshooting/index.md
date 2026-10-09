@@ -1,6 +1,5 @@
 +++
 title = "Troubleshooting"
-aliases = ["/generator/faq", "/generators/frequently-asked-questions", "/generators/faq", "/hosts/faq", "/hosts/frequently-asked-questions", "/views/faq"]
 description = "Common errors, troubleshooting steps, and frequently asked questions for Generator clients, Host clients, and Viewkit."
 +++
 
