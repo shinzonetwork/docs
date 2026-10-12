@@ -173,7 +173,7 @@ Add a `block_range` to restrict filtering to a specific block range. Omit it to 
 
 ## Tutorial companion
 
-For a step-by-step walkthrough of configuring a single USDT Transfer filter, see the [Configuring Event Filters guide](/guides/configuring-event-filters-on-a-shinzo-host/). This scenario shows the fuller multi-group topology from the shipped config.
+For a step-by-step walkthrough of configuring a single USDT Transfer filter, see the [Configuring Event Filters guide](/run/run-a-host/configure-event-filters/). This scenario shows the fuller multi-group topology from the shipped config.
 
 ## Gotchas
 

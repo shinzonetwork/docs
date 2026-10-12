@@ -226,7 +226,7 @@ Hosts expect every View query to carry a signature. The script hashes your query
     }
     ```
 
-    The request body is standard GraphQL-over-HTTP plus the `extensions` envelope. The script POSTs to each candidate until one answers, sorts the returned rows by `blockNumber`, and prints the 10 most recent. Sorting locally keeps the request to one bounded page; [Query data](/build/query-data/) covers the server-side `filter` and `order` arguments if you want the Host to do that work.
+    The request body is standard GraphQL-over-HTTP plus the `extensions` envelope. The script POSTs to each candidate until one answers, sorts the returned rows by `blockNumber`, and prints the 10 most recent. Sorting locally keeps the request to one bounded page; [Query data](/build/how-to/query-data/) covers the server-side `filter` and `order` arguments if you want the Host to do that work.
 
 ## Run the script
 

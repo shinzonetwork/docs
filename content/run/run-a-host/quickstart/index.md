@@ -126,7 +126,7 @@ query GetLatestLogs {
 }
 ```
 
-More query examples are available [here](/build/query-data/).
+More query examples are available [here](/build/how-to/query-data/).
 
 ## VM deployment
 

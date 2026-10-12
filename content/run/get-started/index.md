@@ -265,7 +265,7 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 }
 ```
 
-The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. You can also browse this data visually in the [Explorer](https://explorer.shinzo.network/). More queries are on the [Host examples](/build/query-data/) page.
+The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. You can also browse this data visually in the [Explorer](https://explorer.shinzo.network/). More queries are on the [Host examples](/build/how-to/query-data/) page.
 
 {% admonition(type="note") %}
 The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match, for example `Optimism__Mainnet__Log`. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
