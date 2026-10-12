@@ -19,7 +19,7 @@
         {# Breadcrumbs derived from the URL path components #}
         {% set crumbs = page.path | trim_start_matches(pat="/") | trim_end_matches(pat="/") | split(pat="/") %}
         <ul class="breadcrumbs">
-          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Home</a></li>
+          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/understand/home/">Home</a></li>
           {% for crumb in crumbs %}
             {% if not loop.last %}
               <li class="breadcrumbs__item"><span class="breadcrumbs__link">{{ crumb | replace(from="-", to=" ") | title }}</span></li>
