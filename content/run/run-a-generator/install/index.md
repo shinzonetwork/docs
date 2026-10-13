@@ -13,15 +13,20 @@ The Generator client is a lightweight sidecar (the binary is approximately 254 M
 
 ## One-line install
 
-The fastest way to get a Generator client running is the install script:
+The fastest way to get a Generator client running is the install script: 
 
-```shell
-curl -fsSL https://docs.shinzo.network/install-generator.sh | sh
-```
+1. Make sure Docker is installed.
+1. Grab and run the script:
+
+    ```shell
+    curl -fsSL https://docs.shinzo.network/install-generator.sh | sh
+    ```
+
+### How it works
 
 The script handles the mechanical setup, then stops and asks you your execution node details. The script itself does the following:
 
-1. Checks that Docker and the compose plugin are installed and running, and tells you how to fix it if not.
+1. Checks that Docker and the compose plugin are installed and running, and tells you where to get support if not.
 1. Prompts for your execution node's RPC and WebSocket URLs, plus an API key if the node requires one. To skip the prompts, set `GETH_RPC_URL`, `GETH_WS_URL`, and `GETH_API_KEY` before the pipe.
 1. Creates a `shinzo-generator` directory (in `pwd`) with a `docker-compose.yml` and an `.env` file, with a random `DEFRADB_KEYRING_SECRET` generated for you so your node identity is unique and persists across restarts.
 1. Creates the persistent data directory (`~/shinzo-data/defradb`) with write access for the container, so you don't hit the [permission error](#permission-denied-on-defra-keys) on first run.
@@ -31,7 +36,9 @@ The node prompt is the one manual part. The script can't guess which node you wa
 
 It's safe to run the script more than once. If a Generator client is already set up in the current directory, it tells you and changes nothing.
 
-When it's done:
+### Post-install
+
+Once the install script has finished, you can interact with the client:
 
 ```shell
 # Health check
