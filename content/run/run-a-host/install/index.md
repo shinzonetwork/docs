@@ -123,7 +123,7 @@ docker run -d \
 The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Host client can't write to the mounts and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
 {% end %}
 
-Production deployments also put an nginx reverse proxy in front for TLS and CORS. The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
+Production deployments also put an nginx reverse proxy in front for TLS and [CORS](#cors-for-browser-access). The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
 
 ## Build from source
 
@@ -188,6 +188,22 @@ The only required setting is the keyring secret.
 | `hostplayground` | Embeds the GraphQL Playground UI (served on port `9182`) |
 
 Ports, verification, and registration are the same as the Docker path above.
+
+## CORS for browser access
+
+A stock Host sends no CORS headers: the Host client sets none, and it never passes any allowed origins to the embedded DefraDB. Cross-origin browser requests to your Host fail unless a reverse proxy in front adds the headers. `curl` works either way, so this only shows up in the browser. You only need it when a browser app queries your Host directly, for example an Explorer pointed at your endpoint.
+
+Server-to-server traffic is unaffected. The Explorer and the registration app probe registered Hosts from the server side, and the registration flow is a redirect from your Host's `/registration-app` endpoint to `registration.shinzo.network`, so neither needs CORS on your Host.
+
+To serve a browser app, put a reverse proxy in front (the [prod VM example](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/) has a complete nginx config) and allow:
+
+- Origin: the app's origin, echoed back in `Access-Control-Allow-Origin`. For the Shinzo Explorer that is `https://explorer.shinzo.network`.
+- Paths: `/api/v0/graphql` on the API port, and `/health`, `/metrics`, `/registration`, `/registration-app` on the health server port.
+- Methods: `GET, OPTIONS` on the health server paths, and `GET, POST, PUT, DELETE, OPTIONS` on GraphQL.
+- Headers: `Authorization, Content-Type, Accept, Origin`.
+- Preflight: answer `OPTIONS` requests at the proxy. The reference nginx config returns `204` with the headers above.
+
+If the proxy doesn't handle this, the Host answers `curl` but the browser app can't read it. See [Troubleshooting](/run/operations/troubleshooting/#my-host-answers-curl-but-the-explorer-cant-query-it).
 
 ## Need help
 
