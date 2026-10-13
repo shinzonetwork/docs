@@ -191,13 +191,13 @@ Ports, verification, and registration are the same as the Docker path above.
 
 ## CORS for browser access
 
-A stock Host sends no CORS headers: the Host client sets none, and it never passes any allowed origins to the embedded DefraDB. Cross-origin browser requests to your Host fail unless a reverse proxy in front adds the headers. `curl` works either way, so this only shows up in the browser. You only need it when a browser app queries your Host directly, for example an Explorer pointed at your endpoint.
+A stock Host client sends no CORS headers and it never passes any allowed origins to the embedded DefraDB. Cross-origin browser requests to your Host client will fail unless a reverse proxy in front adds the headers. `curl` requests works either way, so this only shows up in the browser. You only need it when a browser app queries your Host client directly, for example an [Explorer](https://explorer.shinzo.network/shinzohub) pointed at your endpoint.
 
-Server-to-server traffic is unaffected. The Explorer and the registration app probe registered Hosts from the server side, and the registration flow is a redirect from your Host's `/registration-app` endpoint to `registration.shinzo.network`, so neither needs CORS on your Host.
+Server-to-server traffic is unaffected. The Shinzo network explorer and the registration app probe registered Host clients from the server side, and the registration flow is a redirect from your client's `/registration-app` endpoint to `registration.shinzo.network`, so neither needs CORS on your Host.
 
 To serve a browser app, put a reverse proxy in front (the [prod VM example](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/) has a complete nginx config) and allow:
 
-- Origin: the app's origin, echoed back in `Access-Control-Allow-Origin`. For the Shinzo Explorer that is `https://explorer.shinzo.network`.
+- Origin: the app's origin, echoed back in `Access-Control-Allow-Origin`. For the Shinzo explorer that is `https://explorer.shinzo.network`.
 - Paths: `/api/v0/graphql` on the API port, and `/health`, `/metrics`, `/registration`, `/registration-app` on the health server port.
 - Methods: `GET, OPTIONS` on the health server paths, and `GET, POST, PUT, DELETE, OPTIONS` on GraphQL.
 - Headers: `Authorization, Content-Type, Accept, Origin`.
