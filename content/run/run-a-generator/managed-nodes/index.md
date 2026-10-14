@@ -10,6 +10,20 @@ What changes between the three is what your signature stands behind, and how muc
 
 ## Three ways to feed a Generator
 
+{% player(scene="feeds") %}
+<div class="player__caption" data-title="Own node, own hardware">
+  <p>The Generator sits next to your execution node on the same machine. Every key inside that boundary is yours, and wrong data can only start inside it: a bug, a misconfiguration, a stuck sync.</p>
+</div>
+
+<div class="player__caption" data-title="Own node, rented hardware">
+  <p>Same trust, someone else's rack. The node's software, keys, and config stay yours, so the blocks you sign still come from software you control.</p>
+</div>
+
+<div class="player__caption" data-title="Managed node provider">
+  <p>The node lives on the provider's platform and its keys are theirs. You hold the access token and your operator key, and the hop from their node into your Generator is the one that leaves your control. Your signature vouches for whatever crosses it.</p>
+</div>
+{% end %}
+
 Running your own node on your own hardware is the default shape: the Generator sits next to the execution node, often on the same machine, and nothing stands between the chain and your signature except your own software. The [Validator with Geth](../deployment-examples/validator-with-geth/) example shows this setup end to end.
 
 Running your own node on rented hardware is the same trust with someone else's rack. You hold every key and config file; the node just lives on a VM you pay for. The data you sign still comes from software you control. The [separate-machine deployment](../security/#separate-machine-deployment) advice on the security page covers the networking.
