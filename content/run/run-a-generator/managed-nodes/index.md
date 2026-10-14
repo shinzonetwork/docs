@@ -65,18 +65,23 @@ What you give:
 - The provider's outage is your outage. One endpoint, no failover: if it goes down, your Generator stops until it's back.
 - The node's health, sync state, and configuration are the provider's to manage, and you see only what they expose.
 
-
 {% admonition(type="info") %}
 The middle path is worth naming: rent a VM, run the node yourself, hold all the keys. You keep the control boundary around the software that feeds your signature, and you skip the rack in the closet.
 {% end %}
 
 ## Picking a setup
 
-Trying Shinzo out? A managed provider's free tier is the cheapest way to see the pipeline work end to end. The Generator reads, signs, and commits blocks the same as anywhere else.
+- Trying Shinzo out? A managed provider's free tier is the cheapest way to see the pipeline work end to end. The Generator reads, signs, and commits blocks the same as anywhere else.
+- Running steady in production? A managed node provider with an SLA is a reasonable default. Check your blocks' attestation counts now and then so you'd notice if the provider's data ever diverged. [Verify data](/build/how-to/verify-data/) shows how.
+- Want maximum control over what your signature stands behind? Run the node yourself, on your own hardware or rented, and keep every key.
 
-Running steady in production? A managed node provider with an SLA is a reasonable default. Check your blocks' attestation counts now and then so you'd notice if the provider's data ever diverged. [Verify data](/build/how-to/verify-data/) shows how.
+## Where to go next
 
-Want maximum control over what your signature stands behind? Run the node yourself, on your own hardware or rented, and keep every key.
+- [QuickNode setup](../guides/quicknode-setup/): the worked example for the managed path.
+- [Validator with Geth](../deployment-examples/validator-with-geth/): the worked example for your own node.
+- [Security](../security/): deployment shapes, key separation, and port exposure.
+- [Trust and verification](/understand/core-concepts/trust-verification/): every hop in the data path and what it proves.
+- [Attestations](/understand/core-concepts/attestations/) and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/): how vote counts work and how apps use them.
 
 ## Need help
 
