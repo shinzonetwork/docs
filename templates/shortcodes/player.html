@@ -12,6 +12,7 @@
     {% if scene == "journey" %}{% include "player-scenes/journey.html" %}
     {% elif scene == "pools" %}{% include "player-scenes/pools.html" %}
     {% elif scene == "views" %}{% include "player-scenes/views.html" %}
+    {% elif scene == "feeds" %}{% include "player-scenes/feeds.html" %}
     {% else %}{{ throw(message="player: unknown scene `" ~ scene ~ "`") }}{% endif %}
   </div>
 
