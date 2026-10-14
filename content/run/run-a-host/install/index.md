@@ -203,7 +203,7 @@ To serve a browser app, put a reverse proxy in front (the [prod VM example](/run
 - Headers: `Authorization, Content-Type, Accept, Origin`.
 - Preflight: answer `OPTIONS` requests at the proxy. The reference nginx config returns `204` with the headers above.
 
-If the proxy doesn't handle this, the Host answers `curl` but the browser app can't read it. See [Troubleshooting](/run/operations/troubleshooting/#my-host-client-answers-curl-requests-but-the-explorer-cant-query-it).
+If the proxy doesn't handle this, the Host answers `curl` but the browser app can't read it. See [Troubleshooting](/run/operations/troubleshooting/#my-host-client-answers-curl-requests-but-the-explorer-can-t-query-it).
 
 ## Need help
 
