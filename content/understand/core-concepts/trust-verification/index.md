@@ -72,3 +72,4 @@ Policing and economic penalties for manipulative Hosts are part of the protocol 
 - [Verify data with signatures and CIDs](/build/how-to/verify-data/): the hands-on queries for checking data yourself.
 - [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/): setting per-query trust thresholds in your app.
 - [Generator security](/run/run-a-generator/security/): deployment shapes and key separation for operators.
+- [Managed nodes](/run/run-a-generator/managed-nodes/): what changes when someone else runs your source node.
