@@ -228,6 +228,7 @@ The following env vars appear in some deployment artifacts but are not read by t
 | `LOG_SOURCE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
 | `LOG_STACKTRACE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
 | `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/run-a-host/config-reference#gomemlimit). |
+| `ALLOWED_ORIGINS` | `host-prod-setup.sh` | Not read. CORS is handled by the reverse proxy, not the Host client. |
 
 ### GOMEMLIMIT
 
