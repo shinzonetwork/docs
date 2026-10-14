@@ -78,14 +78,6 @@ The middle path is worth naming: rent a VM, run the node yourself, hold all the 
 
 Each setup earns its place. Trying Shinzo out? A managed provider's free tier is the cheapest way to see the whole pipeline work, and the Generator reads, signs, and commits blocks the same as anywhere else. For steady production, a managed provider with an SLA is a reasonable default, as long as you check your blocks' attestation counts now and then; [Verify data](/build/how-to/verify-data/) shows how to notice if the provider's data ever diverged. And when what you want is maximum control over what your signature stands behind, run the node yourself, on your own hardware or rented, and keep every key.
 
-## Where to go next
-
-- [QuickNode setup](../guides/quicknode-setup/): the worked example for the managed path.
-- [Validator with Geth](../deployment-examples/validator-with-geth/): the worked example for your own node.
-- [Security](../security/): deployment shapes, key separation, and port exposure.
-- [Trust and verification](/understand/core-concepts/trust-verification/): every hop in the data path and what it proves.
-- [Attestations](/understand/core-concepts/attestations/) and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/): how vote counts work and how apps use them.
-
 ## Need help
 
 {{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
