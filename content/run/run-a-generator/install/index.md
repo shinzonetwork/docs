@@ -3,7 +3,6 @@ title = "Install"
 aliases = [
   "/generator/install",
   "/generators/install",
-  "/run/run-a-generator/guides/quicknode-setup",
   "/run/run-a-generator/deployment-examples/managed-gcp-node",
   "/generators/deployment-examples/managed-node-gcp",
 ]
