@@ -58,26 +58,17 @@ Two details worth knowing:
 
 ## What a managed node doesn't put at risk
 
-The tradeoff is real, but it's narrower than it looks:
+The tradeoff is real, but it's narrower than it looks. Start with your validator: a compromised provider endpoint is a data problem, not a key problem, because the provider never sees your consensus or withdrawal keys.
 
-- Your validator. A compromised provider endpoint is a data problem, not a key problem. The provider never sees your consensus or withdrawal keys.
-- The apps reading the network. Thresholds above one never see divergent data; they read the sources that agree.
-- The network's data. One provider going wrong can't move what apps read, because Generators on their own infrastructure sign what they actually saw. A divergent source ends up alone at a vote count of one, not in the majority.
-- Your identity. Registration ties the Generator to your validator through the assertion whoever ran the node. Switching your data source later doesn't change who stands behind your data.
+The apps reading the network are covered too. An app with its threshold above one never sees divergent data; it reads the sources that agree. One provider going wrong can't move what apps read, because Generators on their own infrastructure sign what they actually saw. A divergent source ends up alone at a vote count of one, not in the majority.
+
+Your identity doesn't move either. Registration ties the Generator to your validator through the assertion, whoever ran the node, and switching your data source later doesn't change who stands behind your data.
 
 ## The trade in practice
 
-What you get with a managed node:
+What you get is simplicity. A snap-synced full execution node typically wants over 650 GB of fast SSD storage and at least 16 GB of RAM, before you count the Generator's own needs. The managed path runs on a small VM instead: the QuickNode guide uses about 8 GB of RAM and 30 GB of disk. The [hardware requirements](../prerequisites#hardware-requirements) table has the full numbers. Syncing, upgrading, and keeping a node online at 3am is the provider's job. Most providers have a free tier for testing, and the QuickNode guide takes you from account to signed blocks in one sitting.
 
-- No node hardware. A snap-synced full execution node typically wants over 650 GB of fast SSD storage and at least 16 GB of RAM, before you count the Generator's own needs. The managed path runs on a small VM: the QuickNode guide uses about 8 GB of RAM and 30 GB of disk. See the [hardware requirements](../prerequisites#hardware-requirements) table for the numbers.
-- No babysitting. Syncing, upgrading, and keeping a node online at 3am is the provider's job.
-- A fast start. Most providers have a free tier for testing, and the QuickNode guide takes you from account to signed blocks in one sitting.
-
-What you give:
-
-- Your signature rides on the provider's data quality. If they serve something wrong, you sign it, and the attestation counts tell the story.
-- The provider's outage is your outage. One endpoint, no failover: if it goes down, your Generator stops until it's back.
-- The node's health, sync state, and configuration are the provider's to manage, and you see only what they expose.
+What you give is the flip side. Your signature rides on the provider's data quality: if they serve something wrong, you sign it, and the attestation counts tell the story. The provider's outage is your outage, because the client reads one endpoint with no failover to a second source; if the endpoint goes down, your Generator stops until it's back. And the node's health, sync state, and configuration become the provider's to manage, so you see only what they expose.
 
 {% admonition(type="info") %}
 The middle path is worth naming: rent a VM, run the node yourself, hold all the keys. You keep the control boundary around the software that feeds your signature, and you skip the rack in the closet.
@@ -85,9 +76,7 @@ The middle path is worth naming: rent a VM, run the node yourself, hold all the 
 
 ## Picking a setup
 
-- Trying Shinzo out? A managed provider's free tier is the cheapest way to see the pipeline work end to end. The Generator reads, signs, and commits blocks the same as anywhere else.
-- Running steady in production? A managed node provider with an SLA is a reasonable default. Check your blocks' attestation counts now and then so you'd notice if the provider's data ever diverged. [Verify data](/build/how-to/verify-data/) shows how.
-- Want maximum control over what your signature stands behind? Run the node yourself, on your own hardware or rented, and keep every key.
+Each setup earns its place. Trying Shinzo out? A managed provider's free tier is the cheapest way to see the whole pipeline work, and the Generator reads, signs, and commits blocks the same as anywhere else. For steady production, a managed provider with an SLA is a reasonable default, as long as you check your blocks' attestation counts now and then; [Verify data](/build/how-to/verify-data/) shows how to notice if the provider's data ever diverged. And when what you want is maximum control over what your signature stands behind, run the node yourself, on your own hardware or rented, and keep every key.
 
 ## Where to go next
 
