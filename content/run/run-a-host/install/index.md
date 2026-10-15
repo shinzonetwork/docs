@@ -51,7 +51,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     docker run -d \
       --name shinzo-host \
       -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
-      -e BOOTSTRAP_PEERS="<indexer-multiaddr>" \
+      -e BOOTSTRAP_PEERS="<generator-multiaddr>" \
       -p 9181:9181 \
       -p 9182:9182 \
       -p 9171:9171 \
