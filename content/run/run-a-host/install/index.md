@@ -36,14 +36,22 @@ Pull the image and start it with a single `docker run`. You supply two values: a
 1. Get your `BOOTSTRAP_PEERS` value. This is the libp2p address of the Generator client to sync from. It must be a full multiaddr that includes IP, port, and peer ID:
 
     ```plaintext
-    /ip4/<generator-ip>/tcp/9171/p2p/<generator-peer-id>
+    /ip4/<generator-public-ip>/tcp/9171/p2p/<generator-peer-id>
     ```
 
-    The peer ID is what libp2p authenticates the connection against, so an address without it won't connect. Read both the IP and the peer ID from your Generator client's health endpoint:
+    If your Generator client has a public hostname, use a `dns4` multiaddr instead:
+
+    ```plaintext
+    /dns4/<generator-hostname>/tcp/9171/p2p/<generator-peer-id>
+    ```
+
+    The peer ID is what libp2p authenticates the connection against, so an address without it won't connect. Read the peer ID from your Generator client's health endpoint:
 
     ```shell
-    curl -s http://<generator-host>:8080/health | jq -r '.p2p.self'
+    curl -s http://<generator-host>:8080/health | jq -r '.p2p.self.id'
     ```
+
+    For the address portion, use the Generator client's public IP or hostname. Don't copy an address from `.p2p.self.addresses` in the health response: those are the addresses the Generator client listens on, and under Docker bridge networking they're loopback (`127.0.0.1`) and the container's internal IP, which your Host client can't reach.
 
 1. Run the container, supplying the secret and multiaddr:
 
