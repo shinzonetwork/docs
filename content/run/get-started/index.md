@@ -99,7 +99,7 @@ The Host client needs two things to connect:
 1. The Generator client's libp2p Peer ID.
 1. A multiaddr it can dial.
 
-Both come from the Generator client's `/health` endpoint once it finishes starting up.
+Everything in this quickstart runs on one machine, and in that setup both come from the Generator client's `/health` endpoint once it finishes starting up.
 
 ```shell
 curl -s http://localhost:8080/health | jq '.p2p.self'
@@ -119,6 +119,8 @@ curl -s http://localhost:8080/health | jq '.p2p.self'
 `id` is the Generator client's libp2p Peer ID, derived from its keyring secret. It's stable across restarts as long as the secret stays the same.
 
 `addresses` are the multiaddrs the Generator client is actually listening on. The first one (`127.0.0.1`) is loopback and useless to other containers. The second (`172.17.0.2` here) is the Generator client container's IP on the Docker bridge. That's the one the Host client will dial.
+
+Reading the dialable address from `/health` only works because both containers share a Docker bridge on one machine. Those are the Generator's own listen addresses, so on a remote Generator client they're loopback and container-internal IPs your Host client can't reach. For a Generator on another machine, take only the peer ID from `/health` and build the multiaddr with its public IP or hostname, as in the [Host install guide](/run/run-a-host/install/).
 
 Capture both into shell variables:
 
