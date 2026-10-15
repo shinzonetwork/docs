@@ -284,7 +284,7 @@ services:
       - "444:9182"    # GraphQL Playground
       - "9171:9171"   # P2P networking
     volumes:
-      - ~/data/defradb:/app/.defra/data
+      - ~/data/defradb:/app/.defra
       - ~/data/keys:/app/.defra/keys
       - ~/data/lens:/app/.defra/lens
       - ~/config.yaml:/app/config.yaml:ro
