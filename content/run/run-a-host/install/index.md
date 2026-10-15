@@ -123,21 +123,6 @@ docker run -d \
 The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Host client can't write to the mounts and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
 {% end %}
 
-#### Migrating from the old mount path
-
-Earlier versions of this page mounted the database at `/app/.defra/data`. The Host client writes its database straight into `/app/.defra`, so with the old mount the database lives in the container's writable layer, and removing the container deletes it. If you ran with the old mount, copy the database out before recreating the container:
-
-```shell
-docker stop shinzo-host
-docker cp shinzo-host:/app/.defra ./defra-backup
-rm -rf ./defra-backup/keys ./defra-backup/lens ./defra-backup/data
-docker rm shinzo-host
-cp -a ./defra-backup/. ~/data/defradb/
-sudo chown -R 1001:1001 ~/data/defradb
-```
-
-The copy can include the contents of the nested `keys`, `lens`, and `data` mounts; the `rm` line drops them because your real keys and lens files already live on the host in `~/data/keys` and `~/data/lens`. Recreate the container with the mount above, and delete `./defra-backup` once the Host client is healthy. If you skip the copy, the Host client resyncs from scratch. Your node identity survives either way, because the keys were always stored on the host.
-
 Production deployments also put an nginx reverse proxy in front for TLS and CORS. The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
 
 ## Build from source
