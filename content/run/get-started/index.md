@@ -99,7 +99,7 @@ The Host client needs two things to connect:
 1. The Generator client's libp2p Peer ID.
 1. A multiaddr it can dial.
 
-Everything in this quickstart runs on one machine, and in that setup both come from the Generator client's `/health` endpoint once it finishes starting up.
+This quickstart runs everything on one machine, so both come from the Generator client's `/health` endpoint once it finishes starting up.
 
 ```shell
 curl -s http://localhost:8080/health | jq '.p2p.self'
