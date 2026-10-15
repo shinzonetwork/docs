@@ -110,7 +110,7 @@ sudo chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens
 docker run -d \
   --name shinzo-host \
   -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
-  -v ~/data/defradb:/app/.defra/data \
+  -v ~/data/defradb:/app/.defra \
   -v ~/data/keys:/app/.defra/keys \
   -v ~/data/lens:/app/.defra/lens \
   -p 9181:9181 \
