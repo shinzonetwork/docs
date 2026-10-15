@@ -16,17 +16,17 @@ These scenarios use data from a supported blockchain. Shinzo supports multiple b
 flowchart LR
   subgraph Startup["First startup"]
     direction TB
-    S1["1. Download snapshots<br/>from indexer over HTTPS"]
+    S1["1. Download snapshots<br/>from Generator over HTTPS"]
     S2["2. Import snapshots<br/>into DefraDB"]
     S3["3. Start P2P<br/>for live blocks"]
     S1 --> S2 --> S3
   end
 
-  Indexer["<b>Indexer</b><br/>HTTP :8080<br/>/snapshots endpoint"]
+  Generator["<b>Generator</b><br/>HTTP :8080<br/>/snapshots endpoint"]
   Gens["Generators<br/>(live P2P feed)"]
   Host["<b>Host</b>"]
 
-  Indexer -- "HTTPS<br/>snapshot files" --> Host
+  Generator -- "HTTPS<br/>snapshot files" --> Host
   Gens -- "P2P (libp2p)" --> Host
 {% end %}
 
