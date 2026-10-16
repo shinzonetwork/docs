@@ -23,4 +23,4 @@ The dev server runs at `http://127.0.0.1:1111` with live reload.
 1. Register the path in the relevant `[[extra.sidebar]]` block in `config.toml`. Pages are not auto-discovered.
 1. Run `zola check` to validate links before opening your PR.
 
-See the [contributing guide](https://docs.shinzo.network/understand/contributing/) for page conventions, aliases, and style notes.
+See the [contributing guide](https://docs.shinzo.network/understand/contributing/) for page conventions, redirects, and style notes.

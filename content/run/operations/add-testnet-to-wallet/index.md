@@ -1,7 +1,6 @@
 +++
 title = "Add the testnet to your wallet"
 description = "Connect MetaMask, Trust Wallet, and other browser wallets to the Shinzo testnet with the correct network parameters."
-aliases = ["/wallets/add-testnet"]
 +++
 
 To interact with the Shinzo testnet from a browser wallet, you add it as a custom network. This page lists the values every wallet needs, then steps through adding the network in MetaMask and Trust Wallet, with a generic method for any other EVM-compatible wallet at the end.

@@ -1,7 +1,6 @@
 +++
 title = "Snapshot bootstrap from a trustless indexer"
 description = "Bootstrap a Host with historical data on first startup by downloading signed snapshot files from a trustless indexer over HTTPS, then receive live blocks over P2P."
-aliases = ["/hosts/deployment-examples/snapshot-bootstrap"]
 [extra]
 mermaid = true
 +++

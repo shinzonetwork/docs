@@ -1,7 +1,6 @@
 +++
 title = "High-throughput tuning"
 description = "Tune the Generator for high throughput and fast catch-up from a historical start height by raising block and receipt concurrency, Badger cache sizes, and the Go runtime memory limit."
-aliases = ["/generators/deployment-examples/high-throughput-tuning"]
 [extra]
 mermaid = true
 +++

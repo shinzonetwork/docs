@@ -1,6 +1,5 @@
 +++
 title = "Get help"
-aliases = ["/help", "/introduction/get-help"]
 +++
 
 If you hit a blocker while running a Generator or Host, or while working through the docs, there are two places to go: the [Shinzo Discord](https://discord.shinzo.network) for onboarding and technical support, and GitHub Issues for reporting bugs and requesting features.

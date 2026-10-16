@@ -1,6 +1,5 @@
 +++
 title = "Quick Start"
-aliases = ["/hosts/quickstart"]
 description = "Run a Shinzo Host to transform blockchain data into verifiable Views"
 +++
 
@@ -127,7 +126,7 @@ query GetLatestLogs {
 }
 ```
 
-More query examples are available [here](/build/query-data/).
+More query examples are available [here](/build/how-to/query-data/).
 
 ## VM deployment
 

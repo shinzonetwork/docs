@@ -1,7 +1,6 @@
 +++
 title = "Home"
 template = "portal-home.html"
-aliases = ["/"]
 description = "Documentation for the Shinzo network: understand what Shinzo is and why it exists, build apps with and on it, or run its infrastructure."
 +++
 

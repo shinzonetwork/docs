@@ -1,43 +1,199 @@
-# Legacy path redirects to the current information architecture. Paths handled by Zola aliases on content pages (/, /introduction, /understand) are not duplicated here.
+# Cloudflare Pages redirects. First match wins, and static files take
+# precedence over rules, so a rule only fires when no page exists at the path.
+#
+# All legacy URLs use permanent (301) redirects so search engines consolidate
+# ranking onto the canonical page. Non-splat rules are listed in both bare and
+# trailing-slash form because a rule matches the request path exactly.
 
-/guides               /build/tutorials/create-your-first-view/
-/host                 /run/run-a-host/
-/host/*               /run/run-a-host/:splat
-/hosts                /run/run-a-host/
-/hosts/*              /run/run-a-host/:splat
-/generators           /run/run-a-generator/
-/generators/*         /run/run-a-generator/:splat
-/indexer              /run/run-a-generator/
-/indexer/*            /run/run-a-generator/:splat
-/indexers             /run/run-a-generator/
-/indexers/*           /run/run-a-generator/:splat
-/views                /build/tutorials/create-your-first-view/
-/view-creator         /build/tutorials/create-your-first-view/
-/view-creator/*       /build/tutorials/create-your-first-view/
-/reference            /reference/architecture/
-/reference/components /reference/components/
+# ---------------------------------------------------------------------------
+# Site root -> Home page. (The section at content/_index.md renders nothing.)
+# ---------------------------------------------------------------------------
+/                                       /understand/home/                           301
 
-# Original Docusaurus site served docs under the default "/docs" route prefix. Google still indexes those URLs, which now 404 on the Zola site. Permanent (301) redirects to the current pages. Both the bare and trailing-slash forms are covered so typed and indexed URLs both resolve.
+# ---------------------------------------------------------------------------
+# Renamed or moved pages (explicit rules; must precede the splat rules below).
+# ---------------------------------------------------------------------------
+
+# Understand
+/introduction                           /understand/what-is-shinzo/                 301
+/introduction/                          /understand/what-is-shinzo/                 301
+/understand                             /understand/what-is-shinzo/                 301
+/understand/                            /understand/what-is-shinzo/                 301
+/introduction/contributing              /understand/contributing/                   301
+/introduction/contributing/             /understand/contributing/                   301
+/introduction/get-help                  /understand/get-help/                       301
+/introduction/get-help/                 /understand/get-help/                       301
+/help                                   /understand/get-help/                       301
+/help/                                  /understand/get-help/                       301
+/introduction/how-it-works              /understand/how-it-works/                   301
+/introduction/how-it-works/             /understand/how-it-works/                   301
+/understand/data-journey                /understand/how-it-works/                   301
+/understand/data-journey/               /understand/how-it-works/                   301
+/introduction/join-the-community        /understand/join-the-community/             301
+/introduction/join-the-community/       /understand/join-the-community/             301
+/concepts/pools                         /understand/core-concepts/pools/            301
+/concepts/pools/                        /understand/core-concepts/pools/            301
+/pools                                  /understand/core-concepts/pools/          301
+/pools/                                 /understand/core-concepts/pools/          301
+/understand/core-concepts/attestation   /understand/core-concepts/attestations/   301
+/understand/core-concepts/attestation/  /understand/core-concepts/attestations/   301
+
+# Build
+/guides                                 /build/tutorials/create-your-first-view/  301
+/guides/                                /build/tutorials/create-your-first-view/  301
+/guides/building-apps-with-shinzo       /build/concepts/the-app-model/            301
+/guides/building-apps-with-shinzo/      /build/concepts/the-app-model/            301
+/guides/operator-quickstart             /run/get-started/                         301
+/guides/operator-quickstart/            /run/get-started/                         301
+/guides/configuring-event-filters-on-a-shinzo-host  /run/run-a-host/configure-event-filters/  301
+/guides/configuring-event-filters-on-a-shinzo-host/ /run/run-a-host/configure-event-filters/  301
+/build/build-an-app                     /build/concepts/the-app-model/            301
+/build/build-an-app/                    /build/concepts/the-app-model/            301
+/build/explanation/the-app-model        /build/concepts/the-app-model/            301
+/build/explanation/the-app-model/       /build/concepts/the-app-model/            301
+/build/explanation/choosing-an-architecture   /build/concepts/choosing-an-architecture/  301
+/build/explanation/choosing-an-architecture/  /build/concepts/choosing-an-architecture/  301
+/build/explanation/views-for-builders   /build/concepts/views-for-builders/       301
+/build/explanation/views-for-builders/  /build/concepts/views-for-builders/       301
+/build/explanation/attestation-as-a-query-filter  /build/concepts/attestation-as-a-query-filter/  301
+/build/explanation/attestation-as-a-query-filter/ /build/concepts/attestation-as-a-query-filter/  301
+/build/query-data                       /build/how-to/query-data/                 301
+/build/query-data/                      /build/how-to/query-data/                 301
+/build/create-a-view                    /build/tutorials/create-your-first-view/  301
+/build/create-a-view/                   /build/tutorials/create-your-first-view/  301
+/build/create-a-view/examples           /build/how-to/view-recipes/               301
+/build/create-a-view/examples/          /build/how-to/view-recipes/               301
+
+# Run - generators (including the old "indexer" naming). The
+# /run/run-a-generator/ section itself renders no page, so landings go to its
+# first page, Prerequisites.
+/generators                             /run/run-a-generator/prerequisites/       301
+/generators/                            /run/run-a-generator/prerequisites/       301
+/generator                              /run/run-a-generator/prerequisites/       301
+/generator/                             /run/run-a-generator/prerequisites/       301
+/indexer                                /run/run-a-generator/prerequisites/       301
+/indexer/                               /run/run-a-generator/prerequisites/       301
+/indexers                               /run/run-a-generator/prerequisites/       301
+/indexers/                              /run/run-a-generator/prerequisites/       301
+/run/run-a-generator                    /run/run-a-generator/prerequisites/       301
+/run/run-a-generator/                   /run/run-a-generator/prerequisites/       301
+/run/run-a-generator/hardware-requirements  /run/run-a-generator/prerequisites/   301
+/run/run-a-generator/hardware-requirements/ /run/run-a-generator/prerequisites/   301
+/generator/hardware-requirements        /run/run-a-generator/prerequisites/       301
+/generator/hardware-requirements/       /run/run-a-generator/prerequisites/       301
+/generators/hardware-requirements       /run/run-a-generator/prerequisites/       301
+/generators/hardware-requirements/      /run/run-a-generator/prerequisites/       301
+/generator/prerequisites                /run/run-a-generator/prerequisites/       301
+/generator/prerequisites/               /run/run-a-generator/prerequisites/       301
+/generator/install                      /run/run-a-generator/install/             301
+/generator/install/                     /run/run-a-generator/install/             301
+/generator/register                     /run/run-a-generator/register/            301
+/generator/register/                    /run/run-a-generator/register/            301
+/generator/security                     /run/run-a-generator/security/            301
+/generator/security/                    /run/run-a-generator/security/            301
+/generator/faq                          /run/operations/troubleshooting/          301
+/generator/faq/                         /run/operations/troubleshooting/          301
+/generators/faq                         /run/operations/troubleshooting/          301
+/generators/faq/                        /run/operations/troubleshooting/          301
+/generators/frequently-asked-questions  /run/operations/troubleshooting/          301
+/generators/frequently-asked-questions/ /run/operations/troubleshooting/          301
+/generators/deployment-examples/managed-node-gcp   /run/run-a-generator/deployment-examples/managed-gcp-node/    301
+/generators/deployment-examples/managed-node-gcp/  /run/run-a-generator/deployment-examples/managed-gcp-node/    301
+/generators/deployment-examples/nginx-tls-snapshots  /run/run-a-generator/deployment-examples/nginx-with-snapshots/  301
+/generators/deployment-examples/nginx-tls-snapshots/ /run/run-a-generator/deployment-examples/nginx-with-snapshots/  301
+/generators/deployment-examples/validator-local-geth  /run/run-a-generator/deployment-examples/validator-with-geth/  301
+/generators/deployment-examples/validator-local-geth/ /run/run-a-generator/deployment-examples/validator-with-geth/  301
+
+# Run - hosts. The /run/run-a-host/ section itself renders no page, so
+# landings go to its first page, Hardware requirements.
+/host                                   /run/run-a-host/hardware-requirements/    301
+/host/                                  /run/run-a-host/hardware-requirements/    301
+/hosts                                  /run/run-a-host/hardware-requirements/    301
+/hosts/                                 /run/run-a-host/hardware-requirements/    301
+/run/run-a-host                         /run/run-a-host/hardware-requirements/    301
+/run/run-a-host/                        /run/run-a-host/hardware-requirements/    301
+/hosts/examples                         /build/how-to/query-data/                 301
+/hosts/examples/                        /build/how-to/query-data/                 301
+/hosts/faq                              /run/operations/troubleshooting/          301
+/hosts/faq/                             /run/operations/troubleshooting/          301
+/hosts/frequently-asked-questions       /run/operations/troubleshooting/          301
+/hosts/frequently-asked-questions/      /run/operations/troubleshooting/          301
+/run/run-a-host/private                 /run/run-a-host/private-hosts/            301
+/run/run-a-host/private/                /run/run-a-host/private-hosts/            301
+/run/run-a-host/direct-client           /run/run-a-host/private-hosts/            301
+/run/run-a-host/direct-client/          /run/run-a-host/private-hosts/            301
+
+# Run - operations
+/wallets/add-testnet                    /run/operations/add-testnet-to-wallet/    301
+/wallets/add-testnet/                   /run/operations/add-testnet-to-wallet/    301
+
+# Views (old top-level section)
+/views                                  /build/tutorials/create-your-first-view/  301
+/views/                                 /build/tutorials/create-your-first-view/  301
+/views/install                          /build/tutorials/create-your-first-view/  301
+/views/install/                         /build/tutorials/create-your-first-view/  301
+/views/quickstart                       /build/tutorials/create-your-first-view/  301
+/views/quickstart/                      /build/tutorials/create-your-first-view/  301
+/views/overview                         /build/concepts/views-for-builders/       301
+/views/overview/                        /build/concepts/views-for-builders/       301
+/views/examples                         /build/how-to/view-recipes/               301
+/views/examples/                        /build/how-to/view-recipes/               301
+/views/lenses                           /reference/components/lens/               301
+/views/lenses/                          /reference/components/lens/               301
+/views/faq                              /run/operations/troubleshooting/          301
+/views/faq/                             /run/operations/troubleshooting/          301
+/view-creator                           /build/tutorials/create-your-first-view/  301
+/view-creator/                          /build/tutorials/create-your-first-view/  301
+/view-creator/*                         /build/tutorials/create-your-first-view/  301
+
+# Reference. The /reference/components/ section renders no page, so its
+# landing goes to its first page, Host client.
+/reference                              /reference/architecture/                  301
+/reference/                             /reference/architecture/                  301
+/reference/architecture-overview        /reference/architecture/                  301
+/reference/architecture-overview/       /reference/architecture/                  301
+/reference/components                   /reference/components/host-client/        301
+/reference/components/                  /reference/components/host-client/        301
+/changelog                              /reference/changelog/                     301
+/changelog/                             /reference/changelog/                     301
+
+# ---------------------------------------------------------------------------
+# Splat passthroughs for same-name pages under a renamed section. Explicit
+# rules above win over these.
+# ---------------------------------------------------------------------------
+/host/*                                 /run/run-a-host/:splat                    301
+/hosts/*                                /run/run-a-host/:splat                    301
+/generator/*                            /run/run-a-generator/:splat               301
+/generators/*                           /run/run-a-generator/:splat               301
+/indexer/*                              /run/run-a-generator/:splat               301
+/indexers/*                             /run/run-a-generator/:splat               301
+
+# ---------------------------------------------------------------------------
+# Original Docusaurus site served docs under the default "/docs" route prefix.
+# Google still indexes those URLs, which now 404 on the Zola site. Permanent
+# (301) redirects to the current pages. The "/*" twin covers any deeper
+# legacy paths under each prefix.
+# ---------------------------------------------------------------------------
 /docs/intro                                   /understand/what-is-shinzo/         301
 /docs/intro/*                                 /understand/what-is-shinzo/         301
 /docs/glossary                                /reference/glossary/                301
 /docs/glossary/*                              /reference/glossary/                301
-/docs/supported-networks                      https://shinzo.network/chains        301
-/docs/supported-networks/*                    https://shinzo.network/chains        301
+/docs/supported-networks                      https://shinzo.network/chains       301
+/docs/supported-networks/*                    https://shinzo.network/chains       301
 /docs/tokenomics                              /understand/what-is-shinzo/         301
 /docs/tokenomics/*                            /understand/what-is-shinzo/         301
-/docs/guides/building-apps-with-shinzo        /build/build-an-app/                301
-/docs/guides/building-apps-with-shinzo/*      /build/build-an-app/                301
-/docs/hosts/examples                          /build/query-data/                  301
-/docs/hosts/examples/*                        /build/query-data/                  301
-/docs/hosts/overview                          /run/run-a-host/                    301
-/docs/hosts/overview/*                        /run/run-a-host/                    301
+/docs/guides/building-apps-with-shinzo        /build/concepts/the-app-model/      301
+/docs/guides/building-apps-with-shinzo/*      /build/concepts/the-app-model/      301
+/docs/hosts/examples                          /build/how-to/query-data/           301
+/docs/hosts/examples/*                        /build/how-to/query-data/           301
+/docs/hosts/overview                          /run/run-a-host/hardware-requirements/  301
+/docs/hosts/overview/*                        /run/run-a-host/hardware-requirements/  301
 /docs/hosts/quickstart                        /run/run-a-host/quickstart/         301
 /docs/hosts/quickstart/*                      /run/run-a-host/quickstart/         301
 /docs/indexer/faq                             /run/operations/troubleshooting/    301
 /docs/indexer/faq/*                           /run/operations/troubleshooting/    301
-/docs/indexer/overview                        /run/run-a-generator/               301
-/docs/indexer/overview/*                      /run/run-a-generator/               301
+/docs/indexer/overview                        /run/run-a-generator/prerequisites/ 301
+/docs/indexer/overview/*                      /run/run-a-generator/prerequisites/ 301
 /docs/indexer/quickstart                      /run/get-started/                   301
 /docs/indexer/quickstart/*                    /run/get-started/                   301
 /docs/view-creator/overview                   /build/concepts/views-for-builders/ 301

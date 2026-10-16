@@ -1,7 +1,6 @@
 +++
 title = "Prod VM with nginx and TLS"
 description = "Run a production Host on a VM behind nginx with TLS termination and persistent volumes for DefraDB data, keys, and lens files."
-aliases = ["/hosts/deployment-examples/prod-vm-nginx-tls"]
 [extra]
 mermaid = true
 +++

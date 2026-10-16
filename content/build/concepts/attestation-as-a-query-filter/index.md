@@ -1,7 +1,6 @@
 +++
 title = "Attestation as a query filter"
 description = "Why attestation thresholds are a per-query trust dial, and how pushed attestation records let each app set its own bar for accepting data."
-aliases = ["/build/explanation/attestation-as-a-query-filter/"]
 +++
 
 When a Host client serves your app a piece of data, why believe it? With a traditional data provider the answer is "because it's them": you trust the provider's reputation, or you don't use them. Shinzo replaces that up-front trust with evidence that travels with the data. Every document originates from a Generator client that cryptographically signed it, and Host clients keep a running count of how many independent Generator clients signed the same thing. Your app reads that count and decides, at the moment it queries, whether the evidence is strong enough.
