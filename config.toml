@@ -233,6 +233,7 @@ section = "run"
 label = "Operations"
 pages = [
   "run/operations/add-testnet-to-wallet/index.md",
+  "run/operations/key-and-identity-management/index.md",
   "run/operations/troubleshooting/index.md"
 ]
 
