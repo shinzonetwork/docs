@@ -29,7 +29,7 @@ Because the libp2p peer ID is derived from the identity key, it stays stable acr
 Copy the keys directory somewhere safe:
 
 ```shell
-cp -r ~/.defra/keys /mnt/backup-drive/   # adjust the source path to match your setup
+cp -r ~/.defra/keys /mnt/backup-drive/   # Adjust the paths to match your setup.
 ```
 
 ## Recover a node
