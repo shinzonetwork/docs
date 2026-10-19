@@ -2,11 +2,11 @@
    Generator client, one lane each. The source chain and the Host are
    shared; each lane wraps its execution node and Generator client in a
    control boundary, and the signed packet flies the lane's route. The
-   third lane splits the boundaries: the provider runs the node, you run
-   the Generator. Per-step state lives in the inline <style>; packet
-   flights are declared via data-*. #}
+   third lane's boundary spans two platforms: a provider operates your
+   dedicated node, you run the Generator. Per-step state lives in the
+   inline <style>; packet flights are declared via data-*. #}
 <svg class="player__svg" viewBox="0 0 760 460" role="img"
-  aria-label="Diagram comparing three ways to feed a Generator client, with a source chain on the left and a Host on the right shared by all three. First: an execution node and a Generator client together inside your machine on your own hardware. Second: the same pair inside your control boundary on a rented VM. Third: the execution node inside the managed provider's platform with their keys, the Generator client inside your VM with your operator key, and the hop between the two boundaries leaving your control.">
+  aria-label="Diagram comparing three ways to feed a Generator client, with a source chain on the left and a Host on the right shared by all three. First: an execution node and a Generator client together inside your machine on your own hardware. Second: the same pair inside your control boundary on a rented VM. Third: a dedicated execution node operated by a managed provider and your Generator client on your VM, both inside your infrastructure boundary, with your keys throughout.">
   <defs>
     <g id="mn-gear-def">
       <circle r="9" style="fill: var(--color-primary);" />
@@ -107,19 +107,15 @@
     </g>
   </g>
 
-  <!-- Lane 3: managed node provider, two boundaries and a crossing -->
+  <!-- Lane 3: a managed provider operates your dedicated node, one boundary -->
   <g class="mn-lane" id="mn-lane-3">
     <g class="mn-bnd">
-      <rect class="mn-bnd-box" x="160" y="340" width="132" height="76" rx="12" />
-      <text class="hint" x="226" y="326">managed provider</text>
-      <g class="mn-key mn-key--theirs" transform="translate(276 354)">
+      <rect class="mn-bnd-box" x="160" y="340" width="248" height="76" rx="12" />
+      <text class="hint" x="284" y="326">your infrastructure &#183; provider-operated</text>
+      <g class="mn-key mn-key--yours" transform="translate(276 354)">
         <circle cx="-5" cy="0" r="4" />
         <path d="M -1 0 H 11 M 7 0 V 5 M 11 0 V 5" />
       </g>
-    </g>
-    <g class="mn-bnd">
-      <rect class="mn-bnd-box" x="302" y="340" width="106" height="76" rx="12" />
-      <text class="hint" x="355" y="326">your VM</text>
       <g class="mn-key mn-key--yours" transform="translate(390 354)">
         <circle cx="-5" cy="0" r="4" />
         <path d="M -1 0 H 11 M 7 0 V 5 M 11 0 V 5" />
@@ -176,7 +172,7 @@
     stroke-linecap: round;
   }
 
-  /* Key glyphs: yours lights up with the lane, the provider's stays neutral. */
+  /* Key glyphs: yours light up with the lane. */
   .mn-key {
     stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
     stroke-width: 1.6;
