@@ -5,7 +5,7 @@ description = "What each link in Shinzo's data path actually proves, what it doe
 mermaid = true
 +++
 
-Data in Shinzo crosses several trust boundaries on its way from the chain to your app, and each crossing works differently. Most links are backed by signatures you can verify yourself. One link runs on plain trust, and one has a known gap. This page walks the path hop by hop and says plainly what each hop guarantees and what it doesn't.
+Data in Shinzo crosses several trust boundaries on its way from the chain to your app, and each crossing works differently. Most links are backed by signatures you can verify yourself. One rests on the operator being a validator, and one has a known gap. This page walks the path hop by hop and says plainly what each hop guarantees and what it doesn't.
 
 {% mermaid() %}
 flowchart LR
@@ -26,17 +26,17 @@ flowchart LR
 
 ## The execution node to the Generator
 
-The Generator client reads blocks from an execution node over JSON-RPC and does not verify what it gets back. It doesn't re-execute transactions, recompute the block's Merkle roots, or compare responses against a second node. Whatever the node returns is what the Generator signs.
+The Generator client reads blocks from its validator's node over JSON-RPC, and the operator owns the entire infrastructure. It doesn't verify what the node returns: no re-executing transactions, no recomputing the block's Merkle roots, no comparing responses against a second node. It doesn't need to. You don't verify your own infrastructure.
 
-That is safe in the default deployment, where the Generator is a sidecar next to the operator's own node, often on the same machine. You don't need to verify your own infrastructure.
+That holds wherever the node runs: your own hardware, a rented VM, or a dedicated node that a managed provider operates for you. In every case it's your node, inside your boundary. [Managed nodes](/run/run-a-generator/managed-nodes/) compares the setups.
 
-It matters the moment the Generator points at someone else's node, such as a managed RPC provider. In that setup your signature vouches for the provider's data. If the provider ever serves wrong or incomplete data, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. The [security guidance](/run/run-a-generator/security/) covers deployment shapes, and the [QuickNode guide](/run/run-a-generator/guides/quicknode-setup/) carries the same warning.
+If the node ever serves wrong or incomplete data, that data is what gets signed, and your blocks stop matching what other Generator clients sign for the same heights. Catching that divergence is what attestations are for, as the example below shows.
 
 ## Who a Generator is
 
-The data link is trusted, but the identity link is not. A Generator client generates its own operator key locally and never touches the validator's consensus or withdrawal keys. During registration, the validator's withdrawal key signs a one-time assertion that ties the operator key to the validator's identity, and that assertion is verified on-chain (through the outpost contract; on the current testnet, through an admin-key approval flow).
+The data link is trusted because the operator is a validator, and the identity link is cryptographic. A Generator client generates its own operator key locally and never touches the validator's consensus or withdrawal keys. During registration, the validator's withdrawal key signs a one-time assertion that ties the operator key to the validator's identity, and that assertion is verified on-chain (through the outpost contract; on the current testnet, through an admin-key approval flow).
 
-So the network can prove which validator stands behind a given Generator, even though nothing checks the data flowing into that Generator. The two questions are separate: "who signed this" is cryptographic, "was their node telling the truth" is not. The next two hops cover how the network deals with the second one.
+So the network can prove which validator stands behind a given Generator. The remaining question is the data itself, and that one isn't answered by trust: the Generator's per-block signature and Merkle root pin down exactly what was signed, and attestations on Host clients catch a source whose data diverges from everyone else's. The next two hops show both mechanisms.
 
 ## What the Generator's signature proves
 
@@ -48,9 +48,9 @@ Just as important is what the signature does _not_ prove. It doesn't prove the d
 
 ## Hosts and attestations
 
-Attestations live on Host clients, and they exist for one job: telling apart multiple Generator sources. When a Host client receives a block from a Generator, it verifies the signature and recomputes the Merkle root from the document CIDs. Only then does it open (or update) an attestation record for that block, keyed by the block height and the signed root.
+Attestations live on Host clients, and their main job is telling apart multiple Generator sources. When a Host client receives a block from a Generator, it verifies the signature and recomputes the Merkle root from the document CIDs. Only then does it open (or update) an attestation record for that block, keyed by the block height and the signed root.
 
-Say three Generators, each run by a different validator on its own node, all process block 19,000,000. Two of them sign the same Merkle root, so the Host's attestation record for that root reaches a vote count of two. A third Generator's served a bad block, so the Generator signs a different root and it's attestation record count sits at one. An app that asks for blocks with at least two attestations reads from sources greater than 1 and never sees the outlier, all without having to know which source was wrong.
+Say three Generators, each run by a different validator on its own node, all process block 19,000,000. Two of them sign the same Merkle root, so the Host's attestation record for that root reaches a vote count of two. The third Generator's node served a bad block, so the Generator signs a different root and its attestation record count sits at one. An app that asks for at least two attestations reads the root the first two agree on and never sees the outlier, without needing to know which source was wrong.
 
 The same math smooths over honest disagreement: chains re-org, and requiring more than one attestation keeps your app from acting on a block that just got reorganized out. [Attestations](/understand/core-concepts/attestations/) covers the record itself and how the counting works, and [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/) covers how apps set per-query thresholds.
 
@@ -72,4 +72,4 @@ Policing and economic penalties for manipulative Hosts are part of the protocol 
 - [Verify data with signatures and CIDs](/build/how-to/verify-data/): the hands-on queries for checking data yourself.
 - [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/): setting per-query trust thresholds in your app.
 - [Generator security](/run/run-a-generator/security/): deployment shapes and key separation for operators.
-- [Managed nodes](/run/run-a-generator/managed-nodes/): what changes when someone else runs your source node.
+- [Managed nodes](/run/run-a-generator/managed-nodes/): what changes when a provider operates your node.
