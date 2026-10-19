@@ -1,0 +1,379 @@
+/* Generic step-through guided player (shortcode: player.html).
+ *
+ * Shared chrome + scene atoms. Each scene partial (templates/player-scenes/)
+ * carries its own per-step state rules in an inline <style> block, keyed on
+ * the .player--sN class that the engine sets on the root. */
+
+.player {
+  margin: 1.5rem 0 2rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.07);
+}
+
+.player__stage {
+  background: color-mix(in srgb, var(--foreground) 2.5%, var(--background));
+  padding: 10px 12px 0;
+}
+
+.player__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- panel: caption + controls --- */
+
+.player__panel {
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  padding: 16px 18px 12px;
+}
+
+.player__captionbox {
+  min-height: 96px;
+}
+
+.player__caption-title {
+  margin: 0 0 0.4rem;
+}
+
+.player__caption-body p {
+  margin: 0;
+}
+
+.player__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.player__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.player__btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--foreground) 7%, transparent);
+}
+
+.player__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.player__btn--play {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.player__btn--play:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.player__btn--play .player-icon-pause {
+  display: none;
+}
+
+.player--playing .player__btn--play .player-icon-play {
+  display: none;
+}
+
+.player--playing .player__btn--play .player-icon-pause {
+  display: inline;
+}
+
+.player__dots {
+  display: flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.player__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--foreground) 22%, transparent);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.player__dot.on {
+  background: var(--color-primary);
+  transform: scale(1.25);
+}
+
+.player__count {
+  margin-left: auto;
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
+.player__progress {
+  height: 3px;
+  margin: 12px -18px -12px;
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.player__progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--color-primary);
+  transition: width 0.4s ease;
+}
+
+/* Caption source divs live in the shortcode body; the JS reads them. */
+.player__caption {
+  display: none;
+}
+
+/* --- SVG scene atoms --- */
+
+.route {
+  stroke: color-mix(in srgb, var(--foreground) 22%, transparent);
+  stroke-width: 2;
+}
+
+.route--side {
+  stroke: color-mix(in srgb, var(--foreground) 14%, transparent);
+  stroke-dasharray: 4 5;
+  stroke-width: 1.5;
+}
+
+.hint {
+  font-family: var(--font-family-monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+.station .box,
+.station .box-lip {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-width: 1.5;
+  transition: stroke 0.25s ease;
+}
+
+.station.on .box,
+.station.on .box-lip {
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+}
+
+.block {
+  fill: color-mix(in srgb, var(--foreground) 16%, transparent);
+  transition: fill 0.25s ease;
+}
+
+.station.on .block {
+  fill: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+/* Gears spin while their station is highlighted. */
+.gear {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.station.on .gear {
+  animation: playerSpin 3.5s linear infinite;
+}
+
+@keyframes playerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Lens-gate glyph: raw document in, structured document out. */
+.gate-arrow {
+  stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.25s ease;
+}
+
+.station.on .gate-arrow {
+  stroke: var(--color-primary);
+}
+
+.gate-raw {
+  font-family: var(--font-family-monospace);
+  font-size: 7px;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 60%, transparent);
+}
+
+.gate-lines {
+  stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.dot-win {
+  fill: color-mix(in srgb, var(--foreground) 30%, transparent);
+}
+
+.label {
+  font-family: var(--font-family-monospace);
+  font-size: 12.5px;
+  text-anchor: middle;
+  fill: color-mix(in srgb, var(--foreground) 72%, transparent);
+  transition: fill 0.25s ease;
+}
+
+.label--small {
+  font-size: 11px;
+  text-anchor: start;
+  fill: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.label--sub {
+  font-size: 10px;
+  fill: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+.label--end {
+  text-anchor: end;
+}
+
+.station.on .label {
+  fill: var(--foreground);
+}
+
+/* Info cards (attestation record, pool status, ...): hidden until a scene's
+   per-step rules show them. */
+.card {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card rect {
+  fill: var(--background);
+  stroke: color-mix(in srgb, var(--foreground) 20%, transparent);
+  stroke-width: 1;
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  font-size: 12px;
+  fill: var(--foreground);
+}
+
+.card-mono {
+  font-family: var(--font-family-monospace);
+  font-size: 11px;
+  fill: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+/* Counter widget: one .num plus any number of .dot children, driven by the
+   engine from data-counter-* attributes. */
+.num {
+  font-family: var(--font-family-monospace);
+  fill: var(--color-primary);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.dot {
+  fill: transparent;
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-width: 1.5;
+  transition: fill 0.2s ease;
+}
+
+.dot.filled {
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
+}
+
+/* --- packets --- */
+
+.packet rect {
+  fill: var(--background);
+  stroke: var(--foreground);
+  stroke-width: 1.5;
+}
+
+.packet-text {
+  font-family: var(--font-family-monospace);
+  font-size: 12px;
+  text-anchor: middle;
+  fill: var(--foreground);
+}
+
+.packet-text--sm {
+  font-size: 9px;
+}
+
+.doc-rect {
+  stroke: var(--color-primary) !important;
+  fill: color-mix(in srgb, var(--color-primary) 7%, var(--background)) !important;
+}
+
+/* The main packet rides between stations; scenes position it per step. */
+.packet--main {
+  transition: transform 0.8s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 0.45s ease;
+}
+
+/* Signature/version seal: pops in on the steps a scene marks. */
+.seal {
+  transform: translate(18px, -14px) scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s;
+}
+
+.seal-dot {
+  fill: var(--color-primary);
+}
+
+.seal-check {
+  stroke: var(--background);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.seal-text {
+  font-family: var(--font-family-monospace);
+  font-size: 7px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--background);
+}
+
+[data-theme="dark"] .player {
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.5);
+}
+
+/* Reduced motion: state changes are instant, autoplay still works. */
+@media (prefers-reduced-motion: reduce) {
+  .player *,
+  .player *::before,
+  .player *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation: none !important;
+  }
+}

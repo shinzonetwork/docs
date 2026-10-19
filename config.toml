@@ -1,11 +1,9 @@
-# Shinzō Developer Portal — Zola configuration
-# Migrated from the Docusaurus site at ../docs
+# Shinzo Docs Zola configuration
 
 base_url = "https://docs.shinzo.network"
-title = "Shinzō Developer Portal"
+title = "Shinzo Developer Portal"
 description = "Build the Read Layer of Truth"
 
-# Docs are served at the site root (Docusaurus had routeBasePath: "/").
 compile_sass = true
 build_search_index = true
 minify_html = false
@@ -13,11 +11,6 @@ minify_html = false
 # Generate redirect/alias pages, taxonomy-free.
 generate_feeds = false
 
-# Excalidraw source files are co-located with diagrams but not served.
-ignored_content = ["*.excalidraw"]
-
-# Don't fail the build on internal link issues during migration; warn instead.
-# (Zola validates internal links only when this is true.)
 [link_checker]
 internal_level = "error"
 external_level = "warn"
@@ -31,13 +24,17 @@ insert_anchor_links = "none"
 external_links_target_blank = true
 
 # Syntax highlighting: emit CSS classes (.z-*) so our brand code colors in
-# static/css/code-theme.css take effect. A base theme is still required by Zola.
+# static/css/code-theme.css take effect.
 [markdown.highlighting]
 style = "class"
 theme = "github-light"
+# Registered so ```output blocks keep data-lang="output" for CSS targeting.
+# See grammars/README.md.
+extra_grammars = ["grammars/output.json"]
 
 [search]
-# Mirrors @easyops-cn/docusaurus-search-local (local, client-side search).
+# Fuse.js index (public/search_index.en.json), fetched lazily by static/js/search.js.
+index_format = "fuse_json"
 include_title = true
 include_description = true
 include_path = true
@@ -48,6 +45,234 @@ tagline = "Build the Read Layer of Truth"
 github_url = "https://github.com/shinzonetwork/"
 og_image = "/img/shinzo-opengraph.png"
 favicon = "/img/favicon.png"
-# Plausible analytics (was injected via docusaurus.config scripts)
+# Plausible analytics
 plausible_domain = "docs.shinzo.network"
 plausible_src = "https://plausible.source.network/js/script.js"
+# Google Analytics 4 (gtag.js)
+google_analytics_id = "G-VC59JRWDBZ"
+
+
+
+# Top navigation bar
+# ------------------
+# - label: link text.
+# - href: landing-page URL (literal path).
+# - section: path prefix for active highlighting: active when the current path starts with "/{section}/".
+# - root: optional; when true the entry is ALSO active at the site root ("/"), which redirects to the Home page.
+
+[[extra.navbar]]
+label = "Understand"
+href = "/understand/what-is-shinzo/"
+section = "understand"
+
+[[extra.navbar]]
+label = "Run infrastructure"
+href = "/run/"
+section = "run"
+
+[[extra.navbar]]
+label = "Build apps"
+href = "/build/"
+section = "build"
+
+[[extra.navbar]]
+label = "Reference"
+href = "/reference/architecture/"
+section = "reference"
+# ------------------
+
+
+
+# Sidebar navigation tree (manual order, per section).
+# ---------------------------------------
+# Each [[extra.sidebar]] block is a group within a section's sidebar.
+# - `section`: which top-level section this group belongs to ("understand",
+#   "build", "run", "reference"). The macro filters by the current path so
+#   only the active section's groups are shown. The site root ("/") is an
+#   alias to the Home page under Understand, which shows this sidebar.
+# - `label`: group heading text.
+# - `page`: optional path to a section _index.md; when set, the group label
+#   is a link to that landing page.
+# - `pages`: content paths relative to content/; page titles are resolved
+#   from front matter.
+# Pages are NOT auto-discovered: a new doc page must be listed here to appear.
+
+# Understand
+[[extra.sidebar]]
+section = "understand"
+label = "Basics"
+pages = [
+  "understand/home/index.md",
+  "understand/what-is-shinzo/index.md",
+  "understand/how-it-works/index.md"
+]
+
+[[extra.sidebar]]
+section = "understand"
+label = "Core concepts"
+pages = [
+  "understand/core-concepts/views/index.md",
+  "understand/core-concepts/pools/index.md",
+  "understand/core-concepts/trust-verification/index.md",
+  "understand/core-concepts/attestations/index.md",
+  "understand/core-concepts/defradb/index.md",
+  "understand/core-concepts/did-keys/index.md",
+  "understand/core-concepts/privacy/index.md"
+]
+
+[[extra.sidebar]]
+section = "understand"
+label = "Community"
+pages = [
+  "understand/get-help/index.md",
+  "understand/join-the-community/index.md",
+  "understand/contributing/index.md",
+]
+
+[[extra.sidebar]]
+section = "build"
+label = "Concepts"
+pages = [
+  "build/concepts/the-app-model/index.md",
+  "build/concepts/choosing-an-architecture/index.md",
+  "build/concepts/views-for-builders/index.md",
+  "build/concepts/attestation-as-a-query-filter/index.md",
+]
+
+[[extra.sidebar]]
+section = "build"
+label = "Tutorials"
+pages = [
+  "build/tutorials/query-your-first-view/index.md",
+  "build/tutorials/create-your-first-view/index.md",
+  "build/tutorials/build-a-local-first-app/index.md",
+  "build/tutorials/spinup-a-local-devnet/index.md",
+]
+
+[[extra.sidebar]]
+section = "build"
+label = "How-to"
+pages = []
+subsections = [
+  { label = "Read data", pages = [
+    "build/how-to/find-views-and-hosts/index.md",
+    "build/how-to/connect-to-a-host/index.md",
+    "build/how-to/query-data/index.md",
+    "build/how-to/subscribe-to-views/index.md",
+  ] },
+  { label = "Verify your data", pages = [
+    "build/how-to/verify-data/index.md",
+    "build/how-to/configure-attestation-thresholds/index.md",
+  ] },
+  { label = "Create Views", pages = [
+    "build/how-to/view-recipes/index.md",
+    "build/how-to/use-shinzo-studio/index.md",
+    "build/how-to/write-a-lens/index.md",
+  ] },
+  { label = "Run your own setup", pages = [
+    "build/tutorials/spinup-a-local-devnet/index.md",
+    "build/how-to/use-your-own-infrastructure/index.md",
+  ] },
+]
+
+# Run infrastructure
+[[extra.sidebar]]
+section = "run"
+label = "Quickstart"
+pages = [
+  "run/get-started/index.md",
+]
+
+[[extra.sidebar]]
+section = "run"
+label = "Run a Generator"
+pages = [
+  "run/run-a-generator/prerequisites/index.md",
+  "run/run-a-generator/install/index.md",
+  "run/run-a-generator/register/index.md",
+  "run/run-a-generator/config-reference/index.md",
+  "run/run-a-generator/security/index.md",
+]
+subsections = [
+  { label = "Deployment Examples", pages = [
+    "run/run-a-generator/deployment-examples/validator-with-geth/index.md",
+    "run/run-a-generator/deployment-examples/managed-gcp-node/index.md",
+    "run/run-a-generator/deployment-examples/nginx-with-snapshots/index.md",
+    "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
+    "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",
+  ] },
+  { label = "Guides", pages = [
+    "run/run-a-generator/guides/quicknode-setup/index.md",
+  ] },
+]
+
+[[extra.sidebar]]
+section = "run"
+label = "Run a Host"
+pages = [
+  "run/run-a-host/hardware-requirements/index.md",
+  "run/run-a-host/install/index.md",
+  "run/run-a-host/configure-event-filters/index.md",
+  "run/run-a-host/register/index.md",
+  "run/run-a-host/private-hosts/index.md",
+  "run/run-a-host/quickstart/index.md",
+  "run/run-a-host/config-reference/index.md",
+]
+subsections = [
+  { label = "Deployment Examples", pages = [
+    "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
+    "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
+    "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
+    "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
+    "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
+  ] },
+]
+
+[[extra.sidebar]]
+section = "run"
+label = "Operations"
+pages = [
+  "run/operations/add-testnet-to-wallet/index.md",
+  "run/operations/troubleshooting/index.md"
+]
+
+# Reference
+[[extra.sidebar]]
+section = "reference"
+label = "Reference"
+pages = [
+  "reference/architecture/index.md",
+  "reference/changelog/index.md",
+  "reference/tools/index.md",
+  "reference/specs-and-limits/index.md",
+  "reference/errors/index.md",
+  "reference/glossary/index.md",
+]
+
+[[extra.sidebar]]
+section = "reference"
+label = "Data model"
+page = "reference/data-model/_index.md"
+pages = [
+  "reference/data-model/primitives/index.md",
+  "reference/data-model/signatures/index.md",
+  "reference/data-model/attestation-record/index.md",
+  "reference/data-model/naming-convention/index.md",
+  "reference/data-model/defradb-metadata/index.md",
+  "reference/data-model/schema-directives/index.md",
+]
+
+[[extra.sidebar]]
+section = "reference"
+label = "Components"
+pages = [
+  "reference/components/generator-client/index.md",
+  "reference/components/host-client/index.md",
+  "reference/components/shinzohub/index.md",
+  "reference/components/outpost/index.md",
+  "reference/components/viewkit/index.md",
+  "reference/components/lens/index.md",
+  "reference/components/relayer/index.md",
+]
+
+# ---------------------------------------

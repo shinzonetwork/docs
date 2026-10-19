@@ -1,0 +1,351 @@
++++
+title = "Install"
+aliases = ["/generator/install", "/generators/install"]
++++
+
+This page covers installing a Shinzo Generator client with Docker or from source. To complete the Generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
+
+Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration requirements](../prerequisites#registration-requirements) for details.
+
+## Hardware recommendations
+
+The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See [Hardware requirements](../prerequisites#hardware-requirements) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
+
+## One-line install
+
+The fastest way to get a Generator client running is the install script: 
+
+1. Make sure Docker is installed.
+1. Grab and run the script:
+
+    ```shell
+    curl -fsSL https://docs.shinzo.network/install-generator.sh | sh
+    ```
+
+### How it works
+
+The script handles the mechanical setup, then stops and asks you your execution node details. The script itself does the following:
+
+1. Checks that Docker and the compose plugin are installed and running, and tells you where to get support if not.
+1. Prompts for your execution node's RPC and WebSocket URLs, plus an API key if the node requires one. To skip the prompts, set `GETH_RPC_URL`, `GETH_WS_URL`, and `GETH_API_KEY` before the pipe.
+1. Creates a `shinzo-generator` directory (in `pwd`) with a `docker-compose.yml` and an `.env` file, with a random `DEFRADB_KEYRING_SECRET` generated for you so your node identity is unique and persists across restarts.
+1. Creates the persistent data directory (`~/shinzo-data/defradb`) with write access for the container, so you don't hit the [permission error](#permission-denied-on-defra-keys) on first run.
+1. Pulls the Generator client image and starts it.
+
+The node prompt is the one manual part. The script can't guess which node you want the Generator to read. Any node that exposes JSON-RPC and WebSocket works: one you run yourself, one co-located with your validator, or a managed provider.
+
+It's safe to run the script more than once. If a Generator client is already set up in the current directory, it tells you and changes nothing.
+
+### Post-install
+
+Once the install script has finished, you can interact with the client:
+
+```shell
+# Health check
+curl -s http://localhost:8080/health
+
+# Logs
+docker logs -f shinzo-generator
+
+# Stop
+docker compose -f shinzo-generator/docker-compose.yml down
+
+# Uninstall (deletes the client's data)
+docker compose -f shinzo-generator/docker-compose.yml down -v
+rm -rf shinzo-generator ~/shinzo-data
+```
+
+{% admonition(type="info") %}
+This script does not register your Generator client. Check the [registration requirements](../prerequisites#registration-requirements) for details on how to register a client.
+{% end %}
+
+## Using Docker
+
+These steps use Docker to run the Shinzo Generator client. To build the Generator client from source, see [Building from source](#building-from-source) below.
+
+### Prerequisites
+
+- Docker.
+- Access to an execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you; it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
+- A browser wallet setup. This wallet does not need to hold any funds.
+
+You do not need to be a validator, or to run a validator, just to install and run the Generator client. Validator requirements only apply to the [Registration](../register) step.
+
+### Steps
+
+1. Pull the pre-built Generator client image from the Shinzo container registry.
+
+    ```shell
+    docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
+    ```
+
+    ```output
+    standard: Pulling from shinzonetwork/shinzo-generator-client
+    2521f1b70bf8: Pull complete
+    2c845527b24c: Pull complete
+    
+    [...]
+    
+    Digest: sha256:a272b09607e6f3f07399d72d019f058919ba2854469835b80478fd75799fa0fd
+    Status: Downloaded newer image for ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
+    ```
+
+1. Gather your execution node's:
+
+    - RPC URL
+    - WebSocket URL
+    - API key ([if set](#do-you-need-an-api-key))
+
+1. Start the Generator client by filling in your details and running:
+
+    ```shell
+    docker run \
+      -e GETH_RPC_URL={{ YOUR RPC URL }}\
+      -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
+      -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
+      -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
+      -e INDEXER_START_HEIGHT=0 \
+      -e DEFRADB_KEYRING_SECRET=testnet-secret \
+      -e DEFRADB_PLAYGROUND=true \
+      -e DEFRADB_P2P_ENABLED=true \
+      -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
+      -e LOGGER_DEBUG=true \
+      -p 127.0.0.1:9181:9181 \
+      -p 9171:9171 \
+      -p 8080:8080 \
+      ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
+    ```
+
+You should see the Generator client connect to your node and start collecting and committing blocks:
+
+```output
+2026-05-11T10:59:54.762Z	INFO	Committed block 25071330 (ID: bae-235bbc36-32ff-5fb0-8361-6c4dc3d6aeb9)
+2026-05-11T10:59:54.902Z	DEBUG	HTTP response: 200 OK (Content-Length: )
+2026-05-11T10:59:54.902Z	DEBUG	HTTP request successful, status: 200 OK
+2026-05-11T10:59:55.272Z	DEBUG	HTTP Request: POST http://35.193.228.182:8080
+2026-05-11T10:59:55.272Z	DEBUG	Setting x-goog-api-key header: df7f****e6db
+2026-05-11T10:59:55.272Z	DEBUG	Request headers: Content-Type=application/json, User-Agent=
+2026-05-11T10:59:55.409Z	DEBUG	HTTP response: 200 OK (Content-Length: )
+2026-05-11T10:59:55.409Z	DEBUG	HTTP request successful, status: 200 OK
+```
+
+Eventually your Generator client will catch up with the validator node and start waiting for new blocks rather than pulling historical data:
+
+```output
+2026-05-11T11:05:09.338Z	DEBUG	HTTP response: 200 OK (Content-Length: )
+2026-05-11T11:05:09.338Z	DEBUG	HTTP request successful, status: 200 OK
+2026-05-11T11:05:09.338Z	INFO	Block 25071451 not available yet, waiting...
+```
+
+### Running a persistent Generator
+
+The command above stores everything inside the container, so removing the container discards its database and node identity. That's fine for testing. For a long-running Generator client, persist the data directory on the host machine:
+
+```shell
+mkdir -p ~/shinzo-data/defradb
+sudo chown -R 1001:1001 ~/shinzo-data/defradb
+
+docker run -d \
+  --name shinzo-generator \
+  -e GETH_RPC_URL={{ YOUR RPC URL }}\
+  -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
+  -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
+  -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
+  -e INDEXER_START_HEIGHT=0 \
+  -e DEFRADB_KEYRING_SECRET={{ YOUR STRONG SECRET }} \
+  -e DEFRADB_P2P_ENABLED=true \
+  -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
+  -e LOGGER_DEBUG=true \
+  -v ~/shinzo-data/defradb:/app/.defra \
+  -p 127.0.0.1:9181:9181 \
+  -p 9171:9171 \
+  -p 8080:8080 \
+  ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
+```
+
+{% admonition(type="warning") %}
+The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Generator client can't write to the mount and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
+{% end %}
+
+`DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator client can't load its existing identity and fails to start.
+
+{% admonition(type="info") %}
+The `docker run` example is a throwaway first run, so it sets no memory limits. For anything long-lived, set a container memory limit and `GOMEMLIMIT` below it. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+{% end %}
+
+### Registration
+
+Once the Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
+
+## Building from source
+
+You can also build the Generator client binary from source instead of using Docker.
+
+### Prerequisites
+
+- Go 1.26 or later.
+- Git.
+- Access to an execution node (same as the [Docker install method](#using-docker)).
+
+### Steps
+
+1. Clone the repository and install the Go dependencies.
+
+    ```shell
+    git clone https://github.com/shinzonetwork/shinzo-generator-client.git
+    cd shinzo-generator-client
+    go mod download
+    ```
+
+1. Create a `.env` file with your node details and Generator client settings.
+
+    ```shell
+    cat > .env << EOF
+    GETH_RPC_URL=<your-rpc-url>
+    GETH_WS_URL=<your-ws-url>
+    GETH_API_KEY=<your-api-key>
+    GETH_API_KEY_TYPE=<header-name, e.g. x-goog-api-key or x-api-key>
+
+    DEFRADB_KEYRING_SECRET=<your-keyring-secret>
+    DEFRADB_PLAYGROUND=true
+    DEFRADB_P2P_ENABLED=true
+    DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171
+
+    SCHEMA_AUTH_MODE=none
+    INDEXER_START_HEIGHT=0
+    LOGGER_DEBUG=true
+    EOF
+    ```
+
+    You [may not need to enter an API key](#do-you-need-an-api-key). The client fails to start without `SCHEMA_AUTH_MODE` set: the shipped `config.yaml` reads this variable from the environment. The value `none` matches the shipped Docker setup. See the [security page](../security/#schema-endpoint-auth) before exposing the schema endpoints.
+
+1. Build the binary.
+
+    ```shell
+    make build
+    ```
+
+1. Run the Generator client.
+
+    ```shell
+    make start
+    ```
+
+{% admonition(type="info") %}
+The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups. Environment variables in `.env` override values in `config.yaml`.
+{% end %}
+
+### Run as a systemd service
+
+`make start` runs the Generator client in your terminal session, so the process stops when you close it. A systemd service keeps the client running after you log out, restarts it after failures, and can start it when the machine boots.
+
+1. Create the service unit file. Set `User` to the user that runs the client, and `WorkingDirectory` to the directory where you cloned the Generator client repository.
+
+    ```shell
+    sudo tee /etc/systemd/system/shinzo-generator.service << EOF
+    [Unit]
+    Description=Shinzo Generator Client
+    Wants=network-online.target
+    After=network-online.target
+
+    [Service]
+    Type=simple
+    User=<service-user>
+    WorkingDirectory=<generator-install-directory>
+    ExecStart=make start
+    Restart=on-failure
+    RestartSec=3
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    ```
+
+    `WorkingDirectory` must be the repository root: the client loads its `.env` file and `config/config.yaml` relative to it.
+
+1. Reload systemd and start the service.
+
+    ```shell
+    sudo systemctl daemon-reload
+    sudo systemctl start shinzo-generator
+    ```
+
+1. Check that the service is running.
+
+    ```shell
+    systemctl status shinzo-generator
+    ```
+
+    Follow the logs with:
+
+    ```shell
+    sudo journalctl -u shinzo-generator -f
+    ```
+
+1. To start the Generator client automatically when the machine boots, enable the service.
+
+    ```shell
+    sudo systemctl enable shinzo-generator
+    ```
+
+{% admonition(type="info") %}
+Run the service as a dedicated user rather than root. The service user needs write access to the install directory: the Generator client writes its database to `.defra/` and its logs to `logs/`. If you created the user after building, give it ownership with `sudo chown -R <service-user>:<service-user> <generator-install-directory>`.
+{% end %}
+
+### Registration
+
+Once your Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
+
+## Do you need an API key?
+
+It depends on where your node is.
+
+If the Generator client and your node are on the same private network (both on VMs in the same VPC, for example) you probably don't need one. Most execution nodes have no authentication by default. Leave `GETH_API_KEY` empty and point `GETH_RPC_URL` at the node's internal IP or hostname.
+
+For an externally hosted node, authentication is almost always required. Two common cases:
+
+- GCP Blockchain Node Engine (`blockchainnodeengine.com`) expects the key in the `x-goog-api-key` header.
+- A self-hosted node behind a reverse proxy (e.g. nginx) uses whatever header the operator configures. `x-api-key` is common.
+
+Set `GETH_API_KEY_TYPE` to the header name your provider expects.
+
+| Provider | `GETH_API_KEY_TYPE` value |
+| --- | --- |
+| GCP Blockchain Node Engine | `x-goog-api-key` |
+| Self-hosted / most others | `x-api-key` |
+
+## Exposed ports
+
+The following ports must be available on the machine. Two of them need to be reachable from the internet. See [Security](../security/) for the full exposure rules.
+
+| Port | Service | Publish publicly? |
+| --- | --- | --- |
+| `8080` | Health (`/health`), metrics (`/metrics`), registration (`/registration`). | Yes, at least for `/health`. The public Generators dashboard probes `http://<your-server-ip>:8080/health` over plaintext HTTP to decide whether your Generator shows as online, and the probe can't follow a redirect to TLS. If `8080` isn't reachable from the internet, your Generator shows as offline even while it's running fine. |
+| `9171` | DefraDB P2P. | Yes. This is how Hosts receive data. |
+| `9181` | DefraDB GraphQL API. | No. Localhost only. Raw, unauthenticated read/write access to the local database. |
+
+Publishing `8080` exposes everything on it, not just `/health`. If you want to limit that surface, put nginx in front and proxy only the paths you intend to serve. See [Security](../security/) for the tradeoffs and the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config.
+
+## Troubleshooting
+
+### Permission denied on `.defra/keys`
+
+The data directory is owned by root but the container runs as UID 1001. Stop the container, fix the ownership, then start again:
+
+```shell
+docker stop shinzo-generator
+sudo chown -R 1001:1001 ~/shinzo-data/defradb
+docker start shinzo-generator
+```
+
+### Failed to load existing DefraDB identity
+
+`DEFRADB_KEYRING_SECRET` has changed since the first run. Restore the original value in your `docker run` command and restart the container.
+
+### WebSocket unavailable, will use HTTP-only mode
+
+The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is correct and the port is reachable. HTTP-only mode works but is slightly slower.
+
+## Need help
+
+{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}

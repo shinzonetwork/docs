@@ -1,14 +1,13 @@
 +++
 title = "Host client"
 aliases = ["/reference/components"]
-weight = 1
 [extra]
 mermaid = true
 +++
 
-The Host client receives indexed blockchain data from multiple Generator clients over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
+The Host client receives verifiable blockchain data from multiple Generator clients over P2P. It verifies the data using attestation records, runs WASM lens transforms to produce view documents, and serves those documents over GraphQL.
 
-If Generator clients are data producers, Host clients are consumers and servers. The separation lets you scale serving independently from indexing.
+If Generator clients are data producers, Host clients are consumers and servers. The separation lets you scale serving independently from verifiable indexing.
 
 ## Architecture
 
@@ -90,7 +89,7 @@ When a host receives data from multiple Generator clients for the same block, it
 ### AttestationRecord schema
 
 ```graphql
-type Ethereum__Mainnet__AttestationRecord {
+type <Chain>__<Network>__AttestationRecord {
     attested_doc: String @index
     source_doc: String
     CIDs: [String]
@@ -141,10 +140,10 @@ mutation {
 The Host client creates separate attestation collections per view:
 
 ```go
-collectionName := fmt.Sprintf("Ethereum__Mainnet__AttestationRecord_%s", viewName)
+collectionName := fmt.Sprintf("<Chain>__<Network>__AttestationRecord_%s", viewName)
 ```
 
-So you get `AttestationRecord_Block` for primitive attestations and `AttestationRecord_TokenTransfer` for a specific view.
+So a View named `TokenTransfer` gets `AttestationRecord_TokenTransfer`, while block attestations stay in the base `AttestationRecord` collection.
 
 ### CID array merging doesn't work right
 
@@ -190,7 +189,7 @@ The Host client runs LensVM (`source-gh/lens`) to execute WASM modules that tran
 flowchart LR
   In["Raw Log documents<br/>(from generator)"]
   Lens["<b>WASM Lens</b><br/>filter address · ABI-decode<br/>· map to view schema"]
-  Out["View documents<br/>(USDCTransfer, …)"]
+  Out["View documents<br/>(USDCTransfer, ...)"]
 
   In --> Lens --> Out
 {% end %}
@@ -200,7 +199,7 @@ WASM runtimes in use:
 | Runtime | Language | Where |
 | --- | --- | --- |
 | Wasmtime | Rust | Primary runtime in production hosts |
-| Wasmer | Rust | viewkit local testing |
+| Wasmer | Rust | Viewkit local testing |
 | Wazero | Go | Pure Go alternative, no CGo dependency |
 
 Lens binary size varies by source language. AssemblyScript produces ~73 KB WASM. Rust produces ~200 KB.
@@ -226,10 +225,6 @@ Example query:
 }
 ```
 
-## Earnings
-
-Hosts receive the Compute Factor component of view pricing. There is an immediate payment per query served, plus a potential bonus at epoch end if the Host client's coverage (uptime and data availability) exceeds the network average.
-
 ## Document filtering
 
 Hosts can filter incoming documents by contract address, event type, or function signature. A host running only ERC-20 transfer views does not need to store every log from every contract.
@@ -240,7 +235,7 @@ Port 8080 exposes Prometheus metrics: block processing rates, attestation counts
 
 ## Resource requirements
 
-See the [hardware requirements page](/hosts/hardware-requirements/) for current minimum and recommended specs. Host storage depends mainly on the number of Views served and whether pruning is enabled (the default).
+See the [hardware requirements page](/run/run-a-host/hardware-requirements/) for current minimum and recommended specs. Host storage depends mainly on the number of Views served and whether pruning is enabled (the default).
 
 ## Key files
 

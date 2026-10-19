@@ -1,6 +1,5 @@
 +++
 title = "Relayer"
-weight = 4
 +++
 
 A relayer is a process that moves data from an external chain to ShinzoHub. It watches for assertions and payments produced by [outpost](../outpost) contracts and delivers them to ShinzoHub as Cosmos SDK transactions.
@@ -10,10 +9,14 @@ ShinzoHub does not watch external chains. It only processes messages that are br
 The relayer is a standalone Go process, not a smart contract. It connects to both the source chain and ShinzoHub: reads from one, writes to the other.
 
 {% admonition(type="info") %}
-This is the EVM relayer, which bridges Ethereum to ShinzoHub. It is a completely different system from the Hermes IBC relayer, which bridges ShinzoHub to SourceHub. They share the word _relayer_ and nothing else.
+This is the EVM relayer, which bridges EVM chains to ShinzoHub. It is a completely different system from the Hermes IBC relayer, which bridges ShinzoHub to SourceHub. They share the word _relayer_ and nothing else.
 {% end %}
 
 ## Assertion relay
+
+{% admonition(type="info") %}
+The assertion relay is not yet live on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow, so the relayer's assertion pipeline is not in use. The description below covers the planned design.
+{% end %}
 
 When a signed assertion is detected on the source chain, the relayer:
 
@@ -52,10 +55,10 @@ The relayer maintains two connections:
 
 | Connection | Purpose |
 | --- | --- |
-| Source chain (Ethereum) | Read assertion and payment data |
+| Source chain | Read assertion and payment data |
 | ShinzoHub | Broadcast transactions |
 
-The relayer has its own wallet on ShinzoHub and needs SHNZ for gas to broadcast transactions. It maintains a persistent block cursor so it can resume exactly where it left off after a restart.
+The relayer has its own wallet on ShinzoHub and needs SHNZ for transaction fees to broadcast transactions. It maintains a persistent block cursor so it can resume exactly where it left off after a restart.
 
 ## Implementations
 

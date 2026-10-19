@@ -1,21 +1,46 @@
-/guides /guides/building-apps-with-shinzo
+# Legacy path redirects to the current information architecture. Paths handled by Zola aliases on content pages (/, /introduction, /understand) are not duplicated here.
 
-/host     /hosts/overview
-/host/*   /hosts/:splat
-/hosts    /hosts/overview
+/guides               /build/tutorials/create-your-first-view/
+/host                 /run/run-a-host/
+/host/*               /run/run-a-host/:splat
+/hosts                /run/run-a-host/
+/hosts/*              /run/run-a-host/:splat
+/generators           /run/run-a-generator/
+/generators/*         /run/run-a-generator/:splat
+/indexer              /run/run-a-generator/
+/indexer/*            /run/run-a-generator/:splat
+/indexers             /run/run-a-generator/
+/indexers/*           /run/run-a-generator/:splat
+/views                /build/tutorials/create-your-first-view/
+/view-creator         /build/tutorials/create-your-first-view/
+/view-creator/*       /build/tutorials/create-your-first-view/
+/reference            /reference/architecture/
+/reference/components /reference/components/
 
-/generators     /generators/overview
-
-/indexer      /generators/overview
-/indexer/*    /generators/:splat
-/indexers     /generators/overview
-/indexers/*   /generators/:splat
-
-/introduction   /
-
-/reference    /reference/architecture-overview/
-/reference/components   /reference/components/host-client/
-
-/view-creator   /views/overview
-/view-creator/* /views/:splat
-/views          /views/overview
+# Original Docusaurus site served docs under the default "/docs" route prefix. Google still indexes those URLs, which now 404 on the Zola site. Permanent (301) redirects to the current pages. Both the bare and trailing-slash forms are covered so typed and indexed URLs both resolve.
+/docs/intro                                   /understand/what-is-shinzo/         301
+/docs/intro/*                                 /understand/what-is-shinzo/         301
+/docs/glossary                                /reference/glossary/                301
+/docs/glossary/*                              /reference/glossary/                301
+/docs/supported-networks                      https://shinzo.network/chains        301
+/docs/supported-networks/*                    https://shinzo.network/chains        301
+/docs/tokenomics                              /understand/what-is-shinzo/         301
+/docs/tokenomics/*                            /understand/what-is-shinzo/         301
+/docs/guides/building-apps-with-shinzo        /build/build-an-app/                301
+/docs/guides/building-apps-with-shinzo/*      /build/build-an-app/                301
+/docs/hosts/examples                          /build/query-data/                  301
+/docs/hosts/examples/*                        /build/query-data/                  301
+/docs/hosts/overview                          /run/run-a-host/                    301
+/docs/hosts/overview/*                        /run/run-a-host/                    301
+/docs/hosts/quickstart                        /run/run-a-host/quickstart/         301
+/docs/hosts/quickstart/*                      /run/run-a-host/quickstart/         301
+/docs/indexer/faq                             /run/operations/troubleshooting/    301
+/docs/indexer/faq/*                           /run/operations/troubleshooting/    301
+/docs/indexer/overview                        /run/run-a-generator/               301
+/docs/indexer/overview/*                      /run/run-a-generator/               301
+/docs/indexer/quickstart                      /run/get-started/                   301
+/docs/indexer/quickstart/*                    /run/get-started/                   301
+/docs/view-creator/overview                   /build/concepts/views-for-builders/ 301
+/docs/view-creator/overview/*                 /build/concepts/views-for-builders/ 301
+/docs/view-creator/quickstart                 /build/tutorials/create-your-first-view/  301
+/docs/view-creator/quickstart/*               /build/tutorials/create-your-first-view/  301

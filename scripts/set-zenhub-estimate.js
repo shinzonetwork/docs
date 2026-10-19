@@ -6,7 +6,7 @@ async function main() {
   const value = SIZE_MAP[label.toUpperCase()];
 
   if (value === undefined) {
-    console.log(`Label "${label}" is not a sizing label (XS/S/M/L/XL) — skipping.`);
+    console.log(`Label "${label}" is not a sizing label (XS/S/M/L/XL) - skipping.`);
     return;
   }
 
@@ -35,8 +35,8 @@ async function main() {
       variables: { repositoryGhId, issueNumber },
     }),
   });
-  const issueJson = await issueRes.json();
 
+  const issueJson = await issueRes.json();
   if (issueJson.errors) {
     console.error("Error fetching issue:", JSON.stringify(issueJson.errors));
     process.exit(1);
@@ -49,7 +49,7 @@ async function main() {
   }
 
   const setEstimateMutation = `
-    mutation setEstimate($value: Int!, $issueId: ID!) {
+    mutation setEstimate($value: Float!, $issueId: ID!) {
       setEstimate(input: { value: $value, issueId: $issueId }) {
         clientMutationId
       }
@@ -64,8 +64,8 @@ async function main() {
       variables: { value, issueId },
     }),
   });
-  const setJson = await setRes.json();
 
+  const setJson = await setRes.json();
   if (setJson.errors) {
     console.error("Error setting estimate:", JSON.stringify(setJson.errors));
     process.exit(1);
