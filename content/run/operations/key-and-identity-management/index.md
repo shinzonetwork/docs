@@ -12,11 +12,25 @@ The identity key is stored in the DefraDB keyring, encrypted with a keyring secr
 - Host client: the `DEFRA_KEYRING_SECRET` environment variable (or `defradb.keyring_secret` in `config.yaml`).
 - Generator client: the `DEFRADB_KEYRING_SECRET` environment variable (or the same config field).
 
-Where the keyring sits on disk depends on how you run the client:
+Where the keyring sits on disk differs between the two clients:
+
+### Host client
+
+The Host client keeps its keyring beside the DefraDB store, in a `keys/` directory next to the data directory:
+
+- **Build from source:** `~/.shinzo/host/keys` by default (the data lives in `~/.shinzo/host/data`).
+- **Docker:** the `keys/` directory sits next to `/app/.defra` in the container. Give it its own volume, separate from the store's mount (for example `-v ~/host-keys:/app/keys`).
+
+### Generator client
+
+The Generator client keeps its keyring inside the DefraDB store, at `.defra/keys`:
 
 - **Build from source:** `~/.defra/keys` by default.
-- **Docker with persistence:** the host directory you mounted to `/app/.defra/keys` (for example `~/data/keys`).
-- **Docker without volume mounts:** the key exists only inside the container and is lost when the container is removed. Mount a volume before you rely on a node keeping its identity.
+- **Docker:** the keys live inside the store's volume. If you mount `~/data` to `/app/.defra`, the keys are at `~/data/keys`.
+
+The Generator client will move to the same beside-the-store layout as the Host client; this page will be updated when that happens.
+
+Whichever client you run: with no volume mount the key exists only inside the container and is lost when the container is removed. Mount a volume before you rely on a node keeping its identity.
 
 ## The keyring secret is part of the identity
 
@@ -26,18 +40,37 @@ Because the libp2p peer ID is derived from the identity key, it stays stable acr
 
 ## Back up your keys
 
-Copy the keys directory somewhere safe:
+Copy the keys directory somewhere safe, adjusting the paths to match your setup.
+
+### Host client
 
 ```shell
-cp -r ~/.defra/keys /mnt/backup-drive/   # Adjust the paths to match your setup.
+cp -r ~/.shinzo/host/keys /mnt/backup-drive/
 ```
+
+For Docker, back up the host directory you mounted for the container's `keys/` directory.
+
+### Generator client
+
+```shell
+cp -r ~/.defra/keys /mnt/backup-drive/
+```
+
+For Docker, back up the host directory you mount to `/app/.defra`; the keys are inside it at `keys/`.
 
 ## Recover a node
 
-1. Restore the keys directory to the same path the client reads from: `~/.defra/keys` for a source build, or the directory you mount to `/app/.defra/keys` for Docker.
+### Host client
+
+1. Restore the keys directory to the path the client reads from: `~/.shinzo/host/keys` for a source build, or the host directory you mounted for the container's `keys/` directory.
 1. Start the client with the same keyring secret as before.
 
-The node comes back with the same identity, the same peer ID, and its existing registration.
+### Generator client
+
+1. Restore the keys directory to the path the client reads from: `~/.defra/keys` for a source build, or inside the host directory you mount to `/app/.defra`.
+1. Start the client with the same keyring secret as before.
+
+Either way, the node comes back with the same identity, the same peer ID, and its existing registration.
 
 ## If the key is lost
 
