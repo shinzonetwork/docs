@@ -192,11 +192,11 @@ pages = [
   "run/run-a-generator/register/index.md",
   "run/run-a-generator/config-reference/index.md",
   "run/run-a-generator/security/index.md",
+  "run/run-a-generator/managed-nodes/index.md",
 ]
 subsections = [
   { label = "Deployment Examples", pages = [
     "run/run-a-generator/deployment-examples/validator-with-geth/index.md",
-    "run/run-a-generator/deployment-examples/managed-gcp-node/index.md",
     "run/run-a-generator/deployment-examples/nginx-with-snapshots/index.md",
     "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
     "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",

@@ -8,7 +8,7 @@ mermaid = true
 
 Shinzo is a trustless network for reading blockchain data. It takes raw on-chain data and turns it into structured datasets that any application can query, without having to go through a centralized data service to get them.
 
-If you've built any kind web3 app before, you know the usual pattern: you pick a centralized service provider (alchemy, infura), pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that read the chain at the source and share the results peer to peer.
+If you've built any kind of web3 app before, you know the usual pattern: you pick a centralized service provider, pay per API call, cache the results locally, and hope the provider doesn't go down or quietly change what's available. Shinzo replaces that setup with a network of independent operators that read the chain at the source and share the results peer to peer.
 
 ## The problem Shinzo solves
 
