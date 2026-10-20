@@ -66,10 +66,6 @@ What you give is the flip side. Your signature rides on the provider's data qual
 The middle path is worth naming: rent a VM, run the node yourself, hold all the keys. You keep the control boundary around the software that feeds your signature, and you skip the rack in the closet.
 {% end %}
 
-## Picking a setup
-
-Each setup earns its place. Trying Shinzo out? A managed provider's free tier is the cheapest way to see the whole pipeline work, and the Generator reads, signs, and commits blocks the same as anywhere else. For steady production, a managed provider with an SLA is a reasonable default, as long as you check your blocks' attestation counts now and then; [Verify data](/build/how-to/verify-data/) shows how to notice if the provider's data ever diverged. And when what you want is maximum control over what your signature stands behind, run the node yourself, on your own hardware or rented, and keep every key.
-
 ## Need help
 
 {{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
