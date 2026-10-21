@@ -172,7 +172,7 @@ type <Chain>__<Network>__SnapshotSignature {
 
 ## Document signing
 
-Signing is opt-in and configured by the Generator operator. Hosts can disable it with `--no-signing`.
+The Generator signs every block with its node identity key, and operators can't turn that off.
 
 The signing flow:
 

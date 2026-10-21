@@ -33,4 +33,4 @@ Because the root is over signed per-block roots, two Generator clients that agre
 
 ## Who signs
 
-The signing key is a persistent identity the Generator client loads from the DefraDB keyring at startup. Signing is opt-in for the Generator operator, and Hosts can disable signature verification with `--no-signing`. For the signing flow inside the Generator client, see [Document signing](/reference/components/generator-client#document-signing).
+The signing key is a persistent identity the Generator client loads from the DefraDB keyring at startup, and every block is signed with it: Generator operators can't turn signing off. On the Host side, the `use_block_signatures` setting chooses whether attestations are built from block signatures (one per block) or per document. It doesn't turn verification off. For the signing flow inside the Generator client, see [Document signing](/reference/components/generator-client#document-signing).
