@@ -52,7 +52,7 @@ A stable connection matters more than raw bandwidth. The Generator client reads 
 
 ## Registration requirements
 
-On the current testnet, registration is open to anyone. You do not need SHNZ funds, access to validator signing keys, or a withdrawal-key signature. Have the following ready before you reach the [registration](../register) step:
+Shinzo testnet registration is open.
 
 1. **An active, bonded chain validator.** On the current testnet, the assertion is approved through an admin-key flow rather than an on-chain contract check. The planned outpost contract will verify validator status on-chain once deployed.
 1. **Your validator's consensus public key.** The key type, format, and lookup tooling are chain-specific. See [Consensus public key](/reference/components/outpost#consensus-public-key) for how to retrieve it on your chain. It is not your withdrawal address or an account address.
