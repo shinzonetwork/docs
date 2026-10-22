@@ -36,25 +36,6 @@ The Generator client reads from whatever execution node you point it at. That up
 The Generator client only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
 {% end %}
 
-### What happens if I lose my node-identity-key? Can I regenerate it?
-
-If you lose your `node-identity-key`, your node's identity is permanently lost.
-
-- The key cannot be regenerated.
-- You must spin up a new instance of the Generator client.
-- You must register again with a new identity.
-- The new node may use the same EVM address, but it will be treated as a new identity.
-
-To avoid this, always back up your node-identity-key.
-
-### How can I backup my keys?
-
-By default your DefraDB keys are stored in `~/.defra/keys`. To back them up, simply copy them from that location to another. For example, if you were backing up your keys to a mounted external drive, you would run:
-
-```shell
-cp -r ~/.defra/keys /mnt/backup-drive/
-```
-
 ### What data does the Generator client read?
 
 The Generator client reads all blockchain data, including blocks, transactions, logs, and storage access lists. The data is keyed by hash (block and transaction), block number, and document.
@@ -173,24 +154,6 @@ When a Host client receives the same block from multiple independent Generator c
 | `9182` | GraphQL Playground UI (the DefraDB GraphQL port + 1). |
 | `9171` | libp2p P2P networking. Must be reachable for the Host client to connect to Generator clients. |
 | `8080` | Health (`/health`) and metrics (`/metrics`) server. |
-
-### How do I back up my keys?
-
-Your node identity key is your Host's identity on the network. Lose it without a backup and you can't restore the same identity.
-
-Where it lives depends on how you run the Host client:
-
-- **Build from source:** `~/.defra/keys` by default.
-- **Docker with persistence:** the host directory you mounted to `/app/.defra/keys` (for example `~/data/keys`).
-- **Docker without volume mounts:** the key only exists inside the container and is lost when the container is removed. Mount a volume before you rely on a Host keeping its identity.
-
-Copy the directory somewhere safe:
-
-```shell
-cp -r ~/.defra/keys /mnt/backup-drive/   # adjust the source path to match your setup
-```
-
-See [Register](/run/run-a-host/register/#back-up-your-node-identity-key) for more.
 
 ### My Host client starts but connects to no peers. What's wrong?
 
