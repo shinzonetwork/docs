@@ -18,7 +18,9 @@ Setting up a Generator takes two steps:
 1. [Install](../install) the Generator client next to an execution node. Any node that exposes JSON-RPC and WebSocket works: one you run yourself, one co-located with your validator, or a managed provider. You do not need to be a validator for this step.
 1. [Register](../register) the client with the Shinzo Network once it is running. Registration identifies and authenticates your node so it can replicate data for the network.
 
-You can run the client without registering, but the network does not recognize your node until you do. On the current testnet, registration is open to anyone and does not require SHNZ funds, access to validator signing keys, or a withdrawal-key signature. 
+You can run a Generator client _without_ registering, but that client will not be able to interact with any public Shinzo networks until it is registered. 
+
+Registration is straight-forward, all you need is access to a validator node.
 If you are not a validator, check the [registration requirements](#registration-requirements) before you start.
 
 ## Hardware requirements
