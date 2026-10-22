@@ -125,11 +125,11 @@ Capture both into shell variables:
 ```shell
 PEER_ID=$(curl -s http://localhost:8080/health | jq -r '.p2p.self.id')
 
-INDEXER_IP=$(curl -s http://localhost:8080/health \
+GENERATOR_IP=$(curl -s http://localhost:8080/health \
   | jq -r '[.p2p.self.addresses[] | capture("/ip4/(?<ip>[0-9.]+)/").ip
            | select(. != "127.0.0.1" and . != "0.0.0.0")][0]')
 
-BOOTSTRAP_PEER="/ip4/${INDEXER_IP}/tcp/9171/p2p/${PEER_ID}"
+BOOTSTRAP_PEER="/ip4/${GENERATOR_IP}/tcp/9171/p2p/${PEER_ID}"
 echo "$BOOTSTRAP_PEER"
 ```
 
