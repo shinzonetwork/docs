@@ -106,6 +106,7 @@ The dashboard determines if a node is online/offline by probing `http://<your-se
 This is the most common reason a running Generator appears offline, and it almost always comes down to `8080` not being published or opened:
 
 - **Docker:** the default `docker run` in [Install](/run/run-a-generator/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
+- **Install script:** the one-line install script defaults to a private Generator, binding `8080` to `127.0.0.1`. Set `GENERATOR_BIND_ADDR=0.0.0.0` in `shinzo-generator/.env` and re-run `docker compose -f shinzo-generator/docker-compose.yml up -d` to publish it.
 - **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
 - **Reverse proxy:** if you put nginx in front (as in the [Nginx with snapshots](/run/run-a-generator/deployment-examples/nginx-with-snapshots/) example), make sure the dashboard's plaintext probe to `http://<your-server-ip>:8080/health` reaches the Generator's health server on port `8080`. If your proxy only listens on a TLS port such as `443`, also publish `8080` directly so the probe can reach it.
 

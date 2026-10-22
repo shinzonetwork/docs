@@ -17,7 +17,7 @@ Before you start, have the items in [Registration requirements](../prerequisites
 
 ## Register your Generator
 
-1. Start your Generator client with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Generators dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Generator shows as online. If `8080` isn't reachable from the internet, your Generator shows as offline on the dashboard even while it's running fine. The default `docker run` in [Install](../install) already publishes `8080`.
+1. Start your Generator client with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Generators dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Generator shows as online. If `8080` isn't reachable from the internet, your Generator shows as offline on the dashboard even while it's running fine. The default `docker run` in [Install](../install) already publishes `8080`. If you used the one-line install script and kept the default private mode, set `GENERATOR_BIND_ADDR=0.0.0.0` in `shinzo-generator/.env` and re-run `docker compose -f shinzo-generator/docker-compose.yml up -d` first.
 1. Add the Shinzo Testnet to your browser wallet with the following values:
    - Network name: `Shinzo`
    - Default RPC URL: `http://testnet.shinzo.network:8545`
