@@ -73,6 +73,34 @@ main() {
         info "API key header guessed as $GETH_API_KEY_TYPE. Set GETH_API_KEY_TYPE to override."
     fi
 
+    # Is this a public or private Generator client?
+    # Set PUBLIC_GENERATOR=TRUE or PUBLIC_GENERATOR=FALSE upfront to skip the prompt. With no terminal to prompt on, the default is FALSE (private).
+    PUBLIC_GENERATOR=${PUBLIC_GENERATOR:-}
+    if [ -z "$PUBLIC_GENERATOR" ]; then
+        if has_tty; then
+            info ""
+            info "Should this Generator be reachable from the internet?"
+            info "  Yes: needed to register your Generator on the Shinzo Network."
+            info "  No:  a private setup where only your own Host client connects to it."
+            info "       https://docs.shinzo.network/understand/core-concepts/privacy/"
+            EXPOSE=
+            ask 'Expose the Generator publicly? [y/N] ' EXPOSE
+            case "$EXPOSE" in
+                [yY]|[yY][eE][sS]) PUBLIC_GENERATOR=TRUE ;;
+                *) PUBLIC_GENERATOR=FALSE ;;
+            esac
+        else
+            PUBLIC_GENERATOR=FALSE
+        fi
+    fi
+
+    # Docker publishes ports on an address, so translate the flag.
+    case "$PUBLIC_GENERATOR" in
+        [tT][rR][uU][eE])             GENERATOR_BIND_ADDR=0.0.0.0 ;;
+        [fF][aA][lL][sS][eE])         GENERATOR_BIND_ADDR=127.0.0.1 ;;
+        *) fail "PUBLIC_GENERATOR must be TRUE or FALSE (got: $PUBLIC_GENERATOR)." ;;
+    esac
+
     mkdir -p "$DIR"
 
     DEFRADB_KEYRING_SECRET=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
@@ -85,9 +113,12 @@ GETH_API_KEY=$GETH_API_KEY
 GETH_API_KEY_TYPE=$GETH_API_KEY_TYPE
 DEFRADB_KEYRING_SECRET=$DEFRADB_KEYRING_SECRET
 INDEXER_START_HEIGHT=0
+GENERATOR_BIND_ADDR=$GENERATOR_BIND_ADDR
 EOF
     umask 022
 
+    # The heredoc is quoted ('EOF'), so ${GENERATOR_BIND_ADDR} is left for
+    # Docker Compose to fill in from the .env file next to this compose file.
     cat > "$DIR/docker-compose.yml" <<'EOF'
 name: shinzo-generator
 services:
@@ -101,7 +132,7 @@ services:
     mem_reservation: 13g
     ports:
       - "127.0.0.1:9181:9181"
-      - "127.0.0.1:8080:8080"
+      - "${GENERATOR_BIND_ADDR:-127.0.0.1}:8080:8080"
       - "9171:9171"
     env_file: .env
     environment:
@@ -132,6 +163,14 @@ EOF
 
     info ""
     info "Generator client is starting. The first sync begins at block 0, so expect it to take a long time."
+    if [ "$GENERATOR_BIND_ADDR" = "127.0.0.1" ]; then
+        info "  Mode:      private (port 8080 is only reachable from this machine)"
+        info "             To make it public, set GENERATOR_BIND_ADDR=0.0.0.0 in $DIR/.env, then run:"
+        info "             docker compose -f $DIR/docker-compose.yml up -d"
+    else
+        info "  Mode:      public (port 8080 is reachable from the internet)"
+        info "             Restrict it with your firewall to the addresses that need it."
+    fi
     info "  Health:    curl -s http://localhost:8080/health"
     info "  Logs:      docker logs -f shinzo-generator"
     info "  Stop:      docker compose -f $DIR/docker-compose.yml down"
