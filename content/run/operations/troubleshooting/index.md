@@ -145,11 +145,13 @@ With Docker, pass it as an environment variable:
 
 When building from source, set `defradb.p2p.bootstrap_peers` in your `config.yaml` instead.
 
-The multiaddr must end in the Generator client's peer ID, because libp2p authenticates the connection against it, so a bare IP won't connect. Read the IP and peer ID from the Generator client's health endpoint:
+The multiaddr must end in the Generator client's peer ID, because libp2p authenticates the connection against it, so a bare IP won't connect. Read the peer ID from the Generator client's health endpoint:
 
 ```shell
-curl -s http://<generator-host>:8080/health | jq -r '.p2p.self'
+curl -s http://<generator-host>:8080/health | jq -r '.p2p.self.id'
 ```
+
+For the address portion, use the Generator client's public IP or a hostname (`/dns4/<generator-hostname>/tcp/9171/p2p/<generator-peer-id>`). Don't copy an address from `.p2p.self.addresses` in the health response: those are the Generator's own listen addresses, and under Docker bridge networking they're loopback and container-internal addresses your Host client can't dial.
 
 The peer ID is derived from the Generator client's keyring secret, so it's stable across restarts as long as that secret doesn't change. If you run the Host client and Generator client on the same machine, remap the Host client's published ports (the `-p` flags, or `defradb.url` and the P2P ports for a source build) so they don't collide with the Generator client's `9181` and `9171`.
 
