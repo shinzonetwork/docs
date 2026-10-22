@@ -220,6 +220,22 @@ curl -s http://<your-server-ip>:8080/health | jq -r '.status'
 
 A healthy Host returns `healthy`. A connection refused or timeout means `8080` still isn't reachable from outside. The endpoint returns `"unhealthy"` (HTTP 503) only while the Host's DefraDB node or processing pipeline is still initializing. That clears once startup finishes.
 
+### My Host client answers curl requests but the explorer can't query it
+
+If your Host client answers `curl` requests but a browser app like the [Explorer](https://explorer.shinzo.network/shinzohub) can't load data from it, the cause is usually CORS. Browsers block cross-origin responses that don't carry CORS headers, and a stock Host client doesn't send any, so the browser app can't read the responses even though the client is actually up. The browser console shows CORS errors for the blocked requests.
+
+This never affects the online or offline status [explorer.shinzo.network](https://explorer.shinzo.network/shinzohub) shows for your Host client. That probe runs server side, where CORS doesn't apply.
+
+Check whether your proxy answers a preflight request:
+
+```shell
+curl -si -X OPTIONS https://<your-host>/api/v0/graphql \
+  -H "Origin: https://explorer.shinzo.network" \
+  -H "Access-Control-Request-Method: POST"
+```
+
+A working setup answers with `204` and an `Access-Control-Allow-Origin` header echoing the origin you sent. If the header is missing or empty, your proxy isn't handling CORS. See [CORS for browser access](/run/run-a-host/install/#cors-for-browser-access) for what to allow, or the [prod VM example](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/) for a full nginx config.
+
 ## Viewkit
 
 ### `image not found / library not loaded: libwasmer.dylib`
