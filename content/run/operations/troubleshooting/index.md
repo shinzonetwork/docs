@@ -64,7 +64,7 @@ With pruning enabled (the default), the Generator's own data stays bounded at ro
 
 ### How long does it take to sync?
 
-Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The Generator client processes blocks approximately 2 to 4 seconds per block.
+Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The shipped `config.yaml` sets `blocks_per_minute: 60`, which caps the Generator client at one block per second. That cap only matters when catching up from an old start height: at the chain head the Generator client easily keeps up, since chains produce blocks much more slowly than one per second. Raise `blocks_per_minute` if catch-up is too slow, or set it to `0` to remove the cap. With no cap, speed depends on your node. See [high-throughput tuning](/run/run-a-generator/deployment-examples/high-throughput-tuning/).
 
 ### How do I choose a start height?
 

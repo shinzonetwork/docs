@@ -1,0 +1,189 @@
+{# Scene for {% player(scene="feeds") %}: the three ways to feed a
+   Generator client, one lane each. The source chain and the Host are
+   shared; each lane wraps its execution node and Generator client in a
+   control boundary, and the signed packet flies the lane's route. The
+   third lane's boundary spans two platforms: a provider operates your
+   dedicated node, you run the Generator. Per-step state lives in the
+   inline <style>; packet flights are declared via data-*. #}
+<svg class="player__svg" viewBox="0 0 760 460" role="img"
+  aria-label="Diagram comparing three ways to feed a Generator client, with a source chain on the left and a Host on the right shared by all three. First: an execution node and a Generator client together inside your machine on your own hardware. Second: the same pair inside your control boundary on a rented VM. Third: a dedicated execution node operated by a managed provider and your Generator client on your VM, both inside your infrastructure boundary, with your keys throughout.">
+  <defs>
+    <g id="mn-gear-def">
+      <circle r="9" style="fill: var(--color-primary);" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(45)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(90)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(135)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(180)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(225)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(270)" />
+      <rect x="-2" y="-13.5" width="4" height="5" rx="1" style="fill: var(--color-primary);" transform="rotate(315)" />
+      <circle r="3" style="fill: var(--background);" />
+    </g>
+  </defs>
+
+  <!-- Source chain: shared by all three lanes -->
+  <g class="station" id="mn-st-chain" data-steps="1,2,3" transform="translate(85 248)">
+    <rect class="box" x="-44" y="-24" width="88" height="48" rx="10" />
+    <rect class="block" x="-36" y="-10" width="20" height="20" rx="4" />
+    <rect class="block" x="-10" y="-10" width="20" height="20" rx="4" />
+    <rect class="block" x="16" y="-10" width="20" height="20" rx="4" />
+    <path class="mn-link" d="M -16 0 H -10 M 10 0 H 16" fill="none" />
+    <text class="label" y="64">Source chain</text>
+  </g>
+
+  <!-- Host: shared by all three lanes -->
+  <g class="station" id="mn-st-host" data-steps="1,2,3" transform="translate(620 248)">
+    <path class="box" d="M -26 -18 v 36 a 26 8 0 0 0 52 0 v -36 a 26 8 0 0 0 -52 0" />
+    <ellipse class="box-lip" cx="0" cy="-18" rx="26" ry="8" />
+    <text class="label" y="64">Host</text>
+  </g>
+
+  <!-- Lane 1: own node on your own hardware, one boundary around both -->
+  <g class="mn-lane" id="mn-lane-1">
+    <g class="mn-bnd">
+      <rect class="mn-bnd-box" x="160" y="80" width="250" height="76" rx="12" />
+      <text class="hint" x="285" y="66">your machine</text>
+      <g class="mn-key mn-key--yours" transform="translate(396 94)">
+        <circle cx="-5" cy="0" r="4" />
+        <path d="M -1 0 H 11 M 7 0 V 5 M 11 0 V 5" />
+      </g>
+    </g>
+    <path id="mn-path-1" class="route" d="M 129 248 C 160 248, 168 118, 195 118 L 545 118 C 580 118, 578 248, 592 248" fill="none" />
+    <g class="station" id="mn-st-node-1" data-steps="1" transform="translate(225 118)">
+      <rect class="box" x="-30" y="-30" width="60" height="60" rx="10" />
+      <rect class="block" x="-14" y="-16" width="28" height="8" rx="2" />
+      <rect class="block" x="-14" y="-4" width="28" height="8" rx="2" />
+      <rect class="block" x="-14" y="8" width="28" height="8" rx="2" />
+      <text class="label label--small" y="52">Execution node</text>
+    </g>
+    <g class="station" id="mn-st-gen-1" data-steps="1" transform="translate(345 118)">
+      <circle class="box" r="30" />
+      <use href="#mn-gear-def" class="gear" />
+      <text class="label label--small" y="52">Generator client</text>
+    </g>
+    <g class="packet mn-packet" id="mn-packet-1" opacity="0"
+      data-fly="#mn-path-1" data-fly-steps="1" data-fly-delay="350" data-park-steps="1">
+      <rect x="-23" y="-15" width="46" height="30" rx="6" />
+      <text class="packet-text" y="4">{ }</text>
+      <g class="seal" transform="translate(18 -14)">
+        <circle class="seal-dot" r="9" />
+        <path class="seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Lane 2: own node on rented hardware, same control boundary -->
+  <g class="mn-lane" id="mn-lane-2">
+    <g class="mn-bnd">
+      <rect class="mn-bnd-box" x="160" y="210" width="250" height="76" rx="12" />
+      <text class="hint" x="285" y="196">your control &#183; rented VM</text>
+      <g class="mn-key mn-key--yours" transform="translate(396 224)">
+        <circle cx="-5" cy="0" r="4" />
+        <path d="M -1 0 H 11 M 7 0 V 5 M 11 0 V 5" />
+      </g>
+    </g>
+    <path id="mn-path-2" class="route" d="M 129 248 H 592" fill="none" />
+    <g class="station" id="mn-st-node-2" data-steps="2" transform="translate(225 248)">
+      <rect class="box" x="-30" y="-30" width="60" height="60" rx="10" />
+      <rect class="block" x="-14" y="-16" width="28" height="8" rx="2" />
+      <rect class="block" x="-14" y="-4" width="28" height="8" rx="2" />
+      <rect class="block" x="-14" y="8" width="28" height="8" rx="2" />
+      <text class="label label--small" y="52">Execution node</text>
+    </g>
+    <g class="station" id="mn-st-gen-2" data-steps="2" transform="translate(345 248)">
+      <circle class="box" r="30" />
+      <use href="#mn-gear-def" class="gear" />
+      <text class="label label--small" y="52">Generator client</text>
+    </g>
+    <g class="packet mn-packet" id="mn-packet-2" opacity="0"
+      data-fly="#mn-path-2" data-fly-steps="2" data-fly-delay="350" data-park-steps="2">
+      <rect x="-23" y="-15" width="46" height="30" rx="6" />
+      <text class="packet-text" y="4">{ }</text>
+      <g class="seal" transform="translate(18 -14)">
+        <circle class="seal-dot" r="9" />
+        <path class="seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Lane 3: a managed provider operates your dedicated node, one boundary -->
+  <g class="mn-lane" id="mn-lane-3">
+    <g class="mn-bnd">
+      <rect class="mn-bnd-box" x="160" y="340" width="248" height="76" rx="12" />
+      <text class="hint" x="284" y="326">your infrastructure &#183; provider-operated</text>
+      <g class="mn-key mn-key--yours" transform="translate(276 354)">
+        <circle cx="-5" cy="0" r="4" />
+        <path d="M -1 0 H 11 M 7 0 V 5 M 11 0 V 5" />
+      </g>
+      <g class="mn-key mn-key--yours" transform="translate(390 354)">
+        <circle cx="-5" cy="0" r="4" />
+        <path d="M -1 0 H 11 M 7 0 V 5 M 11 0 V 5" />
+      </g>
+    </g>
+    <path id="mn-path-3" class="route" d="M 129 248 C 160 248, 168 378, 195 378 L 545 378 C 580 378, 578 248, 592 248" fill="none" />
+    <g class="station" id="mn-st-node-3" data-steps="3" transform="translate(225 378)">
+      <rect class="box" x="-30" y="-30" width="60" height="60" rx="10" />
+      <rect class="block" x="-14" y="-16" width="28" height="8" rx="2" />
+      <rect class="block" x="-14" y="-4" width="28" height="8" rx="2" />
+      <rect class="block" x="-14" y="8" width="28" height="8" rx="2" />
+      <text class="label label--small" y="52">Execution node</text>
+    </g>
+    <g class="station" id="mn-st-gen-3" data-steps="3" transform="translate(345 378)">
+      <circle class="box" r="30" />
+      <use href="#mn-gear-def" class="gear" />
+      <text class="label label--small" y="52">Generator client</text>
+    </g>
+    <g class="packet mn-packet" id="mn-packet-3" opacity="0"
+      data-fly="#mn-path-3" data-fly-steps="3" data-fly-delay="350" data-park-steps="3">
+      <rect x="-23" y="-15" width="46" height="30" rx="6" />
+      <text class="packet-text" y="4">{ }</text>
+      <g class="seal" transform="translate(18 -14)">
+        <circle class="seal-dot" r="9" />
+        <path class="seal-check" d="M -3.5 0 L -1 3 L 4 -3.5" fill="none" />
+      </g>
+    </g>
+  </g>
+</svg>
+
+<style>
+  /* Lanes: the active one is fully lit, the other two sit dim. */
+  .mn-lane { opacity: 0.45; transition: opacity 0.35s ease; }
+  .player--s1 #mn-lane-1,
+  .player--s2 #mn-lane-2,
+  .player--s3 #mn-lane-3 { opacity: 1; }
+
+  /* Control boundaries: dashed boxes until their lane is active. */
+  .mn-bnd-box {
+    fill: color-mix(in srgb, var(--foreground) 3%, var(--background));
+    stroke: color-mix(in srgb, var(--foreground) 32%, transparent);
+    stroke-width: 1.2;
+    stroke-dasharray: 6 5;
+    transition: stroke 0.25s ease, stroke-width 0.25s ease;
+  }
+  .player--s1 #mn-lane-1 .mn-bnd-box,
+  .player--s2 #mn-lane-2 .mn-bnd-box,
+  .player--s3 #mn-lane-3 .mn-bnd-box { stroke: var(--color-primary); stroke-width: 1.6; }
+
+  /* Links between the source chain's blocks. */
+  .mn-link {
+    stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  /* Key glyphs: yours light up with the lane. */
+  .mn-key {
+    stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
+    stroke-width: 1.6;
+    fill: none;
+    stroke-linecap: round;
+    transition: stroke 0.25s ease;
+  }
+  .player--s1 #mn-lane-1 .mn-key--yours,
+  .player--s2 #mn-lane-2 .mn-key--yours,
+  .player--s3 #mn-lane-3 .mn-key--yours { stroke: var(--color-primary); }
+
+  /* The packet's seal is on from the start: the block arrives signed. */
+  .mn-packet .seal { transform: translate(18px, -14px) scale(1); }
+</style>

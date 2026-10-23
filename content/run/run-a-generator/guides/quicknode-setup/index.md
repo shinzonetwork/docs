@@ -5,14 +5,14 @@ description = "A walkthrough for operators who want to run a Shinzo Generator cl
 
 In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, point it at a QuickNode HTTPS + WSS endpoint, authenticate with an `x-token` header, and watch it sign and commit blocks from chain tip. This example uses Ethereum mainnet; the process is similar or the same for other networks.
 
-If you want to participate in Shinzo by trustlessly reading and signing on-chain data, but you don't want to run your own node, then this guide is for you. Most managed node providers, like QuickNode, require a monthly subscription fee. However, most offer a free tier for basic testing. This guide also assumes you have a small Linux VM and can run Docker.
+If you want to participate in Shinzo by trustlessly reading and signing on-chain data, but you don't want to operate a node yourself, then this guide is for you. Most managed node providers, like QuickNode, require a monthly subscription fee. However, most offer a free tier for basic testing. This guide also assumes you have a small Linux VM and can run Docker.
 
 {% admonition(type="note") %}
-Installing and running the Generator client does not require you to be a validator. The separate Registration step, which makes the Generator a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
+Installing and running the Generator client does not require you to be a validator. The separate Registration step, which registers the Generator on ShinzoHub and makes it a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
 {% end %}
 
 {% admonition(type="warning") %}
-The Generator client does not verify the data it reads from an endpoint. It signs whatever the node returns, so with a managed provider like QuickNode, your signatures vouch for their data. If that data is ever wrong or incomplete, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. See [Trust and verification](/understand/core-concepts/trust-verification/) for the full trust model.
+The Generator client does not verify the data it reads from an endpoint; it signs whatever the node returns. QuickNode operates a dedicated node for you, but that node's data is still what your signature vouches for. If the node ever serves wrong or incomplete data, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. See [Managed nodes](/run/run-a-generator/managed-nodes/) for what that trade means in practice, and [Trust and verification](/understand/core-concepts/trust-verification/) for the full trust model.
 {% end %}
 
 ## Prerequisites
