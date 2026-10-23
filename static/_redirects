@@ -39,8 +39,8 @@
 /understand/core-concepts/attestation/  /understand/core-concepts/attestations/   301
 
 # Build
-/guides                                 /build/tutorials/create-your-first-view/  301
-/guides/                                /build/tutorials/create-your-first-view/  301
+/guides                                 /build/concepts/the-app-model/            301
+/guides/                                /build/concepts/the-app-model/            301
 /guides/building-apps-with-shinzo       /build/concepts/the-app-model/            301
 /guides/building-apps-with-shinzo/      /build/concepts/the-app-model/            301
 /guides/operator-quickstart             /run/get-started/                         301
@@ -130,8 +130,8 @@
 /wallets/add-testnet/                   /run/operations/add-testnet-to-wallet/    301
 
 # Views (old top-level section)
-/views                                  /build/tutorials/create-your-first-view/  301
-/views/                                 /build/tutorials/create-your-first-view/  301
+/views                                  /build/concepts/views-for-builders/       301
+/views/                                 /build/concepts/views-for-builders/       301
 /views/install                          /build/tutorials/create-your-first-view/  301
 /views/install/                         /build/tutorials/create-your-first-view/  301
 /views/quickstart                       /build/tutorials/create-your-first-view/  301
@@ -144,8 +144,10 @@
 /views/lenses/                          /reference/components/lens/               301
 /views/faq                              /run/operations/troubleshooting/          301
 /views/faq/                             /run/operations/troubleshooting/          301
-/view-creator                           /build/tutorials/create-your-first-view/  301
-/view-creator/                          /build/tutorials/create-your-first-view/  301
+/view-creator                           /build/concepts/views-for-builders/       301
+/view-creator/                          /build/concepts/views-for-builders/       301
+/view-creator/overview                  /build/concepts/views-for-builders/       301
+/view-creator/overview/                 /build/concepts/views-for-builders/       301
 /view-creator/*                         /build/tutorials/create-your-first-view/  301
 
 # Reference. The /reference/components/ section renders no page, so its
@@ -176,6 +178,8 @@
 # (301) redirects to the current pages. The "/*" twin covers any deeper
 # legacy paths under each prefix.
 # ---------------------------------------------------------------------------
+/docs                                         /understand/what-is-shinzo/         301
+/docs/                                        /understand/what-is-shinzo/         301
 /docs/intro                                   /understand/what-is-shinzo/         301
 /docs/intro/*                                 /understand/what-is-shinzo/         301
 /docs/glossary                                /reference/glossary/                301
