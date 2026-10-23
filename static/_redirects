@@ -97,8 +97,10 @@
 /generators/faq/                        /run/operations/troubleshooting/          301
 /generators/frequently-asked-questions  /run/operations/troubleshooting/          301
 /generators/frequently-asked-questions/ /run/operations/troubleshooting/          301
-/generators/deployment-examples/managed-node-gcp   /run/run-a-generator/deployment-examples/managed-gcp-node/    301
-/generators/deployment-examples/managed-node-gcp/  /run/run-a-generator/deployment-examples/managed-gcp-node/    301
+/generators/deployment-examples/managed-node-gcp   /run/run-a-generator/managed-nodes/          301
+/generators/deployment-examples/managed-node-gcp/  /run/run-a-generator/managed-nodes/          301
+/run/run-a-generator/deployment-examples/managed-gcp-node   /run/run-a-generator/managed-nodes/  301
+/run/run-a-generator/deployment-examples/managed-gcp-node/  /run/run-a-generator/managed-nodes/  301
 /generators/deployment-examples/nginx-tls-snapshots  /run/run-a-generator/deployment-examples/nginx-with-snapshots/  301
 /generators/deployment-examples/nginx-tls-snapshots/ /run/run-a-generator/deployment-examples/nginx-with-snapshots/  301
 /generators/deployment-examples/validator-local-geth  /run/run-a-generator/deployment-examples/validator-with-geth/  301
