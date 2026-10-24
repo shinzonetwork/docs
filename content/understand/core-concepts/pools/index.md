@@ -1,7 +1,6 @@
 +++
 title = "Pools"
 description = "Pools bind developer demand for a View to the Hosts willing to serve it. Demand creates a pool; Hosts joining it make it active."
-aliases = ["/concepts/pools", "/pools"]
 +++
 
 A pool is where developer demand for a View meets the Hosts that serve it. Demand creates a pool; a Host joining it makes that pool active.

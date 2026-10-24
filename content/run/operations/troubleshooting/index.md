@@ -1,6 +1,5 @@
 +++
 title = "Troubleshooting"
-aliases = ["/generator/faq", "/generators/frequently-asked-questions", "/generators/faq", "/hosts/faq", "/hosts/frequently-asked-questions", "/views/faq"]
 description = "Common errors, troubleshooting steps, and frequently asked questions for Generator clients, Host clients, and Viewkit."
 +++
 
@@ -312,7 +311,7 @@ If you need a clean slate, stop the local DefraDB instance (Ctrl+C), delete the 
 
 ### Is there an `Event` collection?
 
-No. Raw event data lives in the `Log` collection, where `topics` holds the parameters flagged `indexed` and `data` holds the rest. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/create-a-view/examples/) for a complete walkthrough.
+No. Raw event data lives in the `Log` collection, where `topics` holds the parameters flagged `indexed` and `data` holds the rest. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/how-to/view-recipes/) for a complete walkthrough.
 
 ### What's the difference between `@materialized(if: true)` and `@materialized(if: false)`?
 

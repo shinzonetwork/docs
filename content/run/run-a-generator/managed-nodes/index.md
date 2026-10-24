@@ -1,7 +1,6 @@
 +++
 title = "Managed nodes"
 description = "What a managed node provider buys you, what it costs, and what it leaves untouched, compared to running your own execution node."
-aliases = ["/generator/managed-nodes", "/generators/managed-nodes"]
 +++
 
 There are three ways to feed a Generator client: run an execution node on your own hardware, run one on hardware you rent, or have a managed node provider like QuickNode operate a dedicated node for you. All three are supported, and all three keep the node inside your own infrastructure. The client treats every endpoint the same way: it reads blocks from one JSON-RPC endpoint, signs whatever comes back, and never asks who operates the machine behind it.

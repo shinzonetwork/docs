@@ -1,7 +1,6 @@
 +++
 title = "Security"
 description = "Security guidance for placing the Generator client relative to your validator: same-machine vs separate-machine deployments, key separation, and port exposure."
-aliases = ["/generator/security", "/generators/security"]
 [extra]
 mermaid = true
 +++

@@ -12,6 +12,15 @@
 
   <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}" />
 
+  {# Canonical URL: every page declares its own permalink so Google
+     consolidates duplicates (trailing-slash variants, legacy alias URLs)
+     onto the canonical address instead of picking one itself. #}
+  {%- if page %}
+  <link rel="canonical" href="{{ page.permalink | safe }}" />
+  {%- elif section %}
+  <link rel="canonical" href="{{ section.permalink | safe }}" />
+  {%- endif %}
+
   <link rel="icon" href="{{ config.extra.favicon }}" />
 
   {# Open Graph #}
@@ -72,7 +81,7 @@
         <span class="navbar__hamburger-bar"></span>
       </button>
 
-      <a class="navbar__brand navbar__logo" href="/" aria-label="Shinzo Network Documentation">
+      <a class="navbar__brand navbar__logo" href="/understand/home/" aria-label="Shinzo Network Documentation">
         <img class="logo-light" src="/img/shinzo-logo.svg" alt="Shinzo Network Documentation" />
         <img class="logo-dark" src="/img/shinzo-logo-w.svg" alt="Shinzo Network Documentation" />
         <span class="navbar__brand-suffix">Docs</span>

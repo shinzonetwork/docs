@@ -1,7 +1,6 @@
 +++
 title = "Config reference"
 description = "Every Host client config field with its YAML key, default, env var override, and notes on which keys are silently ignored."
-aliases = ["/hosts/config-reference"]
 +++
 
 The Host client loads configuration from a YAML file (default `config/config.yaml`). Environment variable overrides are applied in `config/config.go` for `START_HEIGHT`, `BOOTSTRAP_PEERS`, `DEFRA_URL`, `INDEXER_SCHEMA_ENDPOINT`, and `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN`. A sixth env var, `DEFRA_KEYRING_SECRET`, is read separately in `pkg/defradb/defra.go`.

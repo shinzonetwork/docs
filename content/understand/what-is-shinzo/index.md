@@ -1,6 +1,5 @@
 +++
 title = "What is Shinzo?"
-aliases = ["/introduction", "/understand"]
 page_template = "page.html"
 [extra]
 mermaid = true

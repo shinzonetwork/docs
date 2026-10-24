@@ -1,7 +1,6 @@
 +++
 title = "Archival versus pruned"
 description = "Decide whether your Generator keeps all historical blocks or prunes old ones. A pruned Generator uses less storage and can still serve snapshots; an archival Generator keeps everything but grows without bound."
-aliases = ["/generators/deployment-examples/archival-vs-pruned"]
 [extra]
 mermaid = true
 +++

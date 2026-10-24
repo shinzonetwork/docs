@@ -1,7 +1,6 @@
 +++
 title = "Validator with Geth"
 description = "Run the Generator client beside your own Geth node on the same machine or VPC, with no API key and minimal latency."
-aliases = ["/generators/deployment-examples/validator-local-geth"]
 [extra]
 mermaid = true
 +++

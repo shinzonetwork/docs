@@ -1,6 +1,5 @@
 +++
 title = "Register"
-aliases = ["/generator/register", "/generators/register"]
 +++
 
 To participate in the Shinzo Network, you must register your node. Registration identifies and authenticates your node so it can replicate data for the network.

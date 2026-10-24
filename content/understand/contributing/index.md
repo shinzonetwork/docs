@@ -1,7 +1,6 @@
 +++
 title = "Contributing"
 description = "How to propose changes, add pages, and submit PRs to the Shinzo docs."
-aliases = ["/introduction/contributing"]
 +++
 
 These docs are open source and live in the [docs repo](https://github.com/shinzonetwork/docs). Fixes, new pages, and improvements are welcome.
@@ -48,16 +47,17 @@ Every page is a folder containing an `index.md` file. The URL is derived from th
 - One page is one folder with an `index.md` file. Don't put multiple `.md` files in a single folder.
 - Section landing pages use `_index.md` (for example, `content/understand/core-concepts/_index.md`).
 - Slugs are kebab-case, lowercase, and hyphenated (for example, `how-it-works`, not `HowItWorks`).
-- Frontmatter is TOML wrapped in `+++ ... +++`. Common fields: `title`, `description`, `aliases` (an array of redirect paths), `draft` (set to `true` to hide a page), and an `[extra]` block for things like `mermaid = true`.
+- Frontmatter is TOML wrapped in `+++ ... +++`. Common fields: `title`, `description`, `draft` (set to `true` to hide a page), and an `[extra]` block for things like `mermaid = true`.
 - Ordering is manual. The sidebar order is controlled by the order of entries in `config.toml`, not by frontmatter fields.
 - Diagrams use the mermaid shortcode. Set `mermaid = true` in the page's `[extra]` block so the mermaid scripts load.
 
 ## Aliases and redirects
 
-If you're moving or renaming a page, add the old path to the new page's `aliases` array. Zola generates redirect pages for each alias automatically.
+If you're moving or renaming a page, add the old path to `static/_redirects` as a permanent (301) redirect. Cloudflare Pages serves these as real HTTP redirects, which search engines handle better than meta-refresh pages. Write each rule twice: bare path and trailing-slash form.
 
-```toml
-aliases = ["/introduction/my-old-path"]
+```text
+/old-path      /new/section/new-page/  301
+/old-path/     /new/section/new-page/  301
 ```
 
 ## Submitting a PR

@@ -1,6 +1,5 @@
 +++
 title = "Architecture"
-aliases = ["/reference", "/reference/architecture-overview"]
 [extra]
 mermaid = true
 +++
