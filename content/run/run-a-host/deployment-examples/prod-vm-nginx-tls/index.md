@@ -67,11 +67,6 @@ shinzo:
   minimum_attestations: 1
   start_height: 0
   hub_base_url: testnet.shinzo.network
-  cache_queue_size: 50000
-  batch_writer_count: 8
-  batch_size: 500
-  batch_flush_interval: 100
-  use_block_signatures: true
   doc_worker_count: 32
   doc_queue_size: 50000
   event_filter:

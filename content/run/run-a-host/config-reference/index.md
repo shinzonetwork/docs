@@ -59,12 +59,6 @@ Shinzo-specific host configuration: attestation processing, view management, doc
 | `minimum_attestations` | int | 1 | no | (none) | Loaded from YAML but not consumed in the host startup path. Shipped `config.yaml` sets 1. |
 | `hub_base_url` | string | empty | no | (none) | ShinzoHub hostname without a scheme or port. Used to construct the RPC, WebSocket, and LCD endpoints (the host appends the ports itself). Shipped `config.yaml` sets `testnet.shinzo.network`. |
 | `start_height` | uint64 | 0 | no | `START_HEIGHT` | Block number to start from. 0 means auto-detect from chain tip. |
-| `cache_queue_size` | int | 50000 | no | (none) | Job queue size for document processing. Shipped `config.yaml` sets 50000. |
-| `batch_writer_count` | int | 8 | no | (none) | Number of batch writers for attestation processing. Shipped `config.yaml` sets 8. |
-| `batch_size` | int | 1000 | no | (none) | Max attestations per batch. Shipped `config.yaml` sets 500. |
-| `batch_flush_interval` | int | 100 | no | (none) | Flush interval in milliseconds for attestation batches. Shipped `config.yaml` sets 100. |
-| `max_concurrent_verifications` | int | 50 | no | (none) | Max concurrent signature verifications. Shipped `config.yaml` does not set this, so the code default of 50 applies. |
-| `use_block_signatures` | bool | false | no | (none) | Use block signatures for attestation verification. Shipped `config.yaml` sets true. |
 | `doc_worker_count` | int | 16 | no | (none) | Number of document processing workers. Shipped `config.yaml` sets 32. |
 | `doc_queue_size` | int | 5000 | no | (none) | Queue size for document event notifications. Shipped `config.yaml` sets 50000. |
 
