@@ -62,15 +62,7 @@ Return to the Registry homepage. Your generator should now appear in the **Regis
 
 ## Back up your node identity key
 
-This key defines your node's identity on the network. Back it up so you can restore your node without losing its identity.
-
-- Store a secure backup of the key.
-- In a recovery scenario, place it back into the same path (e.g. `/defra/keys`).
-- Use the same keyring/secret configuration.
-
-{% admonition(type="warning") %}
-If this key is lost, and there is no backup available, you will be unable to restore your node with the same identity.
-{% end %}
+This key defines your node's identity on the network. If you lose it without a backup, you cannot restore your node with the same identity. See [Key & identity management](/run/operations/key-and-identity-management/) for where the key lives and how to back it up and recover it.
 
 ## Need help
 
