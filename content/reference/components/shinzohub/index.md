@@ -19,8 +19,8 @@ ShinzoHub does not store or serve blockchain data. It is only a coordination lay
 
 | Environment | Chain ID | Status |
 | --- | --- | --- |
-| Devnet | 91273001 | Running |
-| Testnet | 91273001 | Target: July 1, 2026 |
+| Devnet | 91273002 | Running |
+| Testnet | 91273001 | Running |
 | Mainnet | 91273000 | Future |
 | Local | 91273003 | Local development |
 
