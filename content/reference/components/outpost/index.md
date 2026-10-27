@@ -8,9 +8,9 @@ An outpost is a smart contract deployed on an external chain (not ShinzoHub) tha
 
 Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](../relayer) bridge the results to [ShinzoHub](../shinzohub).
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based assertion and payment flows described on this page are the planned design.
-{% end %}
+{% </admonition> %}
 
 ## Why outposts exist
 
@@ -66,7 +66,7 @@ How the digest is computed depends on the implementation. Different chains have 
 
 On EVM chains, the outpost contract (`GeneratorAssertion`) uses EIP-712 typed data signatures. The validator opens an assertion with `createAssertion`, then submits the withdrawal-key signature with `submitAssertionSignature`. The contract emits `AssertionSigned`, which the relayer subscribes to:
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
   participant V as Validator<br/>(withdrawal key)
   participant C as GeneratorAssertion<br/>contract
@@ -77,7 +77,7 @@ sequenceDiagram
   V->>C: submitAssertionSignature(<br/>assertionId, withdrawalSig)
   C->>C: verify signature<br/>and validator status
   C-->>R: emit AssertionSigned event
-{% end %}
+{% </mermaid> %}
 
 The relayer reads the assertion fields from the event log and forwards them to ShinzoHub. There is no `extraData` tagging and no dependency on who built the block, which matters on mainnet where MEV-boost builders construct the block header (including `extraData`) on the validator's behalf.
 

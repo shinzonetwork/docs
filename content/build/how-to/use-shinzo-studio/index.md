@@ -34,9 +34,9 @@ After registration, Studio prompts you to back the View with demand. Creating de
 1. Enter an amount of SHNZ and approve the deposit transaction in your wallet.
 1. Wait for the **Query balance funded** confirmation.
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 Query billing is still being finalized on the testnet, and the details here may change. Fund small amounts for now, and expect the metering rules to evolve. There is no dedicated billing guide yet.
-{% end %}
+{% </admonition> %}
 
 ## Query the View
 
@@ -48,4 +48,4 @@ The results come straight from the Host you picked. To script the same flow outs
 
 ## Need help
 
-{{ need_help(client="Studio", repo_name="shinzo-webapp-staging", repo="https://github.com/shinzonetwork/shinzo-webapp-staging/issues") }}
+{{<need_help client="Studio" repo_name="shinzo-webapp-staging" repo="https://github.com/shinzonetwork/shinzo-webapp-staging/issues" />}}

@@ -11,7 +11,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart TB
   subgraph Pruned["Pruned Generator"]
     direction LR
@@ -29,7 +29,7 @@ flowchart TB
   GenP -- "P2P (libp2p)" --> Hosts
   GenA -- "P2P (libp2p)" --> Hosts
   Hosts -- "HTTPS snapshot<br/>bootstrap" --> SnapP
-{% end %}
+{% </mermaid> %}
 
 The pruned Generator writes snapshot files before deleting old blocks. Hosts can download those snapshots for historical bootstrap, then receive live blocks over P2P. The archival Generator never deletes anything. It uses more disk space but does not need snapshots because it can serve any block range directly over P2P.
 
@@ -220,4 +220,4 @@ services:
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

@@ -7,9 +7,9 @@ A local-first app gets its blockchain data pushed to it. You embed a DefraDB ins
 
 By the end of this tutorial you have a running Go program that subscribes to a View hosted on the public testnet and answers queries locally. You do not need a wallet, and you do not run a Generator or Host client yourself. The only setup is the Go toolchain.
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 Pushed replication is currently blocked by a version mismatch. The app-sdk pins DefraDB v0.20 while public Host clients run DefraDB v1.0, and documents published by a v1.0 Host cannot be parsed by a v0.20 app, so nothing arrives yet. Every step below is correct against the current app-sdk: your app connects and subscribes successfully, and its queries return empty until the SDK ships a compatible DefraDB. If you need data in a Go app today, query a Host directly instead, as described in [Query data](/build/how-to/query-data/).
-{% end %}
+{% </admonition> %}
 
 ## Before you start
 
@@ -17,9 +17,9 @@ Pushed replication is currently blocked by a version mismatch. The app-sdk pins 
 - A C compiler such as gcc. DefraDB pulls in a native module, so builds need CGO enabled. On macOS and most Linux machines with a standard Go install this works out of the box.
 - About 15 minutes.
 
-{% admonition(type="info", title="Early-phase testnet") %}
+{% <admonition type="info" title="Early-phase testnet"> %}
 While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
-{% end %}
+{% </admonition> %}
 
 ## Scaffold the app
 
@@ -32,9 +32,9 @@ While working through this tutorial, keep in mind that the Shinzo testnet is in 
     go get github.com/shinzonetwork/shinzo-app-sdk
     ```
 
-    {% admonition(type="note") %}
+    {% <admonition type="note"> %}
 `go get github.com/shinzonetwork/app-sdk` fails with a module path error. The repository was renamed and the module now declares `github.com/shinzonetwork/shinzo-app-sdk`.
-    {% end %}
+    {% </admonition> %}
 
 1. Create `main.go` with the imports the rest of the tutorial uses:
 
@@ -109,9 +109,9 @@ Your embedded DefraDB instance discovers Host clients by dialing bootstrap peers
 
 The registry moves over time, so if dialing fails, pull the list again and swap in a current Host. For more ways to find Hosts and what each field in the registry means, see [Find Views and Hosts](/build/how-to/find-views-and-hosts/) and [Connect your app to a Host](/build/how-to/connect-to-a-host/).
 
-{% admonition(type="tip") %}
+{% <admonition type="tip"> %}
 Running your own Generator client and Host client locally for development? Point `bootstrap_peers` at your Host instead, for example `/ip4/127.0.0.1/tcp/9171/p2p/<your-host-peer-id>`.
-{% end %}
+{% </admonition> %}
 
 ## Start the embedded DefraDB instance
 
@@ -176,9 +176,9 @@ The tutorial uses `Studio_v1_Erc20TransferUSDC`, a View already registered on th
     }
     ```
 
-    {% admonition(type="note") %}
+    {% <admonition type="note"> %}
 The View's SDL as registered on the hub includes the directive `@materialized(if: false)`, which tells the Host client to compute results on query instead of storing them. The DefraDB version the app-sdk embeds rejects that directive, so the app applies the SDL without it and stores pushed documents locally. Only the `Name`, `Sdl`, and optionally `Query` fields of the View struct matter for subscribing.
-    {% end %}
+    {% </admonition> %}
 
 ## Query your data
 
@@ -222,4 +222,4 @@ That is the whole local-first flow: subscribe once, then treat the embedded Defr
 
 ## Need help
 
-{{ need_help(client="app-sdk", repo_name="app-sdk", repo="https://github.com/shinzonetwork/app-sdk/issues") }}
+{{<need_help client="app-sdk" repo_name="app-sdk" repo="https://github.com/shinzonetwork/app-sdk/issues" />}}

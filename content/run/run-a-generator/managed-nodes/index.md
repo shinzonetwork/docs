@@ -9,7 +9,7 @@ What changes between the three is who operates the node and how much of the day-
 
 ## Three ways to feed a Generator
 
-{% player(scene="feeds") %}
+{% <player scene="feeds"> %}
 <div class="player__caption" data-title="Own node, own hardware">
   <p>The Generator sits next to your execution node on the same machine. Every key inside that boundary is yours, and wrong data can only start inside it: a bug, a misconfiguration, a stuck sync.</p>
 </div>
@@ -21,7 +21,7 @@ What changes between the three is who operates the node and how much of the day-
 <div class="player__caption" data-title="Managed node provider">
   <p>The provider operates a dedicated node for you on their platform. It's your node, provisioned for your validator alone. You hold the access token and your operator key, and the signature on the data stays yours; the syncing and patching is their job.</p>
 </div>
-{% end %}
+{% </player> %}
 
 Running your own node on your own hardware is the default shape: the Generator sits next to the execution node, often on the same machine, and nothing stands between the chain and your signature except your own software. The [Validator with Geth](../deployment-examples/validator-with-geth/) example shows this setup end to end.
 
@@ -61,10 +61,10 @@ What you get is simplicity. A snap-synced full execution node typically wants ov
 
 What you give is the flip side. Your signature rides on the provider's data quality: if they serve something wrong, you sign it, and the attestation counts tell the story. The provider's outage is your outage: if the endpoint goes down, your Generator stops until it's back. And the node's health, sync state, and configuration become the provider's to manage, so you see only what they expose.
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 The middle path is worth naming: rent a VM, run the node yourself, hold all the keys. You keep the control boundary around the software that feeds your signature, and you skip the rack in the closet.
-{% end %}
+{% </admonition> %}
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

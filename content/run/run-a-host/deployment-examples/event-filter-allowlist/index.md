@@ -11,7 +11,7 @@ These scenarios use data from a supported EVM chain. Shinzo supports multiple EV
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Gen1["Generator A"]
   Gen2["Generator B"]
@@ -25,7 +25,7 @@ flowchart LR
 
   Gen1 -- "P2P" --> HOST
   Gen2 -- "P2P" --> HOST
-{% end %}
+{% </mermaid> %}
 
 Generators push all block, transaction, and log data to the Host over P2P. The event filter inspects each document before it is written to DefraDB. In allowlist mode, only documents matching an enabled group are stored. Blocks and BlockSignatures always pass through regardless of filter settings.
 
@@ -186,4 +186,4 @@ For a step-by-step walkthrough of configuring a single USDT Transfer filter, see
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

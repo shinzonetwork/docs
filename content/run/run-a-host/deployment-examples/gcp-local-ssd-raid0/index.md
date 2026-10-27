@@ -11,7 +11,7 @@ These scenarios use data from a supported chain. Shinzo supports multiple chains
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph GCP["GCP VM"]
     direction TB
@@ -28,7 +28,7 @@ flowchart LR
 
   Gens["Generators"]
   Gens -- "P2P (libp2p)" --> Host
-{% end %}
+{% </mermaid> %}
 
 The GCP startup script detects all local SSDs attached to the VM, creates a RAID-0 array across them, formats it as ext4, and mounts it at `/mnt/localssd`. The Host container runs with `--network host` and stores its DefraDB data on the RAID-0 mount. This gives the Host the combined IOPS and throughput of all attached local SSDs.
 
@@ -160,4 +160,4 @@ sudo -E ./gcp-startup-host-local-ssd.sh
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

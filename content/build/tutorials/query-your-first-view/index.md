@@ -12,9 +12,9 @@ The script we're about to create does four things:
 1. Sign the GraphQL request.
 1. POST it to the Host's endpoint.
 
-{% admonition(type="info", title="Early-phase testnet") %}
+{% <admonition type="info" title="Early-phase testnet"> %}
 While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
-{% end %}
+{% </admonition> %}
 
 ## Prerequisites
 
@@ -118,9 +118,9 @@ A View is served by a pool of Hosts. The pools endpoint returns the pools that e
 
     Pools track their members by Shinzo account address, which is the same bech32 address the Host registry returns, so matching pool members to endpoints is a plain string comparison. The result is a candidate list with pool members first.
 
-    {% admonition(type="note") %}
+    {% <admonition type="note"> %}
     Registered endpoints can go stale on a testnet. The script tries pool members first, then falls back to any other registered Host that answers. Hosts replicate the Views they subscribe to, so the data is the same either way.
-    {% end %}
+    {% </admonition> %}
 
 ## Sign the query
 
@@ -180,9 +180,9 @@ Hosts expect every View query to carry a signature. The script hashes your query
 
     The result is the query plus an `extensions` envelope: `request_signature` is the EIP-712 signature, `query_hash` binds the signature to this exact query, `nonce` and `request_timestamp` keep the request fresh, and `pool_address` names the pool the query bills to. `fanout` is only read by the network gateway; Hosts ignore it. Freshness is bounded: a Host accepts the signature only within two minutes of `request_timestamp`, so the script signs and sends in one step rather than reusing an envelope.
 
-    {% admonition(type="note") %}
+    {% <admonition type="note"> %}
     Query billing is not enforced on the testnet yet, so a freshly generated key with no funds is enough here. Signed requests are still the supported interface: once Hosts enforce billing, they will reject unsigned View queries and check the signer's query balance.
-    {% end %}
+    {% </admonition> %}
 
 ## Send the query
 
@@ -272,4 +272,4 @@ Hosts expect every View query to carry a signature. The script hashes your query
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

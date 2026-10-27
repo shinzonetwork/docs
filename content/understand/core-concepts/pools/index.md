@@ -5,7 +5,7 @@ description = "Pools bind developer demand for a View to the Hosts willing to se
 
 A pool is where developer demand for a View meets the Hosts that serve it. Demand creates a pool; a Host joining it makes that pool active.
 
-{% player(scene="pools") %}
+{% <player scene="pools"> %}
 <div class="player__caption" data-title="A developer wants a View served">
   <p>A registered View describes a data product, but registration alone doesn't guarantee anyone will serve it. So a developer registers demand for the View through the Pool Registry on ShinzoHub, and backs it with a bond in ushinzo (SHNZ's base unit).</p>
 </div>
@@ -29,7 +29,7 @@ A pool is where developer demand for a View meets the Hosts that serve it. Deman
 <div class="player__caption" data-title="Hosts come and go">
   <p>Active isn't a permanent state. A Host exits through the pool's contract and the count drops below three, so the pool goes inactive. Another Host joins, the count recovers, and the pool is active again.</p>
 </div>
-{% end %}
+{% </player> %}
 
 ## Why pools exist
 

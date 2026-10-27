@@ -32,4 +32,4 @@ Expect to run real infrastructure: a synced source-chain node or a managed endpo
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

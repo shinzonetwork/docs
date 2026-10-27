@@ -11,7 +11,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart TB
   subgraph VM["Prod VM"]
     direction LR
@@ -24,7 +24,7 @@ flowchart TB
 
   Gen -- "P2P (libp2p)<br/>:9171" --> Hosts
   Hosts -- "HTTPS<br/>/snapshots" --> Nginx
-{% end %}
+{% </mermaid> %}
 
 Nginx terminates TLS on port 443 and proxies health, metrics, and snapshot requests to the Generator on port 8080. Hosts connect to the Generator over P2P on port 9171 for live block data. Hosts can also pull snapshot files over HTTPS through Nginx for historical bootstrap.
 
@@ -244,4 +244,4 @@ Once the Generator is running, register it with the Shinzo Network. See [Registr
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

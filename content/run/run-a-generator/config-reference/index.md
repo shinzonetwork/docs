@@ -193,4 +193,4 @@ Keep the container limit as well. `mem_limit` is a hard ceiling the kernel enfor
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

@@ -11,7 +11,7 @@ These scenarios use data from a supported blockchain. Shinzo supports multiple b
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph Startup["First startup"]
     direction TB
@@ -27,7 +27,7 @@ flowchart LR
 
   Generator -- "HTTPS<br/>snapshot files" --> Host
   Gens -- "P2P (libp2p)" --> Host
-{% end %}
+{% </mermaid> %}
 
 On first startup, the Host downloads signed snapshot files from a trustless indexer over HTTPS and imports them into DefraDB. After the snapshot import completes, the Host connects to Generators over P2P and starts receiving live blocks from the chain tip. This is faster than waiting for P2P replication to fill in historical data block by block.
 
@@ -145,4 +145,4 @@ You should see log lines indicating snapshot downloads and imports, followed by 
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

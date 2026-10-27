@@ -31,9 +31,9 @@ The Generator client reads from whatever execution node you point it at. That up
 - `eth_getUncleByBlockHashAndIndex`
 - `eth_getBlockReceipts`
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The Generator client only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
-{% end %}
+{% </admonition> %}
 
 ### What happens if I lose my node-identity-key? Can I regenerate it?
 

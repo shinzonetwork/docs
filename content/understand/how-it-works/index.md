@@ -13,7 +13,7 @@ Shinzo has four kinds of moving parts:
 
 ## The data's journey
 
-{% player(scene="journey") %}
+{% <player scene="journey"> %}
 <div class="player__caption" data-title="A block arrives">
   <p>A validator's execution node produces a block. The data your app needs is already there, so Shinzo reads it at the source instead of a third-party service.</p>
 </div>
@@ -37,7 +37,7 @@ Shinzo has four kinds of moving parts:
 <div class="player__caption" data-title="Your app stays in control">
   <p>The app subscribes to the View and queries its local database with GraphQL. Its attestation threshold decides what counts as trustworthy. Here, that means three votes.</p>
 </div>
-{% end %}
+{% </player> %}
 
 ## The four participants
 

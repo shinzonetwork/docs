@@ -44,12 +44,12 @@ This is the topology covered in the [Operator Quickstart](/run/get-started/).
 
 Cut ShinzoHub off entirely by setting `shinzo.hub_base_url` to an empty string. On startup the Host client logs a message like _No ShinzoHub base URL configured..._ and starts no event subscription, so it contacts nothing except the Generator client you point it at.
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Geth["Geth<br/>(your node)"] -->|RPC + WS| Gen["Generator client<br/>(yours)"]
   Gen -->|libp2p| Host["Host client<br/>(direct client)"]
   Host -->|GraphQL| App["Your application"]
-{% end %}
+{% </mermaid> %}
 
 With no hub connection, no public peers, and no registration, nothing about this Host client is published to the network. This is the most private setup possible.
 
@@ -115,9 +115,9 @@ docker run -d \
 
 Publishing `9171` is optional for a private setup. The Host client only dials out to your Generator client, so you can drop `-p 9171:9171` or leave it published and firewall the port.
 
-{% admonition(type="tip") %}
+{% <admonition type="tip"> %}
 You don't need to expose port `9171` to the internet for a private setup. The Host client dials out to your Generator client; it doesn't need to accept inbound P2P from the public network. Keep `9171` firewalled to your private network.
-{% end %}
+{% </admonition> %}
 
 For the full run sequence including persistent volume mounts and building from source, see [Install](/run/run-a-host/install/). For every config field, see the [Config reference](/run/run-a-host/config-reference/).
 
@@ -142,4 +142,4 @@ Restart the same container, not a fresh one. `views.json` and the cached WASM le
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

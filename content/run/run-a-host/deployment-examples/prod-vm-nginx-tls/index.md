@@ -11,7 +11,7 @@ These scenarios use data from a supported blockchain. Shinzo supports multiple b
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph VM["Prod VM"]
     direction TB
@@ -25,7 +25,7 @@ flowchart LR
 
   Gens -- "P2P (libp2p)<br/>:9171" --> Host
   Clients -- "HTTPS<br/>/api/v0/graphql<br/>/metrics" --> Nginx
-{% end %}
+{% </mermaid> %}
 
 nginx terminates incoming HTTPS traffic and proxies GraphQL and metrics requests to the Host container. P2P traffic from Generators goes directly to the Host on port 9171, bypassing nginx. Persistent volumes on the VM keep DefraDB data, keys, and lens files across container restarts.
 
@@ -366,4 +366,4 @@ curl -s -X POST https://localhost/api/v0/graphql \
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

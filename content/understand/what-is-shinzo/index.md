@@ -33,7 +33,7 @@ Host clients receive primitive data from Generator clients over a peer-to-peer n
 
 Developers define the Views. A View is basically a way to say _"here's the raw data I care about, here's how I want it filtered and decoded, and here's how I want it structured."_ Once a View is deployed, Hosts pick it up, run it, and push the results to whoever subscribes to that particular View.
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph Chain["Blockchain network"]
     direction TB
@@ -61,7 +61,7 @@ flowchart LR
   View2 --> App1
   View3 --> App2["App"]
   View4 --> App2
-{% end %}
+{% </mermaid> %}
 
 Underneath all of this is [DefraDB](../core-concepts/defradb), a peer-to-peer document database that handles replication, access control, and GraphQL queries. Applications embed DefraDB locally and query it the way they'd query any other database, meaning no per-read round trip to an external API.
 

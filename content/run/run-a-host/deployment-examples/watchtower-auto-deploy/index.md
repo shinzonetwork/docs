@@ -11,7 +11,7 @@ These scenarios use data from a supported blockchain. Shinzo supports multiple b
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Dev["Push to main"]
   CI["<b>GitHub Actions</b><br/>test + build"]
@@ -26,7 +26,7 @@ flowchart LR
 
   Dev --> CI --> GHCR
   GHCR -- "pull" --> WT
-{% end %}
+{% </mermaid> %}
 
 A developer pushes to `main`. GitHub Actions runs tests, builds the Docker image, and pushes it to GitHub Container Registry with two tags: `:latest` and `:sha-<commit>`. Watchtower runs on the VM and polls GHCR every 5 minutes. When it detects a new `:latest` image, it stops the old Host container, pulls the new image, and starts a new container with the same configuration.
 
@@ -166,4 +166,4 @@ Replace `sha-abc1234` with the actual commit SHA tag you want to roll back to.
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

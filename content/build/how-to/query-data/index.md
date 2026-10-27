@@ -7,9 +7,9 @@ You query Shinzo data with GraphQL, and there are two places to run it. A local-
 
 Here are the patterns you'll reach for most. The examples use primitive collections (blocks, transactions, logs), and they all work against a View's output collection too.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Collection names are prefixed with `<Chain>__<Network>__`, derived from the `chain.name` and `chain.network` settings of the Generator client that indexed the data (for example `<Chain>__<Network>__Block` or `Optimism__Mainnet__Block`). The examples below use the `<Chain>__<Network>__` placeholder. Substitute the prefix that matches your chain. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
-{% end %}
+{% </admonition> %}
 
 ## Get the latest N documents
 
@@ -320,4 +320,4 @@ Check for `errors` before trusting `data`. Rejections at the billing gate look d
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}
