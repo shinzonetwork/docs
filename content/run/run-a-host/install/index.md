@@ -1,5 +1,6 @@
 +++
 title = "Install"
+description = "How to install a Host client with Docker or a source build and connect it to a Generator client to sync from."
 +++
 
 A Host client pulls primitive blockchain data from Generator clients, runs Lens WASM transforms, and serves the resulting Views to subscriber nodes over an embedded DefraDB instance. This page is for operators who want to **run** a Host client.

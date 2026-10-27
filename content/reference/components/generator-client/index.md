@@ -1,5 +1,6 @@
 +++
 title = "Generator client"
+description = "Technical reference for the Generator client: architecture, the block pipeline, document types and signing, snapshots, and pruning."
 [extra]
 mermaid = true
 +++

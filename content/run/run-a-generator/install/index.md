@@ -1,5 +1,6 @@
 +++
 title = "Install"
+description = "How to install a Generator client with the one-line script, Docker, or a source build, and how to keep it running with systemd."
 +++
 
 This page covers installing a Shinzo Generator client with Docker or from source. To complete the Generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).

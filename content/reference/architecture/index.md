@@ -1,5 +1,6 @@
 +++
 title = "Architecture"
+description = "The two halves of the Shinzo stack: an on-chain coordination layer for registration, payments, and access control, and an off-chain layer that carries the actual data."
 [extra]
 mermaid = true
 +++

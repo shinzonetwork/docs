@@ -1,5 +1,6 @@
 +++
 title = "Viewkit"
+description = "The full Viewkit reference: commands, filter operators, the deploy pipeline, and the VWL wire format."
 [extra]
 mermaid = true
 +++

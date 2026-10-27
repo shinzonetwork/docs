@@ -1,5 +1,6 @@
 +++
 title = "Outpost"
+description = "How outposts connect external chains to Shinzo: proving validator identity on the source chain and paying for View access without touching ShinzoHub."
 [extra]
 mermaid = true
 +++

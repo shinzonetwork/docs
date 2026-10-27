@@ -1,5 +1,6 @@
 +++
 title = "Relayer"
+description = "How the relayer moves assertions and payments from an outpost contract to ShinzoHub as Cosmos SDK transactions."
 +++
 
 A relayer is a process that moves data from an external chain to ShinzoHub. It watches for assertions and payments produced by [outpost](../outpost) contracts and delivers them to ShinzoHub as Cosmos SDK transactions.

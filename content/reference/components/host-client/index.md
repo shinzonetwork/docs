@@ -1,5 +1,6 @@
 +++
 title = "Host client"
+description = "Technical reference for the Host client: architecture, attestation handling, view discovery and processing, lens transforms, and GraphQL serving."
 [extra]
 mermaid = true
 +++
