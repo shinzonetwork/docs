@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-{% import "macros/sidebar.html" as sidebar %}
-{% import "macros/mermaid.html" as mermaid %}
 
 {% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
 {% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
@@ -10,14 +8,14 @@
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
-      {{ sidebar::render(current=page.path) }}
+      {{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}
     </aside>
 
     <div class="docs-content">
       <article class="docItemCol markdown">
 
         {# Breadcrumbs derived from the URL path components #}
-        {% set crumbs = page.path | trim_start_matches(pat="/") | trim_end_matches(pat="/") | split(pat="/") %}
+        {% set crumbs = page.path | trim_start(pat="/") | trim_end(pat="/") | split(pat="/") %}
         <ul class="breadcrumbs">
           <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/understand/home/">Home</a></li>
           {% for crumb in crumbs %}
@@ -89,8 +87,8 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}{% endblock mobile_sidebar %}
 
 {% block scripts %}
-{% if page.extra.mermaid %}{{ mermaid::script() }}{% endif %}
+{% if page.extra.mermaid %}{{<mermaid_script />}}{% endif %}
 {% endblock scripts %}

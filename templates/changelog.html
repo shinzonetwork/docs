@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-{% import "macros/sidebar.html" as sidebar %}
-{% import "macros/mermaid.html" as mermaid %}
 
 {% block title %}<title>{% if page %}{{ page.title }}{% elif section %}{{ section.title }}{% endif %} | {{ config.title }}</title>{% endblock title %}
 {% block description %}{% if page and page.description %}{{ page.description }}{% elif section and section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
@@ -10,14 +8,14 @@
 <main class="main-wrapper">
   <div class="docs-layout docs-layout--changelog">
     <aside class="theme-doc-sidebar-container">
-      {{ sidebar::render(current=page.path | default(value=section.path)) }}
+      {{<sidebar.render blocks={config.extra.sidebar} current={page?.path or section?.path} />}}
     </aside>
 
     <div class="docs-content">
       <article class="docItemCol markdown changelog">
 
-        {% set cur_path = page.path | default(value=section.path) %}
-        {% set crumbs = cur_path | trim_start_matches(pat="/") | trim_end_matches(pat="/") | split(pat="/") %}
+        {% set cur_path = page?.path or section?.path %}
+        {% set crumbs = cur_path | trim_start(pat="/") | trim_end(pat="/") | split(pat="/") %}
         <ul class="breadcrumbs">
           <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/understand/home/">Home</a></li>
           {% for crumb in crumbs %}
@@ -57,7 +55,7 @@
       </article>
     </div>
 
-    {% set toc = page.toc | default(value=section.toc) %}
+    {% set toc = page?.toc or section?.toc %}
     {% if toc %}
     <aside class="toc-container">
       <nav class="toc" aria-label="Table of contents">
@@ -84,8 +82,8 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ sidebar::render(current=page.path | default(value=section.path)) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={page?.path or section?.path} />}}{% endblock mobile_sidebar %}
 
 {% block scripts %}
-{% if page and page.extra.mermaid %}{{ mermaid::script() }}{% elif section.extra.mermaid %}{{ mermaid::script() }}{% endif %}
+{% if page and page.extra.mermaid %}{{<mermaid_script />}}{% elif section and section.extra.mermaid %}{{<mermaid_script />}}{% endif %}
 {% endblock scripts %}

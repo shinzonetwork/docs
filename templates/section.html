@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "macros/sidebar.html" as sidebar %}
 
 {% block title %}<title>{{ section.title | default(value=config.title) }} | {{ config.title }}</title>{% endblock title %}
 
@@ -7,7 +6,7 @@
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
-      {{ sidebar::render(current=section.path) }}
+      {{<sidebar.render blocks={config.extra.sidebar} current={section.path} />}}
     </aside>
     <div class="docs-content">
       <article class="docItemCol markdown">
@@ -23,4 +22,4 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ sidebar::render(current=section.path) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={section.path} />}}{% endblock mobile_sidebar %}
