@@ -722,6 +722,15 @@ a.menu__link--category:hover {
     margin: 0 0 1.25rem;
   }
 
+  // Lead text: the front-matter `description`, rendered above the body copy.
+  // Muted and larger than body copy, but well below the page title.
+  .lead-text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--foreground-muted);
+    margin: 0 0 1.5rem;
+  }
+
 
   // Body links: red, with a light underline that deepens on hover. Card and
   // pagination anchors are chrome, not prose — they opt out below.

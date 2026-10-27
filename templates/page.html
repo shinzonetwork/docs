@@ -33,6 +33,11 @@
            it is NOT part of page.toc / the table of contents. #}
         <h1 class="doc-title">{{ page.title }}</h1>
 
+        {# Lead text: the front-matter `description`, when present. #}
+        {% if page.description %}
+        <p class="lead-text">{{ page.description }}</p>
+        {% endif %}
+
         {{ page.content | safe }}
 
         {# Prev / next navigation #}
