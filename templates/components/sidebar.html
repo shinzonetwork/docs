@@ -1,7 +1,7 @@
 {# Sidebar navigation, per section.
    The tree is passed in as `blocks` from config.toml ([extra.sidebar]) at the
    call site — components are hermetic and cannot see `config` themselves.
-   Each block carries a `section` field ("home", "understand", "build", "run",
+   Each block carries a `section` field ("understand", "build", "run",
    "reference"); the component determines the active section from the current
    path and renders only the matching groups. Page titles are resolved from
    front matter via get_page / get_section. Pages are NOT auto-discovered: a
@@ -29,9 +29,10 @@
 {% component sidebar.render(blocks, current) %}
 <nav class="menu" aria-label="Docs sidebar">
   <ul class="menu__list">
-    {# Determine the active section from the current path. #}
+    {# Determine the active section from the current path. The site root is
+       the Home page, which shows the Understand groups. #}
     {% if current == "/" %}
-      {% set cur_section = "home" %}
+      {% set cur_section = "understand" %}
     {% else %}
       {% set cur_section = current | trim_start(pat="/") | split(pat="/") | first %}
     {% endif %}
