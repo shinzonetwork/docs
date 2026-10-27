@@ -11,7 +11,7 @@ Markdown content and web code for the Shinzo developer docs site at [docs.shinzo
 
 ## Getting started
 
-1. Install [Zola](https://www.getzola.org/) 0.22.1 or later.
+1. Install [Zola](https://www.getzola.org/) 0.23.6 or later.
 1. Clone the repo and move inside:
 
     ```shell

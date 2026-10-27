@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- [Zola](https://www.getzola.org/) 0.22.1 or later.
+- [Zola](https://www.getzola.org/) 0.23.6 or later.
 
 ## Steps
 
