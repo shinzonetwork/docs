@@ -1,5 +1,6 @@
 +++
 title = "Get help"
+description = "Where to go for help with the Shinzo network: Discord, GitHub Issues, and what to include in a report."
 +++
 
 If you hit a blocker while running a Generator or Host, or while working through the docs, there are two places to go: the [Shinzo Discord](https://discord.shinzo.network) for onboarding and technical support, and GitHub Issues for reporting bugs and requesting features.

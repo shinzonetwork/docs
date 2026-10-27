@@ -1,5 +1,6 @@
 +++
 title = "What is Shinzo?"
+description = "What Shinzo is, the problem it solves for apps that read chain data, and the ways to get involved as an operator or a builder."
 page_template = "page.html"
 [extra]
 mermaid = true

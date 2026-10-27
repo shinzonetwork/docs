@@ -1,5 +1,6 @@
 +++
 title = "Register"
+description = "How to register your Generator on the Shinzo Network: the assertion step, the on-chain registration, and backing up your node identity key."
 +++
 
 To participate in the Shinzo Network, you must register your node. Registration identifies and authenticates your node so it can replicate data for the network.

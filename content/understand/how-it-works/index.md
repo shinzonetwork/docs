@@ -1,5 +1,6 @@
 +++
 title = "How it works"
+description = "How a block travels from the source chain to your app's local database, what each participant does along the way, and why the stack is split the way it is."
 [extra]
 mermaid = true
 +++

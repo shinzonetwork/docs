@@ -1,5 +1,6 @@
 +++
 title = "Register"
+description = "How to register your Host with the Shinzo Network through the hosted or local registration app so it can serve Views publicly."
 +++
 
 To participate in the Shinzo Network and make your View publicly available, you need to register your Host. Registration is an on-chain transaction on ShinzoHub, so you need a wallet with a small amount of SHNZ to cover the transaction fee. Get testnet SHNZ from the [faucet](https://faucet.shinzo.network/).

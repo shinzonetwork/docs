@@ -1,5 +1,6 @@
 +++
 title = "ShinzoHub"
+description = "The ShinzoHub coordination chain: its Cosmos SDK modules and precompiles, the SHNZ token, and the chain IDs for each environment."
 +++
 
 ShinzoHub is the coordination chain of the Shinzo network. It is a Cosmos SDK chain with an integrated EVM, running CometBFT consensus. Views, Hosts, Generators, and the economic layer all live here.
