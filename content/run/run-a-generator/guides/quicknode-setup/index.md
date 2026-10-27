@@ -338,7 +338,7 @@ curl -s -X POST http://127.0.0.1:9181/api/v0/graphql \
 #### Container status
 
 ```shell
-docker ps --filter name=shinzo-generator --format "{{.Status}}"
+docker ps --filter name=shinzo-generator --format "{% raw %}{{.Status}}{% endraw %}"
 # Up 2 minutes (healthy)
 ```
 

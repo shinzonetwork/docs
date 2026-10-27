@@ -61,20 +61,20 @@ for dev in /dev/nvme*n*; do
   fi
 done
 
-echo "Found ${#DEVICES[@]} Local SSD(s): ${DEVICES[*]}"
+echo "Found {% raw %}${#DEVICES[@]}{% endraw %} Local SSD(s): ${DEVICES[*]}"
 
-if [ "${#DEVICES[@]}" -eq 0 ]; then
+if [ "{% raw %}${#DEVICES[@]}{% endraw %}" -eq 0 ]; then
   echo "ERROR: No Local SSDs detected! Check that Local SSDs are attached to this VM."
   exit 1
 fi
 
-if [ "${#DEVICES[@]}" -ge 2 ]; then
-  echo "Creating RAID-0 over ${#DEVICES[@]} Local SSDs"
+if [ "{% raw %}${#DEVICES[@]}{% endraw %}" -ge 2 ]; then
+  echo "Creating RAID-0 over {% raw %}${#DEVICES[@]}{% endraw %} Local SSDs"
   RAID_DEV=/dev/md0
   if [ ! -e "$RAID_DEV" ]; then
     mdadm --create $RAID_DEV \
       --level=0 \
-      --raid-devices=${#DEVICES[@]} \
+      --raid-devices={% raw %}${#DEVICES[@]}{% endraw %} \
       "${DEVICES[@]}"
   fi
   TARGET_DEV=$RAID_DEV

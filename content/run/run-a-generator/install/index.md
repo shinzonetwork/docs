@@ -99,10 +99,10 @@ You do not need to be a validator, or to run a validator, just to install and ru
 
     ```shell
     docker run \
-      -e GETH_RPC_URL={{ YOUR RPC URL }}\
-      -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
-      -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
-      -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
+      -e GETH_RPC_URL={% raw %}{{ YOUR RPC URL }}{% endraw %}\
+      -e GETH_WS_URL={% raw %}{{ YOUR WEBSOCKET URL }}{% endraw %}\
+      -e GETH_API_KEY={% raw %}{{ YOUR API KEY (OPTIONAL) }}{% endraw %} \
+      -e GETH_API_KEY_TYPE={% raw %}{{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }}{% endraw %} \
       -e INDEXER_START_HEIGHT=0 \
       -e DEFRADB_KEYRING_SECRET=testnet-secret \
       -e DEFRADB_PLAYGROUND=true \
@@ -146,12 +146,12 @@ sudo chown -R 1001:1001 ~/shinzo-data/defradb
 
 docker run -d \
   --name shinzo-generator \
-  -e GETH_RPC_URL={{ YOUR RPC URL }}\
-  -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
-  -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
-  -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
+  -e GETH_RPC_URL={% raw %}{{ YOUR RPC URL }}{% endraw %}\
+  -e GETH_WS_URL={% raw %}{{ YOUR WEBSOCKET URL }}{% endraw %}\
+  -e GETH_API_KEY={% raw %}{{ YOUR API KEY (OPTIONAL) }}{% endraw %} \
+  -e GETH_API_KEY_TYPE={% raw %}{{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }}{% endraw %} \
   -e INDEXER_START_HEIGHT=0 \
-  -e DEFRADB_KEYRING_SECRET={{ YOUR STRONG SECRET }} \
+  -e DEFRADB_KEYRING_SECRET={% raw %}{{ YOUR STRONG SECRET }}{% endraw %} \
   -e DEFRADB_P2P_ENABLED=true \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
   -e LOGGER_DEBUG=true \
