@@ -64,7 +64,6 @@ google_analytics_id = "G-VC59JRWDBZ"
 label = "Understand"
 href = "/understand/what-is-shinzo/"
 section = "understand"
-root = true
 
 [[extra.navbar]]
 label = "Run infrastructure"
@@ -103,7 +102,6 @@ section = "reference"
 section = "understand"
 label = "Basics"
 pages = [
-  "_index.md",
   "understand/what-is-shinzo/index.md",
   "understand/how-it-works/index.md"
 ]
