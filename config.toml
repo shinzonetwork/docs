@@ -51,7 +51,7 @@ plausible_src = "https://plausible.source.network/js/script.js"
 # Google Analytics 4 (gtag.js)
 google_analytics_id = "G-VC59JRWDBZ"
 # Docs search: Cloudflare AI Search public endpoint 
-ai_search_endpoint = ""
+ai_search_endpoint = "https://989665cc-c10c-4fa3-8b4a-c9e77293f807.search.ai.cloudflare.com/search"
 
 
 
