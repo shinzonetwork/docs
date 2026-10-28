@@ -33,7 +33,7 @@ theme = "github-light"
 extra_grammars = ["grammars/output.json"]
 
 [search]
-# Fuse.js index (public/search_index.en.json), fetched lazily by static/js/search.js.
+# Fuse.js keyword index (public/search_index.en.json)
 index_format = "fuse_json"
 include_title = true
 include_description = true
@@ -50,6 +50,8 @@ plausible_domain = "docs.shinzo.network"
 plausible_src = "https://plausible.source.network/js/script.js"
 # Google Analytics 4 (gtag.js)
 google_analytics_id = "G-VC59JRWDBZ"
+# Docs search: Cloudflare AI Search public endpoint 
+ai_search_endpoint = ""
 
 
 

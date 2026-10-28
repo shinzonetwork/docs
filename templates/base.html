@@ -92,8 +92,10 @@
       </ul>
 
       <div class="navbar__items navbar__items--right">
-        <div class="search-box">
-          <input type="text" id="search-input" class="search-input" placeholder="Search docs…" autocomplete="off" aria-label="Search" />
+        <div class="search-box" data-ai-search-endpoint="{{ config.extra.ai_search_endpoint }}" data-site-origin="{{ config.base_url }}">
+          <input type="text" id="search-input" class="search-input" placeholder="Search or ask…" autocomplete="off" aria-label="Search docs" />
+          <button type="button" class="search-kbd" aria-label="Focus search">Ctrl K</button>
+          <div id="search-status" class="search-status" aria-live="polite"></div>
           <div id="search-results" class="search-results"></div>
         </div>
         <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
@@ -125,8 +127,6 @@
 
 </div>
 
-{# Docs search: Fuse.js over Zola's generated search_index.en.json. Both the
-   library and the index are fetched lazily by search.js on first use. #}
 <script src="/js/search.js" defer></script>
 
 {# Table-of-contents scroll-spy (no-ops when there is no TOC) #}

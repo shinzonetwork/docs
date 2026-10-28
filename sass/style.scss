@@ -1280,7 +1280,7 @@ pre {
 .search-input {
   font-family: var(--font-family-base);
   font-size: 0.85rem;
-  padding: 0.42rem 0.8rem;
+  padding: 0.42rem 3.1rem 0.42rem 0.8rem; // right side leaves room for the ⌘K chip
   border: 1px solid var(--szo-border);
   // border-radius: var(--radius-md);
   background: var(--surface-sunken);
@@ -1301,6 +1301,52 @@ pre {
   }
 }
 
+// Cmd/Ctrl+K shortcut chip inside the input. search.js swaps the label for Mac users;
+.search-kbd {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.08rem 0.34rem;
+  font-family: var(--font-family-monospace);
+  font-size: 0.62rem;
+  line-height: 1.3;
+  color: var(--foreground-subtle);
+  background: var(--surface-raised);
+  border: 1px solid var(--szo-border);
+  cursor: pointer;
+  transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: var(--foreground-muted);
+    border-color: var(--szo-border-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+}
+
+// Fade the chip out while the box is in use so it never crowds the query.
+.search-box:focus-within .search-kbd {
+  opacity: 0;
+  pointer-events: none;
+}
+
+// Screen-reader-only live region announcing search state changes.
+.search-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .search-results {
   position: absolute;
   top: calc(100% + 6px);
@@ -1316,10 +1362,22 @@ pre {
   z-index: 300;
   display: none;
   padding: 0.35rem;
+
+  // The answer view needs more room to read than a result list.
+  &.is-answer {
+    width: 32rem;
+  }
 }
 
 .search-results.is-open {
   display: block;
+}
+
+// Small muted context line above the results (e.g. "AI search unavailable").
+.search-results__note {
+  padding: 0.25rem 0.7rem 0.3rem;
+  font-size: 0.7rem;
+  color: var(--foreground-subtle);
 }
 
 .search-result {
@@ -1327,6 +1385,7 @@ pre {
   padding: 0.55rem 0.7rem;
   // border-radius: var(--radius-sm);
   color: var(--foreground);
+  cursor: pointer;
 
   &:hover {
     background: color-mix(in srgb, var(--foreground) 5%, transparent);
@@ -1347,6 +1406,178 @@ pre {
     color: inherit;
     padding: 0 0.1rem;
     // border-radius: 0.15rem;
+  }
+  &__url {
+    margin-top: 0.14rem;
+    font-family: var(--font-family-monospace);
+    font-size: 0.66rem;
+    color: var(--foreground-subtle);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Transient states: "Searching…" row and answer status line.
+.search-result--loading,
+.search-answer__status {
+  font-size: 0.78rem;
+  color: var(--foreground-subtle);
+  animation: search-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes search-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+// "Ask the docs" action row closing the result list.
+button.search-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-family-base);
+  background: none;
+  border: none;
+}
+
+.search-result--ask {
+  border-top: 1px solid var(--szo-border);
+  margin-top: 0.3rem;
+
+  .search-result__title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+}
+
+.search-result__spark {
+  color: var(--color-primary);
+}
+
+.search-result__enter {
+  margin-left: auto;
+  padding: 0 0.3rem;
+  font-family: var(--font-family-monospace);
+  font-size: 0.62rem;
+  color: var(--foreground-subtle);
+  border: 1px solid var(--szo-border);
+}
+
+/* Answer view (Ask the docs) */
+.search-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.55rem 0.7rem 0.6rem;
+}
+
+.search-answer__back {
+  align-self: flex-start;
+  padding: 0;
+  font-family: var(--font-family-base);
+  font-size: 0.72rem;
+  color: var(--foreground-subtle);
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+}
+
+.search-answer__body {
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+
+  .search-answer__p {
+    margin: 0 0 0.5rem;
+  }
+
+  .search-answer__heading {
+    margin: 0.35rem 0 0.2rem;
+    font-weight: 600;
+    font-size: 0.84rem;
+  }
+
+  .search-answer__list {
+    margin: 0 0 0.5rem;
+    padding-left: 1.25rem;
+  }
+
+  .search-answer__code {
+    font-family: var(--font-family-monospace);
+    font-size: 0.78rem;
+    background: var(--surface-sunken);
+    border: 1px solid var(--szo-border);
+    padding: 0.05rem 0.3rem;
+    color: var(--foreground);
+  }
+
+  .search-answer__pre {
+    margin: 0 0 0.55rem;
+    padding: 0.55rem 0.7rem;
+    background: var(--code-background);
+    border: 1px solid var(--code-border);
+    overflow-x: auto;
+
+    code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.78rem;
+      color: var(--code-foreground);
+    }
+  }
+
+  .search-answer__link {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+}
+
+.search-answer__sources {
+  border-top: 1px solid var(--szo-border);
+  padding-top: 0.45rem;
+}
+
+.search-answer__sources-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--foreground-muted);
+}
+
+.search-answer__sources-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.78rem;
+
+  li {
+    margin-bottom: 0.2rem;
+  }
+
+  a {
+    color: var(--foreground-muted);
+
+    &:hover {
+      color: var(--color-primary);
+    }
   }
 }
 
@@ -1692,6 +1923,23 @@ body.mobile-menu-open {
   .search-input {
     width: 100%;
     max-width: 13rem;
+    padding-right: 0.8rem; // no ⌘K chip to reserve space for
+  }
+  // No keyboard attached, no shortcut to advertise.
+  .search-kbd {
+    display: none;
+  }
+  // Give the dropdown (results and answers alike) the viewport minus margins.
+  .search-results,
+  .search-results.is-answer {
+    width: min(26rem, calc(100vw - 2rem));
+  }
+}
+
+// Touch devices have no Cmd/Ctrl+K to hint at either.
+@media (hover: none) {
+  .search-kbd {
+    display: none;
   }
 }
 

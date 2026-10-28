@@ -15,6 +15,12 @@ This site is built with [Zola](https://www.getzola.org/), a Rust-based static si
 
 All content lives under `content/` as Markdown files. The site configuration and sidebar tree live in `config.toml` at the repo root.
 
+## Docs search
+
+The search box in the navbar runs on [Cloudflare AI Search](https://developers.cloudflare.com/ai-search/). The whole interface lives in `static/js/search.js` and talks directly to the AI Search public endpoint, so there is no backend in this repo. 
+
+Contributors don't need to do anything for search. The Cloudflare instance crawls `docs.shinzo.network` on its own schedule, so new and edited pages are picked up without any action in this repo. The instance itself (crawl settings, models, the endpoint) is managed outside this repo.
+
 ## Run the site locally
 
 You'll need Zola 0.22.1 or later. See the [Zola installation docs](https://www.getzola.org/documentation/getting-started/overview/) if you don't have it.
