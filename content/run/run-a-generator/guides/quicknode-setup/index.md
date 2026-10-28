@@ -7,13 +7,13 @@ In this guide, you'll stand up the Shinzo Generator client as a Docker sidecar, 
 
 If you want to participate in Shinzo by trustlessly reading and signing on-chain data, but you don't want to operate a node yourself, then this guide is for you. Most managed node providers, like QuickNode, require a monthly subscription fee. However, most offer a free tier for basic testing. This guide also assumes you have a small Linux VM and can run Docker.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Installing and running the Generator client does not require you to be a validator. The separate Registration step, which registers the Generator on ShinzoHub and makes it a recognized source on the Shinzo network, _does_ require an active and bonded validator on your source chain. However, this guide covers install, run, and verify only, and flags registration as an optional next step.
-{% end %}
+{% </admonition> %}
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 The Generator client does not verify the data it reads from an endpoint; it signs whatever the node returns. QuickNode operates a dedicated node for you, but that node's data is still what your signature vouches for. If the node ever serves wrong or incomplete data, your signed blocks won't match what other Generator clients sign, they won't accumulate attestations, and apps filtering by attestation threshold will ignore them. See [Managed nodes](/run/run-a-generator/managed-nodes/) for what that trade means in practice, and [Trust and verification](/understand/core-concepts/trust-verification/) for the full trust model.
-{% end %}
+{% </admonition> %}
 
 ## Prerequisites
 
@@ -41,9 +41,9 @@ You'll use the base URLs (strip the token off the path) plus the token sent as a
 | WS URL (no token) | `wss://alpha-proud-isle.ethereum-mainnet.quiknode.pro/` |
 | Token | `77f6889ea5a4f33fed9a02ce024811980754c573` |
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 QuickNode's admin Console API uses an `x-api-key` header but the RPC endpoints don't. The RPC endpoints use the token-in-URL or an `x-token` header. Sending `x-api-key` to the RPC endpoint will still get you a `401`. This guide uses `x-token`, which the Shinzo Generator supports natively via `GETH_API_KEY_TYPE`.
-{% end %}
+{% </admonition> %}
 
 Sanity-check the header auth with curl before touching the Generator client. With no header you should get a `401`; with `x-token` you should get a block number:
 
@@ -242,9 +242,9 @@ chown -R 1001:1001 /root/shinzo-data
 | `SCHEMA_AUTH_MODE=none` | Disables token auth on `/api/v1/schema` (fine for a single-operator node). |
 | `GOMEMLIMIT=5GiB` | Go runtime soft memory limit, set below the 6g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit). |
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 See the [Generator client config reference](../../../run-a-generator/config-reference/) for a detailed list of available configuration options.
-{% end %}
+{% </admonition> %}
 
 ## Start the client
 
@@ -338,7 +338,7 @@ curl -s -X POST http://127.0.0.1:9181/api/v0/graphql \
 #### Container status
 
 ```shell
-docker ps --filter name=shinzo-generator --format "{{.Status}}"
+docker ps --filter name=shinzo-generator --format "{% raw %}{{.Status}}{% endraw %}"
 # Up 2 minutes (healthy)
 ```
 
@@ -359,9 +359,9 @@ docker compose -f docker-compose.quicknode.yml down -v
 sudo rm -rf /root/shinzo-data/defradb/*
 ```
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 Running `rm -rf` is irreversible. Data deleted this way cannot be recovered.
-{% end %}
+{% </admonition> %}
 
 ## Gotchas
 

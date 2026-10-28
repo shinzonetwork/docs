@@ -11,22 +11,22 @@ This tutorial walks through spinning up a local Ethereum development network usi
 
 Here's the basic flow for what we're about to build:
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
     Geth["Geth (--dev)<br/>mines blocks on demand"] --> Gen["Shinzo Generator client<br/>watches for new blocks via HTTP/WS RPC"]
     Gen --> GenDB["DefraDB (embedded in Generator client)<br/>stores generated block/transaction/log data"]
     GenDB -- "P2P passive replication" --> HostDB["DefraDB (embedded in Host)<br/>receives replicated data"]
     HostDB --> GraphQL["GraphQL API (port 9182)<br/>query the replicated data"]
-{% end %}
+{% </mermaid> %}
 
 ## Prerequisites
 
 - A cloud VM running Ubuntu 24.04 on amd64 (e.g. Hetzner CX22 or similar). arm64 won't work as the Generator and Host images are amd64-only.
 - A GitHub account with access to the Shinzo container registry.
  
-{% admonition(type="info", title="Early-phase testnet") %}
+{% <admonition type="info" title="Early-phase testnet"> %}
 While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
-{% end %}
+{% </admonition> %}
 
 ## Geth
 

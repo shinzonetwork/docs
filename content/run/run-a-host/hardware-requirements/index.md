@@ -1,5 +1,6 @@
 +++
 title = "Hardware requirements"
+description = "Hardware sizing for a Host client: what drives CPU, RAM, and storage needs, and why a Host never needs the storage a blockchain node does."
 +++
 
 These requirements are for the Host client. A Host does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage that a full node or archival Generator requires. It receives signed primitive data over P2P from Generator clients, applies Lens transforms, and serves Views to applications.

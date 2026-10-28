@@ -6,9 +6,11 @@
 # trailing-slash form because a rule matches the request path exactly.
 
 # ---------------------------------------------------------------------------
-# Site root -> Home page. (The section at content/_index.md renders nothing.)
+# Home page. The site root (content/_index.md) is the Home page itself; the
+# old Understand-section URL for it redirects to the root.
 # ---------------------------------------------------------------------------
-/                                       /understand/home/                           301
+/understand/home                        /                                           301
+/understand/home/                       /                                           301
 
 # ---------------------------------------------------------------------------
 # Renamed or moved pages (explicit rules; must precede the splat rules below).

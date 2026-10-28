@@ -52,7 +52,7 @@ When the Generator client and the execution node (or validator) run on different
 
 ### Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph Exec["Execution node machine"]
     Node["<b>Execution node</b><br/>:8545 JSON-RPC<br/>:8546 WebSocket"]
@@ -73,7 +73,7 @@ flowchart LR
   Gen -- "P2P (libp2p)<br/>:9171 public" --> Hosts
   Ops -- "HTTPS<br/>/metrics /snapshots /api/v1/schema" --> Nginx
   Dash -- "plaintext HTTP<br/>:8080 /health" --> Gen
-{% end %}
+{% </mermaid> %}
 
 The execution node feeds the Generator client over a restricted private link. The Generator client publishes to Host clients over P2P on `9171`. The public Shinzo dashboard probes `http://<your-server-ip>:8080/health` over plaintext HTTP to decide whether your Generator shows as online, so that one path must be reachable from the internet. Operators and monitoring can reach the other management paths through a reverse proxy on `443`. The raw DefraDB API on `9181` stays bound to localhost and never crosses the firewall.
 
@@ -111,4 +111,4 @@ This point is covered in the [outpost reference](../../../reference/components/o
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

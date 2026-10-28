@@ -16,7 +16,7 @@ Within the Shinzo ecosystem, Viewkit sits above the Generator client and alongsi
 - Viewkit defines how that data should be queried, transformed, and exposed.
 - Host clients execute those definitions, serve results, and attest to correctness.
 
-{% player(scene="views") %}
+{% <player scene="views"> %}
 <div class="player__caption" data-title="Primitives flow in">
   <p>Generator clients turn chain data into primitive documents, all normalized and deterministic: blocks, transactions, and logs. They flow to Hosts over the peer-to-peer network, but on their own they're raw material. Nothing about a raw log says how your app wants to read it.</p>
 </div>
@@ -40,7 +40,7 @@ Within the Shinzo ecosystem, Viewkit sits above the Generator client and alongsi
 <div class="player__caption" data-title="Your app queries locally">
   <p>The Host serves the view documents to subscribers, and your app receives them over P2P into its embedded DefraDB. A query is a local database lookup with GraphQL. When the data model needs to change, the developer ships v2 of the View and iterates without reprocessing the chain.</p>
 </div>
-{% end %}
+{% </player> %}
 
 Using Viewkit, developers write Views as versioned bundles that describe a complete data pipeline. These Views are then deployed to a target environment where Hosts execute them deterministically against primitive data and serve the results to consumers.
 
@@ -62,7 +62,7 @@ A View is the fundamental unit produced by Viewkit. Each View is a self-containe
 
 Conceptually, a View represents the pipeline:
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart TD 
   Prim["Primitive data<br/>(Generator)"]
   Q["Query<br/>select raw fields"]
@@ -71,7 +71,7 @@ flowchart TD
   API["Consumable API<br/>(GraphQL)"]
 
   Prim --> Q --> Lens --> SDL --> API
-{% end %}
+{% </mermaid> %}
 
 ## Primitive data Views operate on
 

@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "macros/sidebar.html" as sidebar %}
 
 {% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
 
@@ -8,13 +7,13 @@
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
-      {{ sidebar::render(current=page.path) }}
+      {{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}
     </aside>
 
     <div class="docs-content">
       <article class="docItemCol markdown">
         <ul class="breadcrumbs">
-          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/understand/home/">Home</a></li>
+          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Home</a></li>
           <li class="breadcrumbs__item"><span class="breadcrumbs__link">Reference</span></li>
           <li class="breadcrumbs__item"><span class="breadcrumbs__link">Glossary</span></li>
         </ul>
@@ -46,4 +45,4 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}{% endblock mobile_sidebar %}

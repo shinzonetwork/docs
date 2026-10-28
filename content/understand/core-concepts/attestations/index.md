@@ -1,5 +1,6 @@
 +++
 title = "Attestations"
+description = "How Shinzo counts independent agreement on a piece of data, what a vote count tells you, and how apps set thresholds on what to trust."
 +++
 
 Attestation is how Shinzo tracks how much of the network has independently agreed on a piece of data.

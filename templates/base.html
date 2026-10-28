@@ -1,5 +1,3 @@
-{% import "macros/footer.html" as footer_macro %}
-{% import "macros/navbar.html" as navbar %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +67,7 @@
 
   {# Navbar #}
   {# Top-nav items and active-section highlighting are driven by
-     config.extra.navbar (see macros/navbar.html). #}
+     config.extra.navbar (see components/navbar.html). #}
   {%- if page %}{% set cur_path = page.path %}
   {%- elif section %}{% set cur_path = section.path %}
   {%- else %}{% set cur_path = "/" %}{% endif -%}
@@ -81,14 +79,14 @@
         <span class="navbar__hamburger-bar"></span>
       </button>
 
-      <a class="navbar__brand navbar__logo" href="/understand/home/" aria-label="Shinzo Network Documentation">
+      <a class="navbar__brand navbar__logo" href="/" aria-label="Shinzo Network Documentation">
         <img class="logo-light" src="/img/shinzo-logo.svg" alt="Shinzo Network Documentation" />
         <img class="logo-dark" src="/img/shinzo-logo-w.svg" alt="Shinzo Network Documentation" />
         <span class="navbar__brand-suffix">Docs</span>
       </a>
 
       <ul class="navbar__items navbar__items--left">
-        {{ navbar::render(current=cur_path, base_class="navbar__link", active_class="navbar__link--active") }}
+        {{<navbar.render items={config.extra.navbar} current={cur_path} base_class="navbar__link" active_class="navbar__link--active" />}}
       </ul>
 
       <div class="navbar__items navbar__items--right">
@@ -109,11 +107,11 @@
   <div class="mobile-menu-backdrop" hidden></div>
   <aside id="mobile-menu" class="mobile-menu" hidden aria-label="Mobile navigation">
     <nav class="mobile-menu__top" aria-label="Sections">
-      {% for item in config.extra.navbar %}{{ navbar::link(item=item, cur_path=cur_path, base_class="mobile-menu__top-link", active_class="mobile-menu__top-link--active") }}{% endfor %}
+      {% for item in config.extra.navbar %}{{<navbar.link item={item} cur_path={cur_path} base_class="mobile-menu__top-link" active_class="mobile-menu__top-link--active" />}}{% endfor %}
     </nav>
     <div class="mobile-menu__divider"></div>
-    {# Child templates inject the shared sidebar nav here (they import the
-       sidebar macro themselves, so its internal self:: refs resolve). #}
+    {# Child templates inject the shared sidebar nav here via the
+       sidebar.render component. #}
     {% block mobile_sidebar %}{% endblock mobile_sidebar %}
   </aside>
 
@@ -121,7 +119,7 @@
   {% block body %}{% endblock body %}
 
   {# Footer #}
-  {{ footer_macro::render() }}
+  {{<footer.render />}}
 
 </div>
 
@@ -135,7 +133,7 @@
 {# Copy-to-clipboard buttons on non-output code blocks #}
 <script src="/js/copy-code.js" defer></script>
 
-{# Tabbed code blocks ({{ tab() }} / {{ endtab() }} markers, grouped by tabs.js) #}
+{# Tabbed code blocks ({{<tab />}} / {{<endtab />}} markers, grouped by tabs.js) #}
 <script src="/js/tabs.js" defer></script>
 
 {# Mobile hamburger navigation drawer #}

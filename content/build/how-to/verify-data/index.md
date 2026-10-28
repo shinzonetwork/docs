@@ -7,9 +7,9 @@ Every document a Shinzo client serves is content-addressed, and every block of d
 
 The examples query primitive collections through a Host client, and the same queries work in a local-first app's embedded DefraDB instance. Both surfaces share the query language, as covered in [Query data](/build/how-to/query-data/).
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Collection names are prefixed with `<Chain>__<Network>__`, derived from the `chain.name` and `chain.network` settings of the Generator client that indexed the data. Substitute the prefix that matches your chain.
-{% end %}
+{% </admonition> %}
 
 ## Check who signed a document
 
@@ -157,10 +157,10 @@ Because the CID is derived from the content, the document it resolves to is exac
 
 Signing every document individually would be slow, so Generator clients sign per block. After writing a block's documents, the Generator client computes a Merkle root over their CIDs, signs the root, and writes a `BlockSignature` document. Snapshot signatures do the same across block ranges for faster initial sync. Verifying one block-level signature covers every primitive document in that block. The two-level Merkle structure is laid out in the [architecture reference](/reference/architecture/), and [Attestations](/understand/core-concepts/attestations/) explains how Host clients turn these signatures into attestation records.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Signatures and CIDs prove who produced your data and that it was not altered in transit. They do not prove completeness (that no matching documents were withheld from your result) or freshness (that you are seeing the latest state). Closing those gaps is roadmap work; see [Privacy](/understand/core-concepts/privacy/) for how Shinzo frames the remaining trust assumptions.
-{% end %}
+{% </admonition> %}
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

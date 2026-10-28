@@ -44,9 +44,9 @@ export DEFRA_KEYRING_SECRET=<make_a_password>
 - `logger.development`: Set to `false` for production.
 - `host.lens_registry_path`: Where received WASM lens files are stored.
 
-{% admonition(type="tip", title="Note") %}
+{% <admonition type="tip" title="Note"> %}
 The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups.
-{% end %}
+{% </admonition> %}
 
 ### Running a Generator client and a Host client on the same machine
 
@@ -77,18 +77,18 @@ listen_addr: "/ip4/0.0.0.0/tcp/9172"
 
 ### Build and run
 
-{{ tab(label="Run directly") }}
+{{<tab label="Run directly" />}}
 ```shell
 go run cmd/main.go
 ```
-{{ endtab() }}
+{{<endtab />}}
 
-{{ tab(label="Build then run") }}
+{{<tab label="Build then run" />}}
 ```shell
 make build
 make start
 ```
-{{ endtab() }}
+{{<endtab />}}
 
 ### (Optional) Enable the GraphQL Playground
 
@@ -189,9 +189,9 @@ host:
   health_server_port: 8080
 ```
 
-{% admonition(type="tip", title="Note") %}
+{% <admonition type="tip" title="Note"> %}
 The full production config is generated automatically by `host-prod-setup.sh`. See below.
-{% end %}
+{% </admonition> %}
 
 ### Write the Nginx config
 
@@ -313,9 +313,9 @@ services:
     restart: unless-stopped
 ```
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 This compose file pairs `mem_limit: 16g` with `GOMEMLIMIT=14GiB`. Scale both together if your VM has more or less RAM. See [memory limits](/run/run-a-host/config-reference#gomemlimit) for what each limit covers.
-{% end %}
+{% </admonition> %}
 
 ### Start the Host client
 
@@ -385,15 +385,15 @@ cast send "0x0000000000000000000000000000000000000211" \
 
 Replace each placeholder with your actual registration values.
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 Be careful with your private key. Do not commit it to source control, paste it in public channels, or store it in shell history on shared machines.
-{% end %}
+{% </admonition> %}
 
 Your Host is now registered and authorized to participate in the Shinzo Network.
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}
 
 ## Next steps
 

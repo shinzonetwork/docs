@@ -90,9 +90,9 @@ View queries carry a signature in the `extensions` envelope, and one billed quer
 
 Two details of the envelope are easy to miss. It is only valid for two minutes either side of `request_timestamp`, so sign right before you send, and expect a stale rejection if your clock drifts far from the Host's. And it only travels in a POST body: the GET form of the GraphQL endpoint cannot carry `extensions`, so a billed query has to use the POST shape above. When a Host enforces billing, rejections come back as plain errors: `403` if the request signature is missing, stale, or fails verification, and `402` if the signer's query balance is too low. [Errors](/reference/errors/) lists the full set with causes, and [Query your first View](/build/tutorials/query-your-first-view/) builds the signing flow end to end.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Billing enforcement is rolling out on the testnet, so some Hosts still answer unsigned queries. Signed requests are the supported interface either way; treat unsigned access as a convenience that will go away.
-{% end %}
+{% </admonition> %}
 
 ## Prefer your own Host
 
@@ -100,4 +100,4 @@ Public Hosts are shared infrastructure. If you want guaranteed availability, or 
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

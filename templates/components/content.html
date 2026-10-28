@@ -1,0 +1,118 @@
+{# Content components, called from markdown (formerly shortcodes).
+
+   Block form (body available as `body`):
+     {% <admonition type="note"> %} ... {% </admonition> %}
+
+   Self-closing form:
+     {{<tag name="Host" />}} #}
+
+{# Usage: {% <admonition type="info" title="Note"> %} ... {% </admonition> %}
+   The output is a single line so the whole block stays nested when the call
+   site is indented inside a list item. The body keeps the call site's
+   indentation, so dedent 4 spaces before rendering it as markdown. Newlines
+   between block tags in the rendered body are glued (whitespace there is
+   insignificant) so multi-block bodies stay on one line too — a fenced code
+   block inside an admonition body would not survive that, so don't use one. #}
+{% component admonition(type="info", title="") -%}
+{%- if title -%}{%- set heading = title -%}{%- else -%}{%- set heading = type | title -%}{%- endif -%}
+<div class="admonition admonition--{{ type }}"><div class="admonition__title">{{ heading }}</div><div class="admonition__content">{{ body | replace(from="\n    ", to="\n") | trim | markdown | trim | replace(from=">\n<", to="><") | safe }}</div></div>
+{%- endcomponent admonition %}
+
+{#- Tab panel start marker. Pair with {{<endtab />}}.
+
+Example:
+
+````markdown
+1. Run the client:
+
+    {{<tab label="Run as a binary" />}}
+    ```shell
+    make start
+    ```
+    {{<endtab />}}
+
+    {{<tab label="Without building the binary" />}}
+    ```shell
+    go run cmd/main.go
+    ```
+    {{<endtab />}}
+
+1. Done!
+````
+
+The content between the markers is parsed by the page markdown parser (NOT re-parsed here), so fenced code blocks keep correct list-context indentation. tabs.js wraps the bounded content into a .tabs__panel and groups consecutive panels into a tabbed widget.
+-#}
+{#- The trailing newline (plus the one after the call site) yields the blank
+    line a markdown HTML block needs to end before the panel's fenced code. -#}
+{% component tab(label="") %}<div class="tabs__start" data-tab-label="{{ label }}"></div>
+{% endcomponent tab %}
+
+{#- Closes the tab panel opened by {{<tab label="..." />}}. tabs.js treats the
+    sibling nodes between a .tabs__start and its matching .tabs__end as one
+    panel's content. -#}
+{% component endtab() %}<div class="tabs__end"></div>{% endcomponent endtab %}
+
+{#- Content templating does not autoescape, and Mermaid reads textContent:
+    escaping keeps label markup like <br/> literal for the diagram parser.
+    Blank lines are dropped: the output is inlined into page markdown, and a
+    blank line would end the surrounding HTML block and mangle the rest. -#}
+{% component mermaid() %}<div class="mermaid-container"><div class="mermaid">{{ [l for l in body | split(pat="\n") if (l | trim) != ""] | join(sep="\n") | escape_html }}</div></div>{% endcomponent mermaid %}
+
+{# Usage: {{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}} #}
+{% component need_help(client, repo_name, repo) -%}
+<ul>
+  <li>For onboarding and technical support, join the <a href="https://discord.shinzo.network" target="_blank" rel="noopener noreferrer">Shinzo Discord</a>.</li>
+  <li>To report a documentation bug or request a feature, open an issue in the <a href="https://github.com/shinzonetwork/docs/issues" target="_blank" rel="noopener noreferrer">docs repo</a>.</li>
+  <li>For a technical issue with the {{ client }} client, open an issue in the <a href="{{ repo }}" target="_blank" rel="noopener noreferrer">{{ repo_name }} repo</a>.</li>
+</ul>
+{% endcomponent need_help %}
+
+{# Generic step-through guided player. Usage:
+     {% <player scene="views"> %}
+     <div class="player__caption" data-title="...">...</div>
+     {% </player> %}
+   Scenes live in templates/player-scenes/<scene>.html (SVG + inline <style>
+   for per-step state). Register a new scene with one more elif below.
+   Assets: /css/player.css and /js/player.js. The scene is fully visible
+   without JS; the script wires up state and playback. #}
+{% component player(scene) %}
+<link rel="stylesheet" href="/css/player.css" />
+<div class="player player--s1" data-player>
+  <div class="player__stage">
+    {#- Whitespace control: the component output is inlined into page markdown,
+        and a blank (or whitespace-only) line would end the HTML block and let
+        the markdown parser wrap the SVG in a <p>. -#}
+    {%- if scene == "journey" %}{% include "player-scenes/journey.html" %}
+    {%- elif scene == "pools" %}{% include "player-scenes/pools.html" %}
+    {%- elif scene == "views" %}{% include "player-scenes/views.html" %}
+    {%- elif scene == "feeds" %}{% include "player-scenes/feeds.html" %}
+    {%- else %}{{ throw(message="player: unknown scene `" ~ scene ~ "`") }}{% endif %}
+  </div>
+
+  <div class="player__panel">
+    <div class="player__captionbox" aria-live="polite">
+      <h3 class="player__caption-title js-title"></h3>
+      <div class="player__caption-body js-body"></div>
+    </div>
+    <div class="player__controls">
+      <button type="button" class="player__btn js-prev" aria-label="Previous step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 10 3 L 5 8 L 10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="player__btn player__btn--play js-play" aria-label="Play">
+        <svg class="player-icon-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 4 2.5 L 13 8 L 4 13.5 Z" fill="currentColor"/></svg>
+        <svg class="player-icon-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/><rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="player__btn js-next" aria-label="Next step">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 6 3 L 11 8 L 6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="player__dots js-dots" role="tablist" aria-label="Steps"></div>
+      <span class="player__count js-count"></span>
+    </div>
+    <div class="player__progress"><div class="player__progress-bar js-progress"></div></div>
+  </div>
+  {{ body | safe }}
+</div>
+<script src="/js/player.js" defer></script>
+{% endcomponent player %}
+
+{% component tag(name="") %}<span class="changelog-tag changelog-tag--{{ name | lower }}">{{ name }}</span>{% endcomponent tag %}

@@ -1,5 +1,6 @@
 +++
 title = "Views"
+description = "What a View is, what goes into one, and how Hosts turn it into the data your app subscribes to."
 +++
 
 A View is a developer-defined data product. It describes what raw blockchain data to pull, how to transform it, and what schema to expose the result as. Once deployed, Hosts run it continuously and push results to any application that subscribes.

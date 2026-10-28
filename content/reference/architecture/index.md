@@ -1,5 +1,6 @@
 +++
 title = "Architecture"
+description = "The two halves of the Shinzo stack: an on-chain coordination layer for registration, payments, and access control, and an off-chain layer that carries the actual data."
 [extra]
 mermaid = true
 +++
@@ -10,7 +11,7 @@ Neither layer works without the other. The on-chain layer controls who can parti
 
 ## System diagram
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Src["Source chains<br/>(EVM chains, Cosmos, ...)"]
 
@@ -44,7 +45,7 @@ flowchart LR
   Idx -. "register" .-> SH
   Host -. "register" .-> SH
   User -. "pay / subscribe" .-> SH
-{% end %}
+{% </mermaid> %}
 
 The scheduler and gateway are coordination services. They match the Generator client to Host clients and route user queries to the right host. They never touch the actual data.
 
@@ -127,20 +128,20 @@ ShinzoHub and SourceHub communicate over IBC (Inter-Blockchain Communication). I
 - Connection layer: Links two chains via their light-clients.
 - Client layer: Each chain runs a light-client of the other, and verifies state proofs against block headers.
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 The bottom two layers (clients and connections) are set up once and persist. The channel layer is somewhat fragile. ICA channels use `ORDERED` delivery, meaning packets must arrive in sequence. If any packet times out, the channel closes permanently and a new one must be opened.
-{% end %}
+{% </admonition> %}
 
 ICA lets ShinzoHub control an account on SourceHub. When a precompile registration happens on ShinzoHub, the keeper constructs an ICA packet wrapping a `MsgDirectPolicyCmd` and sends it to SourceHub. The packet structure:
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart TB
   subgraph ICA["ICA Packet"]
     subgraph TX["CosmosTx"]
       M["<b>MsgDirectPolicyCmd</b><br/>creator: ICA account on SourceHub<br/>policy_id: Shinzo policy ID<br/>cmd: RegisterObjectCmd / SetRelationshipCmd / ..."]
     end
   end
-{% end %}
+{% </mermaid> %}
 
 The Hermes relayer (a Rust binary by [Informal Systems](https://hermes.informal.systems/)) is the off-chain process that physically moves packets between chains. It reads outbound packets from ShinzoHub's state, fetches Merkle proofs, and submits them to SourceHub. It then reads acknowledgements from SourceHub and returns them to ShinzoHub. Hermes is stateless and trustless. It cannot fabricate packets because SourceHub verifies each packet against a state proof.
 
@@ -154,9 +155,9 @@ Two components connect external blockchains (EVM chains, Cosmos chains, etc.) to
 
 ### Outpost contracts
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based flow described below is the planned design.
-{% end %}
+{% </admonition> %}
 
 Outpost contracts will be deployed on each source chain. They handle two things:
 
@@ -174,9 +175,9 @@ The EVM relayer is a Go process with two pipelines:
 
 The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for transaction fees.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The EVM relayer and the Hermes IBC relayer are completely different systems. The EVM relayer bridges EVM chains to ShinzoHub. The Hermes relayer bridges ShinzoHub to SourceHub over IBC. They share the word _relayer_ and nothing else.
-{% end %}
+{% </admonition> %}
 
 ## Off-chain data flow
 
@@ -218,7 +219,7 @@ The Generator cannot register on ShinzoHub until the validator has completed an 
 
 On the current testnet, the assertion is submitted through an admin-key approval flow:
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
   participant Idx as Generator<br/>(operator key)
   participant SH as ShinzoHub<br/>(Generator Registry 0x0212)
@@ -231,13 +232,13 @@ sequenceDiagram
   SH->>SH: derive DID from<br/>operator pubkey
   SH->>Source: ICA RegisterObject
   Source->>Source: ACP adds DID<br/>to generator group
-{% end %}
+{% </mermaid> %}
 
 #### Planned contract-based flow
 
 Once the outpost contract is deployed, the assertion step will run through the outpost and an EVM relayer instead of the admin-key flow:
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
   participant Idx as Generator<br/>(operator key)
   participant Wd as Validator<br/>(withdrawal key)
@@ -256,11 +257,11 @@ sequenceDiagram
   SH->>SH: derive DID from<br/>operator pubkey
   SH->>Source: ICA RegisterObject
   Source->>Source: ACP adds DID<br/>to generator group
-{% end %}
+{% </mermaid> %}
 
 ### Host registration
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
   participant Op as Operator
   participant SH as ShinzoHub<br/>(Host Registry 0x0211)
@@ -270,11 +271,11 @@ sequenceDiagram
   SH->>SH: verify sigs,<br/>derive DID/PID
   SH->>Source: ICA packet
   Source->>Source: ACP adds DID<br/>to host group
-{% end %}
+{% </mermaid> %}
 
 ### View registration
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
   participant Dev as Developer
   participant SH as ShinzoHub<br/>(View Registry 0x0210)
@@ -287,7 +288,7 @@ sequenceDiagram
   Source->>Source: ACP registers<br/>view object
   SH-)Host: emit Registered event
   Host->>Host: download bundle,<br/>load WASM lens,<br/>start transforming
-{% end %}
+{% </mermaid> %}
 
 For the developer-side view of this flow (Viewkit → ShinzoHub → Host → app SDK), see [The view lifecycle across repos](/reference/components/viewkit/#the-view-lifecycle-across-repos) in the Viewkit reference.
 

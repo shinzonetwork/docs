@@ -1,5 +1,6 @@
 +++
 title = "Install"
+description = "How to install a Generator client with the one-line script, Docker, or a source build, and how to keep it running with systemd."
 +++
 
 This page covers installing a Shinzo Generator client with Docker or from source. To complete the Generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
@@ -54,9 +55,9 @@ docker compose -f shinzo-generator/docker-compose.yml down -v
 rm -rf shinzo-generator ~/shinzo-data
 ```
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 This script does not register your Generator client. Check the [registration requirements](../prerequisites#registration-requirements) for details on how to register a client.
-{% end %}
+{% </admonition> %}
 
 ## Using Docker
 
@@ -99,10 +100,10 @@ You do not need to be a validator, or to run a validator, just to install and ru
 
     ```shell
     docker run \
-      -e GETH_RPC_URL={{ YOUR RPC URL }}\
-      -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
-      -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
-      -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
+      -e GETH_RPC_URL={% raw %}{{ YOUR RPC URL }}{% endraw %}\
+      -e GETH_WS_URL={% raw %}{{ YOUR WEBSOCKET URL }}{% endraw %}\
+      -e GETH_API_KEY={% raw %}{{ YOUR API KEY (OPTIONAL) }}{% endraw %} \
+      -e GETH_API_KEY_TYPE={% raw %}{{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }}{% endraw %} \
       -e INDEXER_START_HEIGHT=0 \
       -e DEFRADB_KEYRING_SECRET=testnet-secret \
       -e DEFRADB_PLAYGROUND=true \
@@ -146,12 +147,12 @@ sudo chown -R 1001:1001 ~/shinzo-data/defradb
 
 docker run -d \
   --name shinzo-generator \
-  -e GETH_RPC_URL={{ YOUR RPC URL }}\
-  -e GETH_WS_URL={{ YOUR WEBSOCKET URL }}\
-  -e GETH_API_KEY={{ YOUR API KEY (OPTIONAL) }} \
-  -e GETH_API_KEY_TYPE={{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }} \
+  -e GETH_RPC_URL={% raw %}{{ YOUR RPC URL }}{% endraw %}\
+  -e GETH_WS_URL={% raw %}{{ YOUR WEBSOCKET URL }}{% endraw %}\
+  -e GETH_API_KEY={% raw %}{{ YOUR API KEY (OPTIONAL) }}{% endraw %} \
+  -e GETH_API_KEY_TYPE={% raw %}{{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }}{% endraw %} \
   -e INDEXER_START_HEIGHT=0 \
-  -e DEFRADB_KEYRING_SECRET={{ YOUR STRONG SECRET }} \
+  -e DEFRADB_KEYRING_SECRET={% raw %}{{ YOUR STRONG SECRET }}{% endraw %} \
   -e DEFRADB_P2P_ENABLED=true \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
   -e LOGGER_DEBUG=true \
@@ -162,15 +163,15 @@ docker run -d \
   ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Generator client can't write to the mount and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
-{% end %}
+{% </admonition> %}
 
 `DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator client can't load its existing identity and fails to start.
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 The `docker run` example is a throwaway first run, so it sets no memory limits. For anything long-lived, set a container memory limit and `GOMEMLIMIT` below it. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
-{% end %}
+{% </admonition> %}
 
 ### Registration
 
@@ -230,9 +231,9 @@ You can also build the Generator client binary from source instead of using Dock
     make start
     ```
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 The included `config.yaml` works for most local development. You typically only need to change peer settings or storage paths for advanced setups. Environment variables in `.env` override values in `config.yaml`.
-{% end %}
+{% </admonition> %}
 
 ### Run as a systemd service
 
@@ -287,9 +288,9 @@ The included `config.yaml` works for most local development. You typically only 
     sudo systemctl enable shinzo-generator
     ```
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 Run the service as a dedicated user rather than root. The service user needs write access to the install directory: the Generator client writes its database to `.defra/` and its logs to `logs/`. If you created the user after building, give it ownership with `sudo chown -R <service-user>:<service-user> <generator-install-directory>`.
-{% end %}
+{% </admonition> %}
 
 ### Registration
 
@@ -347,4 +348,4 @@ The Generator client falls back to HTTP polling. Check that `GETH_WS_URL` is cor
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

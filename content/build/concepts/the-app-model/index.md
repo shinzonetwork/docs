@@ -27,7 +27,7 @@ Pushed data that is independently checkable is what makes the inversion safe: th
 
 Delivery itself is passive replication. Subscribing to a View applies the View's schema to your embedded DefraDB and registers the collection as a replication topic, which tells Host clients to push new documents to you as they process new blocks. From the app's side, data simply appears.
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
     subgraph Network["Shinzo network"]
         Generators["Generator clients<br/>produce and sign primitives"]
@@ -42,7 +42,7 @@ flowchart LR
     end
 
     Hosts -->|"View documents and attestation records<br/>pushed over P2P"| Defra
-{% end %}
+{% </mermaid> %}
 
 Everything left of the arrow is the network's problem. Everything right of it is your process: no API keys, no rate limits, no egress bill per read.
 

@@ -21,7 +21,6 @@
       <circle r="3" style="fill: var(--background);" />
     </g>
   </defs>
-
   <!-- Source chain: shared by all three lanes -->
   <g class="station" id="mn-st-chain" data-steps="1,2,3" transform="translate(85 248)">
     <rect class="box" x="-44" y="-24" width="88" height="48" rx="10" />
@@ -31,14 +30,12 @@
     <path class="mn-link" d="M -16 0 H -10 M 10 0 H 16" fill="none" />
     <text class="label" y="64">Source chain</text>
   </g>
-
   <!-- Host: shared by all three lanes -->
   <g class="station" id="mn-st-host" data-steps="1,2,3" transform="translate(620 248)">
     <path class="box" d="M -26 -18 v 36 a 26 8 0 0 0 52 0 v -36 a 26 8 0 0 0 -52 0" />
     <ellipse class="box-lip" cx="0" cy="-18" rx="26" ry="8" />
     <text class="label" y="64">Host</text>
   </g>
-
   <!-- Lane 1: own node on your own hardware, one boundary around both -->
   <g class="mn-lane" id="mn-lane-1">
     <g class="mn-bnd">
@@ -72,7 +69,6 @@
       </g>
     </g>
   </g>
-
   <!-- Lane 2: own node on rented hardware, same control boundary -->
   <g class="mn-lane" id="mn-lane-2">
     <g class="mn-bnd">
@@ -106,7 +102,6 @@
       </g>
     </g>
   </g>
-
   <!-- Lane 3: a managed provider operates your dedicated node, one boundary -->
   <g class="mn-lane" id="mn-lane-3">
     <g class="mn-bnd">
@@ -145,14 +140,12 @@
     </g>
   </g>
 </svg>
-
 <style>
   /* Lanes: the active one is fully lit, the other two sit dim. */
   .mn-lane { opacity: 0.45; transition: opacity 0.35s ease; }
   .player--s1 #mn-lane-1,
   .player--s2 #mn-lane-2,
   .player--s3 #mn-lane-3 { opacity: 1; }
-
   /* Control boundaries: dashed boxes until their lane is active. */
   .mn-bnd-box {
     fill: color-mix(in srgb, var(--foreground) 3%, var(--background));
@@ -164,14 +157,12 @@
   .player--s1 #mn-lane-1 .mn-bnd-box,
   .player--s2 #mn-lane-2 .mn-bnd-box,
   .player--s3 #mn-lane-3 .mn-bnd-box { stroke: var(--color-primary); stroke-width: 1.6; }
-
   /* Links between the source chain's blocks. */
   .mn-link {
     stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
     stroke-width: 1.5;
     stroke-linecap: round;
   }
-
   /* Key glyphs: yours light up with the lane. */
   .mn-key {
     stroke: color-mix(in srgb, var(--foreground) 55%, transparent);
@@ -183,7 +174,6 @@
   .player--s1 #mn-lane-1 .mn-key--yours,
   .player--s2 #mn-lane-2 .mn-key--yours,
   .player--s3 #mn-lane-3 .mn-key--yours { stroke: var(--color-primary); }
-
   /* The packet's seal is on from the start: the block arrives signed. */
   .mn-packet .seal { transform: translate(18px, -14px) scale(1); }
 </style>

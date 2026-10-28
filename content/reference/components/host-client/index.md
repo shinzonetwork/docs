@@ -1,5 +1,6 @@
 +++
 title = "Host client"
+description = "Technical reference for the Host client: architecture, attestation handling, view discovery and processing, lens transforms, and GraphQL serving."
 [extra]
 mermaid = true
 +++
@@ -10,7 +11,7 @@ If Generator clients are data producers, Host clients are consumers and servers.
 
 ## Architecture
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph Generators["Generators"]
     direction TB
@@ -44,7 +45,7 @@ flowchart LR
   end
 
   Generators -- "P2P (DefraDB)" --> HOST
-{% end %}
+{% </mermaid> %}
 
 ### Components
 
@@ -107,7 +108,7 @@ Merge:  {A: 1, B: 1} -> total = 2
 
 ### Attestation flow
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
   participant IA as Generator A
   participant IB as Generator B
@@ -120,7 +121,7 @@ sequenceDiagram
   Note over H: verify signature,<br/>upsert AttestationRecord<br/>(vote_count → 2)
   H<<->>H2: P2P replication
   Note over H,H2: P-counter merges automatically<br/>all hosts agree: vote_count = 2
-{% end %}
+{% </mermaid> %}
 
 The upsert pattern in GraphQL:
 
@@ -184,14 +185,14 @@ When the Host client receives a view bundle (from either discovery path):
 
 The Host client runs LensVM (`source-gh/lens`) to execute WASM modules that transform primitives into view documents.
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   In["Raw Log documents<br/>(from generator)"]
   Lens["<b>WASM Lens</b><br/>filter address · ABI-decode<br/>· map to view schema"]
   Out["View documents<br/>(USDCTransfer, ...)"]
 
   In --> Lens --> Out
-{% end %}
+{% </mermaid> %}
 
 WASM runtimes in use:
 

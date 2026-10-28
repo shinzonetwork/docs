@@ -1,5 +1,6 @@
 +++
 title = "Register"
+description = "How to register your Host with the Shinzo Network through the hosted or local registration app so it can serve Views publicly."
 +++
 
 To participate in the Shinzo Network and make your View publicly available, you need to register your Host. Registration is an on-chain transaction on ShinzoHub, so you need a wallet with a small amount of SHNZ to cover the transaction fee. Get testnet SHNZ from the [faucet](https://faucet.shinzo.network/).
@@ -31,11 +32,11 @@ If your Host is on a private network or you'd rather not route registration thro
 1. Start your Host client with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Hosts dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. If `8080` isn't reachable from the internet, your Host client shows as offline even while it's running fine.
 1. Open the [registration page](http://localhost:8080/registration-app) and select **Connect** to connect your wallet.
 
-    {% admonition(type="info") %}
+    {% <admonition type="info"> %}
     If your Host is running on a remote server (Hetzner, DigitalOcean, GCP, AWS, etc.), use SSH local port forwarding to access the registration page.
     1. On your local machine, run `ssh -L 8080:localhost:8080 user@your-server-ip`.
     1. Open `http://localhost:8080/registration-app` in your browser.
-    {% end %}
+    {% </admonition> %}
 
 1. Click **Register as Host** and fill out all the details.
 1. Submit your registration and confirm the transaction in your browser wallet. You should see a successful registration notification.
@@ -52,10 +53,10 @@ This key is your Host's identity on the network. If you lose it without a backup
 - In a recovery scenario, restore it to the same path your Host reads keys from: `~/.defra/keys` for a source build, or the directory you mounted to `/app/.defra/keys` for Docker. See [backing up your keys](/run/operations/troubleshooting/) in the FAQ for the details per run mode.
 - Use the same keyring secret. Your identity depends on both the key files and the keyring secret, so a backup of the keys alone is not enough to recover it.
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 If this key is lost with no backup available, you will need to spin up a new Host and re-register with a new identity.
-{% end %}
+{% </admonition> %}
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

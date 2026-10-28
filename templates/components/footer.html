@@ -1,12 +1,12 @@
 {# Institutional footer: hairline rule, quiet link columns, small colophon. #}
-{% macro render() %}
+{% component footer.render() %}
 <footer class="footer">
   <div class="footer__wrapper">
     <div class="footer__grid">
       <div class="footer__get-started">
         <h4 class="footer__get-started-heading">Get started building with Shinzo</h4>
         <ul class="footer__link-list">
-          <li><a class="footer__link" href="/understand/home/">Documentation</a></li>
+          <li><a class="footer__link" href="/">Documentation</a></li>
           <li><a class="footer__link" href="https://shinzo.network" target="_blank" rel="noopener noreferrer">shinzo.network</a></li>
         </ul>
       </div>
@@ -50,4 +50,4 @@
     </div>
   </div>
 </footer>
-{% endmacro render %}
+{% endcomponent footer.render %}

@@ -16,12 +16,12 @@ When you're done you'll have:
 
 ## What you're building
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Node["Your node"] -->|RPC + WS| Generator["Generator client"]
   Generator -->|libp2p| Host
   Host -->|GraphQL| You["You (curl)"]
-{% end %}
+{% </mermaid> %}
 
 Two containers through one shared Docker bridge. Both containers run on the same VM. The Host client dials the Generator client's libp2p port directly over the bridge using the Generator client's published Peer ID.
 
@@ -43,9 +43,9 @@ export GETH_WS_URL="<your-ws-url>"
 export GETH_API_KEY="<your-api-key>"   # leave empty if your node has no auth
 ```
 
-{% admonition(type="tip") %}
+{% <admonition type="tip"> %}
 The Generator client auto-detects the right header (`X-goog-api-key` for GCP Blockchain Node Engine, `X-Api-Key` for most self-hosted Nginx setups) based on the URL. If the node is on your private network and unauthenticated, leave `GETH_API_KEY` empty.
-{% end %}
+{% </admonition> %}
 
 ## Start the Generator client
 
@@ -87,9 +87,9 @@ docker run -d \
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 This quickstart mounts no volumes, so the Generator client's database and node identity are discarded if you remove the container. That's fine here. For a setup that survives restarts, see [running a persistent Generator](/run/run-a-generator/install/#running-a-persistent-generator).
-{% end %}
+{% </admonition> %}
 
 ## Read the Generator client's P2P address
 
@@ -196,9 +196,9 @@ docker run -d \
 
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The Host client stores its data inside the container too. To keep it across restarts, see [running a persistent Host](/run/run-a-host/install/#running-a-persistent-host).
-{% end %}
+{% </admonition> %}
 
 ## Verify the peering
 
@@ -267,9 +267,9 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 
 The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. You can also browse this data visually in the [Explorer](https://explorer.shinzo.network/). More queries are on the [Host examples](/build/how-to/query-data/) page.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match, for example `Optimism__Mainnet__Log`. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
-{% end %}
+{% </admonition> %}
 
 ## Undo everything
 

@@ -7,9 +7,9 @@ Seven recipes for the Views people build most often, from a basic event decode u
 
 If you've never built a View, work through [Create your first View](/build/tutorials/create-your-first-view/) first. When none of the prebuilt lenses does what you need, see [Write and test a custom lens](/build/how-to/write-a-lens/).
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Every recipe ends with `view test` and `deploy --target local`, which spawn a local DefraDB node. That node and the lens runtime need the Wasmer environment variables from [Create your first View](/build/tutorials/create-your-first-view/#wasmer-runtime), and the node binds fixed ports 9181 and 9171 with no flags to change them. If local Generator and Host clients are running, stop them first or the test and deploy steps die at "Applying schema".
-{% end %}
+{% </admonition> %}
 
 ## Primitive data
 
@@ -204,9 +204,9 @@ The `from` and `to` output fields are empty today, because the parent-transactio
 }
 ```
 
-{% admonition(type="tip", title="decode_log vs decode_log_str") %}
+{% <admonition type="tip" title="decode_log vs decode_log_str"> %}
 `decode_log` outputs `arguments` as a JSON array (`[String]` in SDL). `decode_log_str` outputs it as a JSON string (`String` in SDL), which enables `_like` filtering in DefraDB queries. Use `decode_log_str` when you need to filter on decoded parameter values. The `_str` variant uses the same URL pattern but with `decode_log_str` in the path. Both lenses are listed in the [lens reference](/reference/components/lens/).
-{% end %}
+{% </admonition> %}
 
 ## Decode multiple event types
 
@@ -459,9 +459,9 @@ viewkit view test event-view
 viewkit view deploy event-view --target local
 ```
 
-{% admonition(type="tip") %}
+{% <admonition type="tip"> %}
 Use `@materialized(if: false)` while developing and iterating on a View. Switch to `@materialized(if: true)` once the View is stable and you need fast queries in production.
-{% end %}
+{% </admonition> %}
 
 ## Edit and roll back a View
 
@@ -535,9 +535,9 @@ viewkit view deploy erc20-events --target local
 viewkit view deploy erc20-events --target devnet --rpc http://testnet.shinzo.network:8545/
 ```
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The CLI's network target is called `devnet`, but pointed at `http://testnet.shinzo.network:8545/` it deploys to the public testnet. Registration is an on-chain transaction, so the wallet you deploy from needs testnet tokens from the [faucet](https://faucet.shinzo.network/).
-{% end %}
+{% </admonition> %}
 
 ### Delete a View
 
@@ -635,4 +635,4 @@ For the full list of Viewkit commands and GraphQL filter operators, see the [Vie
 
 ## Need help
 
-{{ need_help(client="Viewkit", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}
+{{<need_help client="Viewkit" repo_name="shinzo-view-creator" repo="https://github.com/shinzonetwork/shinzo-view-creator/issues" />}}

@@ -1,5 +1,6 @@
 +++
 title = "Prerequisites"
+description = "What you need before you run a Generator: hardware sizing for the client and the execution node it reads from, and what registration asks for."
 +++
 
 This page is the starting point for running a Generator. Two kinds of prerequisites apply: the hardware the Generator client runs on, and the items you need to register it with the Shinzo Network.

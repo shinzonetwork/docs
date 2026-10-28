@@ -7,9 +7,9 @@ Viewkit is a CLI tool that helps you initialize, manage, and publish Shinzo view
 
 A View is a versioned bundle with three parts: a query (the raw data shape you ingest), an SDL (the GraphQL schema that models the result), and lenses (WebAssembly transforms that filter, decode, or reshape the data). The View you build here decodes fungible token transfer events from raw logs into readable fields.
 
-{% admonition(type="info", title="Early-phase testnet") %}
+{% <admonition type="info" title="Early-phase testnet"> %}
 While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
-{% end %}
+{% </admonition> %}
 
 ## Prerequisites
 
@@ -139,9 +139,9 @@ You need to set three environment variables:
     dummy.go  libwasmer.so
     ```
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 If `libwasmer.dylib` or `libwasmer.so` is missing, re-run the `go get` step and check that `go env GOPATH` returns a valid path. The local `view test` and `view deploy --target local` commands spawn a DefraDB binary that also needs `LD_LIBRARY_PATH` (Linux) or `DYLD_LIBRARY_PATH` (macOS) to be set, so keep these variables set in any shell where you run Viewkit.
-{% end %}
+{% </admonition> %}
 
 ## Create a View
 
@@ -171,10 +171,10 @@ If `libwasmer.dylib` or `libwasmer.so` is missing, re-run the `go get` step and 
       --name testdeploy
     ```
 
-    {% admonition(type="note") %}
+    {% <admonition type="note"> %}
 - `@materialized(if: false)`: treat this as a virtual type, computed at query time rather than stored.
 - `transactionHash: String`: a minimal example field; real Views define more fields.
-    {% end %}
+    {% </admonition> %}
 
 1. Attach a WebAssembly lens that decodes event logs using an ABI:
 
@@ -221,9 +221,9 @@ If `libwasmer.dylib` or `libwasmer.so` is missing, re-run the `go get` step and 
 
     Every `view add` command also prints this same summary, so running `inspect` once after all the parts are attached is enough.
 
-{% admonition(type="tip") %}
+{% <admonition type="tip"> %}
 If you see `libwasmer.dylib` or "image not found" errors, revisit the Wasmer setup.
-{% end %}
+{% </admonition> %}
 
 ## Test the View
 
@@ -355,9 +355,9 @@ Once the View behaves correctly locally, deploy it to the public testnet.
     viewkit view deploy testdeploy --target devnet --rpc http://testnet.shinzo.network:8545/
     ```
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The `--target devnet` flag name is historical. In the current Viewkit it is the right target for the public testnet (`--rpc http://testnet.shinzo.network:8545/`). The CLI's `mainnet` target is not supported yet, so `devnet` is the only network target that works.
-{% end %}
+{% </admonition> %}
 
 The deploy command rebuilds and re-tests the View, sends a `register(bytes)` transaction to the View Registry precompile, and prints the result:
 
@@ -418,4 +418,4 @@ For the conceptual overview, see [Views for builders](/build/concepts/views-for-
 
 ## Need help
 
-{{ need_help(client="Viewkit", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}
+{{<need_help client="Viewkit" repo_name="shinzo-view-creator" repo="https://github.com/shinzonetwork/shinzo-view-creator/issues" />}}
