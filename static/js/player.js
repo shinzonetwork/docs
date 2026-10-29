@@ -1,7 +1,8 @@
-/* Generic step-through guided player (shortcode: player.html)
+/* Generic step-through guided player (component: player, in
+ * templates/components/content.html).
  *
  * Scenes live in templates/player-scenes/*.html; captions live in the
- * shortcode body (.player__caption divs in the markdown page). Each step is
+ * component body (.player__caption divs in the markdown page). Each step is
  * a CSS class on the root (.player--s1 ... .player--sN) and scene CSS does
  * most of the animation. The rest is declared with data attributes:
  *
@@ -28,7 +29,6 @@
   if (window.__playerEngineInit) return;
   window.__playerEngineInit = true;
 
-  var PLAY_MS = 4600;
   var FLY_MS = 750;
   var reduced =
     window.matchMedia &&
@@ -52,7 +52,6 @@
     var bodyEl = q(".js-body");
     var prevBtn = q(".js-prev");
     var nextBtn = q(".js-next");
-    var playBtn = q(".js-play");
     var dotsWrap = q(".js-dots");
     var countEl = q(".js-count");
     var progress = q(".js-progress");
@@ -124,8 +123,6 @@
     }
 
     var cur = 0;
-    var playing = false;
-    var timer = null;
     var pending = []; // timeout / rAF ids for flight motion
 
     function cancelPending() {
@@ -185,7 +182,7 @@
         b.className = "player__dot";
         b.setAttribute("aria-label", "Step " + (idx + 1) + ": " + captions[idx].title);
         b.addEventListener("click", function () {
-          go(idx);
+          apply(idx);
         });
         dotsWrap.appendChild(b);
         dots.push(b);
@@ -238,53 +235,13 @@
           fl.el.setAttribute("opacity", "0");
         }
       }
-
-      if (i === N - 1) pause();
-    }
-
-    function go(i) {
-      apply(i);
-      if (playing) {
-        window.clearInterval(timer);
-        timer = window.setInterval(tickPlay, PLAY_MS);
-      }
-    }
-
-    function tickPlay() {
-      if (cur === N - 1) {
-        pause();
-        return;
-      }
-      apply(cur + 1);
-    }
-
-    function play() {
-      if (cur === N - 1) apply(0); // replay from the top
-      playing = true;
-      root.classList.add("player--playing");
-      playBtn.setAttribute("aria-label", "Pause");
-      timer = window.setInterval(tickPlay, PLAY_MS);
-    }
-
-    function pause() {
-      playing = false;
-      root.classList.remove("player--playing");
-      playBtn.setAttribute("aria-label", "Play");
-      if (timer !== null) {
-        window.clearInterval(timer);
-        timer = null;
-      }
     }
 
     prevBtn.addEventListener("click", function () {
-      if (cur > 0) go(cur - 1);
+      if (cur > 0) apply(cur - 1);
     });
     nextBtn.addEventListener("click", function () {
-      if (cur < N - 1) go(cur + 1);
-    });
-    playBtn.addEventListener("click", function () {
-      if (playing) pause();
-      else play();
+      if (cur < N - 1) apply(cur + 1);
     });
 
     // Arrow keys, but only while the player is on screen and the reader is
@@ -301,15 +258,11 @@
       if (t && t.closest && t.closest("input, textarea, select, [contenteditable]")) return;
       if (e.key === "ArrowLeft" && cur > 0) {
         e.preventDefault();
-        go(cur - 1);
+        apply(cur - 1);
       } else if (e.key === "ArrowRight" && cur < N - 1) {
         e.preventDefault();
-        go(cur + 1);
+        apply(cur + 1);
       }
-    });
-
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) pause();
     });
 
     apply(0);
