@@ -1,4 +1,5 @@
-/* Generic step-through guided player (shortcode: player.html).
+/* Generic step-through guided player (component: player, in
+ * templates/components/content.html).
  *
  * Shared chrome + scene atoms. Each scene partial (templates/player-scenes/)
  * carries its own per-step state rules in an inline <style> block, keyed on
@@ -72,28 +73,6 @@
 .player__btn:disabled {
   opacity: 0.35;
   cursor: default;
-}
-
-.player__btn--play {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #fff;
-}
-
-.player__btn--play:hover:not(:disabled) {
-  background: var(--color-primary-dark);
-}
-
-.player__btn--play .player-icon-pause {
-  display: none;
-}
-
-.player--playing .player__btn--play .player-icon-play {
-  display: none;
-}
-
-.player--playing .player__btn--play .player-icon-pause {
-  display: inline;
 }
 
 .player__dots {
@@ -367,7 +346,7 @@
   box-shadow: 0 8px 28px rgb(0 0 0 / 0.5);
 }
 
-/* Reduced motion: state changes are instant, autoplay still works. */
+/* Reduced motion: state changes are instant. */
 @media (prefers-reduced-motion: reduce) {
   .player *,
   .player *::before,
