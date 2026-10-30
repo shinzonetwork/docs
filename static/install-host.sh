@@ -326,10 +326,11 @@ GEN_HEALTH_URL="${GEN_SCHEME}://${GEN_HOST_URL}:${GEN_HEALTH_PORT}"
 # - multiaddr:   optional (used to discover the peer ID if missing, and to
 #                confirm the Generator's API/schema endpoint is reachable)
 probe_generator_health() { # -> sets GEN_HEALTH_JSON; returns 0 on HTTP 200
-    local url="$1" code
-    GEN_HEALTH_JSON="$(curl -s -m "$PROBE_TIMEOUT" -o /tmp/.shinzo-host-probe.$$ -w '%{http_code}' "$url/health" 2>/dev/null || echo 000)"
-    code="$GEN_HEALTH_JSON"; GEN_HEALTH_JSON="$(cat /tmp/.shinzo-host-probe.$$ 2>/dev/null || true)"
-    rm -f "/tmp/.shinzo-host-probe.$$" 2>/dev/null || true
+    local url="$1" code tmp
+    tmp="$(mktemp "${TMPDIR:-/tmp}/shinzo-host-probe.XXXXXX")" || return 1
+    GEN_HEALTH_JSON="$(curl -s -m "$PROBE_TIMEOUT" -o "$tmp" -w '%{http_code}' "$url/health" 2>/dev/null || echo 000)"
+    code="$GEN_HEALTH_JSON"; GEN_HEALTH_JSON="$(cat "$tmp" 2>/dev/null || true)"
+    rm -f "$tmp"
     [ "$code" = 200 ] && [ -n "$GEN_HEALTH_JSON" ]
 }
 
