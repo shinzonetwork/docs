@@ -558,12 +558,14 @@ port = int(sys.argv[1])
 for family, host in ((socket.AF_INET, "0.0.0.0"), (socket.AF_INET6, "::")):
     try:
         s = socket.socket(family, socket.SOCK_STREAM)
-        try:
-            s.bind((host, port))
-        finally:
-            s.close()
+    except OSError:
+        continue  # family unavailable on this machine (e.g. IPv6 disabled)
+    try:
+        s.bind((host, port))
     except OSError:
         sys.exit(1)
+    finally:
+        s.close()
 sys.exit(0)
 ' "$port" >/dev/null 2>&1 && return 1 || return 0
     elif command -v ss >/dev/null 2>&1; then
