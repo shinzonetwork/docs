@@ -300,10 +300,12 @@ else
     esac
     REST="${REST%%/*}"    # drop any path component
     REST="${REST%%\?*}"   # drop any query component
-    if [[ "$REST" == *:* && "$REST" != *::* ]]; then
-        GEN_HOST="${REST%:*}"; GEN_HEALTH_PORT="${REST##*:}"
+    if [[ "$REST" == \[*\]:* ]]; then
+        GEN_HOST="${REST#\[}"; GEN_HOST="${GEN_HOST%%\]:*}"; GEN_HEALTH_PORT="${REST##*:}"
     elif [[ "$REST" == \[*\] ]]; then
-        GEN_HOST="${REST#[}"; GEN_HOST="${GEN_HOST%]}"; GEN_HEALTH_PORT="$GEN_HEALTH_PORT_DEFAULT"
+        GEN_HOST="${REST#\[}"; GEN_HOST="${GEN_HOST%\]}"; GEN_HEALTH_PORT="$GEN_HEALTH_PORT_DEFAULT"
+    elif [[ "$REST" == *:* && "$REST" != *::* ]]; then
+        GEN_HOST="${REST%:*}"; GEN_HEALTH_PORT="${REST##*:}"
     else
         GEN_HOST="$REST"; GEN_HEALTH_PORT="$GEN_HEALTH_PORT_DEFAULT"
     fi
@@ -314,7 +316,10 @@ fi
 valid_port() { [[ "$1" =~ ^[0-9]+$ ]] && [ "$1" -ge 1 ] && [ "$1" -le 65535 ]; }
 valid_port "$GEN_HEALTH_PORT" || die 3 "invalid Generator health port: $GEN_HEALTH_PORT"
 
-GEN_HEALTH_URL="${GEN_SCHEME}://${GEN_HOST}:${GEN_HEALTH_PORT}"
+# Bracket-wrap IPv6 hosts so they stay valid inside URLs.
+GEN_HOST_URL="$GEN_HOST"
+[[ "$GEN_HOST_URL" == *:* ]] && GEN_HOST_URL="[${GEN_HOST_URL}]"
+GEN_HEALTH_URL="${GEN_SCHEME}://${GEN_HOST_URL}:${GEN_HEALTH_PORT}"
 
 # Probe the Generator /health endpoint.
 # - host input:  required (the peer ID is read from it)
@@ -485,7 +490,7 @@ if [ -z "$GEN_CONTAINER" ]; then
             GEN_HOST="host.docker.internal"   # must not be 127.0.0.1 from inside a container
         fi
     else
-        GEN_SCHEMA_URL="${GEN_SCHEME}://${GEN_HOST}:${GEN_HEALTH_PORT}"
+        GEN_SCHEMA_URL="${GEN_SCHEME}://${GEN_HOST_URL}:${GEN_HEALTH_PORT}"
     fi
 fi
 
