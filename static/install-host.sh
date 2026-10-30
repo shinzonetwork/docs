@@ -433,10 +433,8 @@ if [ -n "$GEN_CONTAINER" ]; then
     if [ "$GEN_NETWORK" = "host" ]; then
         # Host-networked Generator: route via the Docker host gateway.
         ADD_HOST_FLAG="host.docker.internal:host-gateway"
-        GEN_SCHEMA_HOSTPORT="host.docker.internal:${GEN_HEALTH_PORT}"
-        RUN_NETWORK=""
+        GEN_SCHEMA_URL="http://host.docker.internal:${GEN_HEALTH_PORT}"
     else
-        RUN_NETWORK="$GEN_NETWORK"
         # Container-side health port. When the Generator was found through a
         # published host port, translate it; when addressed directly by its
         # container IP, the port given is already the container port.
@@ -446,32 +444,49 @@ if [ -n "$GEN_CONTAINER" ]; then
                 '{split($3,a,":"); if (a[length(a)]==hp) {split($1,b,"/"); print b[1]}}' | head -n1)"
             [ -n "$GEN_HEALTH_CPORT" ] || GEN_HEALTH_CPORT="$GEN_HEALTH_PORT"
         fi
-        GEN_SCHEMA_HOSTPORT="${GEN_IP}:${GEN_HEALTH_CPORT}"
         # Re-probe health via the container IP so later steps (schema probe)
         # validate the address the Host container will actually use, and read
         # the Generator's actual libp2p listen port from its reported
-        # listen addresses.
+        # listen addresses. When the container was found by its published
+        # port the match is only a guess — any container publishing that port
+        # qualifies — so a reachable container must prove it is the Generator.
+        # An unreachable one keeps the benefit of the doubt: it may still be
+        # starting, and the peer check at the end catches a wrong guess.
         if probe_generator_health "http://${GEN_IP}:${GEN_HEALTH_CPORT}"; then
-            [ -z "$GEN_PEER_ID" ] && GEN_PEER_ID="$(peer_id_from_health "$GEN_HEALTH_JSON" || true)"
-            MA_TCP_PORT="$(printf '%s' "$GEN_HEALTH_JSON" \
-                | grep -o "/ip4/${GEN_IP}/tcp/[0-9]*" | head -n1 | awk -F/ '{print $5}')"
+            PROBE_PEER="$(peer_id_from_health "$GEN_HEALTH_JSON" || true)"
+            if [ "$GEN_FOUND_BY" = "port" ] && { [ -z "$PROBE_PEER" ] \
+                || { [ -n "$GEN_PEER_ID" ] && [ "$PROBE_PEER" != "$GEN_PEER_ID" ]; }; }; then
+                warn "container '$GEN_NAME' publishes port $GEN_HEALTH_PORT but is not the Generator — using the host gateway instead."
+                GEN_CONTAINER=""
+            else
+                [ -z "$GEN_PEER_ID" ] && GEN_PEER_ID="$PROBE_PEER"
+                MA_TCP_PORT="$(printf '%s' "$GEN_HEALTH_JSON" \
+                    | grep -o "/ip4/${GEN_IP}/tcp/[0-9]*" | head -n1 | awk -F/ '{print $5}')"
+            fi
         else
             warn "could not reach the Generator container directly at ${GEN_IP}:${GEN_HEALTH_CPORT}."
         fi
-        GEN_HOST="$GEN_IP"   # build the multiaddr against the container IP
+        if [ -n "$GEN_CONTAINER" ]; then
+            RUN_NETWORK="$GEN_NETWORK"
+            GEN_SCHEMA_URL="http://${GEN_IP}:${GEN_HEALTH_CPORT}"
+            GEN_HOST="$GEN_IP"   # build the multiaddr against the container IP
+        fi
     fi
-    GEN_SCHEMA_URL="http://${GEN_SCHEMA_HOSTPORT}"
-elif is_localhost_host "$GEN_HOST"; then
-    # Generator listens on the host itself (not in Docker): containers reach it
-    # via the Docker host gateway alias.
-    info "Generator appears to run directly on this machine — routing the Host container through the Docker host gateway."
-    ADD_HOST_FLAG="host.docker.internal:host-gateway"
-    GEN_SCHEMA_URL="${GEN_SCHEME}://host.docker.internal:${GEN_HEALTH_PORT}"
-    if [ "$GEN_HOST" = "localhost" ] || [ "$GEN_HOST" = "127.0.0.1" ]; then
-        GEN_HOST="host.docker.internal"   # must not be 127.0.0.1 from inside a container
+fi
+
+if [ -z "$GEN_CONTAINER" ]; then
+    if is_localhost_host "$GEN_HOST"; then
+        # Generator listens on the host itself (not in Docker): containers reach it
+        # via the Docker host gateway alias.
+        info "Generator appears to run directly on this machine — routing the Host container through the Docker host gateway."
+        ADD_HOST_FLAG="host.docker.internal:host-gateway"
+        GEN_SCHEMA_URL="${GEN_SCHEME}://host.docker.internal:${GEN_HEALTH_PORT}"
+        if [ "$GEN_HOST" = "localhost" ] || [ "$GEN_HOST" = "127.0.0.1" ]; then
+            GEN_HOST="host.docker.internal"   # must not be 127.0.0.1 from inside a container
+        fi
+    else
+        GEN_SCHEMA_URL="${GEN_SCHEME}://${GEN_HOST}:${GEN_HEALTH_PORT}"
     fi
-else
-    GEN_SCHEMA_URL="${GEN_SCHEME}://${GEN_HOST}:${GEN_HEALTH_PORT}"
 fi
 
 # Allow explicit override of the Generator API (schema) URL.
