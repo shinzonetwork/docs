@@ -678,8 +678,7 @@ if [ -n "$MEMORY_OPT" ]; then
     esac
     RESOURCE_MEM_MIB=$(( MEM_MIB / 2 ))
     if [ -z "$GOMEMLIMIT_ENV" ]; then
-        GOMEMLIMIT_ENV="$(( MEM_MIB * 3 / 4 / 1024 ))GiB"
-        [ $(( MEM_MIB * 3 / 4 )) -lt 1024 ] && GOMEMLIMIT_ENV="${GOMEMLIMIT_ENV%GiB}MiB"
+        GOMEMLIMIT_ENV="$(( MEM_MIB * 3 / 4 ))MiB"
     fi
     info "Memory: container limit ${MEMORY_OPT}, GOMEMLIMIT ${GOMEMLIMIT_ENV}, libp2p budget ${RESOURCE_MEM_MIB}MiB"
 fi
