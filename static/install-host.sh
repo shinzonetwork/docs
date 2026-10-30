@@ -691,6 +691,31 @@ if [ -z "$IMAGE_CONFIG" ]; then
     CONFIG_MOUNT=()
 else
     printf '%s\n' "$IMAGE_CONFIG" > "$STATE_DIR/config.yaml"
+    # Write the keyring secret into the mounted config: the Host reads
+    # defradb.keyring_secret from the file; the DEFRA_KEYRING_SECRET env var
+    # never overrides it (see LoadConfig in shinzo-host-client).
+    if ! grep -qE '^\s*keyring_secret:' "$STATE_DIR/config.yaml"; then
+        warn "no keyring_secret key in the image config — the Host keeps its built-in secret handling."
+    elif command -v python3 >/dev/null 2>&1; then
+        python3 - "$STATE_DIR/config.yaml" "$KEYRING_SECRET" <<'PYEOF' 2>/dev/null \
+            || die 1 "failed to write the keyring secret into $STATE_DIR/config.yaml"
+import json, re, sys
+path, secret = sys.argv[1], sys.argv[2]
+text = open(path).read()
+new, n = re.subn(r"(?m)^(\s*)keyring_secret:.*$",
+                 lambda m: m.group(1) + "keyring_secret: " + json.dumps(secret), text)
+if n != 1:
+    sys.exit(1)
+open(path, "w").write(new)
+PYEOF
+    elif [[ "$KEYRING_SECRET" =~ ^[A-Za-z0-9+/=._-]+$ ]]; then
+        # Characters outside this set need YAML/sed escaping — that is what the
+        # python3 branch above is for.
+        sed -i.bak "s|^\(\s*keyring_secret:\).*|\1 \"$KEYRING_SECRET\"|" "$STATE_DIR/config.yaml" && rm -f "$STATE_DIR/config.yaml.bak"
+    else
+        die 1 "the keyring secret needs characters only python3 can write into the config safely — install python3 or pass a simpler --keyring-secret."
+    fi
+    chmod 600 "$STATE_DIR/config.yaml"   # the mounted config now holds the keyring secret
     if grep -q '^chains:' "$STATE_DIR/config.yaml"; then
         # Newer image layout: chains[].generators[].url (+peer) provides the
         # Generator's schema endpoint and P2P address.
@@ -864,7 +889,7 @@ cat <<EOF
   Persistence:
     data               : $DATA_DIR/{defradb,keys,lens}
     keyring secret     : $STATE_DIR/keyring-secret  (keep it: it holds the node identity)
-    generated config   : $STATE_DIR/config.yaml
+    generated config   : $STATE_DIR/config.yaml  (contains the keyring secret)
     install record     : $STATE_DIR/install.env
 
   Operations:
