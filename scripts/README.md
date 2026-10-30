@@ -62,6 +62,20 @@ Useful environment variables:
 - `OUTPUT_DIR`: where to write `llms.txt` and `llms-full.txt` (default: `./public`).
 - `BASE_URL`: base URL for generated links (default: `https://docs.shinzo.network`).
 
+### test-install-host.sh
+
+Tests `static/install-host.sh` against stub `docker`/`curl`/`sudo` binaries, so no
+Docker daemon or network is needed. Covers the Generator input forms, the config
+rewrite for each image layout, container detection, memory sizing, `--force`, and
+port shifting.
+
+```shell
+./scripts/test-install-host.sh
+```
+
+Point `INSTALL_HOST_SH` at another copy of the installer to test it instead of the
+one in this repo.
+
 ## Vendored dependencies
 
 - `static/js/fuse.min.mjs` — Fuse.js 7.5.0 (ESM build), used by
