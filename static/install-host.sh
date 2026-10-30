@@ -213,7 +213,7 @@ fi
 # Other required tools
 command -v curl >/dev/null 2>&1 \
     || die 2 "curl is required (to probe the Generator and verify the install) but was not found."
-[ "$(id -u)" = 0 ] || SUDO="sudo" || SUDO=""
+SUDO=""; [ "$(id -u)" = 0 ] || SUDO="sudo"
 
 # ARM machines: the image is linux/amd64 only; run under emulation (see docs).
 PLATFORM_FLAGS=()
