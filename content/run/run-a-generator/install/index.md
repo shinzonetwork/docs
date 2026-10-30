@@ -24,15 +24,16 @@ The fastest way to get a Generator client running is the install script:
 
 ### How it works
 
-The script handles the mechanical setup, then stops and asks you your execution node details. The script itself does the following:
+The script handles the mechanical setup, then stops and asks you your execution node details and whether to expose the Generator publicly. The script itself does the following:
 
 1. Checks that Docker and the compose plugin are installed and running, and tells you where to get support if not.
 1. Prompts for your execution node's RPC and WebSocket URLs, plus an API key if the node requires one. To skip the prompts, set `GETH_RPC_URL`, `GETH_WS_URL`, and `GETH_API_KEY` before the pipe.
-1. Creates a `shinzo-generator` directory (in `pwd`) with a `docker-compose.yml` and an `.env` file, with a random `DEFRADB_KEYRING_SECRET` generated for you so your node identity is unique and persists across restarts.
-1. Creates the persistent data directory (`~/shinzo-data/defradb`) with write access for the container, so you don't hit the [permission error](#permission-denied-on-defra-keys) on first run.
+1. Prompts whether to expose the Generator publicly. Answer `y` to bind port `8080` on all interfaces, which you need to register your Generator on the Shinzo Network (see [Registration](../register)). The default keeps `8080` on localhost for a private setup where only your own Host client connects to the Generator (see [Privacy](/understand/core-concepts/privacy/)). To skip the prompt, set `PUBLIC_GENERATOR=TRUE` or `PUBLIC_GENERATOR=FALSE` before the pipe. With no terminal to prompt on, the default is private.
+1. Creates a `shinzo-generator` directory (in `pwd`) with a `docker-compose.yml` and an `.env` file. The `.env` holds a random `DEFRADB_KEYRING_SECRET` generated for you so your node identity is unique and persists across restarts, plus `GENERATOR_BIND_ADDR`, which controls the port `8080` binding (`0.0.0.0` when public, `127.0.0.1` when private).
+1. Stores the database in a named Docker volume (`shinzo-generator_defradb`) so your data survives container removal, without the bind-mount [permission error](#permission-denied-on-defra-keys).
 1. Pulls the Generator client image and starts it.
 
-The node prompt is the one manual part. The script can't guess which node you want the Generator to read. Any node that exposes JSON-RPC and WebSocket works: one you run yourself, one co-located with your validator, or a managed provider.
+The prompts are the manual parts. The script can't guess which node you want the Generator to read, or whether the Generator should be reachable from the internet. Any node that exposes JSON-RPC and WebSocket works: one you run yourself, one co-located with your validator, or a managed provider.
 
 It's safe to run the script more than once. If a Generator client is already set up in the current directory, it tells you and changes nothing.
 
@@ -52,7 +53,7 @@ docker compose -f shinzo-generator/docker-compose.yml down
 
 # Uninstall (deletes the client's data)
 docker compose -f shinzo-generator/docker-compose.yml down -v
-rm -rf shinzo-generator ~/shinzo-data
+rm -rf shinzo-generator
 ```
 
 {% <admonition type="info"> %}
@@ -323,6 +324,8 @@ The following ports must be available on the machine. Two of them need to be rea
 | `8080` | Health (`/health`), metrics (`/metrics`), registration (`/registration`). | Yes, at least for `/health`. The public Generators dashboard probes `http://<your-server-ip>:8080/health` over plaintext HTTP to decide whether your Generator shows as online, and the probe can't follow a redirect to TLS. If `8080` isn't reachable from the internet, your Generator shows as offline even while it's running fine. |
 | `9171` | DefraDB P2P. | Yes. This is how Hosts receive data. |
 | `9181` | DefraDB GraphQL API. | No. Localhost only. Raw, unauthenticated read/write access to the local database. |
+
+The one-line install script asks whether to expose the Generator publicly and writes your answer into `GENERATOR_BIND_ADDR` in `shinzo-generator/.env`: `0.0.0.0` for public, `127.0.0.1` for private. Private is the default. To switch modes after installing, change `GENERATOR_BIND_ADDR` in the `.env` file and run `docker compose -f shinzo-generator/docker-compose.yml up -d` again; in public mode, also open inbound TCP `8080` in your firewall.
 
 Publishing `8080` exposes everything on it, not just `/health`. If you want to limit that surface, put nginx in front and proxy only the paths you intend to serve. See [Security](../security/) for the tradeoffs and the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config.
 
