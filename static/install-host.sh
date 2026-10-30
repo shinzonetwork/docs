@@ -694,8 +694,9 @@ ok "Image pulled: $IMAGE"
 # --------------------------------------------------------------------------
 # Step 9: Generate the Host config override
 # Base it on the image's own built-in config so every default stays intact;
-# only point the schema fetch (indexer URL) at the user's Generator, so the
-# Host's tables match the Generator's schema exactly.
+# only point the schema fetch at the user's Generator (chains.generators on
+# current images, host.snapshot.indexer_url on older ones), so the Host's
+# tables match the Generator's schema exactly.
 # --------------------------------------------------------------------------
 info "Generating Host config from the image defaults..."
 IMAGE_CONFIG="$(docker run --rm ${PLATFORM_FLAGS[@]+"${PLATFORM_FLAGS[@]}"} \
@@ -731,28 +732,35 @@ PYEOF
         die 1 "the keyring secret needs characters only python3 can write into the config safely — install python3 or pass a simpler --keyring-secret."
     fi
     chmod 600 "$STATE_DIR/config.yaml"   # the mounted config now holds the keyring secret
-    if grep -q '^chains:' "$STATE_DIR/config.yaml"; then
-        # Newer image layout: chains[].generators[].url (+peer) provides the
-        # Generator's schema endpoint and P2P address.
-        if grep -q '^chains:' "$STATE_DIR/config.yaml" && grep -q 'generators:' "$STATE_DIR/config.yaml"; then
-            python3 - "$STATE_DIR/config.yaml" "$GEN_SCHEMA_URL" "$BOOTSTRAP_PEERS" <<'PYEOF' 2>/dev/null \
-                || warn "could not write chains.generators — continuing with image defaults."
+    SCHEMA_CFG_OK=0
+    if grep -q '^chains:' "$STATE_DIR/config.yaml" || ! grep -qE '^\s*indexer_url:' "$STATE_DIR/config.yaml"; then
+        # chains layout: chains[].generators[].url (+peer) provides the
+        # Generator's schema endpoint and P2P address. An image whose config
+        # has no chains key yet gets the block appended.
+        if python3 - "$STATE_DIR/config.yaml" "$GEN_SCHEMA_URL" "$BOOTSTRAP_PEERS" <<'PYEOF' 2>/dev/null; then
 import re, sys
 path, url, peer = sys.argv[1], sys.argv[2], sys.argv[3]
 text = open(path).read()
 gen_block = f"chains:\n  - prefix: Ethereum__Mainnet\n    generators:\n      - url: {url}\n        peer: {peer}\n"
-text = re.sub(r"(?m)^chains:.*?(?=^\S|\Z)", gen_block, text, count=1, flags=re.S)
+if re.search(r"(?m)^chains:", text):
+    text = re.sub(r"(?m)^chains:.*?(?=^\S|\Z)", gen_block, text, count=1, flags=re.S)
+else:
+    if not text.endswith("\n"):
+        text += "\n"
+    text += "\n" + gen_block
 open(path, "w").write(text)
 PYEOF
+            SCHEMA_CFG_OK=1
+        else
+            warn "could not write chains.generators — continuing with image defaults."
         fi
-    elif grep -qE '^\s*indexer_url:' "$STATE_DIR/config.yaml"; then
-        sed -i.bak "s|^\(\s*indexer_url:\).*|\1 \"$GEN_SCHEMA_URL\"|" "$STATE_DIR/config.yaml" && rm -f "$STATE_DIR/config.yaml.bak"
-        [ -n "${RESOURCE_MEM_MIB:-}" ] && sed -i.bak "s|^\(\s*resource_memory_mib:\).*|\1 ${RESOURCE_MEM_MIB}|" "$STATE_DIR/config.yaml" && rm -f "$STATE_DIR/config.yaml.bak"
     else
-        warn "unrecognized image config layout — schema fetch will use the image's built-in default."
+        # Older image layout: host.snapshot.indexer_url doubles as the
+        # schema-fetch base URL.
+        sed -i.bak "s|^\(\s*indexer_url:\).*|\1 \"$GEN_SCHEMA_URL\"|" "$STATE_DIR/config.yaml" && rm -f "$STATE_DIR/config.yaml.bak"
+        SCHEMA_CFG_OK=1
     fi
-    grep -qE '^\s*indexer_url:.*' "$STATE_DIR/config.yaml" 2>/dev/null \
-        && info "Schema fetch pointed at the Generator: $GEN_SCHEMA_URL"
+    [ "$SCHEMA_CFG_OK" = 1 ] && info "Schema fetch pointed at the Generator: $GEN_SCHEMA_URL"
     CONFIG_MOUNT=(-v "$STATE_DIR/config.yaml:/app/config.yaml:ro")
 fi
 
@@ -770,6 +778,10 @@ DOCKER_RUN_ARGS=(
 [ -n "$RUN_NETWORK" ]        && DOCKER_RUN_ARGS+=(--network "$RUN_NETWORK")
 [ -n "$ADD_HOST_FLAG" ]      && DOCKER_RUN_ARGS+=(--add-host "$ADD_HOST_FLAG")
 [ -n "$GOMEMLIMIT_ENV" ]     && DOCKER_RUN_ARGS+=(-e GOMEMLIMIT="$GOMEMLIMIT_ENV")
+# Env override rather than a config edit: LoadConfig honours it on every
+# image layout, unlike the resource_memory_mib key's location in the file.
+[ -n "${RESOURCE_MEM_MIB:-}" ] && [ "$RESOURCE_MEM_MIB" -gt 0 ] \
+    && DOCKER_RUN_ARGS+=(-e DEFRADB_P2P_RESOURCE_MEMORY_MIB="$RESOURCE_MEM_MIB")
 [ -n "$MEMORY_OPT" ]         && DOCKER_RUN_ARGS+=(--memory "$MEMORY_OPT")
 [ -n "$START_HEIGHT_OPT" ]   && DOCKER_RUN_ARGS+=(-e START_HEIGHT="$START_HEIGHT_OPT")
 [ -n "$SCHEMA_AUTH_TOKEN" ]  && DOCKER_RUN_ARGS+=(-e INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN="$SCHEMA_AUTH_TOKEN")
