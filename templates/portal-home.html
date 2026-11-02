@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% import "macros/sidebar.html" as sidebar %}
 
 {# Landing ("portal") template for the Home page: a serif-display hero, the
-   three primary doc tracks as cards, and grouped link lists. Page-specific
-   copy lives in the page's frontmatter (title, description) and markdown body
-   (rendered as the hero lead); the layout below is shared. #}
+   three primary doc tracks as cards, and grouped link lists. The Home page is
+   the root section (content/_index.md); its copy lives in the section's front
+   matter (title, description) and markdown body (rendered as the hero lead);
+   the layout below is shared. #}
 
-{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
-{% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
-{% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
+{% block title %}<title>{{ section.title }} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }} | {{ config.title }}{% endblock og_title %}
 
 
 {% block body %}
@@ -17,7 +17,7 @@
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
-      {{ sidebar::render(current=page.path) }}
+      {{<sidebar.render blocks={config.extra.sidebar} current={section.path} />}}
     </aside>
 
     <div class="docs-content docs-content--portal">
@@ -27,8 +27,8 @@
         <header class="hero">
           <p class="hero__eyebrow">Developer Documentation</p>
           <h1 class="hero__title">Shinzo Network</h1>
-          {% if page.content %}
-          <p class="hero__lead">{{ page.content | safe | striptags }}</p>
+          {% if section.content %}
+          <p class="hero__lead">{{ section.content | safe | striptags }}</p>
           {% endif %}
         </header>
 
@@ -126,4 +126,4 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={section.path} />}}{% endblock mobile_sidebar %}

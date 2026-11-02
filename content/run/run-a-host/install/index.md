@@ -1,13 +1,13 @@
 +++
 title = "Install"
-aliases = ["/hosts/install"]
+description = "How to install a Host client with Docker or a source build and connect it to a Generator client to sync from."
 +++
 
 A Host client pulls primitive blockchain data from Generator clients, runs Lens WASM transforms, and serves the resulting Views to subscriber nodes over an embedded DefraDB instance. This page is for operators who want to **run** a Host client.
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 **Only want to query Shinzo data?** You don't need to run your own Host client. Connect to a public Host client instead. See [Query your first View](/build/tutorials/query-your-first-view/). Running your own Host client is for serving data to the network, not for reading it.
-{% end %}
+{% </admonition> %}
 
 ## Prerequisites
 
@@ -59,16 +59,17 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     docker run -d \
       --name shinzo-host \
       -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
-      -e BOOTSTRAP_PEERS="<indexer-multiaddr>" \
+      -e BOOTSTRAP_PEERS="<generator-multiaddr>" \
       -p 9181:9181 \
       -p 9182:9182 \
       -p 9171:9171 \
+      -p 8080:8080 \
       ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
     ```
 
-    {% admonition(type="info") %}
+    {% <admonition type="info"> %}
     **ARM machines (Apple Silicon):** the image is `linux/amd64` only. Add `--platform linux/amd64` to the `pull` and `run` commands to run it under emulation. Running on native x86-64 hardware is recommended.
-    {% end %}
+    {% </admonition> %}
 
 1. The remaining settings, including the ShinzoHub endpoint the Host client pulls View definitions from, use the image's built-in defaults:
 
@@ -77,7 +78,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     | `9181` | DefraDB GraphQL + REST API | |
     | `9182` | GraphQL Playground UI | |
     | `9171` | libp2p P2P networking | Must be reachable from the internet. Open or forward this port |
-    | `8080` | Health + metrics | Served inside the container. Publish with `-p 8080:8080` and open it in your firewall so the public Hosts dashboard can probe `/health` and show your Host as online. The default `docker run` above does not publish it. |
+    | `8080` | Health + metrics | Open inbound TCP `8080` in your firewall as well. The public Hosts dashboard probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. |
 
 1. Confirm the container is up:
 
@@ -118,18 +119,19 @@ sudo chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens
 docker run -d \
   --name shinzo-host \
   -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
-  -v ~/data/defradb:/app/.defra/data \
+  -v ~/data/defradb:/app/.defra \
   -v ~/data/keys:/app/.defra/keys \
   -v ~/data/lens:/app/.defra/lens \
   -p 9181:9181 \
   -p 9182:9182 \
   -p 9171:9171 \
+  -p 8080:8080 \
   ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Host client can't write to the mounts and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
-{% end %}
+{% </admonition> %}
 
 Production deployments also put an nginx reverse proxy in front for TLS and CORS. The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
 
@@ -171,21 +173,21 @@ The only required setting is the keyring secret.
 
 1. Run the client:
 
-    {{ tab(label="Run as a binary") }}
+    {{<tab label="Run as a binary" />}}
 
     ```shell
     make start
     ```
 
-    {{ endtab() }}
+    {{<endtab />}}
 
-    {{ tab(label="Without building the binary") }}
+    {{<tab label="Without building the binary" />}}
 
     ```shell
     go run cmd/main.go
     ```
 
-    {{ endtab() }}
+    {{<endtab />}}
 
 1. Done!
 
@@ -199,4 +201,4 @@ Ports, verification, and registration are the same as the Docker path above.
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

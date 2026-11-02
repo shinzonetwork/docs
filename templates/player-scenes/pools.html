@@ -11,17 +11,14 @@
   <path id="p-join-2" class="route route--side" d="M 654 208 C 596 212, 540 228, 480 250" fill="none" />
   <path id="p-join-3" class="route route--side" d="M 654 300 C 596 294, 552 272, 524 250" fill="none" />
   <path id="p-join-4" class="route route--side" d="M 654 392 C 585 384, 545 330, 524 250" fill="none" />
-
   <text class="hint" x="672" y="82">Hosts</text>
   <text class="hint" x="250" y="204">ShinzoHub</text>
-
   <!-- Developer -->
   <g class="station" id="p-st-dev" data-steps="1" transform="translate(85 250)">
     <circle class="block" cx="0" cy="-10" r="9" />
     <path class="block" d="M -15 16 C -15 2, 15 2, 15 16 Z" />
     <text class="label" y="52">Developer</text>
   </g>
-
   <!-- Pool Registry -->
   <g class="station" id="p-st-registry" data-steps="2" transform="translate(250 250)">
     <rect class="box" x="-29" y="-29" width="58" height="58" rx="10" />
@@ -30,7 +27,6 @@
     <rect class="block" x="-17" y="11" width="34" height="6" rx="2" />
     <text class="label" y="52">Pool Registry</text>
   </g>
-
   <!-- Pool: dashed ghost until it is created, solid from step 3 -->
   <g class="station pool" id="p-st-pool" data-steps="3,4,5,6" transform="translate(480 250)">
     <rect class="pool-box" x="-78" y="-32" width="156" height="64" rx="12" />
@@ -40,7 +36,6 @@
     <text class="label" y="54">Pool</text>
     <text class="label label--sub" y="70">View &#183; windowSize</text>
   </g>
-
   <!-- Hosts: registered nodes on the network, waiting to join -->
   <g class="station station--small" id="p-st-h1" data-steps="4" transform="translate(672 116)">
     <path class="box" d="M -16 -11 v 22 a 16 5 0 0 0 32 0 v -22 a 16 5 0 0 0 -32 0" />
@@ -58,7 +53,6 @@
     <path class="box" d="M -16 -11 v 22 a 16 5 0 0 0 32 0 v -22 a 16 5 0 0 0 -32 0" />
     <ellipse class="box-lip" cx="0" cy="-11" rx="16" ry="5" />
   </g>
-
   <!-- Pool status card -->
   <g class="card" id="p-card" data-counter="hosts" data-counter-steps="0,0,0,0,1,3" data-counter-badge="3" transform="translate(480 88)">
     <rect x="-108" y="-31" width="216" height="62" rx="10" />
@@ -74,7 +68,6 @@
     <circle class="dot" cx="64" cy="12" r="5.5" />
     <circle class="dot" cx="82" cy="12" r="5.5" />
   </g>
-
   <!-- Demand packet: document + bond coin, cross-faded into the pool -->
   <g class="packet packet--main" id="p-packet">
     <rect x="-23" y="-15" width="46" height="30" rx="6" />
@@ -84,7 +77,6 @@
       <circle class="coin-core" r="4" />
     </g>
   </g>
-
   <!-- Host tokens: tweened along the join paths by the script -->
   <g class="token" id="p-token-1" opacity="0"
     data-fly="#p-join-1" data-fly-steps="4" data-fly-delay="300" data-fly-arrive="hosts:1" data-park-steps="5,6">
@@ -108,7 +100,6 @@
     <ellipse class="token-lip" cx="0" cy="-9" rx="13" ry="4.5" />
   </g>
 </svg>
-
 <style>
   /* Pool: dashed ghost while it does not exist yet, solid once created. */
   .pool { opacity: 0.4; transition: opacity 0.45s ease; }
@@ -116,7 +107,6 @@
   .player--s4 .pool,
   .player--s5 .pool,
   .player--s6 .pool { opacity: 1; }
-
   .pool-box {
     fill: var(--background);
     fill-opacity: 0;
@@ -130,20 +120,17 @@
   .player--s5 .pool-box,
   .player--s6 .pool-box { fill-opacity: 1; stroke-dasharray: none; }
   .station.on .pool-box { stroke: var(--color-primary); stroke-width: 2.5; }
-
   .slot {
     fill: none;
     stroke: color-mix(in srgb, var(--foreground) 30%, transparent);
     stroke-width: 1.5;
     stroke-dasharray: 4 4;
   }
-
   /* Pool status card from step 3 */
   .player--s3 #p-card,
   .player--s4 #p-card,
   .player--s5 #p-card,
   .player--s6 #p-card { opacity: 1; }
-
   /* Active / Inactive badge: swapped by .is-above on the counter widget. */
   .badge-pill {
     fill: color-mix(in srgb, var(--foreground) 8%, transparent);
@@ -164,18 +151,15 @@
   [data-counter].is-above #p-badge-off { opacity: 0; }
   [data-counter].is-above .badge-pill { fill: var(--color-primary); stroke: var(--color-primary); }
   [data-counter].is-above .badge-text { fill: #fff; }
-
   /* The badge pops each time the pool flips back to active. */
   #p-badge { transform-box: fill-box; transform-origin: center; }
   [data-counter].is-above #p-badge { animation: poolPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
   @keyframes poolPop { from { transform: scale(1.3); } }
-
   /* Bond coin: visible while the demand packet exists (steps 2 and 3) */
   .player--s2 #p-coin,
   .player--s3 #p-coin { transform: translate(18px, -14px) scale(1); }
   .coin-rim { fill: var(--color-primary); }
   .coin-core { fill: none; stroke: var(--background); stroke-width: 2; }
-
   /* Demand packet positions; it dissolves into the pool on step 4. */
   #p-packet { transform: translate(85px, 250px); }
   .player--s2 #p-packet { transform: translate(250px, 250px); }
@@ -186,7 +170,6 @@
   .player--s4 #p-packet,
   .player--s5 #p-packet,
   .player--s6 #p-packet { opacity: 0; }
-
   /* Host tokens */
   .token-body {
     fill: var(--background);

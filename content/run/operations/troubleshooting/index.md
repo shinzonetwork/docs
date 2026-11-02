@@ -1,6 +1,5 @@
 +++
 title = "Troubleshooting"
-aliases = ["/generator/faq", "/generators/frequently-asked-questions", "/generators/faq", "/hosts/faq", "/hosts/frequently-asked-questions", "/views/faq"]
 description = "Common errors, troubleshooting steps, and frequently asked questions for Generator clients, Host clients, and Viewkit."
 +++
 
@@ -32,9 +31,9 @@ The Generator client reads from whatever execution node you point it at. That up
 - `eth_getUncleByBlockHashAndIndex`
 - `eth_getBlockReceipts`
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The Generator client only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
-{% end %}
+{% </admonition> %}
 
 ### What happens if I lose my node-identity-key? Can I regenerate it?
 
@@ -65,7 +64,7 @@ With pruning enabled (the default), the Generator's own data stays bounded at ro
 
 ### How long does it take to sync?
 
-Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The Generator client processes blocks approximately 2 to 4 seconds per block.
+Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The shipped `config.yaml` sets `blocks_per_minute: 60`, which caps the Generator client at one block per second. That cap only matters when catching up from an old start height: at the chain head the Generator client easily keeps up, since chains produce blocks much more slowly than one per second. Raise `blocks_per_minute` if catch-up is too slow, or set it to `0` to remove the cap. With no cap, speed depends on your node. See [high-throughput tuning](/run/run-a-generator/deployment-examples/high-throughput-tuning/).
 
 ### How do I choose a start height?
 
@@ -210,7 +209,7 @@ The dashboard determines if a node is online/offline by probing `http://<your-se
 
 This is the most common reason a running Host appears offline, and it almost always comes down to `8080` not being published or opened:
 
-- **Docker:** the default `docker run` in [Install](/run/run-a-host/install/) does not publish `8080`. Add `-p 8080:8080` to that command and to your persistent-host command or Compose file.
+- **Docker:** the default `docker run` in [Install](/run/run-a-host/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
 - **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
 - **Reverse proxy:** if you put nginx in front (as in the [Quickstart](/run/run-a-host/quickstart/)), make sure it routes `/health` to the Host client's health server on port `8080`, not to DefraDB on `9181`. Otherwise the probe reaches DefraDB, which doesn't answer `/health` the way the dashboard expects.
 
@@ -314,7 +313,7 @@ If you need a clean slate, stop the local DefraDB instance (Ctrl+C), delete the 
 
 ### Is there an `Event` collection?
 
-No. Raw event data lives in the `Log` collection, where `topics` holds the parameters flagged `indexed` and `data` holds the rest. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/create-a-view/examples/) for a complete walkthrough.
+No. Raw event data lives in the `Log` collection, where `topics` holds the parameters flagged `indexed` and `data` holds the rest. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/how-to/view-recipes/) for a complete walkthrough.
 
 ### What's the difference between `@materialized(if: true)` and `@materialized(if: false)`?
 

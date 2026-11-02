@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "macros/sidebar.html" as sidebar %}
 
 {# Landing ("portal") template for section landing pages: featured track
    cards and grouped link lists. Page-specific copy lives in the page's
@@ -17,7 +16,7 @@
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
-      {{ sidebar::render(current=page.path) }}
+      {{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}
     </aside>
 
     <div class="docs-content docs-content--portal">
@@ -131,4 +130,4 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}{% endblock mobile_sidebar %}

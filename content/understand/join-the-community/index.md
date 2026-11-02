@@ -1,7 +1,6 @@
 +++
 title = "Join the community"
 description = "Where to talk to the Shinzo team and other builders, and which channel to use for what."
-aliases = ["/introduction/join-the-community"]
 +++
 
 Shinzo is open source and the team is easy to reach. Whether you're running a node, building an app, or just curious about the protocol, here's where to go and what to expect from each channel.

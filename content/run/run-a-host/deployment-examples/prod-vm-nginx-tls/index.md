@@ -1,7 +1,6 @@
 +++
 title = "Prod VM with nginx and TLS"
 description = "Run a production Host on a VM behind nginx with TLS termination and persistent volumes for DefraDB data, keys, and lens files."
-aliases = ["/hosts/deployment-examples/prod-vm-nginx-tls"]
 [extra]
 mermaid = true
 +++
@@ -12,7 +11,7 @@ These scenarios use data from a supported blockchain. Shinzo supports multiple b
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph VM["Prod VM"]
     direction TB
@@ -26,7 +25,7 @@ flowchart LR
 
   Gens -- "P2P (libp2p)<br/>:9171" --> Host
   Clients -- "HTTPS<br/>/api/v0/graphql<br/>/metrics" --> Nginx
-{% end %}
+{% </mermaid> %}
 
 nginx terminates incoming HTTPS traffic and proxies GraphQL and metrics requests to the Host container. P2P traffic from Generators goes directly to the Host on port 9171, bypassing nginx. Persistent volumes on the VM keep DefraDB data, keys, and lens files across container restarts.
 
@@ -68,11 +67,6 @@ shinzo:
   minimum_attestations: 1
   start_height: 0
   hub_base_url: testnet.shinzo.network
-  cache_queue_size: 50000
-  batch_writer_count: 8
-  batch_size: 500
-  batch_flush_interval: 100
-  use_block_signatures: true
   doc_worker_count: 32
   doc_queue_size: 50000
   event_filter:
@@ -367,4 +361,4 @@ curl -s -X POST https://localhost/api/v0/graphql \
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

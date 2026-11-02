@@ -1,7 +1,6 @@
 +++
 title = "Add the testnet to your wallet"
 description = "Connect MetaMask, Trust Wallet, and other browser wallets to the Shinzo testnet with the correct network parameters."
-aliases = ["/wallets/add-testnet"]
 +++
 
 To interact with the Shinzo testnet from a browser wallet, you add it as a custom network. This page lists the values every wallet needs, then steps through adding the network in MetaMask and Trust Wallet, with a generic method for any other EVM-compatible wallet at the end.
@@ -22,9 +21,9 @@ Every wallet asks for the same set of fields. Use these values for the testnet:
 
 The block explorer URL field is optional in some wallets. Fill it in when the field is there, so transaction hashes and addresses link out to the Explorer.
 
-{% admonition(type="warning", title="HTTP RPC caveat") %}
+{% <admonition type="warning" title="HTTP RPC caveat"> %}
 The testnet RPC endpoint uses plain HTTP rather than HTTPS. Some wallets refuse to add an HTTP endpoint for security reasons, and others add it but mark the network as untrusted. We are tracking the HTTPS work in [shinzohub#97](https://github.com/shinzonetwork/shinzohub/issues/97). Until that lands, use a wallet that accepts HTTP endpoints. MetaMask and Trust Wallet both do, and both are known to work with the testnet.
-{% end %}
+{% </admonition> %}
 
 ## Add the network to MetaMask
 

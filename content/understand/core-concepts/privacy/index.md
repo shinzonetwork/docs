@@ -35,9 +35,9 @@ What changes from the defaults:
 
 - `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do not include any other multiaddrs.
 - `shinzo.hub_base_url`: set it to `testnet.shinzo.network` (the shipped value; the code default is empty) so the Host client keeps fetching public Views. The value is a bare hostname without a scheme or port; the Host client appends the ports itself, so including one crashes it on startup.
-- Skip [Register](/hosts/register/). An unregistered Host isn't discoverable and won't serve the network.
+- Skip [Register](/run/run-a-host/register/). An unregistered Host isn't discoverable and won't serve the network.
 
-This is the topology covered in the [Operator Quickstart](/guides/operator-quickstart/).
+This is the topology covered in the [Operator Quickstart](/run/get-started/).
 
 ### Fully air-gapped Host client
 
