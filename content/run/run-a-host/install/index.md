@@ -55,6 +55,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
       -p 9181:9181 \
       -p 9182:9182 \
       -p 9171:9171 \
+      -p 8080:8080 \
       ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
     ```
 
@@ -69,7 +70,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     | `9181` | DefraDB GraphQL + REST API | |
     | `9182` | GraphQL Playground UI | |
     | `9171` | libp2p P2P networking | Must be reachable from the internet. Open or forward this port |
-    | `8080` | Health + metrics | Served inside the container. Publish with `-p 8080:8080` and open it in your firewall so the public Hosts dashboard can probe `/health` and show your Host as online. The default `docker run` above does not publish it. |
+    | `8080` | Health + metrics | Open inbound TCP `8080` in your firewall as well. The public Hosts dashboard probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. |
 
 1. Confirm the container is up:
 
@@ -116,6 +117,7 @@ docker run -d \
   -p 9181:9181 \
   -p 9182:9182 \
   -p 9171:9171 \
+  -p 8080:8080 \
   ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 ```
 

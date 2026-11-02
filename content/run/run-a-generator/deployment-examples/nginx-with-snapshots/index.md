@@ -208,6 +208,27 @@ http {
 - `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
 - The Nginx `proxy_buffering off` and extended timeouts on `/snapshots/(.+)$` prevent Nginx from buffering large snapshot downloads. `client_max_body_size 0` removes the request body size limit.
 
+### Serving the dashboard health check on 8080
+
+The config above only listens on `443`, but the public Generators dashboard probes `http://<your-server-ip>:8080/health` over plaintext HTTP to decide whether your Generator shows as online. To answer that probe without exposing every other path on `8080`, add a second server block to the Nginx config that passes `/health` through and returns 404 for everything else:
+
+```nginx
+server {
+  listen 8080;
+  server_name _;
+
+  location = /health {
+    proxy_pass http://shinzo-generator:8080/health;
+  }
+
+  location / {
+    return 404;
+  }
+}
+```
+
+Map `"8080:8080"` on the `nginx` service in the compose file rather than on `shinzo-generator`: publishing the Generator's port directly bypasses Nginx and exposes every path on `8080`. Then open inbound TCP `8080` in your firewall.
+
 ## Start the Generator
 
 Place both files in the same directory and start:
@@ -240,7 +261,7 @@ Once the Generator is running, register it with the Shinzo Network. See [Registr
 - `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `docker-compose-prod.yml` but are not read by the Generator client, so they are omitted here. `SCHEMA_AUTH_MODE=none` is kept because the Generator client does read it (it controls auth on the `/api/v1/schema` endpoints Nginx proxies). See the [env vars table](/run/run-a-generator/config-reference#environment-variables) for details.
 - The snapshot directory defaults to `./snapshots` inside the container. Snapshots are written to the DefraDB data directory at `~/shinzo-data/defradb/snapshots` on the host because of the volume mount. Hosts download them through Nginx, not directly from the filesystem.
 - The `proxy_read_timeout` and `proxy_send_timeout` are set to 300 seconds for snapshot downloads. Large snapshot files can take time to transfer. If Hosts time out downloading, increase these values.
-- **Dashboard online check:** the public Generators dashboard probes `http://<your-server-ip>:8080/health` over plaintext to decide whether your Generator shows as online. This scenario terminates TLS on `443` and only opens `443` and `9171`, so that probe can't reach Nginx and your Generator will appear offline on the dashboard even though it's healthy. If you want it to show as online, also publish `8080` (for example map `8080:8080` on the `shinzo-generator` service, or add a plaintext `listen 8080` server block to Nginx that proxies `/health`) and open inbound TCP `8080` in your firewall. See [Troubleshooting](/run/operations/troubleshooting/#my-generator-appears-offline-in-the-dashboard-but-is-still-running).
+- **Dashboard online check:** this scenario only opens `443` and `9171`, so the dashboard's plaintext probe to `http://<your-server-ip>:8080/health` can't reach the Generator and it shows as offline even while it's healthy. See [Serving the dashboard health check on 8080](#serving-the-dashboard-health-check-on-8080) to publish `/health` without exposing the other paths, and [Troubleshooting](/run/operations/troubleshooting/#my-generator-appears-offline-in-the-dashboard-but-is-still-running) for the general case.
 
 ## Need help
 
