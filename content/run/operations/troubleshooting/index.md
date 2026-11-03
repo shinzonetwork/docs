@@ -130,7 +130,13 @@ Generator clients are the write side: they read raw blocks from an execution nod
 
 No, but you do need access to at least one working Generator client. A Host client doesn't read the source chain itself; it receives signed primitives from Generator clients over P2P, so it needs at least one reachable Generator client to sync from. That Generator client doesn't have to be _yours_; you can point at any one you can reach. The image ships with default peers, but they aren't guaranteed to be live, so in practice set `BOOTSTRAP_PEERS` to a Generator client you know is up (see [Install](/run/run-a-host/install/)).
 
-A public Generator client you can point at is planned; this page will link it once it's live.
+Shinzo runs public Generator clients you can point at. A known-good multiaddr:
+
+```plaintext
+/ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT
+```
+
+The [network status page](https://status.shinzo.network/nodes/generator) lists every registered Generator client with its connection string.
 
 ### Can I connect my Host client to my own Generator client?
 
