@@ -5,9 +5,9 @@
    frontmatter (title, description) and markdown body (rendered as the intro
    strip, when present); the layout below is shared. #}
 
-{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
-{% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
-{% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
+{% block title %}<title>{{ section.title }} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }} | {{ config.title }}{% endblock og_title %}
 
 
 {% block body %}
@@ -16,18 +16,18 @@
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
-      {{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}
+      {{<sidebar.render blocks={config.extra.sidebar} current={section.path} />}}
     </aside>
 
     <div class="docs-content docs-content--portal">
       <article class="docItemCol markdown">
 
-        <h1 class="doc-title">{{ page.title }}</h1>
+        <h1 class="doc-title">{{ section.title }}</h1>
 
         {# Intro strip: the page's markdown body, left-aligned. #}
-        {% if page.content %}
+        {% if section.content %}
         <div class="portal-intro portal-intro--landing">
-          {{ page.content | safe }}
+          {{ section.content | safe }}
         </div>
         {% endif %}
 
@@ -130,4 +130,4 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={section.path} />}}{% endblock mobile_sidebar %}
