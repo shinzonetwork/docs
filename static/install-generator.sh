@@ -67,10 +67,24 @@ main() {
     GETH_API_KEY_TYPE=${GETH_API_KEY_TYPE:-}
     if [ -n "$GETH_API_KEY" ] && [ -z "$GETH_API_KEY_TYPE" ]; then
         case "$GETH_RPC_URL" in
-            *blockchainnodeengine.com*) GETH_API_KEY_TYPE=x-goog-api-key ;;
-            *) GETH_API_KEY_TYPE=x-api-key ;;
+            *blockchainnodeengine.com*)
+                GETH_API_KEY_TYPE=x-goog-api-key
+                info "API key header guessed as $GETH_API_KEY_TYPE. Set GETH_API_KEY_TYPE to override."
+                ;;
+            *quiknode.pro*)
+                # QuickNode authenticates via the URL path, not a header.
+                case "$GETH_RPC_URL" in
+                    */"$GETH_API_KEY") ;;
+                    *) GETH_RPC_URL="$GETH_RPC_URL/$GETH_API_KEY"; GETH_WS_URL="$GETH_WS_URL/$GETH_API_KEY" ;;
+                esac
+                GETH_API_KEY=
+                info "QuickNode detected: appended the API key to the URLs (QuickNode ignores auth headers)."
+                ;;
+            *)
+                GETH_API_KEY_TYPE=x-api-key
+                info "API key header guessed as $GETH_API_KEY_TYPE. Set GETH_API_KEY_TYPE to override."
+                ;;
         esac
-        info "API key header guessed as $GETH_API_KEY_TYPE. Set GETH_API_KEY_TYPE to override."
     fi
 
     mkdir -p "$DIR"
@@ -142,3 +156,4 @@ EOF
 }
 
 main "$@"
+
