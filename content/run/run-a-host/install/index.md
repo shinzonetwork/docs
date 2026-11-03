@@ -12,7 +12,7 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
-- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A public Generator client you can point at is coming; this page will link it here once it's live. Until then, run your own. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
+- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. Shinzo runs public Generator clients you can point at. One is given in the Docker steps below, and the [network status page](https://status.shinzo.network/nodes/generator) lists every registered Generator client with its connection string. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
 - **Hardware** that meets the [recommendations](/run/run-a-host/hardware-requirements/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
@@ -52,6 +52,14 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     ```
 
     For the address portion, use the Generator client's public IP or hostname. Don't copy an address from `.p2p.self.addresses` in the health response: those are the addresses the Generator client listens on, and under Docker bridge networking they're loopback (`127.0.0.1`) and the container's internal IP, which your Host client can't reach.
+
+    If you don't run your own Generator client, use Shinzo's public one:
+
+    ```plaintext
+    /ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT
+    ```
+
+    The [network status page](https://status.shinzo.network/nodes/generator) lists every registered Generator client with its connection string.
 
 1. Run the container, supplying the secret and multiaddr:
 
@@ -104,7 +112,15 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     docker logs shinzo-host | grep -i peer
     ```
 
-    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. A public Generator client to point at is coming; this page will link a known-good endpoint and a ready-to-run query once it's live. See [query examples](/build/how-to/query-data/).
+    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, run this query against the API to confirm real data is flowing:
+
+    ```shell
+    curl http://localhost:9181/api/v0/graphql -X POST \
+      -H "Content-Type: application/json" \
+      -d '{"query":"{ Ethereum__Mainnet__Block(limit: 5, order: { number: DESC }) { number hash timestamp } }"}'
+    ```
+
+    The response lists the five most recent blocks your Host client has synced. You can also query from the Playground at `http://localhost:9182`. See [query examples](/build/how-to/query-data/) for filters, ordering, and nested documents.
 
 1. To serve data to the network, register your Host client with ShinzoHub. See [Register a Host](/run/run-a-host/register/).
 
