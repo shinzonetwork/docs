@@ -101,7 +101,6 @@ Once the Generator is running, register it with the Shinzo Network. See [Registr
 ## Gotchas
 
 - `DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator cannot load its existing DefraDB identity and will fail to start. The value `testnet-secret` is from the install page. Replace it with your own secret for any real deployment.
-- The install page includes `DEFRADB_PLAYGROUND=true` in its `docker run` example. This env var is not read by the Generator client. The playground is controlled by build tags, not environment variables. See the [env vars table](/run/run-a-generator/config-reference#environment-variables) for which vars are effective.
 - If Geth is on a different machine in the same VPC, replace `localhost` with the internal IP or hostname of the Geth machine. Still no API key needed as long as the traffic stays within the private network.
 - If the Generator falls back to HTTP-only mode, the WebSocket connection to Geth failed. Check that `GETH_WS_URL` is correct and that Geth has WebSocket enabled with `--ws --ws.port 8546`.
 - The default `config.yaml` in the container image enables pruning with `max_blocks: 1000` and snapshots with `blocks_per_file: 100`. For an archival Generator, see the [archival versus pruned scenario](../archival-vs-pruned/).
