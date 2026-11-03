@@ -106,7 +106,6 @@ You do not need to be a validator, or to run a validator, just to install and ru
       -e GETH_API_KEY_TYPE={% raw %}{{ HEADER NAME, e.g. x-goog-api-key or x-api-key (OPTIONAL) }}{% endraw %} \
       -e INDEXER_START_HEIGHT=0 \
       -e DEFRADB_KEYRING_SECRET=testnet-secret \
-      -e DEFRADB_PLAYGROUND=true \
       -e DEFRADB_P2P_ENABLED=true \
       -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
       -e LOGGER_DEBUG=true \
@@ -207,7 +206,6 @@ You can also build the Generator client binary from source instead of using Dock
     GETH_API_KEY_TYPE=<header-name, e.g. x-goog-api-key or x-api-key>
 
     DEFRADB_KEYRING_SECRET=<your-keyring-secret>
-    DEFRADB_PLAYGROUND=true
     DEFRADB_P2P_ENABLED=true
     DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171
 

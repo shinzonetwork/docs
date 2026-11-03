@@ -145,7 +145,6 @@ INDEXER_START_HEIGHT=0
 # Generate your own: openssl rand -hex 32
 # IMPORTANT: keep this stable across restarts, or DefraDB can't load its identity.
 DEFRADB_KEYRING_SECRET=<paste-your-own-random-secret-here>
-DEFRADB_PLAYGROUND=true
 DEFRADB_P2P_ENABLED=true
 DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171
 
@@ -200,7 +199,6 @@ services:
 
       # Embedded DefraDB
       - DEFRADB_KEYRING_SECRET=${DEFRADB_KEYRING_SECRET}
-      - DEFRADB_PLAYGROUND=${DEFRADB_PLAYGROUND:-true}
       - DEFRADB_P2P_ENABLED=${DEFRADB_P2P_ENABLED:-true}
       - DEFRADB_P2P_LISTEN_ADDR=${DEFRADB_P2P_LISTEN_ADDR:-/ip4/0.0.0.0/tcp/9171}
 
@@ -238,7 +236,6 @@ chown -R 1001:1001 /root/shinzo-data
 | `GETH_API_KEY_TYPE=x-token` | The header name the Generator sends. (Use `x-goog-api-key` for GCP BNE, `x-api-key` for most self-hosted proxies.) |
 | `INDEXER_START_HEIGHT=0` | Auto-detect: start ~100 blocks behind chain tip and catch up. No full-genesis backfill. |
 | `DEFRADB_KEYRING_SECRET` | Encryption secret for the embedded DefraDB keyring. Keep it stable across restarts. |
-| `DEFRADB_PLAYGROUND=true` | Enables GraphQL introspection on the API. |
 | `SCHEMA_AUTH_MODE=none` | Disables token auth on `/api/v1/schema` (fine for a single-operator node). |
 | `GOMEMLIMIT=5GiB` | Go runtime soft memory limit, set below the 6g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit). |
 
