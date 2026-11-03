@@ -74,7 +74,7 @@ The content between the markers is parsed by the page markdown parser (NOT re-pa
    Scenes live in templates/player-scenes/<scene>.html (SVG + inline <style>
    for per-step state). Register a new scene with one more elif below.
    Assets: /css/player.css and /js/player.js. The scene is fully visible
-   without JS; the script wires up state and playback. #}
+   without JS; the script wires up state and stepping. #}
 {% component player(scene) %}
 <link rel="stylesheet" href="/css/player.css" />
 <div class="player player--s1" data-player>
@@ -97,10 +97,6 @@ The content between the markers is parsed by the page markdown parser (NOT re-pa
     <div class="player__controls">
       <button type="button" class="player__btn js-prev" aria-label="Previous step">
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 10 3 L 5 8 L 10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button type="button" class="player__btn player__btn--play js-play" aria-label="Play">
-        <svg class="player-icon-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 4 2.5 L 13 8 L 4 13.5 Z" fill="currentColor"/></svg>
-        <svg class="player-icon-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/><rect x="9.5" y="2.5" width="3.5" height="11" rx="1" fill="currentColor"/></svg>
       </button>
       <button type="button" class="player__btn js-next" aria-label="Next step">
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M 6 3 L 11 8 L 6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
