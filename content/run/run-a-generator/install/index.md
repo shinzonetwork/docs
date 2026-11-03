@@ -7,6 +7,8 @@ This page covers installing a Shinzo Generator client with Docker or from source
 
 Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration requirements](../prerequisites#registration-requirements) for details.
 
+That validator doesn't have to be related to the execution node the Generator reads from: registration uses the validator to establish your identity, while the execution node is just the data source. Run the Generator wherever makes operational sense, next to any execution node you operate. It doesn't need to be co-located with your validator or use your validator's node.
+
 ## Hardware recommendations
 
 The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See [Hardware requirements](../prerequisites#hardware-requirements) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
