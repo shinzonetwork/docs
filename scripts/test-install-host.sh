@@ -78,9 +78,13 @@ body=""; code=200
 case "$url" in
     *172.17.0.2*)
         # The Generator-candidate container. $STUB_DIR/wrong-gen makes it
-        # answer /health with a peer ID that is not the Generator's.
+        # answer /health with a peer ID that is not the Generator's;
+        # $STUB_DIR/proxied-gen makes it answer with the right peer ID but
+        # P2P addresses that are not its own (a reverse proxy in front).
         if [ -f "$STUB_DIR/wrong-gen" ]; then
             body='{"status":"healthy","p2p":{"enabled":true,"self":{"id":"12D3KooWRaNdOmPeErThAtIsNoTtHeGeNeRaToR"},"addresses":[]}}'
+        elif [ -f "$STUB_DIR/proxied-gen" ]; then
+            body='{"status":"healthy","p2p":{"enabled":true,"self":{"id":"'"$PEER"'","addresses":["/ip4/172.17.0.3/tcp/9171"]},"peers":[]}}'
         else
             body='{"status":"healthy","p2p":{"enabled":true,"self":{"id":"'"$PEER"'","addresses":["/ip4/172.17.0.2/tcp/9171"]},"peers":[]}}'
         fi ;;
@@ -253,7 +257,18 @@ check "wrong container: exit 0" test $? -eq 0
 check "wrong container: rejection warned" has "is not the Generator" "$CASE/out"
 check "wrong container: falls back to host gateway" has \
     "BOOTSTRAP_PEERS = /dns4/host.docker.internal/tcp/9171/p2p/$PEER" "$CASE/out"
-rm -f "$STUB_DIR/gen-container" "$STUB_DIR/wrong-gen"
+rm -f "$STUB_DIR/wrong-gen"
+
+# The standard Generator compose stack fronts the Generator with nginx: right
+# peer ID via the proxied /health, but the container's own IP is not in its
+# P2P addresses, so adopting it would build a dead bootstrap address.
+touch "$STUB_DIR/proxied-gen"
+run_case proxied-container old localhost
+check "proxied generator: exit 0" test $? -eq 0
+check "proxied generator: rejection warned" has "is not the Generator" "$CASE/out"
+check "proxied generator: falls back to host gateway" has \
+    "BOOTSTRAP_PEERS = /dns4/host.docker.internal/tcp/9171/p2p/$PEER" "$CASE/out"
+rm -f "$STUB_DIR/gen-container" "$STUB_DIR/proxied-gen"
 
 # --------------------------------------------------------------------------
 # Memory sizing, existing container, port shift

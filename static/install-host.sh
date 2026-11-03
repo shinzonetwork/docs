@@ -455,14 +455,20 @@ if [ -n "$GEN_CONTAINER" ]; then
         # the Generator's actual libp2p listen port from its reported
         # listen addresses. When the container was found by its published
         # port the match is only a guess — any container publishing that port
-        # qualifies — so a reachable container must prove it is the Generator.
-        # An unreachable one keeps the benefit of the doubt: it may still be
+        # qualifies — so a reachable container must prove it is the Generator:
+        # the right peer ID, AND its own IP in its P2P listen addresses. The
+        # second condition catches a reverse proxy in front of the Generator
+        # (the standard Generator compose stack fronts it with nginx): it
+        # answers /health with the real peer ID but does not listen for P2P,
+        # so adopting its IP would build a dead bootstrap address. An
+        # unreachable one keeps the benefit of the doubt: it may still be
         # starting, and the peer check at the end catches a wrong guess.
         if probe_generator_health "http://${GEN_IP}:${GEN_HEALTH_CPORT}"; then
             PROBE_PEER="$(peer_id_from_health "$GEN_HEALTH_JSON" || true)"
             if [ "$GEN_FOUND_BY" = "port" ] && { [ -z "$PROBE_PEER" ] \
-                || { [ -n "$GEN_PEER_ID" ] && [ "$PROBE_PEER" != "$GEN_PEER_ID" ]; }; }; then
-                warn "container '$GEN_NAME' publishes port $GEN_HEALTH_PORT but is not the Generator — using the host gateway instead."
+                || { [ -n "$GEN_PEER_ID" ] && [ "$PROBE_PEER" != "$GEN_PEER_ID" ]; } \
+                || ! printf '%s' "$GEN_HEALTH_JSON" | grep -q "/ip4/${GEN_IP}/tcp/"; }; then
+                warn "container '$GEN_NAME' publishes port $GEN_HEALTH_PORT but is not the Generator (wrong peer ID, or a proxy in front of it) — using the host gateway instead."
                 GEN_CONTAINER=""
             else
                 [ -z "$GEN_PEER_ID" ] && GEN_PEER_ID="$PROBE_PEER"
