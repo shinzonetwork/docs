@@ -60,19 +60,15 @@ You need a reachable Generator client and its libp2p multiaddr. If you don't hav
 ```shell
 PEER_ID=$(curl -s http://<generator-host>:8080/health | jq -r '.p2p.self.id')
 
-GENERATOR_IP=$(curl -s http://<generator-host>:8080/health \
-  | jq -r '[.p2p.self.addresses[] | capture("/ip4/(?<ip>[0-9.]+)/").ip
-           | select(. != "127.0.0.1" and . != "0.0.0.0")][0]')
-
-BOOTSTRAP_PEER="/ip4/${GENERATOR_IP}/tcp/9171/p2p/${PEER_ID}"
+BOOTSTRAP_PEER="/ip4/<generator-ip>/tcp/9171/p2p/${PEER_ID}"
 echo "$BOOTSTRAP_PEER"
 ```
 
 ```output
-/ip4/172.17.0.2/tcp/9171/p2p/12D3KooWK8zmiDmX91PwDV1PsqtgA1UUDuuyipVBVPEjrvwgoFJH
+/ip4/203.0.113.10/tcp/9171/p2p/12D3KooWK8zmiDmX91PwDV1PsqtgA1UUDuuyipVBVPEjrvwgoFJH
 ```
 
-`.p2p.self.id` is the Generator client's libp2p Peer ID, and `.p2p.self.addresses` lists the multiaddrs it's listening on. The `jq` filter drops loopback and `0.0.0.0` and takes the first remaining IPv4. `BOOTSTRAP_PEER` is the multiaddr the host dials. libp2p authenticates the peer ID, so the connection is verified end to end.
+`.p2p.self.id` is the Generator client's libp2p Peer ID. For the address portion, use the Generator's reachable IP or a hostname (`/dns4/<generator-hostname>/tcp/9171/p2p/${PEER_ID}`), not an entry from `.p2p.self.addresses`. That field lists the Generator's own listen addresses, which under Docker bridge networking are loopback and container-internal addresses your Host client can't dial. `BOOTSTRAP_PEER` is the multiaddr the Host client dials. libp2p authenticates the peer ID, so the connection is verified end to end.
 
 Save this as `~/host-config.yaml`:
 

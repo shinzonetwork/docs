@@ -166,7 +166,7 @@ You should see the Generator client connect to Geth, generate block 0, and then 
 
 ### Get the Generator client's Peer ID
 
-You'll need this to connect the Host. The Peer ID and dialable address both come from the Generator client's `/health` endpoint once it's finished starting up:
+You'll need this to connect the Host. On a single machine like this one, the Peer ID and a dialable address both come from the Generator client's `/health` endpoint once it's finished starting up:
 
 ```shell
 curl -s http://localhost:8080/health | jq '.p2p.self'
@@ -184,6 +184,8 @@ curl -s http://localhost:8080/health | jq '.p2p.self'
 ```
 
 `id` is the Generator client's libp2p Peer ID, stable across restarts as long as the keyring secret stays the same. Of the `addresses`, ignore the `127.0.0.1` one. It's loopback and useless to other containers. Use the other one (the Generator client container's IP on the Docker bridge), which is what the Host will dial.
+
+Reading the dialable address from `/health` works here because both containers sit on the same Docker bridge. On a remote Generator client those listen addresses are loopback and container-internal IPs the Host can't reach, so take only the peer ID from `/health` and build the multiaddr with the Generator's public IP or hostname instead.
 
 Capture both into shell variables:
 
