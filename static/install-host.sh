@@ -328,7 +328,7 @@ GEN_HEALTH_URL="${GEN_SCHEME}://${GEN_HOST_URL}:${GEN_HEALTH_PORT}"
 probe_generator_health() { # -> sets GEN_HEALTH_JSON; returns 0 on HTTP 200
     local url="$1" code tmp
     tmp="$(mktemp "${TMPDIR:-/tmp}/shinzo-host-probe.XXXXXX")" || return 1
-    GEN_HEALTH_JSON="$(curl -s -m "$PROBE_TIMEOUT" -o "$tmp" -w '%{http_code}' "$url/health" 2>/dev/null || echo 000)"
+    GEN_HEALTH_JSON="$(curl -s -m "$PROBE_TIMEOUT" -o "$tmp" -w '%{http_code}' "$url/health" 2>/dev/null || true)"
     code="$GEN_HEALTH_JSON"; GEN_HEALTH_JSON="$(cat "$tmp" 2>/dev/null || true)"
     rm -f "$tmp"
     [ "$code" = 200 ] && [ -n "$GEN_HEALTH_JSON" ]
@@ -524,7 +524,7 @@ ok "BOOTSTRAP_PEERS = $BOOTSTRAP_PEERS"
 if [ -n "$GEN_SCHEMA_URL" ]; then
     SCHEMA_CODE="$(curl -s -m "$PROBE_TIMEOUT" -o /dev/null -w '%{http_code}' \
         ${SCHEMA_AUTH_TOKEN:+-H "Authorization: Bearer ${SCHEMA_AUTH_TOKEN}"} \
-        "$GEN_SCHEMA_URL/api/v1/schema" 2>/dev/null || echo 000)" || SCHEMA_CODE=000
+        "$GEN_SCHEMA_URL/api/v1/schema" 2>/dev/null || true)" || SCHEMA_CODE=000
     case "$SCHEMA_CODE" in
         200) ok "Generator schema endpoint reachable: $GEN_SCHEMA_URL/api/v1/schema" ;;
         401|403|503)
