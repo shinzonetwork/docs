@@ -29,9 +29,9 @@ On the current testnet, the outpost contract is not yet deployed. Assertions use
 
 1. The Generator client generates an operator (delegate) key locally.
 1. The operator provides their validator's consensus public key, withdrawal address, and source chain through the Technical Registry.
-1. The assertion is submitted to ShinzoHub as a `MsgGeneratorAssertion` message, signed by a server-side admin key and broadcast directly to ShinzoHub. No outpost contract, withdrawal-key signature, or on-chain validator-status check is involved.
-1. ShinzoHub stores the assertion record and emits a `GeneratorAsserted` event.
-1. Once the assertion record exists on-chain, the operator can register in the Generator Registry (`0x0212`), signing the registration with their operator key.
+1. The assertion is submitted to ShinzoHub as a transaction signed by a server-side admin key and broadcast directly to ShinzoHub. No outpost contract, withdrawal-key signature, or on-chain validator-status check is involved.
+1. ShinzoHub stores the assertion record.
+1. Once the assertion record exists on-chain, the operator can register on ShinzoHub, signing the registration with their operator key.
 
 The requirement to participate with an active, bonded validator on your source chain still applies. What differs on the testnet is the enforcement mechanism: the admin-key flow approves assertions rather than an on-chain contract verifying validator status.
 
@@ -48,8 +48,8 @@ The planned flow:
 1. The Generator client generates an operator (delegate) key locally.
 1. The validator's withdrawal key calls the outpost, providing their consensus public key and the operator pubkey, and signs the assertion digest.
 1. The outpost verifies the validator using the chain's native mechanism, stores the signed assertion, and emits an `AssertionSigned` event.
-1. A [relayer](../relayer) picks up the event and broadcasts `MsgGeneratorAssertion` to ShinzoHub.
-1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The Generator can now register in the Generator Registry (`0x0212`), signing the registration with its operator key.
+1. A [relayer](../relayer) picks up the event and broadcasts the assertion to ShinzoHub.
+1. ShinzoHub verifies the assertion and records a slip for the operator pubkey. The Generator can now register on ShinzoHub, signing the registration with its operator key.
 
 #### Consensus public key
 
