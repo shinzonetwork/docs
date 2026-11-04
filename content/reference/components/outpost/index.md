@@ -1,23 +1,23 @@
 +++
 title = "Outpost"
-description = "How outposts connect external chains to Shinzo: proving validator identity on the source chain and paying for View access without touching ShinzoHub."
+description = "How outposts connect external chains to Shinzo: paying for View access without touching ShinzoHub, with a planned validator-assertion role."
 [extra]
 mermaid = true
 +++
 
-An outpost is a smart contract deployed on an external chain (not ShinzoHub) that does two things: lets validators prove their identity so they can register as Generators, and lets users pay for view access without interacting with ShinzoHub directly.
+An outpost is a smart contract deployed on an external chain (not ShinzoHub) that lets users pay for View access without interacting with ShinzoHub directly. A planned extension will also let validators prove their identity on their source chain, so they can register as Generators.
 
 Outposts are how external chains connect into the Shinzo network. They handle source chain local logic. [Relayers](../relayer) bridge the results to [ShinzoHub](../shinzohub).
 
 {% <admonition type="info"> %}
-The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based assertion and payment flows described on this page are the planned design.
+On the public network, users fund a query balance on ShinzoHub rather than paying through an outpost; the outpost's payment flow serves private deployments. Validator assertions are handled through an admin-key approval flow on the current testnet. The contract-based assertion flow described on this page is planned, and its design may change.
 {% </admonition> %}
 
 ## Why outposts exist
 
-ShinzoHub cannot directly verify that a validator on another chain is who they claim to be. Every chain has its own consensus mechanism and key types. The outpost runs on the same chain as the validator, where that chain's native tools can verify identity.
+Users on external chains should be able to pay for View access in their chain's native currency without bridging tokens to ShinzoHub first. The outpost runs on the same chain as its users, so payment stays local to that chain. This is how private deployments gate access through SourceHub.
 
-Outposts also handle payments. Users on external chains should be able to pay in their chain's native currency without bridging tokens to ShinzoHub first.
+A planned extension would also use outposts for validator assertions. ShinzoHub cannot directly check that a validator on another chain is who they claim to be, and every chain has its own consensus mechanism and key types, so the natural place for that check is the validator's home chain. Until that design is settled, assertions use the admin-key approval flow described below.
 
 ## Validator assertions
 
@@ -36,6 +36,10 @@ On the current testnet, the outpost contract is not yet deployed. Assertions use
 The requirement to participate with an active, bonded validator on your source chain still applies. What differs on the testnet is the enforcement mechanism: the admin-key flow approves assertions rather than an on-chain contract verifying validator status.
 
 ### Planned contract-based assertion flow
+
+{% <admonition type="info"> %}
+This flow is planned, not yet implemented, and its design may change.
+{% </admonition> %}
 
 The full assertion flow runs through the outpost contract once it is deployed. The contract handles identity verification on the source chain, and a relayer bridges the result to ShinzoHub.
 
@@ -90,7 +94,7 @@ Some chains let you query the staking module to check if an address is bonded. S
 
 ## Payments
 
-Users on external chains can pay for Shinzo resources without interacting with ShinzoHub.
+In private deployments, users on external chains can pay for Shinzo resources without interacting with ShinzoHub. On the public network, users fund a query balance on ShinzoHub instead.
 
 1. User calls `payment()` with a resource type, their DID, a stream ID, and an expiration duration.
 1. The contract stores a `PaymentReceipt` and emits a `PaymentCreated` event.

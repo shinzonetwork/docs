@@ -50,7 +50,7 @@ A stable connection matters more than raw bandwidth. The Generator client reads 
 
 Shinzo testnet registration is open.
 
-1. **An active, bonded chain validator.** On the current testnet, the assertion is approved through an admin-key flow rather than an on-chain contract check. The planned outpost contract will verify validator status on-chain once deployed.
+1. **An active, bonded chain validator.** On the current testnet, the assertion is approved through an admin-key flow rather than an on-chain contract check. An automated off-chain validator check is in development.
 1. **Your validator's consensus public key.** The key type, format, and lookup tooling are chain-specific. See [Consensus public key](/reference/components/outpost#consensus-public-key) for how to retrieve it on your chain. It is not your withdrawal address or an account address.
 1. **Your validator's withdrawal address.** This is included in the assertion to identify your validator. On the current testnet you only need the address itself (the assertion is admin-key-approved). The planned contract-based flow will require the withdrawal key to sign the assertion. See [Validator assertions](/reference/components/outpost#validator-assertions) for the full flow.
 1. **A browser wallet** to sign the on-chain registration transaction.

@@ -156,7 +156,7 @@ Two components connect external blockchains (EVM chains, Cosmos chains, etc.) to
 ### Outpost contracts
 
 {% <admonition type="info"> %}
-The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based flow described below is the planned design.
+The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based flow described below is the planned design, and its details may change.
 {% </admonition> %}
 
 Outpost contracts will be deployed on each source chain. They handle two things:
