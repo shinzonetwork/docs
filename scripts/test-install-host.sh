@@ -45,6 +45,7 @@ case "$cmd" in
         case "$*" in
             *State.Running*)              echo true ;;
             *State.Health.Status*)        echo healthy ;;
+            *RestartCount*) [ -f "$STUB_DIR/crash-loop" ] && echo 5 || echo 0 ;;
             *NetworkSettings*IPAddress*)  echo "172.17.0.2" ;;
             *NetworkSettings*)            echo "bridge" ;;
             *.Name*)                      echo "/maybe-generator" ;;
@@ -287,6 +288,12 @@ check "existing container: explains --force" has "already exists" "$CASE/out"
 run_case forced old 203.0.113.5 --force
 check "--force: exit 0" test $? -eq 0
 rm -f "$STUB_DIR/has-container"
+
+touch "$STUB_DIR/crash-loop"
+run_case crashloop old 203.0.113.5
+check "crash loop: exit 5" test $? -eq 5
+check "crash loop: fails fast with a clear message" has "crash-looping" "$CASE/out"
+rm -f "$STUB_DIR/crash-loop"
 
 if command -v python3 >/dev/null 2>&1; then
     python3 -c '

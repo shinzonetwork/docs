@@ -828,6 +828,13 @@ for _ in $(seq 1 60); do
         docker logs "$CONTAINER_NAME" 2>&1 | tail -n 40 >&2 || true
         exit 5
     fi
+    # Fail fast on a crash loop instead of waiting out the full 5 minutes.
+    RESTARTS="$(docker inspect -f '{{.RestartCount}}' "$CONTAINER_NAME" 2>/dev/null || echo 0)"
+    if [ "${RESTARTS:-0}" -ge 3 ]; then
+        err "container is crash-looping (restarts: $RESTARTS). Last logs:"
+        docker logs "$CONTAINER_NAME" 2>&1 | tail -n 40 >&2 || true
+        exit 5
+    fi
     HEALTH_STATUS="$(docker inspect -f '{{.State.Health.Status}}' "$CONTAINER_NAME" 2>/dev/null || echo starting)"
     [ "$HEALTH_STATUS" = "healthy" ] && break
     sleep 5
