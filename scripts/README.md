@@ -30,18 +30,12 @@ Zola installation behavior:
 
 #### Subcommands
 
-- `./scripts/build.sh` (or `./scripts/build.sh build`): production build. This is
-  what Cloudflare Pages runs.
-- `./scripts/build.sh check`: runs `zola check` (validates `@/` internal links
-  as errors per `[link_checker]` in `config.toml`, and external links as
-  warnings). Used by CI; does not write output.
+- `./scripts/build.sh` (or `./scripts/build.sh build`): production build. This is what Cloudflare Pages runs.
+- `./scripts/build.sh check`: runs `zola check` (validates `@/` internal links as errors per `[link_checker]` in `config.toml`, and external links as warnings). Used by CI; does not write output.
 
 ### check-links.sh
 
-Checks internal links in the built site output (`public/`). Unlike
-`zola check`, which only validates `@/`-prefixed links, this script checks
-**all** internal links regardless of syntax — absolute (`/path/`), relative
-(`../path/`), and `@/`-prefixed — by inspecting the built HTML.
+Checks internal links in the built site output (`public/`). Unlike `zola check`, which only validates `@/`-prefixed links, this script checks **all** internal links regardless of syntax (absolute `/path/`, relative `../path/`, and `@/`-prefixed) by inspecting the built HTML.
 
 Run it after `zola build`:
 
@@ -49,9 +43,7 @@ Run it after `zola build`:
 ./scripts/check-links.sh public
 ```
 
-It verifies that every internal `<a href>` resolves to an existing file and
-that fragment anchors (`#section`) match an `id` in the target page. Exits
-non-zero if any broken links are found. Used by CI.
+It verifies that every internal `<a href>` resolves to an existing file and that fragment anchors (`#section`) match an `id` in the target page. Exits non-zero if any broken links are found. Used by CI.
 
 ### generate-llms.sh
 
@@ -64,23 +56,14 @@ Useful environment variables:
 
 ### test-install-host.sh
 
-Tests `static/install-host.sh` against stub `docker`/`curl`/`sudo` binaries, so no
-Docker daemon or network is needed. Covers the Generator input forms, the config
-rewrite for each image layout, container detection, memory sizing, `--force`, and
-port shifting.
+Tests `static/install-host.sh` against stub `docker`/`curl`/`sudo` binaries, so no Docker daemon or network is needed. Covers the Generator input forms, the config rewrite for each image layout, container detection, memory sizing, `--force`, and port shifting.
 
 ```shell
 ./scripts/test-install-host.sh
 ```
 
-Point `INSTALL_HOST_SH` at another copy of the installer to test it instead of the
-one in this repo.
+Point `INSTALL_HOST_SH` at another copy of the installer to test it instead of the one in this repo.
 
 ## Vendored dependencies
 
-- `static/js/fuse.min.mjs` — Fuse.js 7.5.0 (ESM build), used by
-  `static/js/search.js` for docs search over Zola's `fuse_json` index
-  (`public/search_index.en.json`, see `[search]` in `config.toml`). To update,
-  download `https://cdn.jsdelivr.net/npm/fuse.js@<version>/dist/fuse.min.mjs`
-  over it, bump the version here, and check that search still behaves
-  (multi-word queries, typo tolerance, highlighted snippets).
+- `static/js/fuse.min.mjs`: Fuse.js 7.5.0 (ESM build), used by `static/js/search.js` for docs search over Zola's `fuse_json` index (`public/search_index.en.json`, see `[search]` in `config.toml`). To update, download `https://cdn.jsdelivr.net/npm/fuse.js@<version>/dist/fuse.min.mjs` over it, bump the version here, and check that search still behaves (multi-word queries, typo tolerance, highlighted snippets).
