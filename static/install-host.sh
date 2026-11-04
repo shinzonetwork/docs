@@ -719,6 +719,9 @@ if [ -z "$IMAGE_CONFIG" ]; then
     warn "could not read /app/config.yaml from the image — using the image's built-in defaults."
     CONFIG_MOUNT=()
 else
+    # A previous run left this file owned by 1001 (see the chown below);
+    # remove it first so a non-root re-run can rewrite it.
+    rm -f "$STATE_DIR/config.yaml"
     printf '%s\n' "$IMAGE_CONFIG" > "$STATE_DIR/config.yaml"
     # Write the keyring secret into the mounted config: the Host reads
     # defradb.keyring_secret from the file; the DEFRA_KEYRING_SECRET env var
@@ -745,6 +748,18 @@ PYEOF
         die 1 "the keyring secret needs characters only python3 can write into the config safely — install python3 or pass a simpler --keyring-secret."
     fi
     chmod 600 "$STATE_DIR/config.yaml"   # the mounted config now holds the keyring secret
+    # The container reads this file as UID 1001, so hand it over (same trick
+    # as the data directories) or 600 owned by the installing user locks the
+    # container out ('open config.yaml: permission denied').
+    if ! chown 1001:1001 "$STATE_DIR/config.yaml" 2>/dev/null; then
+        $SUDO chown 1001:1001 "$STATE_DIR/config.yaml" 2>/dev/null \
+            || die 2 "failed to chown $STATE_DIR/config.yaml to 1001:1001.
+
+  The Host container reads its config as UID 1001; a 600 file owned by
+  $(id -un 2>/dev/null || echo "$USER") is unreadable to it. Run:
+      sudo chown 1001:1001 $STATE_DIR/config.yaml
+  then re-run this script."
+    fi
     SCHEMA_CFG_OK=0
     if grep -q '^chains:' "$STATE_DIR/config.yaml" || ! grep -qE '^\s*indexer_url:' "$STATE_DIR/config.yaml"; then
         # chains layout: chains[].generators[].url (+peer) provides the
