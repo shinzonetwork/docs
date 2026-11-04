@@ -23,10 +23,10 @@ When a signed assertion is detected on the source chain, the relayer:
 
 1. Extracts the assertion data (consensus key, delegate signature, digest, etc.).
 1. Recovers the delegate public key from the delegate signature.
-1. Packages everything into a `MsgGeneratorAssertion`.
-1. Broadcasts the message to ShinzoHub.
+1. Packages everything into an assertion transaction.
+1. Broadcasts the transaction to ShinzoHub.
 
-After ShinzoHub processes the message, the Validator can register as a Generator in the Generator Registry (`0x0212`).
+After ShinzoHub processes the transaction, the Validator can register as a Generator on ShinzoHub.
 
 ### What gets relayed
 
@@ -42,7 +42,7 @@ After ShinzoHub processes the message, the Validator can register as a Generator
 
 ### Chain-specific detection
 
-How the relayer detects assertions depends on the source chain. EVM chains expose data through block headers and event logs. Cosmos chains emit `wasm-assertion_signed` events. ShinzoHub does not care how the relayer found the assertion. As long as it gets a valid `MsgGeneratorAssertion`, it processes it the same way.
+How the relayer detects assertions depends on the source chain. EVM chains expose data through block headers and event logs. Cosmos chains emit `wasm-assertion_signed` events. ShinzoHub does not care how the relayer found the assertion. As long as it gets a valid assertion message, it processes it the same way.
 
 ## Payment relay
 
@@ -69,4 +69,4 @@ The relayer has its own wallet on ShinzoHub and needs SHNZ for transaction fees 
 | Cosmos relayer | Cosmos SDK chains | Not yet implemented |
 | CosmosEVM relayer | Hybrid Cosmos+EVM chains | Not yet implemented |
 
-Supporting a new chain type means writing a new relayer implementation. The detection mechanism can differ as long as the output (`MsgGeneratorAssertion`) follows the same format.
+Supporting a new chain type means writing a new relayer implementation. The detection mechanism can differ as long as the output assertion message follows the same format.

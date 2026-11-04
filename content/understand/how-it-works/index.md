@@ -66,7 +66,7 @@ That means three things in practice:
 
 1. **View registration**: When a developer deploys a View, ShinzoHub validates and registers it, then emits an event that Hosts listen for.
 1. **Participant tracking**: Generators and Hosts register themselves on-chain so the rest of the network can discover them.
-1. **Access control**: When a user pays for access to a View via the Outpost contract, ShinzoHub broadcasts that grant so Hosts know to start replicating data to that user. Access control is actually enforced through a separate chain called Sourcehub, connected to ShinzoHub via IBC.
+1. **Access control**: On the public network, users fund a query balance on ShinzoHub and sign each request, and Hosts check both before serving data. Private deployments can instead gate access through SourceHub, a separate chain connected to ShinzoHub via IBC, with payments handled by the Outpost contract on the source chain.
 
 ## Why it's built this way
 
