@@ -112,8 +112,8 @@ Each precompile emits both a Solidity EVM log and a Cosmos SDK event. The names 
 
 | Precompile | Solidity EVM log | Cosmos SDK event |
 | --- | --- | --- |
-| View Registry | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
-| Host Registry | `Registered(address,string)` | `"HostRegistered"` |
+| View Registry | `Registered(bytes32,address,bytes)` | `"Registered"` |
+| Host Registry | `EntityRegistered(bytes32,address,bytes,bytes,uint8)` | `"EntityRegistered"` |
 
 Other events:
 
@@ -121,7 +121,7 @@ Other events:
 | --- | --- |
 | `AccessRequestSuccess` | SourceHub module msg_server |
 
-There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches any generator-registration events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
+There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches any generator-registration events but can miss view-registration events, which is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
 
 Some older docs reference `DataPurchased`, `AccessRevoked`, and `AccessRequestPayment`. These event names do not exist in the codebase.
 

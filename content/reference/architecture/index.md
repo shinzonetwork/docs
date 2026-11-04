@@ -78,7 +78,6 @@ ShinzoHub maintains four EVM precompile registries:
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views. |
 | `0x0211` | Host Registry | Tracks registered hosts. |
-| `0x0213` | Pool Registry | Registers demand for views and tracks the pools that bind demand to hosts. |
 
 These precompiles are implemented in Go, not Solidity bytecode. They have direct access to Cosmos SDK keepers, which is how EVM transactions trigger cross-chain ICA calls to SourceHub.
 
@@ -313,5 +312,5 @@ The precompile emits both a Solidity EVM log and a Cosmos SDK event. The event n
 
 | Precompile | EVM log | Cosmos event |
 | --- | --- | --- |
-| View Registry (0x0210) | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
-| Host Registry (0x0211) | `Registered(address,string)` | `"HostRegistered"` |
+| View Registry (0x0210) | `Registered(bytes32,address,bytes)` | `"Registered"` |
+| Host Registry (0x0211) | `EntityRegistered(bytes32,address,bytes,bytes,uint8)` | `"EntityRegistered"` |
