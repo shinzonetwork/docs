@@ -3,7 +3,7 @@
 {% set data = load_data(path="data/glossary.json") %}
 {# GraphQL (and any future term) has no definition yet — skip those so the
    comma structure stays valid JS. #}
-{% set defined = data.terms | filter(attribute="definition") %}
+{% set defined = [t for t in data.terms if t.definition] %}
 <script>
 window.glossaryTerms = {
 {%- for t in defined %}

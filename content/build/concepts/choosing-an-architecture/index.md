@@ -1,7 +1,6 @@
 +++
 title = "Choosing an app architecture"
 description = "Trade-offs between the three ways to build on Shinzo: direct signed queries to Hosts, an embedded local-first client, or your own private Host."
-aliases = ["/build/explanation/choosing-an-architecture/"]
 +++
 
 There are three ways to build an app on Shinzo, and they all read the same signed, verifiable data produced by the same Views. What changes is where the data sits relative to your app and who gets to observe your reads:

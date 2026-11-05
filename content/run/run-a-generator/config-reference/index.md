@@ -1,7 +1,6 @@
 +++
 title = "Config reference"
 description = "Reference for every Generator client config field: YAML key, default, env var override, and whether the field is actually read."
-aliases = ["/generators/config-reference"]
 +++
 
 The Generator client loads configuration from a YAML file (default `config/config.yaml`) and then applies environment variable overrides on top. Fields left unset in both the YAML and env vars receive code defaults from `applyDefaults` in `config/config.go` and `SetDefaults` in `pkg/pruner/config.go` and `pkg/snapshot/snapshot.go`.
@@ -194,4 +193,4 @@ Keep the container limit as well. `mem_limit` is a hard ceiling the kernel enfor
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

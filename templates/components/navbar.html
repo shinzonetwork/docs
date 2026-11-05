@@ -1,0 +1,22 @@
+{# Top navigation bar. Items are passed in as `items` from config.toml
+   ([extra.navbar]) at the call site — components are hermetic and cannot see
+   `config` themselves. Each entry: `label`, `href` (literal path), `section`
+   (path prefix for active match), optional `root` (also active at the site
+   root "/"). #}
+
+{% component navbar.link(item, cur_path, base_class, active_class) %}
+  {% set is_active = false %}
+  {% if item.root and cur_path == "/" %}{% set is_active = true %}{% endif %}
+  {% if item.section and cur_path is starting_with(pat="/" ~ item.section ~ "/") %}{% set is_active = true %}{% endif %}
+  <a class="{{ base_class }}{% if is_active %} {{ active_class }}{% endif %}" href="{{ item.href }}">{{ item.label }}</a>
+{% endcomponent navbar.link %}
+
+{# Render the full navbar as a list of <li> items, driven by config.extra.navbar. #}
+{% component navbar.render(items, current, base_class, active_class) %}
+  {% for item in items %}
+    {% set is_active = false %}
+    {% if item.root and current == "/" %}{% set is_active = true %}{% endif %}
+    {% if item.section and current is starting_with(pat="/" ~ item.section ~ "/") %}{% set is_active = true %}{% endif %}
+    <li><a class="{{ base_class }}{% if is_active %} {{ active_class }}{% endif %}" href="{{ item.href }}">{{ item.label }}</a></li>
+  {% endfor %}
+{% endcomponent navbar.render %}

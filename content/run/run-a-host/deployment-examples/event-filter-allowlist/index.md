@@ -1,7 +1,6 @@
 +++
 title = "Event filter with allowlist and blocklist"
 description = "Configure a Host to store only specific contract events using the event filter in allowlist mode, with a blocklist variant and an optional block range gate."
-aliases = ["/hosts/deployment-examples/event-filter-allowlist"]
 [extra]
 mermaid = true
 +++
@@ -12,7 +11,7 @@ These scenarios use data from a supported EVM chain. Shinzo supports multiple EV
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Gen1["Generator A"]
   Gen2["Generator B"]
@@ -26,7 +25,7 @@ flowchart LR
 
   Gen1 -- "P2P" --> HOST
   Gen2 -- "P2P" --> HOST
-{% end %}
+{% </mermaid> %}
 
 Generators push all block, transaction, and log data to the Host over P2P. The event filter inspects each document before it is written to DefraDB. In allowlist mode, only documents matching an enabled group are stored. Blocks and BlockSignatures always pass through regardless of filter settings.
 
@@ -60,11 +59,6 @@ defradb:
 shinzo:
   start_height: 0
   hub_base_url: testnet.shinzo.network
-  cache_queue_size: 50000
-  batch_writer_count: 8
-  batch_size: 500
-  batch_flush_interval: 100
-  use_block_signatures: true
   doc_worker_count: 32
   doc_queue_size: 50000
   event_filter:
@@ -174,7 +168,7 @@ Add a `block_range` to restrict filtering to a specific block range. Omit it to 
 
 ## Tutorial companion
 
-For a step-by-step walkthrough of configuring a single USDT Transfer filter, see the [Configuring Event Filters guide](/guides/configuring-event-filters-on-a-shinzo-host/). This scenario shows the fuller multi-group topology from the shipped config.
+For a step-by-step walkthrough of configuring a single USDT Transfer filter, see the [Configuring Event Filters guide](/run/run-a-host/configure-event-filters/). This scenario shows the fuller multi-group topology from the shipped config.
 
 ## Gotchas
 
@@ -187,4 +181,4 @@ For a step-by-step walkthrough of configuring a single USDT Transfer filter, see
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

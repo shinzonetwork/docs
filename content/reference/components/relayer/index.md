@@ -1,5 +1,6 @@
 +++
 title = "Relayer"
+description = "How the relayer moves assertions and payments from an outpost contract to ShinzoHub as Cosmos SDK transactions."
 +++
 
 A relayer is a process that moves data from an external chain to ShinzoHub. It watches for assertions and payments produced by [outpost](../outpost) contracts and delivers them to ShinzoHub as Cosmos SDK transactions.
@@ -8,15 +9,15 @@ ShinzoHub does not watch external chains. It only processes messages that are br
 
 The relayer is a standalone Go process, not a smart contract. It connects to both the source chain and ShinzoHub: reads from one, writes to the other.
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 This is the EVM relayer, which bridges EVM chains to ShinzoHub. It is a completely different system from the Hermes IBC relayer, which bridges ShinzoHub to SourceHub. They share the word _relayer_ and nothing else.
-{% end %}
+{% </admonition> %}
 
 ## Assertion relay
 
-{% admonition(type="info") %}
+{% <admonition type="info"> %}
 The assertion relay is not yet live on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow, so the relayer's assertion pipeline is not in use. The description below covers the planned design.
-{% end %}
+{% </admonition> %}
 
 When a signed assertion is detected on the source chain, the relayer:
 

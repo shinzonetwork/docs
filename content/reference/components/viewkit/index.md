@@ -1,5 +1,6 @@
 +++
 title = "Viewkit"
+description = "The full Viewkit reference: commands, filter operators, the deploy pipeline, and the VWL wire format."
 [extra]
 mermaid = true
 +++
@@ -123,7 +124,7 @@ Lenses are the WASM transforms that turn raw primitive data into a View's struct
 
 Five repos are involved in the lifecycle from creation to query:
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
   participant Dev as Your machine<br/>(viewkit)
   participant SH as ShinzoHub<br/>(View Registry)
@@ -137,7 +138,7 @@ sequenceDiagram
   Note over Host: 4. download bundle,<br/>load WASM lens,<br/>transform primitives
   User->>Host: 5. GraphQL query
   Host->>User: view documents
-{% end %}
+{% </mermaid> %}
 
 Generator clients are not involved in the View lifecycle. By the time a View is created and applied, the Generator client has already delivered raw data to the Host clients over P2P.
 

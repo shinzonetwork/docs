@@ -133,9 +133,9 @@ cargo build --target wasm32-unknown-unknown --release
 
 The module lands at `target/wasm32-unknown-unknown/release/drop_old_logs.wasm`.
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Hosts run lenses through LensVM, and the runtime depends on where the lens executes: production Host clients use wazero, while Viewkit's local testing uses wasmer. Both enforce the same rules, so a lens that is deterministic in one is deterministic in the other.
-{% end %}
+{% </admonition> %}
 
 ## Attach it to a View and test the whole thing
 
@@ -156,9 +156,9 @@ viewkit view test my-view
 viewkit view deploy my-view --target local
 ```
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 Both commands spawn a local DefraDB node, and two things have to be in place first. The node and the lens runtime need the Wasmer environment variables set: [Create your first View](/build/tutorials/create-your-first-view/#wasmer-runtime) walks through the setup (`LD_LIBRARY_PATH` on Linux, `DYLD_LIBRARY_PATH` on macOS). And the node binds fixed ports, 9181 for the API and 9171 for P2P, with no flags to change them. If your local Generator and Host clients are already running, the bind fails and the command dies at "Applying schema" with `exit status 1`, so stop those clients first.
-{% end %}
+{% </admonition> %}
 
 If the View compiles and the playground shows the filtered rows, the lens is doing its job. From here it's the usual cycle: edit, rebuild, `viewkit view test`, redeploy.
 
@@ -179,4 +179,4 @@ Rust is the preferred path for production lenses: it has the best tooling and op
 
 ## Need help
 
-{{ need_help(client="Viewkit", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}
+{{<need_help client="Viewkit" repo_name="shinzo-view-creator" repo="https://github.com/shinzonetwork/shinzo-view-creator/issues" />}}

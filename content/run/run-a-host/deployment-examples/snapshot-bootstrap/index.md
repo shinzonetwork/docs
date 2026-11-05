@@ -1,7 +1,6 @@
 +++
 title = "Snapshot bootstrap from a trustless indexer"
 description = "Bootstrap a Host with historical data on first startup by downloading signed snapshot files from a trustless indexer over HTTPS, then receive live blocks over P2P."
-aliases = ["/hosts/deployment-examples/snapshot-bootstrap"]
 [extra]
 mermaid = true
 +++
@@ -12,23 +11,23 @@ These scenarios use data from a supported blockchain. Shinzo supports multiple b
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph Startup["First startup"]
     direction TB
-    S1["1. Download snapshots<br/>from indexer over HTTPS"]
+    S1["1. Download snapshots<br/>from Generator over HTTPS"]
     S2["2. Import snapshots<br/>into DefraDB"]
     S3["3. Start P2P<br/>for live blocks"]
     S1 --> S2 --> S3
   end
 
-  Indexer["<b>Indexer</b><br/>HTTP :8080<br/>/snapshots endpoint"]
+  Generator["<b>Generator</b><br/>HTTP :8080<br/>/snapshots endpoint"]
   Gens["Generators<br/>(live P2P feed)"]
   Host["<b>Host</b>"]
 
-  Indexer -- "HTTPS<br/>snapshot files" --> Host
+  Generator -- "HTTPS<br/>snapshot files" --> Host
   Gens -- "P2P (libp2p)" --> Host
-{% end %}
+{% </mermaid> %}
 
 On first startup, the Host downloads signed snapshot files from a trustless indexer over HTTPS and imports them into DefraDB. After the snapshot import completes, the Host connects to Generators over P2P and starts receiving live blocks from the chain tip. This is faster than waiting for P2P replication to fill in historical data block by block.
 
@@ -68,11 +67,6 @@ defradb:
 shinzo:
   start_height: 0
   hub_base_url: testnet.shinzo.network
-  cache_queue_size: 50000
-  batch_writer_count: 8
-  batch_size: 500
-  batch_flush_interval: 100
-  use_block_signatures: true
   doc_worker_count: 32
   doc_queue_size: 50000
 
@@ -146,4 +140,4 @@ You should see log lines indicating snapshot downloads and imports, followed by 
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

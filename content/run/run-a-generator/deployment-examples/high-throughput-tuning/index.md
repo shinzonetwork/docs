@@ -1,7 +1,6 @@
 +++
 title = "High-throughput tuning"
 description = "Tune the Generator for high throughput and fast catch-up from a historical start height by raising block and receipt concurrency, Badger cache sizes, and the Go runtime memory limit."
-aliases = ["/generators/deployment-examples/high-throughput-tuning"]
 [extra]
 mermaid = true
 +++
@@ -12,7 +11,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart TB
   subgraph VM["Generator VM"]
     direction TB
@@ -26,7 +25,7 @@ flowchart TB
 
   Node -- "HTTP + WS" --> Gen
   Gen -- "P2P (libp2p)" --> Hosts
-{% end %}
+{% </mermaid> %}
 
 The Generator fetches blocks from your execution node and processes them with a configurable number of concurrent workers. Receipt fetching happens in parallel per block. Badger cache sizes control how much data stays in memory before hitting disk. The `GOMEMLIMIT` env var tells the Go runtime when to trigger garbage collection, which prevents OOM kills under load.
 
@@ -161,7 +160,7 @@ curl -s http://localhost:8080/metrics | jq '.blocks_processed, .blocks_per_minut
 
 ## Gotchas
 
-- The shipped `config.yaml` sets `concurrent_blocks: 1`, but the code default in `applyDefaults` is 8. If you mount no config file and set no env var, you get the code default of 8. If the container image includes the shipped `config.yaml`, you get 1 unless you override it.
+- The shipped `config.yaml` sets `concurrent_blocks: 1`, and the Docker image always loads that file, so you get 1 unless you override it.
 - High `concurrent_blocks` and `receipt_workers` values generate parallel RPC requests against your execution node. A local node can usually handle this. A shared or rate-limited managed provider may throttle or reject connections. Monitor your node's request queue and RPC error rate.
 - `blocks_per_minute: 0` removes the rate limit entirely. This is useful for catch-up but means the Generator will process blocks as fast as your node can serve them. If your node is also serving other consumers, this can starve them of RPC capacity.
 - `GOMEMLIMIT` is a Go runtime soft memory limit, not a Generator client config var. Keep it below the container `mem_limit` or the kernel can OOM-kill the container. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
@@ -170,4 +169,4 @@ curl -s http://localhost:8080/metrics | jq '.blocks_processed, .blocks_per_minut
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

@@ -1,7 +1,6 @@
 +++
 title = "Config reference"
 description = "Every Host client config field with its YAML key, default, env var override, and notes on which keys are silently ignored."
-aliases = ["/hosts/config-reference"]
 +++
 
 The Host client loads configuration from a YAML file (default `config/config.yaml`). Environment variable overrides are applied in `config/config.go` for `START_HEIGHT`, `BOOTSTRAP_PEERS`, `DEFRA_URL`, `INDEXER_SCHEMA_ENDPOINT`, and `INDEXER_SCHEMA_ENDPOINT_AUTH_TOKEN`. A sixth env var, `DEFRA_KEYRING_SECRET`, is read separately in `pkg/defradb/defra.go`.
@@ -60,12 +59,6 @@ Shinzo-specific host configuration: attestation processing, view management, doc
 | `minimum_attestations` | int | 1 | no | (none) | Loaded from YAML but not consumed in the host startup path. Shipped `config.yaml` sets 1. |
 | `hub_base_url` | string | empty | no | (none) | ShinzoHub hostname without a scheme or port. Used to construct the RPC, WebSocket, and LCD endpoints (the host appends the ports itself). Shipped `config.yaml` sets `testnet.shinzo.network`. |
 | `start_height` | uint64 | 0 | no | `START_HEIGHT` | Block number to start from. 0 means auto-detect from chain tip. |
-| `cache_queue_size` | int | 50000 | no | (none) | Job queue size for document processing. Shipped `config.yaml` sets 50000. |
-| `batch_writer_count` | int | 8 | no | (none) | Number of batch writers for attestation processing. Shipped `config.yaml` sets 8. |
-| `batch_size` | int | 1000 | no | (none) | Max attestations per batch. Shipped `config.yaml` sets 500. |
-| `batch_flush_interval` | int | 100 | no | (none) | Flush interval in milliseconds for attestation batches. Shipped `config.yaml` sets 100. |
-| `max_concurrent_verifications` | int | 50 | no | (none) | Max concurrent signature verifications. Shipped `config.yaml` does not set this, so the code default of 50 applies. |
-| `use_block_signatures` | bool | false | no | (none) | Use block signatures for attestation verification. Shipped `config.yaml` sets true. |
 | `doc_worker_count` | int | 16 | no | (none) | Number of document processing workers. Shipped `config.yaml` sets 32. |
 | `doc_queue_size` | int | 5000 | no | (none) | Queue size for document event notifications. Shipped `config.yaml` sets 50000. |
 
@@ -228,6 +221,7 @@ The following env vars appear in some deployment artifacts but are not read by t
 | `LOG_SOURCE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
 | `LOG_STACKTRACE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
 | `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/run-a-host/config-reference#gomemlimit). |
+| `ALLOWED_ORIGINS` | `host-prod-setup.sh` | Not read. CORS is handled by the reverse proxy, not the Host client. |
 
 ### GOMEMLIMIT
 
@@ -239,4 +233,4 @@ Keep the container limit as well. `mem_limit` is a hard ceiling the kernel enfor
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

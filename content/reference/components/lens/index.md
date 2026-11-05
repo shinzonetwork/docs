@@ -1,6 +1,5 @@
 +++
 title = "Lens"
-aliases = ["/views/lenses"]
 description = "How WASM lens transforms work in Shinzo Views: available lenses, arguments, chaining, and authoring new ones."
 +++
 
@@ -261,4 +260,4 @@ For deeper technical details on the VWL wire format, view ID computation, and th
 
 ## Need help
 
-{{ need_help(client="Viewkit", repo_name="shinzo-view-creator", repo="https://github.com/shinzonetwork/shinzo-view-creator/issues") }}
+{{<need_help client="Viewkit" repo_name="shinzo-view-creator" repo="https://github.com/shinzonetwork/shinzo-view-creator/issues" />}}
