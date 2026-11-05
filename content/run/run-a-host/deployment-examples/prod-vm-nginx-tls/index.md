@@ -1,7 +1,6 @@
 +++
 title = "Prod VM with nginx and TLS"
 description = "Run a production Host on a VM behind nginx with TLS termination and persistent volumes for DefraDB data, keys, and lens files."
-aliases = ["/hosts/deployment-examples/prod-vm-nginx-tls"]
 [extra]
 mermaid = true
 +++
@@ -12,7 +11,7 @@ These scenarios use data from a supported blockchain. Shinzo supports multiple b
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph VM["Prod VM"]
     direction TB
@@ -26,7 +25,7 @@ flowchart LR
 
   Gens -- "P2P (libp2p)<br/>:9171" --> Host
   Clients -- "HTTPS<br/>/api/v0/graphql<br/>/metrics" --> Nginx
-{% end %}
+{% </mermaid> %}
 
 nginx terminates incoming HTTPS traffic and proxies GraphQL and metrics requests to the Host container. P2P traffic from Generators goes directly to the Host on port 9171, bypassing nginx. Persistent volumes on the VM keep DefraDB data, keys, and lens files across container restarts.
 
@@ -68,11 +67,6 @@ shinzo:
   minimum_attestations: 1
   start_height: 0
   hub_base_url: testnet.shinzo.network
-  cache_queue_size: 50000
-  batch_writer_count: 8
-  batch_size: 500
-  batch_flush_interval: 100
-  use_block_signatures: true
   doc_worker_count: 32
   doc_queue_size: 50000
   event_filter:
@@ -158,7 +152,6 @@ services:
       - LOG_LEVEL=error
       - LOG_SOURCE=false
       - LOG_STACKTRACE=false
-      - ALLOWED_ORIGINS=https://*.shinzo.network
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/metrics"]
       interval: 15s
@@ -324,7 +317,6 @@ http {
 - `user: "1001:1001"`: The container runs as UID 1001, GID 1001. Update this to match your user and group ID on the VM (the repo script notes this). The data directories must be owned by this UID and GID.
 - `DEFRA_URL=0.0.0.0:9181`: Overrides `defradb.url` so the DefraDB API binds to all interfaces instead of the loopback-only YAML default. Read in `config/config.go`. See [environment variables](/run/run-a-host/config-reference#environment-variables).
 - `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-host/config-reference#gomemlimit).
-- `ALLOWED_ORIGINS=https://*.shinzo.network`: CORS origins the Host accepts.
 - `~/data/defradb:/app/.defra`: Persistent volume for DefraDB data. See [defradb store](/run/run-a-host/config-reference#defradb-store).
 - `~/data/keys:/app/.defra/keys`: Persistent volume for DefraDB keyring keys. See [defradb](/run/run-a-host/config-reference#defradb).
 - `~/data/lens:/app/.defra/lens`: Persistent volume for lens WASM files. See [host](/run/run-a-host/config-reference#host).
@@ -358,6 +350,7 @@ curl -s -X POST https://localhost/api/v0/graphql \
 
 - The `user: "1001:1001"` in the compose file must match the ownership of the data directories. If the directories are owned by root, the Host container will fail to write. Fix ownership with `chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens`.
 - `DEFRA_URL` overrides `defradb.url` and is read by the Host client (`config/config.go`); it binds the DefraDB API to `0.0.0.0:9181`. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `host-prod-setup.sh` compose but are not read by the Host client and have no effect. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
+- `host-prod-setup.sh` also sets `ALLOWED_ORIGINS=https://*.shinzo.network` in the compose environment, but no Host client code reads it, so it's omitted above. The Host client sends no CORS headers itself; CORS is handled by the nginx config. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
 - The `DEFRA_KEYRING_SECRET` env var uses the `DEFRA_` prefix. The Generator client uses `DEFRADB_KEYRING_SECRET` with the `DEFRADB_` prefix. If you are running both clients on the same VM, do not confuse the two env var names. See [environment variables](/run/run-a-host/config-reference#environment-variables).
 - The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from the config above. See [no-op keys](/run/run-a-host/config-reference#no-op-keys).
 - The `logger.level` field in the shipped config is not in the `LoggerConfig` struct and has no effect. It has been omitted. See [logger](/run/run-a-host/config-reference#logger).
@@ -367,4 +360,4 @@ curl -s -X POST https://localhost/api/v0/graphql \
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}

@@ -1,6 +1,5 @@
 +++
 title = "Configure event filters"
-aliases = ["/guides/configuring-event-filters-on-a-shinzo-host"]
 description = "Shinzo hosts will store absolutely everything it is given from a Generator client by default. In this guide you will learn how to configure a Host to only store specific token transfer events."
 +++
 

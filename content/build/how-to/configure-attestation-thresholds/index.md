@@ -5,9 +5,9 @@ description = "How to require a minimum number of Generator attestations before 
 
 Shinzo data is signed by the Generator clients that produced it, and Host clients keep attestation records tracking how many independent Generator clients signed the same data. With the app-sdk you can set a bar: only return documents whose attestation count meets your threshold. The threshold is a query-time filter, not a system-wide setting, so one app can apply different bars to different queries.
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 The attestation helpers described here live on the `Feature/attestationFilter` branch of the app-sdk and are not merged into `main` yet. They also depend on pushed replication, which is currently blocked by the DefraDB version mismatch described in [Subscribe to Views with the app-sdk](/build/how-to/subscribe-to-views/). This page documents the API as implemented on that branch so you can build against it ahead of the merge.
-{% end %}
+{% </admonition> %}
 
 The branch name doesn't work as a `go get` version (Go rejects the uppercase letters), so pin the branch head by commit SHA:
 
@@ -100,4 +100,4 @@ To check signatures and CIDs by hand, see [Verify data with signatures and CIDs]
 
 ## Need help
 
-{{ need_help(client="app-sdk", repo_name="app-sdk", repo="https://github.com/shinzonetwork/app-sdk/issues") }}
+{{<need_help client="app-sdk" repo_name="app-sdk" repo="https://github.com/shinzonetwork/app-sdk/issues" />}}

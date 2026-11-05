@@ -1,7 +1,6 @@
 +++
 title = "Validator with Geth"
 description = "Run the Generator client beside your own Geth node on the same machine or VPC, with no API key and minimal latency."
-aliases = ["/generators/deployment-examples/validator-local-geth"]
 [extra]
 mermaid = true
 +++
@@ -12,7 +11,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart TB 
   subgraph VM["Validator machine"]
     direction LR
@@ -23,7 +22,7 @@ flowchart TB
 
   Hosts["Hosts"]
   Gen -- "P2P (libp2p)" --> Hosts
-{% end %}
+{% </mermaid> %}
 
 The Generator and Geth share a single machine. The Generator connects to Geth over localhost on the standard JSON-RPC and WebSocket ports. No API key is needed because Geth has no authentication on a private network. The Generator pushes data out to Hosts over P2P on port 9171.
 
@@ -109,4 +108,4 @@ Once the Generator is running, register it with the Shinzo Network. See [Registr
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

@@ -13,9 +13,9 @@ Install the SDK with Go modules:
 go get github.com/shinzonetwork/shinzo-app-sdk
 ```
 
-{% admonition(type="warning") %}
+{% <admonition type="warning"> %}
 Pushed replication is currently blocked by a version mismatch. The app-sdk pins DefraDB v0.20 while public Host clients run DefraDB v1.0, and documents published by a v1.0 Host cannot be parsed by a v0.20 app, so nothing arrives yet. Everything on this page is correct against the current app-sdk: your app connects and subscribes successfully, and its queries return empty until the SDK ships a compatible DefraDB. If you need data in a Go app today, query a Host directly instead, as described in [Query data](/build/how-to/query-data/).
-{% end %}
+{% </admonition> %}
 
 ## Configure the SDK
 
@@ -158,4 +158,4 @@ Until the DefraDB version gap described at the top is closed, these queries retu
 
 ## Need help
 
-{{ need_help(client="app-sdk", repo_name="app-sdk", repo="https://github.com/shinzonetwork/app-sdk/issues") }}
+{{<need_help client="app-sdk" repo_name="app-sdk" repo="https://github.com/shinzonetwork/app-sdk/issues" />}}

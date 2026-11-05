@@ -7,12 +7,12 @@ mermaid = true
 
 Data in Shinzo crosses several trust boundaries on its way from the chain to your app, and each crossing works differently. Most links are backed by signatures you can verify yourself. One rests on the operator being a validator, and one has a known gap. This page walks the path hop by hop and says plainly what each hop guarantees and what it doesn't.
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Chain["Execution node<br/>(source chain)"] -->|"read-only RPC<br/><b>trusted</b>"| Gen["Generator client"]
   Gen -->|"signed blocks + CIDs<br/><b>verifiable</b>"| Host["Host client"]
   Host -->|"view documents +<br/>attestation records"| App["Your app"]
-{% end %}
+{% </mermaid> %}
 
 ## The short version
 

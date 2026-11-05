@@ -1,5 +1,6 @@
 +++
 title = "Generator client"
+description = "Technical reference for the Generator client: architecture, the block pipeline, document types and signing, snapshots, and pruning."
 [extra]
 mermaid = true
 +++
@@ -10,7 +11,7 @@ Generator clients are write-only data producers. They push data out and reject a
 
 ## Architecture
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   subgraph VM["Validator machine"]
     direction LR
@@ -27,7 +28,7 @@ flowchart LR
   Hosts["Host(s)"]
 
   DB -- "P2P (libp2p)" --> Hosts
-{% end %}
+{% </mermaid> %}
 
 The Generator client connects to the execution node over two channels:
 
@@ -172,7 +173,7 @@ type <Chain>__<Network>__SnapshotSignature {
 
 ## Document signing
 
-Signing is opt-in and configured by the Generator operator. Hosts can disable it with `--no-signing`.
+The Generator signs every block with its node identity key, and operators can't turn that off.
 
 The signing flow:
 

@@ -14,7 +14,6 @@ info() { printf '%s\n' "$*"; }
 fail() { printf 'error: %s\n' "$*" >&2; exit 1; }
 need() { command -v "$1" >/dev/null 2>&1 || fail "$2"; }
 
-# stdin is this script under `curl | sh`, so prompts read from the terminal.
 ask() { printf '%s' "$1" >/dev/tty; read -r "$2" </dev/tty || true; }
 has_tty() { (: </dev/tty) 2>/dev/null; }
 
@@ -23,7 +22,6 @@ main() {
     docker info >/dev/null 2>&1 || fail "Docker is installed but the daemon isn't running (or you lack permission). Start Docker, or add your user to the docker group, and re-run."
     docker compose version >/dev/null 2>&1 || fail "Docker Compose not found. Install the compose plugin: https://docs.docker.com/compose/install/"
 
-    # Already installed? Leave everything alone.
     if [ -f "$DIR/docker-compose.yml" ] || docker volume inspect "$VOLUME" >/dev/null 2>&1; then
         info "A Generator client is already set up (./$DIR or Docker volume $VOLUME exists)."
         info "If ./$DIR isn't here, it was installed from another directory: run these from there."
@@ -32,7 +30,6 @@ main() {
         exit 0
     fi
 
-    # MacOS management...
     if [ "$(uname -s)" = Darwin ]; then
         has_tty || fail "Running on macOS needs an interactive terminal to confirm the warning. Run the installer from Terminal."
         RAM_GB=$(( $(sysctl -n hw.memsize) / 1073741824 ))
@@ -49,7 +46,6 @@ main() {
         esac
     fi
 
-    # User needs to add this info.
     GETH_RPC_URL=${GETH_RPC_URL:-}
     GETH_WS_URL=${GETH_WS_URL:-}
     GETH_API_KEY=${GETH_API_KEY:-}
@@ -67,10 +63,24 @@ main() {
     GETH_API_KEY_TYPE=${GETH_API_KEY_TYPE:-}
     if [ -n "$GETH_API_KEY" ] && [ -z "$GETH_API_KEY_TYPE" ]; then
         case "$GETH_RPC_URL" in
-            *blockchainnodeengine.com*) GETH_API_KEY_TYPE=x-goog-api-key ;;
-            *) GETH_API_KEY_TYPE=x-api-key ;;
+            *blockchainnodeengine.com*)
+                GETH_API_KEY_TYPE=x-goog-api-key
+                info "API key header guessed as $GETH_API_KEY_TYPE. Set GETH_API_KEY_TYPE to override."
+                ;;
+            *quiknode.pro*)
+                # QuickNode authenticates via the URL path, not a header.
+                case "$GETH_RPC_URL" in
+                    */"$GETH_API_KEY") ;;
+                    *) GETH_RPC_URL="$GETH_RPC_URL/$GETH_API_KEY"; GETH_WS_URL="$GETH_WS_URL/$GETH_API_KEY" ;;
+                esac
+                GETH_API_KEY=
+                info "QuickNode detected: appended the API key to the URLs (QuickNode ignores auth headers)."
+                ;;
+            *)
+                GETH_API_KEY_TYPE=x-api-key
+                info "API key header guessed as $GETH_API_KEY_TYPE. Set GETH_API_KEY_TYPE to override."
+                ;;
         esac
-        info "API key header guessed as $GETH_API_KEY_TYPE. Set GETH_API_KEY_TYPE to override."
     fi
 
     # Is this a public or private Generator client?
@@ -181,3 +191,4 @@ EOF
 }
 
 main "$@"
+

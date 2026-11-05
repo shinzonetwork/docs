@@ -1,7 +1,6 @@
 +++
 title = "High-throughput tuning"
 description = "Tune the Generator for high throughput and fast catch-up from a historical start height by raising block and receipt concurrency, Badger cache sizes, and the Go runtime memory limit."
-aliases = ["/generators/deployment-examples/high-throughput-tuning"]
 [extra]
 mermaid = true
 +++
@@ -12,7 +11,7 @@ These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. 
 
 ## Topology
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart TB
   subgraph VM["Generator VM"]
     direction TB
@@ -26,7 +25,7 @@ flowchart TB
 
   Node -- "HTTP + WS" --> Gen
   Gen -- "P2P (libp2p)" --> Hosts
-{% end %}
+{% </mermaid> %}
 
 The Generator fetches blocks from your execution node and processes them with a configurable number of concurrent workers. Receipt fetching happens in parallel per block. Badger cache sizes control how much data stays in memory before hitting disk. The `GOMEMLIMIT` env var tells the Go runtime when to trigger garbage collection, which prevents OOM kills under load.
 
@@ -170,4 +169,4 @@ curl -s http://localhost:8080/metrics | jq '.blocks_processed, .blocks_per_minut
 
 ## Need help
 
-{{ need_help(client="Generator", repo_name="shinzo-generator-client", repo="https://github.com/shinzonetwork/shinzo-generator-client/issues") }}
+{{<need_help client="Generator" repo_name="shinzo-generator-client" repo="https://github.com/shinzonetwork/shinzo-generator-client/issues" />}}

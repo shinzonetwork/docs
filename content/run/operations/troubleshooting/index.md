@@ -1,6 +1,5 @@
 +++
 title = "Troubleshooting"
-aliases = ["/generator/faq", "/generators/frequently-asked-questions", "/generators/faq", "/hosts/faq", "/hosts/frequently-asked-questions", "/views/faq"]
 description = "Common errors, troubleshooting steps, and frequently asked questions for Generator clients, Host clients, and Viewkit."
 +++
 
@@ -32,9 +31,9 @@ The Generator client reads from whatever execution node you point it at. That up
 - `eth_getUncleByBlockHashAndIndex`
 - `eth_getBlockReceipts`
 
-{% admonition(type="note") %}
+{% <admonition type="note"> %}
 The Generator client only actively calls `eth_getBlockByNumber` and `eth_getTransactionReceipt` to ingest data. The other methods are listed for compatibility.
-{% end %}
+{% </admonition> %}
 
 ### What happens if I lose my node-identity-key? Can I regenerate it?
 
@@ -146,11 +145,13 @@ With Docker, pass it as an environment variable:
 
 When building from source, set `defradb.p2p.bootstrap_peers` in your `config.yaml` instead.
 
-The multiaddr must end in the Generator client's peer ID, because libp2p authenticates the connection against it, so a bare IP won't connect. Read the IP and peer ID from the Generator client's health endpoint:
+The multiaddr must end in the Generator client's peer ID, because libp2p authenticates the connection against it, so a bare IP won't connect. Read the peer ID from the Generator client's health endpoint:
 
 ```shell
-curl -s http://<generator-host>:8080/health | jq -r '.p2p.self'
+curl -s http://<generator-host>:8080/health | jq -r '.p2p.self.id'
 ```
+
+For the address portion, use the Generator client's public IP or a hostname (`/dns4/<generator-hostname>/tcp/9171/p2p/<generator-peer-id>`). Don't copy an address from `.p2p.self.addresses` in the health response: those are the Generator's own listen addresses, and under Docker bridge networking they're loopback and container-internal addresses your Host client can't dial.
 
 The peer ID is derived from the Generator client's keyring secret, so it's stable across restarts as long as that secret doesn't change. If you run the Host client and Generator client on the same machine, remap the Host client's published ports (the `-p` flags, or `defradb.url` and the P2P ports for a source build) so they don't collide with the Generator client's `9181` and `9171`.
 
@@ -209,7 +210,7 @@ The dashboard determines if a node is online/offline by probing `http://<your-se
 
 This is the most common reason a running Host appears offline, and it almost always comes down to `8080` not being published or opened:
 
-- **Docker:** the default `docker run` in [Install](/run/run-a-host/install/) does not publish `8080`. Add `-p 8080:8080` to that command and to your persistent-host command or Compose file.
+- **Docker:** the default `docker run` in [Install](/run/run-a-host/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
 - **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
 - **Reverse proxy:** if you put nginx in front (as in the [Quickstart](/run/run-a-host/quickstart/)), make sure it routes `/health` to the Host client's health server on port `8080`, not to DefraDB on `9181`. Otherwise the probe reaches DefraDB, which doesn't answer `/health` the way the dashboard expects.
 
@@ -220,6 +221,22 @@ curl -s http://<your-server-ip>:8080/health | jq -r '.status'
 ```
 
 A healthy Host returns `healthy`. A connection refused or timeout means `8080` still isn't reachable from outside. The endpoint returns `"unhealthy"` (HTTP 503) only while the Host's DefraDB node or processing pipeline is still initializing. That clears once startup finishes.
+
+### My Host client answers curl requests but the explorer can't query it
+
+If your Host client answers `curl` requests but a browser app like the [Explorer](https://explorer.shinzo.network/shinzohub) can't load data from it, the cause is usually CORS. Browsers block cross-origin responses that don't carry CORS headers, and a stock Host client doesn't send any, so the browser app can't read the responses even though the client is actually up. The browser console shows CORS errors for the blocked requests.
+
+This never affects the online or offline status [explorer.shinzo.network](https://explorer.shinzo.network/shinzohub) shows for your Host client. That probe runs server side, where CORS doesn't apply.
+
+Check whether your proxy answers a preflight request:
+
+```shell
+curl -si -X OPTIONS https://<your-host>/api/v0/graphql \
+  -H "Origin: https://explorer.shinzo.network" \
+  -H "Access-Control-Request-Method: POST"
+```
+
+A working setup answers with `204` and an `Access-Control-Allow-Origin` header echoing the origin you sent. If the header is missing or empty, your proxy isn't handling CORS. See [CORS for browser access](/run/run-a-host/install/#cors-for-browser-access) for what to allow, or the [prod VM example](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/) for a full nginx config.
 
 ## Viewkit
 
@@ -313,7 +330,7 @@ If you need a clean slate, stop the local DefraDB instance (Ctrl+C), delete the 
 
 ### Is there an `Event` collection?
 
-No. Raw event data lives in the `Log` collection, where `topics` holds the parameters flagged `indexed` and `data` holds the rest. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/create-a-view/examples/) for a complete walkthrough.
+No. Raw event data lives in the `Log` collection, where `topics` holds the parameters flagged `indexed` and `data` holds the rest. Use the `decode_log` lens to turn raw logs into decoded, structured output. See the [View examples](/build/how-to/view-recipes/) for a complete walkthrough.
 
 ### What's the difference between `@materialized(if: true)` and `@materialized(if: false)`?
 

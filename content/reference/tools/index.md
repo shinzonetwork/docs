@@ -1,5 +1,6 @@
 +++
 title = "Tools"
+description = "The web interfaces and public endpoints for the Shinzo network: Explorer, faucet, Studio, registration app, status page, and RPC endpoints."
 +++
 A reference list of web interfaces and endpoints for the Shinzo network.
 

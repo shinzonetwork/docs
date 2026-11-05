@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "macros/sidebar.html" as sidebar %}
 
 {# Landing ("portal") template for the Run infrastructure section, mirroring
    templates/portal.html (Build apps): featured path cards and grouped link
@@ -18,7 +17,7 @@
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
-      {{ sidebar::render(current=page.path) }}
+      {{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}
     </aside>
 
     <div class="docs-content docs-content--portal">
@@ -73,7 +72,7 @@
             <div class="portal-linkgroup">
               <h3 class="portal-linkgroup__heading">Setup</h3>
               <ul class="portal-list">
-                <li><a href="/run/run-a-generator/hardware-requirements/">Hardware requirements</a></li>
+                <li><a href="/run/run-a-generator/prerequisites#hardware-requirements">Hardware requirements</a></li>
                 <li><a href="/run/run-a-generator/install/">Install</a></li>
                 <li><a href="/run/run-a-generator/register/">Register</a></li>
                 <li><a href="/run/run-a-generator/config-reference/">Config reference</a></li>
@@ -140,4 +139,4 @@
 </main>
 {% endblock body %}
 
-{% block mobile_sidebar %}{{ sidebar::render(current=page.path) }}{% endblock mobile_sidebar %}
+{% block mobile_sidebar %}{{<sidebar.render blocks={config.extra.sidebar} current={page.path} />}}{% endblock mobile_sidebar %}

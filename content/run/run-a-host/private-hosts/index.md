@@ -1,6 +1,5 @@
 +++
 title = "Private Hosts"
-aliases = ["/run/run-a-host/private", "/run/run-a-host/direct-client"]
 description = "Run a Shinzo Host client privately, peered only to your own Generator and publicizing nothing to the network."
 [extra]
 mermaid = true
@@ -37,43 +36,39 @@ What changes from the defaults:
 
 - `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do not include any other multiaddrs.
 - `shinzo.hub_base_url`: set it to `testnet.shinzo.network` (the shipped value; the code default is empty) so the Host client keeps fetching public Views. The value is a bare hostname without a scheme or port; the Host client appends the ports itself, so including one crashes it on startup.
-- Skip [Register](/hosts/register/). An unregistered Host isn't discoverable and won't serve the network.
+- Skip [Register](/run/run-a-host/register/). An unregistered Host isn't discoverable and won't serve the network.
 
-This is the topology covered in the [Operator Quickstart](/guides/operator-quickstart/).
+This is the topology covered in the [Operator Quickstart](/run/get-started/).
 
 ### Fully air-gapped Host client
 
 Cut ShinzoHub off entirely by setting `shinzo.hub_base_url` to an empty string. On startup the Host client logs a message like _No ShinzoHub base URL configured..._ and starts no event subscription, so it contacts nothing except the Generator client you point it at.
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
   Geth["Geth<br/>(your node)"] -->|RPC + WS| Gen["Generator client<br/>(yours)"]
   Gen -->|libp2p| Host["Host client<br/>(direct client)"]
   Host -->|GraphQL| App["Your application"]
-{% end %}
+{% </mermaid> %}
 
 With no hub connection, no public peers, and no registration, nothing about this Host client is published to the network. This is the most private setup possible.
 
 ## Configure an air-gapped direct client
 
-You need a reachable Generator client and its libp2p multiaddr. If you don't have one running, see [Generator Install](/generators/install/) and the [Operator Quickstart](/guides/operator-quickstart/). The Generator client's `/health` endpoint returns its peer ID and listening addresses under `.p2p.self`, as an object rather than a finished multiaddr:
+You need a reachable Generator client and its libp2p multiaddr. If you don't have one running, see [Generator Install](/run/run-a-generator/install/) and the [Operator Quickstart](/run/get-started/). The Generator client's `/health` endpoint returns its peer ID and listening addresses under `.p2p.self`, as an object rather than a finished multiaddr:
 
 ```shell
 PEER_ID=$(curl -s http://<generator-host>:8080/health | jq -r '.p2p.self.id')
 
-GENERATOR_IP=$(curl -s http://<generator-host>:8080/health \
-  | jq -r '[.p2p.self.addresses[] | capture("/ip4/(?<ip>[0-9.]+)/").ip
-           | select(. != "127.0.0.1" and . != "0.0.0.0")][0]')
-
-BOOTSTRAP_PEER="/ip4/${GENERATOR_IP}/tcp/9171/p2p/${PEER_ID}"
+BOOTSTRAP_PEER="/ip4/<generator-ip>/tcp/9171/p2p/${PEER_ID}"
 echo "$BOOTSTRAP_PEER"
 ```
 
 ```output
-/ip4/172.17.0.2/tcp/9171/p2p/12D3KooWK8zmiDmX91PwDV1PsqtgA1UUDuuyipVBVPEjrvwgoFJH
+/ip4/203.0.113.10/tcp/9171/p2p/12D3KooWK8zmiDmX91PwDV1PsqtgA1UUDuuyipVBVPEjrvwgoFJH
 ```
 
-`.p2p.self.id` is the Generator client's libp2p Peer ID, and `.p2p.self.addresses` lists the multiaddrs it's listening on. The `jq` filter drops loopback and `0.0.0.0` and takes the first remaining IPv4. `BOOTSTRAP_PEER` is the multiaddr the host dials. libp2p authenticates the peer ID, so the connection is verified end to end.
+`.p2p.self.id` is the Generator client's libp2p Peer ID. For the address portion, use the Generator's reachable IP or a hostname (`/dns4/<generator-hostname>/tcp/9171/p2p/${PEER_ID}`), not an entry from `.p2p.self.addresses`. That field lists the Generator's own listen addresses, which under Docker bridge networking are loopback and container-internal addresses your Host client can't dial. `BOOTSTRAP_PEER` is the multiaddr the Host client dials. libp2p authenticates the peer ID, so the connection is verified end to end.
 
 Save this as `~/host-config.yaml`:
 
@@ -116,11 +111,11 @@ docker run -d \
 
 Publishing `9171` is optional for a private setup. The Host client only dials out to your Generator client, so you can drop `-p 9171:9171` or leave it published and firewall the port.
 
-{% admonition(type="tip") %}
+{% <admonition type="tip"> %}
 You don't need to expose port `9171` to the internet for a private setup. The Host client dials out to your Generator client; it doesn't need to accept inbound P2P from the public network. Keep `9171` firewalled to your private network.
-{% end %}
+{% </admonition> %}
 
-For the full run sequence including persistent volume mounts and building from source, see [Install](/hosts/install/). For every config field, see the [Config reference](/hosts/config-reference/).
+For the full run sequence including persistent volume mounts and building from source, see [Install](/run/run-a-host/install/). For every config field, see the [Config reference](/run/run-a-host/config-reference/).
 
 ## Loading Views in a private setup
 
@@ -133,7 +128,7 @@ In a [fully air-gapped Host client](#fully-air-gapped-host-client), with `hub_ba
 1. Start the Host client once with `hub_base_url` set to ShinzoHub. It fetches the public Views and writes them to `views.json`.
 1. Stop the Host client, edit the mounted config to set `hub_base_url` to `""`, and restart the **same** container (`docker stop shinzo-host && docker start shinzo-host`). The Host client now loads those Views from the local file and contacts no hub.
 
-Restart the same container, not a fresh one. `views.json` and the cached WASM lens files live in `./.defra` inside the container, and the `docker run` above doesn't mount that path. If you `docker rm` and start a new container, `views.json` is gone and the host boots with no Views. To let `views.json` survive container recreation, mount a persistent `.defra` volume as shown in [Install](/hosts/install/).
+Restart the same container, not a fresh one. `views.json` and the cached WASM lens files live in `./.defra` inside the container, and the `docker run` above doesn't mount that path. If you `docker rm` and start a new container, `views.json` is gone and the host boots with no Views. To let `views.json` survive container recreation, mount a persistent `.defra` volume as shown in [Install](/run/run-a-host/install/).
 
 ## What stays the same and the trade-offs
 
@@ -143,4 +138,4 @@ Restart the same container, not a fresh one. `views.json` and the cached WASM le
 
 ## Need help
 
-{{ need_help(client="Host", repo_name="shinzo-host-client", repo="https://github.com/shinzonetwork/shinzo-host-client/issues") }}
+{{<need_help client="Host" repo_name="shinzo-host-client" repo="https://github.com/shinzonetwork/shinzo-host-client/issues" />}}
