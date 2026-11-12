@@ -25,25 +25,8 @@ docker pull ghcr.io/Shinzonetwork/Shinzo-generator-client:v0.7.2-ethereum-mainne
 docker pull ghcr.io/Shinzonetwork/Shinzo-host-client:v0.7.2-ethereum-mainnet
 ```
 
-### 💡 Improvements
+#### ⚠️ Host Upgrade Note: Action Required
 
-- {{<tag name="Generator" />}} Added blockchain reorganization handling to maintain indexing consistency during chain reorgs. ([PR #426](https://github.com/shinzonetwork/shinzo-generator-client/pull/426))
-- {{<tag name="Generator" />}} Added optional OpenTelemetry metrics and Grafana dashboards for single-node and multi-node monitoring. Monitoring is disabled by default and must be explicitly enabled. ([PR #435](https://github.com/shinzonetwork/shinzo-generator-client/pull/435)) ([PR #451](https://github.com/shinzonetwork/shinzo-generator-client/pull/451))
-- {{<tag name="Generator" />}} Moved the DefraDB keyring outside the `.defra` directory, separating node identity from database storage. ([PR #455](https://github.com/shinzonetwork/shinzo-generator-client/pull/455))
-- {{<tag name="Generator" />}} Improved version reporting. The Generator version is now accessible through the `-v` flag and the health and metrics endpoints. ([PR #458](https://github.com/shinzonetwork/shinzo-generator-client/pull/458))
-- {{<tag name="Generator" />}} Added BSC integration, expanding Generator support beyond Ethereum. ([PR #431](https://github.com/shinzonetwork/shinzo-generator-client/pull/431))
-- {{<tag name="Generator" />}} Fixed transaction status and gas field processing for accurate Ethereum transaction indexing. ([PR #481](https://github.com/shinzonetwork/shinzo-generator-client/pull/481))
-- {{<tag name="Generator" />}} Improved pruning to eliminate duplicate block counts and ensure stale queue entries are cleaned up correctly. ([PR #482](https://github.com/shinzonetwork/shinzo-generator-client/pull/482)) ([PR #505](https://github.com/shinzonetwork/shinzo-generator-client/pull/505))
-- {{<tag name="Generator" />}} Added RPC chain ID validation, preventing startup when the configured endpoint reports an incorrect chain. ([PR #433](https://github.com/shinzonetwork/shinzo-generator-client/pull/433))
-- {{<tag name="Generator" />}} Secured logging by redacting endpoint URLs containing embedded API keys. ([PR #452](https://github.com/shinzonetwork/shinzo-generator-client/pull/452))
-- {{<tag name="Host" />}} Added multi-chain support, allowing Hosts to serve multiple configured chains with chain-specific schemas and collections. ([PR #440](https://github.com/shinzonetwork/shinzo-host-client/pull/440)) ([PR #450](https://github.com/shinzonetwork/shinzo-host-client/pull/450)) ([PR #456](https://github.com/shinzonetwork/shinzo-host-client/pull/456))
-- {{<tag name="Host" />}} Hosts now retrieve chain schemas directly from Generators and initialize collections based on database state. ([PR #435](https://github.com/shinzonetwork/shinzo-host-client/pull/435)) ([PR #436](https://github.com/shinzonetwork/shinzo-host-client/pull/436))
-- {{<tag name="Host" />}} Added per-chain reporting for block heights, last document timestamps, readiness, and metrics. ([PR #454](https://github.com/shinzonetwork/shinzo-host-client/pull/454)) ([PR #455](https://github.com/shinzonetwork/shinzo-host-client/pull/455))
-- {{<tag name="Host" />}} Added OpenTelemetry support and Grafana dashboards for single-node and multi-node deployments. ([PR #458](https://github.com/shinzonetwork/shinzo-host-client/pull/458)) ([PR #469](https://github.com/shinzonetwork/shinzo-host-client/pull/469))
-- {{<tag name="Host" />}} Improved Generator peer connectivity and attestation listener management for reliable initialization and shutdown. ([PR #437](https://github.com/shinzonetwork/shinzo-host-client/pull/437))
-- {{<tag name="Host" />}} DefraDB’s API now starts only after the chain schema has been applied. ([PR #446](https://github.com/shinzonetwork/shinzo-host-client/pull/446))
-
-### ⚠️ Host Upgrade Note: Action Required
 
 Shinzo has deployed its Generators on new infrastructure with updated connection endpoints.
 
@@ -51,7 +34,7 @@ Shinzo has deployed its Generators on new infrastructure with updated connection
 
 The new Host version introduces a chain-based configuration format, replacing the previous `bootstrap_peers` configuration.
 
-#### **Step 1: Upgrade the Host client**
+#### Step 1: Upgrade the Host client
 
 Pull the latest Host image:
 
@@ -61,7 +44,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.7.2-ethereum-mainnet
 
 Ensure your Docker Compose configuration references `v0.7.2-ethereum-mainnet`
 
-#### **Step 2: Update `config.yaml`**
+#### Step 2: Update `config.yaml`
 
 Follow the instructions below based on your existing configuration.
 
@@ -69,6 +52,9 @@ Follow the instructions below based on your existing configuration.
 
 1. Remove `bootstrap_peers` from the config file
 2. Copy the new config file (in its entirety or if you have configured filters just the top half)
+
+<details>
+<summary>Show full config.yaml</summary>
 
 ```yaml
 defradb:
@@ -197,6 +183,7 @@ host:
       - start: 24528700
         end: 24528999
 ```
+</details>
 
 **Option B: You have a customized `config.yaml`**
 
@@ -206,7 +193,10 @@ If you’ve modified your configuration, preserve your existing settings and upd
 2. Remove the `bootstrap_peers` subsection.
 3. Copy the new `chains` configuration block below and paste it between the `defradb` and `shinzo` sections, immediately after `defradb.store`.
 
-**New Ethereum Mainnet Generator connections:**
+New Ethereum Mainnet Generator connections:
+
+<details>
+<summary>Show full config.yaml</summary>
 
 ```yaml
 chains:
@@ -221,12 +211,15 @@ chains:
     - url: https://generator04.infra.Shinzo.network:8080
       peer: /dns4/generator04.infra.Shinzo.network/tcp/9177/p2p/12D3KooWP7Dy4QevtXX64po3L1MG1Je5m5Dmj81CArTfs76TuPxj
 ```
+</details>
 
-**Important:** `chains` must be at the same indentation level as `defradb` and `shinzo`, not nested inside either section.
+{% <admonition type="info"> %}
+`chains` must be at the same indentation level as `defradb` and `shinzo`, not nested inside either section.
 
 Keep your existing database, networking, filters, pruning, and other custom settings unchanged unless the new version requires otherwise.
+{% </admonition> %}
 
-#### **Step 3: Recreate the Host container**
+#### Step 3: Recreate the Host container
 
 After updating your configuration and Docker image, recreate the Host container to apply the changes:
 
@@ -234,12 +227,11 @@ After updating your configuration and Docker image, recreate the Host container 
 docker-compose down && docker-compose up -d
 ```
 
-<aside>
-💡
+{% <admonition type="warning"> %}
 
 **Do not use `docker-compose restart`.** Restarting an existing container does not apply the new image.
 
-</aside>
+{% </admonition> %}
 
 **Migration Deadline: Tuesday, November 17, 2026**
 
@@ -247,13 +239,31 @@ The previous Generator endpoints will be retired on this date.
 
 **Complete the upgrade before the deadline to maintain uninterrupted data replication.**
 
-### **⚠️ Generator Upgrade Note**
+#### ⚠️ Generator Upgrade Note
 
 The DefraDB keyring has moved outside the `.defra` directory.
 
 Operators upgrading existing Generators must preserve their node identity and keyring secret (`DEFRADB_KEYRING_SECRET`) to maintain their existing peer ID and registration.
 
 Do not delete the existing identity keys during the upgrade.
+
+### 💡 Improvements
+
+- {{<tag name="Generator" />}} Added blockchain reorganization handling to maintain indexing consistency during chain reorgs. ([PR #426](https://github.com/shinzonetwork/shinzo-generator-client/pull/426))
+- {{<tag name="Generator" />}} Added optional OpenTelemetry metrics and Grafana dashboards for single-node and multi-node monitoring. Monitoring is disabled by default and must be explicitly enabled. ([PR #435](https://github.com/shinzonetwork/shinzo-generator-client/pull/435)) ([PR #451](https://github.com/shinzonetwork/shinzo-generator-client/pull/451))
+- {{<tag name="Generator" />}} Moved the DefraDB keyring outside the `.defra` directory, separating node identity from database storage. ([PR #455](https://github.com/shinzonetwork/shinzo-generator-client/pull/455))
+- {{<tag name="Generator" />}} Improved version reporting. The Generator version is now accessible through the `-v` flag and the health and metrics endpoints. ([PR #458](https://github.com/shinzonetwork/shinzo-generator-client/pull/458))
+- {{<tag name="Generator" />}} Added BSC integration, expanding Generator support beyond Ethereum. ([PR #431](https://github.com/shinzonetwork/shinzo-generator-client/pull/431))
+- {{<tag name="Generator" />}} Fixed transaction status and gas field processing for accurate Ethereum transaction indexing. ([PR #481](https://github.com/shinzonetwork/shinzo-generator-client/pull/481))
+- {{<tag name="Generator" />}} Improved pruning to eliminate duplicate block counts and ensure stale queue entries are cleaned up correctly. ([PR #482](https://github.com/shinzonetwork/shinzo-generator-client/pull/482)) ([PR #505](https://github.com/shinzonetwork/shinzo-generator-client/pull/505))
+- {{<tag name="Generator" />}} Added RPC chain ID validation, preventing startup when the configured endpoint reports an incorrect chain. ([PR #433](https://github.com/shinzonetwork/shinzo-generator-client/pull/433))
+- {{<tag name="Generator" />}} Secured logging by redacting endpoint URLs containing embedded API keys. ([PR #452](https://github.com/shinzonetwork/shinzo-generator-client/pull/452))
+- {{<tag name="Host" />}} Added multi-chain support, allowing Hosts to serve multiple configured chains with chain-specific schemas and collections. ([PR #440](https://github.com/shinzonetwork/shinzo-host-client/pull/440)) ([PR #450](https://github.com/shinzonetwork/shinzo-host-client/pull/450)) ([PR #456](https://github.com/shinzonetwork/shinzo-host-client/pull/456))
+- {{<tag name="Host" />}} Hosts now retrieve chain schemas directly from Generators and initialize collections based on database state. ([PR #435](https://github.com/shinzonetwork/shinzo-host-client/pull/435)) ([PR #436](https://github.com/shinzonetwork/shinzo-host-client/pull/436))
+- {{<tag name="Host" />}} Added per-chain reporting for block heights, last document timestamps, readiness, and metrics. ([PR #454](https://github.com/shinzonetwork/shinzo-host-client/pull/454)) ([PR #455](https://github.com/shinzonetwork/shinzo-host-client/pull/455))
+- {{<tag name="Host" />}} Added OpenTelemetry support and Grafana dashboards for single-node and multi-node deployments. ([PR #458](https://github.com/shinzonetwork/shinzo-host-client/pull/458)) ([PR #469](https://github.com/shinzonetwork/shinzo-host-client/pull/469))
+- {{<tag name="Host" />}} Improved Generator peer connectivity and attestation listener management for reliable initialization and shutdown. ([PR #437](https://github.com/shinzonetwork/shinzo-host-client/pull/437))
+- {{<tag name="Host" />}} DefraDB’s API now starts only after the chain schema has been applied. ([PR #446](https://github.com/shinzonetwork/shinzo-host-client/pull/446))
 
 ## Sep 29, 2026 {% raw %}{#09-29-2026}{% endraw %}
 
