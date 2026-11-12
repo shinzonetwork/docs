@@ -128,7 +128,7 @@ echo YOUR_PAT | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
 
 ### Pull the Shinzo Generator image
 
-Images are published per chain rather than as a single `standard` tag. For Ethereum:
+Images are published per chain rather than as a single `standard` tag. The `ethereum-mainnet` part of the tag names the source chain the client reads from, not the Shinzo network it connects to, so a testnet setup still pulls this image. For Ethereum:
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest

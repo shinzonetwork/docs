@@ -79,6 +79,8 @@ docker run -d \
   ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
+The `ethereum-mainnet` part of the image tag names the source chain the client reads from, not the Shinzo network it connects to, so a testnet setup still pulls this image.
+
 `DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `testnet-secret` password is fine for this quickstart, but remember to use something more secure for anything in a production environment.
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
