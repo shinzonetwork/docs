@@ -128,7 +128,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5.4-ethereum-mainnet
 
 Generator operators upgrading to `v0.6.5.4-ethereum-mainnet` need to reset their DefraDB data.
 
-Back up your node identity key before removing the existing DefraDB directory. If the key is not preserved, you will need to register the Generator again.
+At this release the node identity key lives inside the DefraDB directory, at `shinzo-data/defradb/keys/node-identity-key`. The reset below removes that whole directory, data and key together, so the key is copied out first and put back after. Keep the same keyring secret (`DEFRADB_KEYRING_SECRET`) and the same registered public IP; nothing else about the node's identity should change. If the key is not preserved, you will need to register the Generator again.
 
 ```bash
 # Back up the identity key
@@ -150,6 +150,8 @@ sudo chown -R 1001:1001 ~/shinzo-data/defradb ~/shinzo-data/lens
 Once the existing identity key has been restored, you can start the upgraded Generator without re-registering.
 
 **⚠️ Host Upgrade Note**
+
+The Host's identity keys live in `~/data/keys`, separate from the database directory, so the reset below only deletes DefraDB data. No key backup is needed: the keys, the `keyring_secret` from `config.yaml`, and the registered public IP all stay in place.
 
 ```bash
 # Reset DefraDB
