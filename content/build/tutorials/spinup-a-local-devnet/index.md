@@ -25,7 +25,7 @@ flowchart LR
 - A GitHub account with access to the Shinzo container registry.
  
 {% <admonition type="info" title="Early-phase testnet"> %}
-While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
+While working through this tutorial, keep in mind that the Shinzo testnet is in it's initial phase. As such, some processes or workflows may seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
 {% </admonition> %}
 
 ## Geth
