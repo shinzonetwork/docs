@@ -75,7 +75,7 @@ Controls how the Generator fetches and processes blocks.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `start_height` | int | 0 | no | `INDEXER_START_HEIGHT` | Block number to start reading from on first run with no existing data. 0 means auto-detect from chain tip. Must be 0 or higher. |
+| `start_height` | int | 0 | no | `INDEXER_START_HEIGHT` | Block number to start reading from on first run with no existing data. 0 means start at the chain tip minus `start_buffer`. Ignored when existing data is present: the Generator resumes from its highest stored block. Must be 0 or higher. |
 | `concurrent_blocks` | int | 8 | no | `INDEXER_CONCURRENT_BLOCKS` | Number of blocks to process concurrently. Shipped `config.yaml` sets 1. |
 | `receipt_workers` | int | 16 | no | `INDEXER_RECEIPT_WORKERS` | Concurrent receipt fetchers per block. Shipped `config.yaml` sets 8. |
 | `max_docs_per_txn` | int | 1000 | no | `INDEXER_MAX_DOCS_PER_TXN` | Document threshold for single-transaction block creation. Shipped `config.yaml` sets 100. |
