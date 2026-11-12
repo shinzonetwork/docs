@@ -7,8 +7,8 @@ Views, Hosts, and Generators are all registered on ShinzoHub, so discovery is re
 
 Two fields come up constantly, so get to know them first:
 
-- `connection_string` is a libp2p multiaddr, like `/ip4/34.66.172.230/tcp/9171/p2p/12D3KooW...`. It is how peers dial each other. Your local-first app needs it.
-- `endpoint_address` is the URL of a Host's GraphQL API, like `http://34.66.172.230/api/v0/graphql`. It is what direct-query apps POST to.
+- `connection_string` is a libp2p multiaddr, like `/ip4/203.0.113.13/tcp/9171/p2p/12D3KooW...`. It is how peers dial each other. Your local-first app needs it.
+- `endpoint_address` is the URL of a Host's GraphQL API, like `http://203.0.113.13/api/v0/graphql`. It is what direct-query apps POST to.
 
 ## Browse the Explorer
 
@@ -46,8 +46,8 @@ curl -s "http://testnet.shinzo.network:1317/shinzonetwork/host/v1/hosts" \
 ```
 
 ```output
-/ip4/34.66.172.230/tcp/9171/p2p/12D3KooWKVCMswzcXYe9kW2z7nSB9YUWjVVLsMbJnBjVPFUQkbQ7  http://34.66.172.230/api/v0/graphql
-/ip4/34.63.186.249/tcp/9171/p2p/12D3KooWSqvLctTtcQLvqSVZU4sTCUWxCX9z4NeFpSHnmVWBiFMZ  http://34.63.186.249/api/v0/graphql
+/ip4/203.0.113.13/tcp/9171/p2p/12D3KooWKVCMswzcXYe9kW2z7nSB9YUWjVVLsMbJnBjVPFUQkbQ7  http://203.0.113.13/api/v0/graphql
+/ip4/203.0.113.11/tcp/9171/p2p/12D3KooWSqvLctTtcQLvqSVZU4sTCUWxCX9z4NeFpSHnmVWBiFMZ  http://203.0.113.11/api/v0/graphql
 ...
 ```
 
