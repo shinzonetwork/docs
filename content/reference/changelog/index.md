@@ -42,16 +42,14 @@ Pull the latest Host image:
 docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.7.2-ethereum-mainnet
 ```
 
-Ensure your Docker Compose configuration references `v0.7.2-ethereum-mainnet`
-
 #### Step 2: Update `config.yaml`
 
 Follow the instructions below based on your existing configuration.
 
 **Option A: Using the default `config.yaml`**
 
-1. Remove `bootstrap_peers` from the config file
-2. Copy the new config file (in its entirety or if you have configured filters just the top half)
+1. Remove the old config file
+2. Copy the updated config provided below and save it as `config.yaml`
 
 <details>
 <summary>Show full config.yaml</summary>
@@ -196,7 +194,7 @@ If you’ve modified your configuration, preserve your existing settings and upd
 New Ethereum Mainnet Generator connections:
 
 <details>
-<summary>Show full config.yaml</summary>
+<summary>Show partial config.yaml</summary>
 
 ```yaml
 chains:
