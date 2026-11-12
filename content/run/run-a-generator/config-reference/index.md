@@ -3,7 +3,7 @@ title = "Config reference"
 description = "Reference for every Generator client config field: YAML key, default, env var override, and whether the field is actually read."
 +++
 
-The Generator client loads configuration from a YAML file (default `config/config.yaml`) and then applies environment variable overrides on top. Fields left unset in both the YAML and env vars receive code defaults from `applyDefaults` in `config/config.go` and `SetDefaults` in `pkg/pruner/config.go` and `pkg/snapshot/snapshot.go`.
+The Generator client loads configuration from a YAML file (default `config/config.yaml`) and then applies environment variable overrides on top. Fields left unset in both the YAML and env vars receive code defaults from `applyDefaults` in `config/config.go`.
 
 Env vars override YAML values. Where the shipped `config.yaml` sets a different value than the code default, both are noted below.
 
@@ -15,6 +15,8 @@ Identifies which EVM chain the Generator reads. Collection names are derived as 
 | --- | --- | --- | --- | --- | --- |
 | `name` | string | `Ethereum` | no | `CHAIN_NAME` | Chain name. Also supports `Arbitrum`, `Optimism`, `Avalanche`, or any EVM chain. |
 | `network` | string | `Mainnet` | no | `CHAIN_NETWORK` | Network name, for example `Mainnet` or `Testnet`. |
+| `hub` | string | empty | no | `SHINZOHUB_REST_BASE` | ShinzoHub hostname the health page uses to query the ShinzoHub REST API. Hostname only, no scheme or port. Shipped `config.yaml` sets `testnet.shinzo.network`. |
+| `adapter` | string | `evm` | no | `CHAIN_ADAPTER` | Chain adapter. Only `evm` is supported; any other value fails validation. Shipped `config.yaml` sets `evm`. |
 
 Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. The shipped `config.yaml` lists Arbitrum, Optimism, and Avalanche, and any EVM-compatible chain can likely be read by setting `chain.name` and `chain.network` to the correct values and pointing `geth.node_url` at a compatible RPC endpoint. The codebase is being refactored from EVM-only to a `Chain` interface with chain-specific Fetcher and Converter components, which will formalize multi-chain support. See [Chain abstraction](/reference/components/generator-client#chain-abstraction-in-progress) for the current state.
 
@@ -42,6 +44,11 @@ P2P networking configuration. The Generator pushes data out over libp2p and reje
 | `retry_base_delay_ms` | int | 0 | no | (none) | Base delay in milliseconds for exponential backoff (1s, 2s, 4s, 8s, 16s). Shipped `config.yaml` sets 1000. |
 | `reconnect_interval_ms` | int | 0 | no | (none) | Interval in milliseconds to check for disconnected peers. Shipped `config.yaml` sets 60000. |
 | `enable_auto_reconnect` | bool | false | no | (none) | Automatically reconnect to failed or disconnected peers. Shipped `config.yaml` sets true. |
+| `resource_memory_mib` | int | 10240 | no | `DEFRADB_P2P_RESOURCE_MEMORY_MIB` | Memory budget the libp2p resource manager may use across all peers and streams. Keep below `GOMEMLIMIT`. Shipped `config.yaml` sets 10240. |
+| `resource_file_descriptors` | int | 8192 | no | `DEFRADB_P2P_RESOURCE_FILE_DESCRIPTORS` | File descriptor budget for the resource manager. Only read when `resource_memory_mib` is set. Shipped `config.yaml` sets 8192. |
+| `max_streams_per_peer` | int | 4096 | no | `DEFRADB_P2P_MAX_STREAMS_PER_PEER` | Concurrent streams one peer may open in each direction. Too low and peers get their streams reset with error 4098. Shipped `config.yaml` sets 4096. |
+
+The resource-manager defaults are applied by `pkg/defradb/defra.go` when the DefraDB node is built, not by `applyDefaults` in `config/config.go`.
 
 ### defradb store
 
@@ -60,14 +67,15 @@ Badger storage engine configuration. All cache and compaction fields map directl
 
 ## geth
 
-Connection details for the execution node. The Generator does not run a node. It reads from one you provide. (The `geth` section name is historical; it accepts any compatible JSON-RPC and WebSocket endpoint.)
+Connection details for the execution node. The Generator does not run a node. It reads from one you provide. (The `geth` section name is historical; it accepts any compatible JSON-RPC and WebSocket endpoint.) Startup only fails when both connections fail.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
-| `node_url` | string | empty | yes | `GETH_RPC_URL` | JSON-RPC endpoint URL. Used for full block fetches, gap fills, and historical ranges. |
-| `ws_url` | string | empty | yes | `GETH_WS_URL` | WebSocket endpoint URL. Used for real-time new block header subscriptions. |
+| `node_url` | string | empty | one of the two | `GETH_RPC_URL` | JSON-RPC endpoint URL. Used for full block fetches, gap fills, and historical ranges. |
+| `ws_url` | string | empty | one of the two | `GETH_WS_URL` | WebSocket endpoint URL. The Generator makes no subscriptions. It sends every RPC call over the WebSocket connection when it is available and falls back to HTTP when it is not. |
 | `api_key` | string | empty | no | `GETH_API_KEY` | API key for node authentication. Leave empty for same-VPC nodes without auth. |
 | `api_key_type` | string | empty | no | `GETH_API_KEY_TYPE` | Header name for the API key. `x-goog-api-key` for GCP Blockchain Node Engine, `x-api-key` for most others. |
+| `dial_timeout_seconds` | int | 0 (no limit) | no | `GETH_DIAL_TIMEOUT_SECONDS` | Bounds the startup WebSocket dial in seconds. 0 or negative means no limit. If the WebSocket dial times out while HTTP is connected, the Generator starts on HTTP only. Shipped `config.yaml` sets 10. |
 
 ## indexer
 
@@ -91,7 +99,7 @@ Controls how the Generator fetches and processes blocks.
 
 ## pruner
 
-Removes old data to keep storage bounded. Defaults are applied by `SetDefaults` in `pkg/pruner/config.go` when fields are unset.
+Removes old data to keep storage bounded. Defaults are applied by `SetDefaults` in `config/config.go` when fields are unset.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
@@ -100,11 +108,12 @@ Removes old data to keep storage bounded. Defaults are applied by `SetDefaults` 
 | `docs_per_block` | int | 1000 | no | (none) | Average docs per block, used with `max_blocks` to compute the max document count. Approximately 1057 on a typical EVM mainnet (varies by chain). |
 | `prune_threshold` | int64 | 0 | no | `PRUNER_PRUNE_THRESHOLD` | Deprecated. Kept for backward compatibility but unused by the pruner. Shipped `config.yaml` sets 1. |
 | `interval_seconds` | int | 60 | no | `PRUNER_INTERVAL_SECONDS` | How often in seconds to check and prune. Shipped `config.yaml` sets 30. |
-| `prune_history` | bool | false | no | (none) | Walk DAG chains to delete historical block versions. Two to three times slower. |
+| `prune_history` | bool | false | no | (none) | Walk DAG chains to delete historical block versions. Two to three times slower. Shipped `config.yaml` sets true. |
+| `max_blocks_per_cycle` | int64 | 0 (no limit) | no | (none) | Caps how many blocks one prune cycle may delete. Without a cap, a large backlog produces a cycle long enough that the queue cannot be checkpointed for hours. Shipped `config.yaml` sets 50. |
 
 ## snapshot
 
-Bundles multiple blocks into a single signed file for faster initial sync. Defaults are applied by `SetDefaults` in `pkg/snapshot/snapshot.go` when fields are unset.
+Bundles multiple blocks into a single signed file for faster initial sync. Defaults are applied by `SetDefaults` in `config/config.go` when fields are unset.
 
 | Key | Type | Default | Required | Env var | Description |
 | --- | --- | --- | --- | --- | --- |
@@ -112,6 +121,15 @@ Bundles multiple blocks into a single signed file for faster initial sync. Defau
 | `dir` | string | `./snapshots` | no | `SNAPSHOT_DIR` | Directory to store snapshot files. Shipped `config.yaml` sets `./.defra/snapshots`. |
 | `blocks_per_file` | int64 | 1000 | no | `SNAPSHOT_BLOCKS_PER_FILE` | Blocks per snapshot file. Shipped `config.yaml` sets 100. |
 | `interval_seconds` | int | 60 | no | `SNAPSHOT_INTERVAL_SECONDS` | How often in seconds to check and create snapshots. Shipped `config.yaml` sets 30. |
+| `max_snapshots` | int | 100 | no | `SNAPSHOT_MAX_SNAPSHOTS` | Number of newest snapshot files to keep. Older files and their companion signature docs are purged. `-1` keeps all. Shipped `config.yaml` sets 100. |
+
+## converter
+
+Controls the lowest-block number query the snapshotter and pruner use.
+
+| Key | Type | Default | Required | Env var | Description |
+| --- | --- | --- | --- | --- | --- |
+| `lowest_block_query_limit` | int | 1 | no | `CONVERTER_LOWEST_BLOCK_QUERY_LIMIT` | Row window for the lowest-block number query. Above 1, the query can skip purge residue: block rows left behind by purges with a missing or unparseable number field. Keep at 1 unless residue rows fail every snapshot and prune tick. Shipped `config.yaml` sets 1. |
 
 ## logger
 
@@ -131,10 +149,13 @@ The table below lists every environment variable the Generator client reads, the
 | --- | --- | --- |
 | `CHAIN_NAME` | `chain.name` | `config/config.go` |
 | `CHAIN_NETWORK` | `chain.network` | `config/config.go` |
+| `SHINZOHUB_REST_BASE` | `chain.hub` | `config/config.go` |
+| `CHAIN_ADAPTER` | `chain.adapter` | `config/config.go` |
 | `GETH_RPC_URL` | `geth.node_url` | `config/config.go` |
 | `GETH_WS_URL` | `geth.ws_url` | `config/config.go` |
 | `GETH_API_KEY` | `geth.api_key` | `config/config.go` |
 | `GETH_API_KEY_TYPE` | `geth.api_key_type` | `config/config.go` |
+| `GETH_DIAL_TIMEOUT_SECONDS` | `geth.dial_timeout_seconds` | `config/config.go` |
 | `INDEXER_START_HEIGHT` | `indexer.start_height` | `config/config.go` |
 | `INDEXER_CONCURRENT_BLOCKS` | `indexer.concurrent_blocks` | `config/config.go` |
 | `INDEXER_RECEIPT_WORKERS` | `indexer.receipt_workers` | `config/config.go` |
@@ -154,6 +175,9 @@ The table below lists every environment variable the Generator client reads, the
 | `DEFRADB_P2P_ENABLED` | `defradb.p2p.enabled` | `config/config.go` |
 | `DEFRADB_P2P_LISTEN_ADDR` | `defradb.p2p.listen_addr` | `config/config.go` |
 | `DEFRADB_P2P_ACCEPT_INCOMING` | `defradb.p2p.accept_incoming` | `config/config.go` |
+| `DEFRADB_P2P_RESOURCE_MEMORY_MIB` | `defradb.p2p.resource_memory_mib` | `config/config.go` |
+| `DEFRADB_P2P_RESOURCE_FILE_DESCRIPTORS` | `defradb.p2p.resource_file_descriptors` | `config/config.go` |
+| `DEFRADB_P2P_MAX_STREAMS_PER_PEER` | `defradb.p2p.max_streams_per_peer` | `config/config.go` |
 | `DEFRADB_STORE_PATH` | `defradb.store.path` | `config/config.go` |
 | `DEFRADB_BLOCK_CACHE_MB` | `defradb.store.block_cache_mb` | `config/config.go` |
 | `DEFRADB_MEMTABLE_MB` | `defradb.store.memtable_mb` | `config/config.go` |
@@ -169,6 +193,8 @@ The table below lists every environment variable the Generator client reads, the
 | `SNAPSHOT_DIR` | `snapshot.dir` | `config/config.go` |
 | `SNAPSHOT_BLOCKS_PER_FILE` | `snapshot.blocks_per_file` | `config/config.go` |
 | `SNAPSHOT_INTERVAL_SECONDS` | `snapshot.interval_seconds` | `config/config.go` |
+| `SNAPSHOT_MAX_SNAPSHOTS` | `snapshot.max_snapshots` | `config/config.go` |
+| `CONVERTER_LOWEST_BLOCK_QUERY_LIMIT` | `converter.lowest_block_query_limit` | `config/config.go` |
 | `LOGGER_DEBUG` | `logger.development` | `config/config.go` |
 
 ### Env vars that are not read
