@@ -52,8 +52,10 @@ The Registration step records your generator on-chain. You'll need to provide:
 - **Signed message**: The signed payload generated during the Assertion step.
 - **Public key**: The public key that identifies your generator node.
 - **Signed public key message**: A signature proving ownership of the public key.
-- **Connection string**: The endpoint operators and hosts will use to connect to your generator node.
+- **Connection string**: The endpoint operators and hosts will use to connect to your generator node. This is the node's public libp2p multiaddr, for example `/ip4/<your-server-ip>/tcp/9171/p2p/<your-peer-id>`.
 - **Source chain**: Confirm the chain your generator node is monitoring.
+
+The registration app can pre-fill the connection string. Check it before you submit: if you run the Generator under Docker, the field can contain the container's internal bridge address (`172.17.0.2` or another `172.17.x.x` address) rather than your server's public IP. Nothing outside your server can dial that address, and the public Generators dashboard reads its health probe target from the connection string, so a bridge IP leaves the Generator showing as offline no matter what the firewall allows. If the field shows a bridge IP, replace it with your server's public IP before you click **Register**.
 
 After completing all required fields, click **Register** and confirm the transaction in your wallet. Once the transaction is confirmed, your generator is registered on-chain.
 

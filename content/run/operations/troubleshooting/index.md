@@ -116,6 +116,8 @@ curl -s http://<your-server-ip>:8080/health | jq -r '.status'
 
 A healthy Generator returns `healthy`. A connection refused or timeout means `8080` still isn't reachable from outside. The endpoint returns `"unhealthy"` (HTTP 503) only while the Generator's DefraDB node or processing pipeline is still initializing. That clears once startup finishes.
 
+If `8080` answers from outside but the dashboard still shows your Generator as offline, check which IP you registered. The probe goes to the address read out of your registered connection string, and under Docker that string can end up holding the container's internal bridge address (`172.17.0.2` or another `172.17.x.x` address). A bridge IP points the probe at an address inside your server, unreachable from the internet, so ports and firewalls won't change anything. The **Registered Generators** table on the Registry homepage shows the connection string each generator registered with; if yours holds a bridge IP, the string has to carry your server's public IP before the dashboard can see the node. See [Register](/run/run-a-generator/register/) for what belongs in the connection string.
+
 ## Host client
 
 ### What is the GitHub link for the Shinzo Host?
