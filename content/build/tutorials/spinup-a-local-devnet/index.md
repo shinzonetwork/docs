@@ -343,7 +343,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 The Host's config format has been simplified: most of the manual tuning fields (batch processing, pruner, snapshot) are no longer part of the base setup. Create the config file:
 
 ```shell
-cat > ~/host-config.yaml << 'EOF'
+cat > ~/host-config.yaml << EOF
 defradb:
   url: "localhost:9181"
   keyring_secret: "host-devnet-secret"
