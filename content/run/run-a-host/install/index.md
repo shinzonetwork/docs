@@ -12,7 +12,7 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
-- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A public Generator client you can point at is coming; this page will link it here once it's live. Until then, run your own. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
+- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A Host connects to one or more Generator clients to receive blockchain data. You can connect to a Shinzo-operated Generator client or configure your own. Generator connections are defined in the chains section of `config.yaml`. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
 - **Hardware** that meets the [recommendations](/run/run-a-host/hardware-requirements/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
@@ -33,11 +33,21 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     openssl rand -hex 32
     ```
 
-1. Get your `BOOTSTRAP_PEERS` value. This is the libp2p address of the Generator client to sync from. It must be a full multiaddr that includes IP, port, and peer ID:
+1. Create or update your `config.yaml` with the Generator connections below. Each Generator requires a schema endpoint URL and a libp2p multiaddr. It must be a full multiaddr that includes IP, port and peer ID:
 
-    ```plaintext
-    /ip4/<generator-public-ip>/tcp/9171/p2p/<generator-peer-id>
-    ```
+```yaml
+chains:
+  - prefix: Ethereum__Mainnet
+    generators:
+      - url: https://generator01.infra.shinzo.network:8445
+        peer: /dns4/generator01.infra.shinzo.network/tcp/9174/p2p/12D3KooWHVQHUMxWmSwCHVPZ2pE1xzwjjNJbC7UmcwyqxJUmxRwV
+      - url: https://generator02.infra.shinzo.network:8445
+        peer: /dns4/generator02.infra.shinzo.network/tcp/9175/p2p/12D3KooWKZvZTTWxAGVwBfpVrk6guEt4ZwSXPQogZNUa5pUnV4nR
+      - url: https://generator03.infra.shinzo.network:8445
+        peer: /dns4/generator03.infra.shinzo.network/tcp/9176/p2p/12D3KooWCthjY1CT2Ug7zhyW3jZZugeNnqHrKcpKRWEyU4dJVTL6
+      - url: https://generator04.infra.shinzo.network:8445
+        peer: /dns4/generator04.infra.shinzo.network/tcp/9177/p2p/12D3KooWP7Dy4QevtXX64po3L1MG1Je5m5Dmj81CArTfs76TuPxj   
+```
 
     If your Generator client has a public hostname, use a `dns4` multiaddr instead:
 
@@ -98,7 +108,7 @@ Pull the image and start it with a single `docker run`. You supply two values: a
 
     A JSON response confirms the API is serving. On a freshly started Host client you'll see an error like `{"errors":[{"message":"key not found"}],"data":null}`, which is expected. The API is up; there's just no data yet. You can also open the Playground at `http://localhost:9182` to confirm the UI loads.
 
-1. To return real data, the Host client must reach the Generator client you set in `BOOTSTRAP_PEERS` and sync from it. Check the connection in the logs:
+1. To return real data, the Host must connect to the Generators configured under `chains`. On startup, the Host retrieves the chain schema from its configured Generators and initializes the corresponding DefraDB collections. Check the connection in the logs:
 
     ```shell
     docker logs shinzo-host | grep -i peer

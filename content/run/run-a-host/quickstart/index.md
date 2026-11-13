@@ -169,21 +169,34 @@ Create `~/config.yaml`. The production config enables performance tuning, peer r
 ```yaml
 defradb:
   url: "localhost:9181"
-  keyring_secret: "<YOUR_SECRET>"        # Required, change this
+  keyring_secret: "<YOUR_SECRET>"
   p2p:
     enabled: true
-    bootstrap_peers:
-      - '/ip4/35.254.135.221/tcp/9171/p2p/12D3KooWDUdHSCXBM5Wb7te6ZdWMgqddw7tJ7npWSzXK5tQgBsbT'
     listen_addr: "/ip4/0.0.0.0/tcp/9171"
     enable_auto_reconnect: true
   store:
     path: "./.defra"
+
+chains:
+  - prefix: Ethereum__Mainnet
+    generators:
+      - url: https://generator01.infra.shinzo.network:8445
+        peer: /dns4/generator01.infra.shinzo.network/tcp/9174/p2p/12D3KooWHVQHUMxWmSwCHVPZ2pE1xzwjjNJbC7UmcwyqxJUmxRwV
+      - url: https://generator02.infra.shinzo.network:8445
+        peer: /dns4/generator02.infra.shinzo.network/tcp/9175/p2p/12D3KooWKZvZTTWxAGVwBfpVrk6guEt4ZwSXPQogZNUa5pUnV4nR
+      - url: https://generator03.infra.shinzo.network:8445
+        peer: /dns4/generator03.infra.shinzo.network/tcp/9176/p2p/12D3KooWCthjY1CT2Ug7zhyW3jZZugeNnqHrKcpKRWEyU4dJVTL6
+      - url: https://generator04.infra.shinzo.network:8445
+        peer: /dns4/generator04.infra.shinzo.network/tcp/9177/p2p/12D3KooWP7Dy4QevtXX64po3L1MG1Je5m5Dmj81CArTfs76TuPxj
+
 shinzo:
   hub_base_url: testnet.shinzo.network
   minimum_attestations: 1
+
 logger:
   development: false
   level: "error"
+
 host:
   lens_registry_path: "./.defra/lens"
   health_server_port: 8080
