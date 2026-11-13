@@ -12,7 +12,7 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
-- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A Host connects to one or more Generator clients to receive blockchain data. You can connect to Shinzo-operated Generators or configure your own. Generator connections are defined in the chains section of `config.yaml`. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
+- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A Host connects to one or more Generator clients to receive blockchain data. You can connect to a Shinzo-operated Generator client or configure your own. Generator connections are defined in the chains section of `config.yaml`. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
 - **Hardware** that meets the [recommendations](/run/run-a-host/hardware-requirements/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
@@ -108,7 +108,7 @@ chains:
 
     A JSON response confirms the API is serving. On a freshly started Host client you'll see an error like `{"errors":[{"message":"key not found"}],"data":null}`, which is expected. The API is up; there's just no data yet. You can also open the Playground at `http://localhost:9182` to confirm the UI loads.
 
-1. To return real data, the Host must connect to the Generators configured under chains. On startup, the Host retrieves the chain schema from its configured Generators and initializes the corresponding DefraDB collections. Check the connection in the logs:
+1. To return real data, the Host must connect to the Generators configured under `chains`. On startup, the Host retrieves the chain schema from its configured Generators and initializes the corresponding DefraDB collections. Check the connection in the logs:
 
     ```shell
     docker logs shinzo-host | grep -i peer
