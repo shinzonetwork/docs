@@ -78,8 +78,6 @@ ShinzoHub maintains four EVM precompile registries:
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views. |
 | `0x0211` | Host Registry | Tracks registered hosts. |
-| `0x0212` | Generator Registry | Tracks registered Generator clients. |
-| `0x0213` | Pool Registry | Registers demand for views and tracks the pools that bind demand to hosts. |
 
 These precompiles are implemented in Go, not Solidity bytecode. They have direct access to Cosmos SDK keepers, which is how EVM transactions trigger cross-chain ICA calls to SourceHub.
 
@@ -156,7 +154,7 @@ Two components connect external blockchains (EVM chains, Cosmos chains, etc.) to
 ### Outpost contracts
 
 {% <admonition type="info"> %}
-The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based flow described below is the planned design.
+The outpost contract is not yet deployed on the testnet. On the current testnet, assertions are submitted to ShinzoHub through an admin-key approval flow. The contract-based flow described below is the planned design, and its details may change.
 {% </admonition> %}
 
 Outpost contracts will be deployed on each source chain. They handle two things:
@@ -170,7 +168,7 @@ The outpost design is chain agnostic. Each chain gets its own implementation usi
 
 The EVM relayer is a Go process with two pipelines:
 
-1. The assertion pipeline (planned, not yet live on testnet) subscribes to `AssertionSigned` events on the outpost's `GeneratorAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts `MsgGeneratorAssertion` to ShinzoHub. No block scanning and no dependency on who built the block. On the current testnet, assertions are submitted directly through an admin-key flow, so this pipeline is not in use yet.
+1. The assertion pipeline (planned, not yet live on testnet) subscribes to `AssertionSigned` events on the outpost's `GeneratorAssertion` contract via `eth_subscribe`, reads the assertion fields directly from the event, and broadcasts the assertion to ShinzoHub. No block scanning and no dependency on who built the block. On the current testnet, assertions are submitted directly through an admin-key flow, so this pipeline is not in use yet.
 1. The payment pipeline subscribes to `PaymentCreated` log events from the outpost, extracts user `DID` and payment amount, and broadcasts `MsgRequestStreamAccess` to ShinzoHub.
 
 The relayer maintains a persistent block cursor so it can resume where it left off after a restart. It has its own wallet on ShinzoHub and needs SHNZ for transaction fees.
@@ -222,13 +220,13 @@ On the current testnet, the assertion is submitted through an admin-key approval
 {% <mermaid> %}
 sequenceDiagram
   participant Idx as Generator<br/>(operator key)
-  participant SH as ShinzoHub<br/>(Generator Registry 0x0212)
+  participant SH as ShinzoHub
   participant Source as SourceHub
 
   Idx->>Idx: generate operator/delegate<br/>key locally
-  Idx->>SH: MsgGeneratorAssertion<br/>(admin-key signed:<br/>consensus key, withdrawal addr,<br/>operator pubkey, source chain)
-  SH->>SH: store assertion record<br/>emit GeneratorAsserted
-  Idx->>SH: register() on 0x0212<br/>(signed by operator key)
+  Idx->>SH: submit assertion<br/>(admin-key signed:<br/>consensus key, withdrawal addr,<br/>operator pubkey, source chain)
+  SH->>SH: store assertion record
+  Idx->>SH: register<br/>(signed by operator key)
   SH->>SH: derive DID from<br/>operator pubkey
   SH->>Source: ICA RegisterObject
   Source->>Source: ACP adds DID<br/>to generator group
@@ -244,16 +242,16 @@ sequenceDiagram
   participant Wd as Validator<br/>(withdrawal key)
   participant Out as Outpost<br/>(GeneratorAssertion contract)
   participant Rel as EVM relayer
-  participant SH as ShinzoHub<br/>(Generator Registry 0x0212)
+  participant SH as ShinzoHub
   participant Source as SourceHub
 
   Idx->>Idx: generate operator/delegate<br/>key locally
   Wd->>Out: createAssertion + EIP-712 sig<br/>(withdrawal addr, operator pubkey,<br/>consensus key)
   Out->>Out: verify validator status<br/>and signature
   Out-->>Rel: emit AssertionSigned event
-  Rel->>SH: MsgGeneratorAssertion
+  Rel->>SH: relay assertion
   SH->>SH: record assertion slip<br/>for operator pubkey
-  Idx->>SH: register() on 0x0212<br/>(signed by operator key)
+  Idx->>SH: register<br/>(signed by operator key)
   SH->>SH: derive DID from<br/>operator pubkey
   SH->>Source: ICA RegisterObject
   Source->>Source: ACP adds DID<br/>to generator group
@@ -314,6 +312,5 @@ The precompile emits both a Solidity EVM log and a Cosmos SDK event. The event n
 
 | Precompile | EVM log | Cosmos event |
 | --- | --- | --- |
-| View Registry (0x0210) | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
-| Host Registry (0x0211) | `Registered(address,string)` | `"HostRegistered"` |
-| Generator Registry (0x0212) | `Registered(address,string)` | `"Registered"` |
+| View Registry (0x0210) | `Registered(bytes32,address,bytes)` | `"Registered"` |
+| Host Registry (0x0211) | `EntityRegistered(bytes32,address,bytes,bytes,uint8)` | `"EntityRegistered"` |

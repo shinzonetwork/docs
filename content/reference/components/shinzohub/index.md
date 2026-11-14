@@ -62,7 +62,6 @@ ShinzoHub uses EVM precompiled contracts to connect Cosmos module logic with the
 | --- | --- | --- |
 | `0x0210` | View Registry | Registers views |
 | `0x0211` | Host Registry | Tracks registered hosts |
-| `0x0212` | Generator Registry | Tracks registered generators |
 
 ### View Registry (0x0210)
 
@@ -97,17 +96,15 @@ Receives a peer key and node identity key. On registration:
 
 Key files: `app/precompiles/hostregistry/methods.go`
 
-### Generator Registry (0x0212)
+### Generator registration
 
 Generators cannot self-register. They must complete an assertion first:
 
-1. On the current testnet, the assertion is submitted to ShinzoHub as a `MsgGeneratorAssertion` message signed by an admin key. No outpost contract or relayer is involved.
-1. ShinzoHub's Generator module stores the assertion.
+1. On the current testnet, the assertion is submitted to ShinzoHub as a transaction signed by an admin key. No outpost contract or relayer is involved.
+1. ShinzoHub stores the assertion.
 1. Operator calls `register()`, registry verifies stored assertion, derives DID/PID, sends ICA to SourceHub.
 
 The planned flow uses an outpost contract on the source chain and a relayer to deliver the assertion to ShinzoHub. See [Outpost](../outpost#validator-assertions) for the full planned design.
-
-Key files: `app/precompiles/generatorregistry/methods.go`
 
 ## Event names
 
@@ -115,18 +112,16 @@ Each precompile emits both a Solidity EVM log and a Cosmos SDK event. The names 
 
 | Precompile | Solidity EVM log | Cosmos SDK event |
 | --- | --- | --- |
-| View Registry | `ViewCreated(address,address,string)` | `"ViewRegistered"` |
-| Host Registry | `Registered(address,string)` | `"HostRegistered"` |
-| Generator Registry | `Registered(address,string)` | `"Registered"` |
+| View Registry | `Registered(bytes32,address,bytes)` | `"Registered"` |
+| Host Registry | `EntityRegistered(bytes32,address,bytes,bytes,uint8)` | `"EntityRegistered"` |
 
 Other events:
 
 | Event | Emitted by |
 | --- | --- |
-| `GeneratorAsserted` | Generator module msg_server |
 | `AccessRequestSuccess` | SourceHub module msg_server |
 
-There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches any Generator Registry events but misses View Registry events (which emit `"ViewRegistered"`). This is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
+There is a known issue: the host client subscribes to `"Registered"` events (filter: `Registered.key EXISTS`). This catches any generator-registration events but can miss view-registration events, which is why view discovery can fail on some host versions. Fixed in ShinzoHub v2.
 
 Some older docs reference `DataPurchased`, `AccessRevoked`, and `AccessRequestPayment`. These event names do not exist in the codebase.
 

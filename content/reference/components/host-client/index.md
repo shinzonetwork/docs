@@ -168,7 +168,7 @@ At startup, the Host client calls `FetchAllRegisteredViews()`, which queries Com
 
 At runtime, the Host client subscribes to `tm.event='Tx' AND Registered.key EXISTS` over WebSocket. When a new event arrives, it extracts the `key`, `creator`, and `view` attributes and processes the bundle.
 
-There is a known bug here: the View Registry precompile emits `"ViewRegistered"` with attributes `view_address`/`view_name`/`creator`/`data`, but the Host client subscribes to `"Registered"` and expects attributes `key`/`creator`/`view`. Neither event type nor attribute names match. Fixed in ShinzoHub v2.
+There is a known bug here: on older ShinzoHub versions, the View Registry precompile emitted view registrations under a different event type with attributes `view_address`/`view_name`/`creator`/`data`, while the Host client subscribes to `"Registered"` and expects attributes `key`/`creator`/`view`. Neither event type nor attribute names matched. Fixed in ShinzoHub v2.
 
 ## View processing pipeline
 
