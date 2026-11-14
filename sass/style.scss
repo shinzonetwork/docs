@@ -717,9 +717,17 @@ a.menu__link--category:hover {
     line-height: 1.15;
   }
 
-  // The page title (from front-matter) sits above the content.
-  .doc-title {
+  // The page title (from front-matter) and the "Copy page for AI" button
+  // share one row; the row carries the bottom margin, not the title.
+  .doc-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin: 0 0 1.25rem;
+  }
+
+  .doc-title {
+    margin: 0;
   }
 
   // Lead text: the front-matter `description`, rendered above the body copy.
@@ -934,6 +942,36 @@ pre {
 .code-block-wrapper:hover .copy-code-button,
 .copy-code-button--copied {
   opacity: 1;
+}
+
+/* "Copy page for AI" button (in .doc-header, beside the page title) */
+.copy-page-button {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 0.28rem 0.6rem;
+  font-family: var(--font-family-base);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--foreground-muted);
+  background: var(--surface-raised);
+  border: 1px solid var(--szo-border);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: var(--foreground);
+    border-color: var(--szo-border-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+
+  &--copied {
+    color: var(--color-primary);
+  }
 }
 
 @media (hover: none) {
