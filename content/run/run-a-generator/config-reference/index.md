@@ -206,7 +206,7 @@ The following env vars appear in some deployment artifacts but are not read by t
 | `LOG_LEVEL` | `docker-compose-prod.yml`, `indexer-prod-setup.sh` | Not read. Log level is controlled by `logger.development` and `LOGGER_DEBUG`. |
 | `LOG_SOURCE` | `docker-compose-prod.yml`, `indexer-prod-setup.sh` | Not read. |
 | `LOG_STACKTRACE` | `docker-compose-prod.yml`, `indexer-prod-setup.sh` | Not read. |
-| `DEFRADB_PLAYGROUND` | Install page `docker run` example | Not read. The playground is controlled by build tags, not env vars. |
+| `DEFRADB_PLAYGROUND` | Older install examples | Not read. The playground is controlled by build tags, not env vars. |
 | `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit). |
 
 ### GOMEMLIMIT
