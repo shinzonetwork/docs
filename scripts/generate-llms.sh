@@ -290,3 +290,21 @@ done < <(
 
 echo "Written $(wc -l < "$LLMS_TXT") lines → $LLMS_TXT"
 echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"
+
+# Chain pages use explicit `path` front matter and a contextual sidebar, so
+# they are not listed in the ordinary config.toml sidebar tree. Include them
+# here from their single content directory.
+section_header "Chains · Run infrastructure"
+for content_file in "$CONTENT_DIR"/run/chains/*.md; do
+    [[ -f "$content_file" ]] || continue
+    rel_path="${content_file#"$CONTENT_DIR/"}"
+    explicit_path="$(get_toml_field "$content_file" "path")"
+    if [[ -n "$explicit_path" ]]; then
+        title="$(get_toml_field "$content_file" "title")"
+        description="$(get_toml_field "$content_file" "description")"
+        url="${BASE_URL}/${explicit_path%/}/"
+        printf -- '- [%s](%s): %s\n' "$title" "$url" "$description" | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
+        body="$(get_body "$content_file" | clean_body | collapse_blanks)"
+        [[ -z "$body" ]] || printf '\n### %s\n\n%s\n' "$title" "$body" >> "$LLMS_FULL_TXT"
+    fi
+done
