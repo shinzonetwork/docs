@@ -25,7 +25,6 @@
 .chain-picker__options a { display: block; padding: .55rem .5rem; text-decoration: none; color: var(--foreground); }
 .chain-picker__options a:hover { background: var(--surface-sunken); }
 .chain-picker__options a[aria-current] { color: var(--color-primary); }
-.chain-picker small { display: block; font-size: .65rem; color: var(--foreground-muted); margin-top: .2rem; }
 .chain-menu__group { margin: 0 0 2rem; }
 .chain-menu__group h2 { font-family: var(--font-family-base); font-weight: 600; font-size: .875rem; margin: 0 0 .65rem .75rem; }
 .chain-menu__links { border-left: 1px solid var(--docs-menu-border); margin-left: 1rem; padding-left: .25rem; }
