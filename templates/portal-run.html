@@ -36,23 +36,9 @@
         <section class="portal-section" aria-label="Choose your path">
           <h2 class="portal-section__heading">Choose your path</h2>
           <div class="portal-tracks portal-tracks--3col">
-            <a class="portal-card portal-card--featured" href="/run/run-a-generator/install/">
-              <div class="portal-card__icon" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-              </div>
-              <h3 class="portal-card__title">Run a Generator</h3>
-              <p class="portal-card__desc">Already run a blockchain node? Add a Generator client as a sidecar. It reads new blocks as they arrive, signs them, and gossips them out over P2P.</p>
-              <span class="portal-card__cta">Install a Generator {{ cta_arrow | safe }}</span>
-            </a>
+            {{<run_path.card product="generator" href="/run/run-a-generator/install/" description="Already run a blockchain node? Add a Generator client as a sidecar. It reads new blocks as they arrive, signs them, and gossips them out over P2P." cta="Install a Generator" />}}
 
-            <a class="portal-card portal-card--featured" href="/run/run-a-host/install/">
-              <div class="portal-card__icon" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              </div>
-              <h3 class="portal-card__title">Run a Host</h3>
-              <p class="portal-card__desc">A Host client pulls signed data from Generator clients, applies Lens transforms, and serves the resulting Views to applications over GraphQL.</p>
-              <span class="portal-card__cta">Install a Host {{ cta_arrow | safe }}</span>
-            </a>
+            {{<run_path.card product="host" href="/run/run-a-host/install/" description="A Host client pulls signed data from Generator clients, applies Lens transforms, and serves the resulting Views to applications over GraphQL." cta="Install a Host" />}}
 
             <a class="portal-card portal-card--featured" href="/run/get-started/">
               <div class="portal-card__icon" aria-hidden="true">

@@ -18,11 +18,11 @@
 .chain-picker summary::-webkit-details-marker { display: none; }
 .chain-picker summary:hover { border-color: var(--foreground-muted); }
 .chain-picker summary:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
-.chain-picker summary strong { min-width: 0; font-size: .75rem; font-weight: 500; }
+.chain-picker summary strong { min-width: 0; font-size: .875rem; font-weight: 500; line-height: 1.45; }
 .chain-picker__chevron { color: var(--foreground-muted); font-size: .9rem; line-height: 1; }
 .chain-picker[open] .chain-picker__chevron { transform: rotate(180deg); }
 .chain-picker__options { position: absolute; z-index: 10; top: 100%; left: 0; min-width: 12rem; border: 1px solid var(--szo-border); background: var(--background); padding: .25rem; box-shadow: 0 6px 18px rgb(0 0 0 / .08); }
-.chain-picker__options a { display: block; padding: .55rem .5rem; text-decoration: none; color: var(--foreground); }
+.chain-picker__options a { display: block; padding: .32rem .75rem; color: var(--menu-color); font-size: .875rem; line-height: 1.45; text-decoration: none; }
 .chain-picker__options a:hover { background: var(--surface-sunken); }
 .chain-picker__options a[aria-current] { color: var(--color-primary); }
 .chain-menu__group { margin: 0 0 2rem; }
@@ -34,18 +34,9 @@
 .chain-breadcrumbs { display: flex; flex-wrap: wrap; gap: .6rem; font-size: .7rem; color: var(--foreground-muted); margin-bottom: 1.5rem; }
 .chain-page-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .8rem; color: var(--foreground-muted); font-size: .7rem; margin-bottom: 1rem; }
 .chain-status { display: inline-block; border: 1px solid var(--szo-border-strong); padding: .2rem .65rem; border-radius: 999px; font-size: .65rem; white-space: nowrap; color: var(--foreground-muted); }
-.chain-context { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; border-block: 1px solid var(--szo-border); padding: 1.25rem 0; margin: 2rem 0; font-size: .85rem; }
-.chain-paths { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-block: 1px solid var(--szo-border); margin: 2rem 0; }
-.markdown a.chain-path { display: block; padding: 1.5rem 1.5rem 1.5rem 0; color: var(--foreground); text-decoration: none; }
-.markdown a.chain-path + a.chain-path { border-left: 1px solid var(--szo-border); padding: 1.5rem 0 1.5rem 1.5rem; }
-.markdown .chain-path h2 { font-size: 1.2rem; margin: .4rem 0 .8rem; border: 0; padding: 0; }
-.chain-path p { font-size: .8rem; color: var(--foreground-muted); }
-.chain-path__cta { color: var(--color-primary); font-size: .75rem; }
-.chain-path:hover .chain-path__cta { text-decoration: underline; }
-.chain-capabilities { margin: 1.5rem 0 2rem; font-size: .8rem; }
-.chain-capabilities > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; padding: .8rem 0; border-bottom: 1px solid var(--szo-border); }
-.chain-capabilities dt { font-weight: 500; }
-.chain-capabilities dd { margin: 0; color: var(--foreground-muted); }
+.chain-overview__note { border-left: 2px solid var(--szo-border-strong); padding: .2rem 0 .2rem .8rem; color: var(--foreground-muted); font-size: .8rem; margin: 1.5rem 0 2rem; }
+.chain-surface .markdown .portal-section__heading,
+.chain-surface .markdown .portal-card__title { font-family: var(--font-family-base); font-weight: 600; }
 .chain-directory { margin: 2.5rem 0; }
 .markdown a.chain-directory__row { display: grid; grid-template-columns: 1.2fr 1.5fr auto 20px; align-items: center; gap: 1.5rem; padding: 1.8rem 0; border-top: 1px solid var(--szo-border); text-decoration: none; color: var(--foreground); }
 .markdown a.chain-directory__row:last-child { border-bottom: 1px solid var(--szo-border); }
@@ -57,6 +48,5 @@
 .markdown .chain-pagination a { font-size: .75rem; color: var(--foreground-muted); text-decoration: none; }
 .chain-pagination a span { margin-right: .4rem; font-family: var(--font-family-monospace); }
 .markdown .chain-pagination a[aria-current] { color: var(--color-primary); }
-.chain-review-note { font-size: .7rem; color: var(--foreground-muted); margin-top: 2rem; }
 @media (max-width: 1100px) { .markdown a.chain-directory__row { grid-template-columns: 1fr auto; gap: .8rem; } .chain-directory__row p { grid-column: 1; } .chain-directory__arrow { display: none; } .chain-directory__row .chain-status { grid-row: 1; grid-column: 2; } }
-@media (max-width: 600px) { .chain-context, .chain-paths { grid-template-columns: 1fr; } .markdown a.chain-path + a.chain-path { border-left: 0; border-top: 1px solid var(--szo-border); padding: 1.5rem 0; } .markdown a.chain-directory__row { grid-template-columns: 1fr; } .chain-directory__row .chain-status { grid-column: 1; grid-row: auto; justify-self: start; } }
+@media (max-width: 600px) { .markdown a.chain-directory__row { grid-template-columns: 1fr; } .chain-directory__row .chain-status { grid-column: 1; grid-row: auto; justify-self: start; } }
