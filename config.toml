@@ -179,29 +179,29 @@ subsections = [
 section = "run"
 label = "Quickstart"
 pages = [
-  "run/get-started/index.md",
+  "run/chains/ethereum/quickstart/index.md",
 ]
 
 [[extra.sidebar]]
 section = "run"
 label = "Run a Generator"
 pages = [
-  "run/run-a-generator/prerequisites/index.md",
-  "run/run-a-generator/install/index.md",
-  "run/run-a-generator/register/index.md",
-  "run/run-a-generator/config-reference/index.md",
-  "run/run-a-generator/security/index.md",
-  "run/run-a-generator/managed-nodes/index.md",
+  "run/chains/ethereum/generator/prerequisites/index.md",
+  "run/chains/ethereum/generator/install/index.md",
+  "run/chains/ethereum/generator/register/index.md",
+  "run/chains/ethereum/generator/config-reference/index.md",
+  "run/chains/ethereum/generator/security/index.md",
+  "run/chains/ethereum/generator/managed-nodes/index.md",
 ]
 subsections = [
   { label = "Deployment Examples", pages = [
-    "run/run-a-generator/deployment-examples/validator-with-geth/index.md",
-    "run/run-a-generator/deployment-examples/nginx-with-snapshots/index.md",
-    "run/run-a-generator/deployment-examples/high-throughput-tuning/index.md",
-    "run/run-a-generator/deployment-examples/archival-vs-pruned/index.md",
+    "run/chains/ethereum/generator/deployment-examples/validator-with-geth/index.md",
+    "run/chains/ethereum/generator/deployment-examples/nginx-with-snapshots/index.md",
+    "run/chains/ethereum/generator/deployment-examples/high-throughput-tuning/index.md",
+    "run/chains/ethereum/generator/deployment-examples/archival-vs-pruned/index.md",
   ] },
   { label = "Guides", pages = [
-    "run/run-a-generator/guides/quicknode-setup/index.md",
+    "run/chains/ethereum/generator/guides/quicknode-setup/index.md",
   ] },
 ]
 
@@ -209,21 +209,21 @@ subsections = [
 section = "run"
 label = "Run a Host"
 pages = [
-  "run/run-a-host/hardware-requirements/index.md",
-  "run/run-a-host/install/index.md",
-  "run/run-a-host/configure-event-filters/index.md",
-  "run/run-a-host/register/index.md",
-  "run/run-a-host/private-hosts/index.md",
-  "run/run-a-host/quickstart/index.md",
-  "run/run-a-host/config-reference/index.md",
+  "run/chains/ethereum/host/hardware-requirements/index.md",
+  "run/chains/ethereum/host/install/index.md",
+  "run/chains/ethereum/host/configure-event-filters/index.md",
+  "run/chains/ethereum/host/register/index.md",
+  "run/chains/ethereum/host/private-hosts/index.md",
+  "run/chains/ethereum/host/quickstart/index.md",
+  "run/chains/ethereum/host/config-reference/index.md",
 ]
 subsections = [
   { label = "Deployment Examples", pages = [
-    "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
-    "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
-    "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
-    "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
-    "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
+    "run/chains/ethereum/host/deployment-examples/event-filter-allowlist/index.md",
+    "run/chains/ethereum/host/deployment-examples/snapshot-bootstrap/index.md",
+    "run/chains/ethereum/host/deployment-examples/prod-vm-nginx-tls/index.md",
+    "run/chains/ethereum/host/deployment-examples/gcp-local-ssd-raid0/index.md",
+    "run/chains/ethereum/host/deployment-examples/watchtower-auto-deploy/index.md",
   ] },
 ]
 
