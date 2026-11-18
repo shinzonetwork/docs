@@ -13,6 +13,10 @@ https://github.com/shinzonetwork/shinzo-generator-client
 
 No. The Generator client is a sidecar that connects to an existing execution node. It does not run an execution client, expose a JSON-RPC interface, or replace the execution node used by your validator. Instead, you configure it to connect to an upstream JSON-RPC and WebSocket endpoint. The Generator client reads block data from that execution node and stores it in its local DefraDB instance.
 
+### Does the Generator have to read from the same node my validator uses?
+
+No. The validator you register with establishes your Generator's identity; the execution node is just the data source, and the two don't have to be related. You can run the Generator in whatever region makes sense and point it at any execution node you operate. It doesn't need to be co-located with your validator or use your validator's node.
+
 ### What hardware is recommended for deploying Shinzo?
 
 The Generator client is lightweight on CPU, but storage performance and host stability matter for reliable operation. See the [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements) for the full table.
