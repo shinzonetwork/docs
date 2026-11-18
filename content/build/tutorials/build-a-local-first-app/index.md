@@ -18,7 +18,7 @@ Pushed replication is currently blocked by a version mismatch. The app-sdk pins 
 - About 15 minutes.
 
 {% <admonition type="info" title="Early-phase testnet"> %}
-While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
+While working through this tutorial, keep in mind that the Shinzo testnet is in it's initial phase. As such, some processes or workflows may seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
 {% </admonition> %}
 
 ## Scaffold the app
@@ -91,8 +91,8 @@ Your embedded DefraDB instance discovers Host clients by dialing bootstrap peers
     ```
 
     ```output
-    /ip4/34.63.186.249/tcp/9171/p2p/12D3KooWSqvLctTtcQLvqSVZU4sTCUWxCX9z4NeFpSHnmVWBiFMZ
-    /ip4/65.109.106.214/tcp/9171/p2p/12D3KooWCZgmwi1Kz6Sjqkpm4b8b4D5Hvb82KwyFPpGRZPuhFENB
+    /ip4/203.0.113.11/tcp/9171/p2p/12D3KooWSqvLctTtcQLvqSVZU4sTCUWxCX9z4NeFpSHnmVWBiFMZ
+    /ip4/203.0.113.12/tcp/9171/p2p/12D3KooWCZgmwi1Kz6Sjqkpm4b8b4D5Hvb82KwyFPpGRZPuhFENB
     ...
     ```
 
@@ -103,7 +103,7 @@ Your embedded DefraDB instance discovers Host clients by dialing bootstrap peers
       p2p:
         enabled: true
         bootstrap_peers:
-          - "/ip4/34.63.186.249/tcp/9171/p2p/12D3KooWSqvLctTtcQLvqSVZU4sTCUWxCX9z4NeFpSHnmVWBiFMZ"
+          - "/ip4/203.0.113.11/tcp/9171/p2p/12D3KooWSqvLctTtcQLvqSVZU4sTCUWxCX9z4NeFpSHnmVWBiFMZ"
         listen_addr: "/ip4/127.0.0.1/tcp/9171"
     ```
 

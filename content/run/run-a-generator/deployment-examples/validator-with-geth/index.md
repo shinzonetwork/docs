@@ -65,7 +65,7 @@ docker run -d \
 
 - `GETH_RPC_URL=http://localhost:8545`: Geth JSON-RPC on localhost. See [geth config](/run/run-a-generator/config-reference#geth).
 - `GETH_WS_URL=ws://localhost:8546`: Geth WebSocket on localhost. See [geth config](/run/run-a-generator/config-reference#geth).
-- `INDEXER_START_HEIGHT=0`: Start verifiable indexing from the chain tip. See [indexer config](/run/run-a-generator/config-reference#indexer).
+- `INDEXER_START_HEIGHT=0`: On a first run with no existing data, verifiable indexing starts at the chain tip minus `start_buffer` (100 blocks by default). On later runs the Generator ignores this setting and resumes from its highest stored block. See [indexer config](/run/run-a-generator/config-reference#indexer).
 - `DEFRADB_KEYRING_SECRET=testnet-secret`: Encryption secret for the DefraDB keyring. Change this to your own secret and keep it consistent across restarts. See [defradb config](/run/run-a-generator/config-reference#defradb).
 - `DEFRADB_P2P_ENABLED=true`: Enable P2P networking so the Generator can push data to Hosts. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).
 - `DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171`: Listen on all interfaces so Hosts outside the machine can connect. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).

@@ -25,7 +25,7 @@ flowchart LR
 - A GitHub account with access to the Shinzo container registry.
  
 {% <admonition type="info" title="Early-phase testnet"> %}
-While working through this tutorial, keep in mind that the Shinzo testnet is in it's intial phase. As such, some processes or workflows my seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
+While working through this tutorial, keep in mind that the Shinzo testnet is in it's initial phase. As such, some processes or workflows may seem somewhat complex or convoluted. This is due to the nature of blockchain development and is _not_ the desired endstate. TLDR: expect the processes in this tutorial to get simpler and more streamlined over time.
 {% </admonition> %}
 
 ## Geth
@@ -128,7 +128,7 @@ echo YOUR_PAT | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
 
 ### Pull the Shinzo Generator image
 
-Images are published per chain rather than as a single `standard` tag. For Ethereum:
+Images are published per chain rather than as a single `standard` tag. The `ethereum-mainnet` part of the tag names the source chain the client reads from, not the Shinzo network it connects to, so a testnet setup still pulls this image. For Ethereum:
 
 ```shell
 docker pull ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
@@ -343,7 +343,7 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
 The Host's config format has been simplified: most of the manual tuning fields (batch processing, pruner, snapshot) are no longer part of the base setup. Create the config file:
 
 ```shell
-cat > ~/host-config.yaml << 'EOF'
+cat > ~/host-config.yaml << EOF
 defradb:
   url: "localhost:9181"
   keyring_secret: "host-devnet-secret"

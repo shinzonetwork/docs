@@ -79,11 +79,13 @@ docker run -d \
   ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest
 ```
 
+The `ethereum-mainnet` part of the image tag names the source chain the client reads from, not the Shinzo network it connects to, so a testnet setup still pulls this image.
+
 `DEFRADB_KEYRING_SECRET` is the password that protects the Generator client's signing key. The Generator client uses this key to sign every document it produces, which gives downstream consumers a way to verify the data came from a real Generator client. The `testnet-secret` password is fine for this quickstart, but remember to use something more secure for anything in a production environment.
 
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
-`INDEXER_START_HEIGHT=0` starts the client at the current chain tip, with no historical backfill. To sync from a specific point instead, set this to that block's height. On a chain with a lot of history, a height far below tip means a lot of data to process, so use a recent block if you just want to confirm the pipeline works.
+`INDEXER_START_HEIGHT=0` only applies to a first run with no existing data: the client starts at the chain tip minus `start_buffer` (100 blocks by default) and catches up from there, with no historical backfill. Once the client has data, the setting is ignored and it resumes from its highest stored block. To sync from a specific point instead, set this to that block's height. On a chain with a lot of history, a height far below tip means a lot of data to process, so use a recent block if you just want to confirm the pipeline works.
 
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
