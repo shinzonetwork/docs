@@ -29,7 +29,21 @@
 
         {# Page title from front-matter. Rendered here (outside page.content) so
            it is NOT part of page.toc / the table of contents. #}
-        <h1 class="doc-title">{{ page.title }}</h1>
+        {# Copy-to-agent: copies this page's markdown (embedded base64 below,
+           so the raw markup can't break out of the script tag) along with the
+           title and canonical URL, ready to paste into an AI agent.
+           Zola exposes no raw-content variable, so the source .md file is
+           loaded and its front-matter (between the two +++ fences) dropped.
+           shortcut: assumes +++ fences at column 0 and a body after them
+           (true for every page today); a page with only front-matter would
+           copy its front-matter too — upgrade if that ever appears. #}
+        {% set raw_source = load_data(path="content/" ~ page.relative_path, format="plain") %}
+        {% set page_markdown = raw_source | split(pat="\n+++\n") | last | trim %}
+        <div class="doc-header">
+          <h1 class="doc-title">{{ page.title }}</h1>
+          <button type="button" class="copy-page-button">Copy page for AI</button>
+        </div>
+        <script type="text/plain" class="copy-page-source" data-title="{{ page.title }}" data-url="{{ page.permalink }}">{{ page_markdown | base64_encode }}</script>
 
         {# Lead text: the front-matter `description`, when present. #}
         {% if page.description %}
