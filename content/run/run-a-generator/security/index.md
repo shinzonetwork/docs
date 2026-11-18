@@ -103,11 +103,11 @@ The shipped production scripts set `SCHEMA_AUTH_MODE=none`, which disables authe
 
 A common question from validators running MEV-boost is whether the Generator interacts with block construction or depends on the block's `extraData` field. It does not.
 
-For example, on Ethereum Mainnet, MEV-boost builders construct the block header on the validator's behalf. The validator does not control `extraData` in that flow. Shinzo's validator-identity design deliberately avoids depending on it: identity is read from the `AssertionSigned` event emitted by the outpost contract on your source chain, then relayed to ShinzoHub, not from the block header. Because the assertion is signed by your withdrawal key and verified on-chain by the outpost, who built the block is irrelevant to how Shinzo identifies you.
+For example, on Ethereum Mainnet, MEV-boost builders construct the block header on the validator's behalf. The validator does not control `extraData` in that flow. Shinzo's validator-identity design deliberately avoids depending on it: your identity comes from an assertion that ties your operator key to your validator, recorded on ShinzoHub, not from the block header. On the current testnet, the validator check behind that assertion is admin-key approval, with an automated off-chain check in development. Either way, who built the block is irrelevant to how Shinzo identifies you.
 
 The practical consequence of this is that running the Generator does not change your MEV-boost setup, and MEV-boost does not change how Shinzo identifies you. You do not need to disable MEV-boost, modify your builder configuration, or tag `extraData` to participate in Shinzo.
 
-This point is covered in the [outpost reference](../../../reference/components/outpost), where the EVM implementation notes that there is no `extraData` tagging and no dependency on who built the block.
+The planned contract-based assertion design, covered in the [outpost reference](../../../reference/components/outpost), keeps the same property: no `extraData` tagging and no dependency on who built the block.
 
 ## Need help
 

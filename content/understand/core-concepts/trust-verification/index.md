@@ -34,7 +34,7 @@ If the node ever serves wrong or incomplete data, that data is what gets signed,
 
 ## Who a Generator is
 
-The data link is trusted because the operator is a validator, and the identity link is cryptographic. A Generator client generates its own operator key locally and never touches the validator's consensus or withdrawal keys. During registration, the validator's withdrawal key signs a one-time assertion that ties the operator key to the validator's identity, and that assertion is verified on-chain (through the outpost contract; on the current testnet, through an admin-key approval flow).
+The data link is trusted because the operator is a validator, and the identity link is cryptographic. A Generator client generates its own operator key locally and never touches the validator's consensus or withdrawal keys. During registration, a one-time assertion ties the operator key to the validator's identity. On the current testnet, that assertion is approved through an admin-key flow; an automated off-chain validator check is in development.
 
 So the network can prove which validator stands behind a given Generator. The remaining question is the data itself, and that one isn't answered by trust: the Generator's per-block signature and Merkle root pin down exactly what was signed, and attestations on Host clients catch a source whose data diverges from everyone else's. The next two hops show both mechanisms.
 
