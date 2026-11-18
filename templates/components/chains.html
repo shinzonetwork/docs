@@ -1,0 +1,50 @@
+{% component chains.selector(current) %}
+{% set catalog = load_data(path="data/chains.toml") %}
+{% for chain in catalog.chains %}
+  {% set base = "/run/chains/" ~ chain.slug ~ "/mainnet/" %}
+  {% if current is starting_with(pat=base) or (chain.slug == "ethereum" and not current is starting_with(pat="/run/chains/bnb/") and not current is starting_with(pat="/run/chains/tron/")) %}
+  <div class="chain-menu__selector">
+    <div class="chain-menu__selector-label">Chains</div>
+    <details class="chain-picker">
+      <summary><strong>{{ chain.name }}</strong><span class="chain-picker__chevron" aria-hidden="true">⌄</span></summary>
+      <div class="chain-picker__options">
+        {% for option in catalog.chains %}
+        <a href="{% if option.slug == "ethereum" %}/run/{% else %}/run/chains/{{ option.slug }}/mainnet/{% endif %}"{% if option.slug == chain.slug %} aria-current="true"{% endif %}>{{ option.name }}</a>
+        {% endfor %}
+      </div>
+    </details>
+  </div>
+  {% endif %}
+{% endfor %}
+{% endcomponent chains.selector %}
+
+{% component chains.sidebar(current) %}
+{% set catalog = load_data(path="data/chains.toml") %}
+<nav class="menu chain-menu" aria-label="Chain documentation">
+  {{<chains.selector current={current} />}}
+  {% if current == "/run/chains/" %}
+    <div class="chain-menu__group"><h2>Quickstart</h2><div class="chain-menu__links"><a href="/run/">Run infrastructure</a></div></div>
+    <div class="chain-menu__group"><h2>Source chains</h2><div class="chain-menu__links">
+    {% for chain in catalog.chains %}<a href="{% if chain.slug == "ethereum" %}/run/{% else %}/run/chains/{{ chain.slug }}/mainnet/{% endif %}">{{ chain.name }}</a>{% endfor %}
+    </div></div>
+  {% else %}
+  {% for chain in catalog.chains %}
+    {% set base = "/run/chains/" ~ chain.slug ~ "/mainnet/" %}
+    {% if current is starting_with(pat=base) %}
+      <div class="chain-menu__group"><h2>Quickstart</h2><div class="chain-menu__links"><a class="{% if current == base %}is-active{% endif %}" href="{{ base }}"{% if current == base %} aria-current="page"{% endif %}>Overview</a></div></div>
+      {% for product in ["generator", "host"] %}
+      <div class="chain-menu__group">
+        <h2>Run a {{ product | title }}</h2>
+        <div class="chain-menu__links">
+          {% for step in catalog.steps %}
+            {% set target = base ~ product ~ "/" ~ step.slug ~ "/" %}
+            <a class="{% if current == target %}is-active{% endif %}" href="{{ target }}"{% if current == target %} aria-current="page"{% endif %}>{{ step.title }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+</nav>
+{% endcomponent chains.sidebar %}

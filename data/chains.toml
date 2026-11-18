@@ -1,0 +1,48 @@
+[[chains]]
+slug = "ethereum"
+name = "Ethereum"
+family = "EVM"
+network = "Mainnet"
+prefix = "Ethereum__Mainnet"
+status = "Existing guides"
+description = "Run the Ethereum data pipeline with the established Generator and Host guides."
+generator_status = "Existing setup"
+host_status = "Released client"
+registration_status = "Testnet flow documented"
+
+[[chains]]
+slug = "bnb"
+name = "BNB Smart Chain"
+family = "EVM"
+network = "Mainnet"
+prefix = "BSC__Mainnet"
+status = "Source-reviewed"
+description = "Use the BSC configuration, chain ID 56, and BSC-specific collections."
+generator_status = "Source build documented"
+host_status = "Configuration documented"
+registration_status = "Eligibility requires confirmation"
+
+[[chains]]
+slug = "tron"
+name = "TRON"
+family = "TRON VM"
+network = "Mainnet"
+prefix = "Tron__Mainnet"
+status = "Integration preview"
+description = "Explore the TRON adapter, wallet HTTP APIs, and chain-specific data model."
+generator_status = "Integration branch"
+host_status = "Compatibility not validated"
+registration_status = "Flow requires confirmation"
+
+[[steps]]
+slug = "prerequisites"
+title = "Prerequisites"
+[[steps]]
+slug = "install"
+title = "Install & configure"
+[[steps]]
+slug = "register"
+title = "Register"
+[[steps]]
+slug = "verify"
+title = "Verify & troubleshoot"
