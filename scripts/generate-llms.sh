@@ -310,6 +310,8 @@ while IFS= read -r content_file; do
     for sidebar_page in "${sidebar_pages[@]}"; do
         [[ "$sidebar_page" == "$rel_path" ]] && continue 2
     done
+    # Chain-specific entry points render these shared pages; index the source once.
+    [[ -n "$(get_toml_field "$content_file" "shared_page")" ]] && continue
     explicit_path="$(get_toml_field "$content_file" "path")"
     if [[ -n "$explicit_path" ]]; then
         title="$(get_toml_field "$content_file" "title")"

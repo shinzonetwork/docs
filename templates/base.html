@@ -13,7 +13,10 @@
   {# Canonical URL: every page declares its own permalink so Google
      consolidates duplicates (trailing-slash variants, legacy alias URLs)
      onto the canonical address instead of picking one itself. #}
-  {%- if page %}
+  {%- if page and page.extra.shared_page %}
+  {% set shared_page = get_page(path=page.extra.shared_page) %}
+  <link rel="canonical" href="{{ shared_page.permalink | safe }}" />
+  {%- elif page %}
   <link rel="canonical" href="{{ page.permalink | safe }}" />
   {%- elif section %}
   <link rel="canonical" href="{{ section.permalink | safe }}" />

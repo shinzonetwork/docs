@@ -43,6 +43,14 @@
         </div>
       </div>
       {% endfor %}
+      <div class="chain-menu__group"><h2>Operations</h2><div class="chain-menu__links">
+        {% set wallet_url = base ~ "operations/add-testnet-to-wallet/" %}
+        <a class="{% if current == wallet_url %}is-active{% endif %}" href="{{ wallet_url }}"{% if current == wallet_url %} aria-current="page"{% endif %}>Add the testnet to your wallet</a>
+        {% if chain.slug == "bnb" %}
+          {% set troubleshooting_url = base ~ "operations/troubleshooting/" %}
+          <a class="{% if current == troubleshooting_url %}is-active{% endif %}" href="{{ troubleshooting_url }}"{% if current == troubleshooting_url %} aria-current="page"{% endif %}>Troubleshooting</a>
+        {% endif %}
+      </div></div>
     {% endif %}
   {% endfor %}
   {% endif %}
