@@ -1,6 +1,6 @@
 +++
 path = "run/bnb/generator/install"
-aliases = ["run/chains/bnb/mainnet/generator/install"]
+aliases = ["run/chains/bnb/mainnet/generator/install", "run/bnb/generator/verify", "run/chains/bnb/mainnet/generator/verify"]
 title = "Install a Generator — BNB Smart Chain Mainnet"
 description = "Build the Generator, connect it to BSC Mainnet, and start it with the BSC configuration."
 template = "chain-page.html"
@@ -124,6 +124,8 @@ The service user needs read access to `.env` and the config, and write access to
 
 The BSC config enables the health server, P2P, pruning, and snapshots by default. Expose only the endpoints your deployment needs.
 
-## Next steps
+## Confirm BSC ingestion
 
-Continue to [Verify & troubleshoot](/run/bnb/generator/verify/) to confirm BSC blocks and schemas are advancing. Running the process does not by itself prove that the correct chain is being indexed. [Registration](/run/bnb/generator/register/) is a separate step.
+Check `http://localhost:8080/health` for a healthy status and an advancing `current_block`. With a token from `SCHEMA_API_KEYS`, request `http://localhost:8080/api/v1/schema/collections` using an `Authorization: Bearer <token>` header and confirm its `network` value is `BSC__Mainnet`. Inspect the Generator logs if the block height stops advancing or the schema request fails.
+
+[Registration](/run/bnb/generator/register/) is a separate step and does not replace the ingestion check.

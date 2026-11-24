@@ -306,6 +306,8 @@ echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"
 section_header "Chains · Run infrastructure"
 while IFS= read -r content_file; do
     rel_path="${content_file#"$CONTENT_DIR/"}"
+    # Draft chain pages are absent from the built site and must stay out of LLM indexes.
+    [[ "$(get_toml_field "$content_file" "draft")" == "true" ]] && continue
     # Pages already listed in the standard sidebar were emitted above.
     for sidebar_page in "${sidebar_pages[@]}"; do
         [[ "$sidebar_page" == "$rel_path" ]] && continue 2

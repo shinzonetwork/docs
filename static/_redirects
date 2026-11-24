@@ -1,9 +1,10 @@
 # Cloudflare Pages redirects. First match wins, including when a static asset
 # exists at the old path (such as a Zola alias page for local previews).
 #
-# All legacy URLs use permanent (301) redirects so search engines consolidate
-# ranking onto the canonical page. Non-splat rules are listed in both bare and
-# trailing-slash form because a rule matches the request path exactly.
+# Published legacy URLs use permanent (301) redirects. Unpublished TRON routes
+# temporarily redirect (302) to Run infrastructure so they can return later.
+# Non-splat rules are listed in both bare and trailing-slash form because a rule
+# matches the request path exactly.
 
 # ---------------------------------------------------------------------------
 # Home page. The site root (content/_index.md) is the Home page itself; the
@@ -135,7 +136,13 @@
 /wallets/add-testnet                    /run/ethereum/operations/add-testnet-to-wallet/    301
 /wallets/add-testnet/                   /run/ethereum/operations/add-testnet-to-wallet/    301
 
-# Previous Ethereum, BNB Smart Chain, and TRON operator URLs.
+# Previous published operator URLs and temporarily unpublished TRON URLs.
+/run/tron /run/ 302
+/run/tron/ /run/ 302
+/run/tron/* /run/ 302
+/run/chains/tron /run/ 302
+/run/chains/tron/ /run/ 302
+/run/chains/tron/* /run/ 302
 /run/ethereum /run/ 301
 /run/ethereum/ /run/ 301
 /run/chains/bnb/mainnet /run/bnb/ 301
@@ -148,42 +155,24 @@
 /run/chains/bnb/mainnet/generator/prerequisites/ /run/bnb/generator/prerequisites/ 301
 /run/chains/bnb/mainnet/generator/register /run/bnb/generator/register/ 301
 /run/chains/bnb/mainnet/generator/register/ /run/bnb/generator/register/ 301
-/run/chains/bnb/mainnet/generator/verify /run/bnb/generator/verify/ 301
-/run/chains/bnb/mainnet/generator/verify/ /run/bnb/generator/verify/ 301
+/run/chains/bnb/mainnet/generator/verify /run/bnb/generator/install/ 301
+/run/chains/bnb/mainnet/generator/verify/ /run/bnb/generator/install/ 301
 /run/chains/bnb/mainnet/host/install /run/bnb/host/install/ 301
 /run/chains/bnb/mainnet/host/install/ /run/bnb/host/install/ 301
 /run/chains/bnb/mainnet/host/prerequisites /run/bnb/host/prerequisites/ 301
 /run/chains/bnb/mainnet/host/prerequisites/ /run/bnb/host/prerequisites/ 301
 /run/chains/bnb/mainnet/host/register /run/bnb/host/register/ 301
 /run/chains/bnb/mainnet/host/register/ /run/bnb/host/register/ 301
-/run/chains/bnb/mainnet/host/verify /run/bnb/host/verify/ 301
-/run/chains/bnb/mainnet/host/verify/ /run/bnb/host/verify/ 301
+/run/chains/bnb/mainnet/host/verify /run/bnb/host/install/ 301
+/run/chains/bnb/mainnet/host/verify/ /run/bnb/host/install/ 301
 /run/chains/bnb/mainnet/operations/add-testnet-to-wallet /run/bnb/operations/add-testnet-to-wallet/ 301
 /run/chains/bnb/mainnet/operations/add-testnet-to-wallet/ /run/bnb/operations/add-testnet-to-wallet/ 301
 /run/chains/bnb/mainnet/operations/troubleshooting /run/bnb/operations/troubleshooting/ 301
 /run/chains/bnb/mainnet/operations/troubleshooting/ /run/bnb/operations/troubleshooting/ 301
-/run/chains/tron/mainnet /run/tron/ 301
-/run/chains/tron/mainnet/ /run/tron/ 301
-/run/chains/tron/mainnet/data-model /run/tron/data-model/ 301
-/run/chains/tron/mainnet/data-model/ /run/tron/data-model/ 301
-/run/chains/tron/mainnet/generator/install /run/tron/generator/install/ 301
-/run/chains/tron/mainnet/generator/install/ /run/tron/generator/install/ 301
-/run/chains/tron/mainnet/generator/prerequisites /run/tron/generator/prerequisites/ 301
-/run/chains/tron/mainnet/generator/prerequisites/ /run/tron/generator/prerequisites/ 301
-/run/chains/tron/mainnet/generator/register /run/tron/generator/register/ 301
-/run/chains/tron/mainnet/generator/register/ /run/tron/generator/register/ 301
-/run/chains/tron/mainnet/generator/verify /run/tron/generator/verify/ 301
-/run/chains/tron/mainnet/generator/verify/ /run/tron/generator/verify/ 301
-/run/chains/tron/mainnet/host/install /run/tron/host/install/ 301
-/run/chains/tron/mainnet/host/install/ /run/tron/host/install/ 301
-/run/chains/tron/mainnet/host/prerequisites /run/tron/host/prerequisites/ 301
-/run/chains/tron/mainnet/host/prerequisites/ /run/tron/host/prerequisites/ 301
-/run/chains/tron/mainnet/host/register /run/tron/host/register/ 301
-/run/chains/tron/mainnet/host/register/ /run/tron/host/register/ 301
-/run/chains/tron/mainnet/host/verify /run/tron/host/verify/ 301
-/run/chains/tron/mainnet/host/verify/ /run/tron/host/verify/ 301
-/run/chains/tron/mainnet/operations/add-testnet-to-wallet /run/tron/operations/add-testnet-to-wallet/ 301
-/run/chains/tron/mainnet/operations/add-testnet-to-wallet/ /run/tron/operations/add-testnet-to-wallet/ 301
+/run/bnb/generator/verify /run/bnb/generator/install/ 301
+/run/bnb/generator/verify/ /run/bnb/generator/install/ 301
+/run/bnb/host/verify /run/bnb/host/install/ 301
+/run/bnb/host/verify/ /run/bnb/host/install/ 301
 /run/get-started /run/ethereum/get-started/ 301
 /run/get-started/ /run/ethereum/get-started/ 301
 /run/run-a-generator/config-reference /run/ethereum/generator/config-reference/ 301

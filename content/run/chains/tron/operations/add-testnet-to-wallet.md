@@ -1,4 +1,5 @@
 +++
+draft = true
 path = "run/tron/operations/add-testnet-to-wallet"
 aliases = ["run/chains/tron/mainnet/operations/add-testnet-to-wallet"]
 title = "Add the testnet to your wallet"

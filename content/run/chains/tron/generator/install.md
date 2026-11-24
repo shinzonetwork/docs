@@ -1,6 +1,7 @@
 +++
+draft = true
 path = "run/tron/generator/install"
-aliases = ["run/chains/tron/mainnet/generator/install"]
+aliases = ["run/chains/tron/mainnet/generator/install", "run/tron/generator/verify", "run/chains/tron/mainnet/generator/verify"]
 title = "Install a Generator \u2014 TRON Mainnet"
 description = "Build the TRON-specific executable from the reviewed integration branch."
 template = "chain-page.html"
@@ -66,4 +67,4 @@ This invokes `./bin/block_poster_tron -config config/config_tron.yml` in the for
 
 The branch config retains 1,000 blocks and paces reads at 20 blocks per minute. Those are supplied defaults, not performance targets validated by this guide. Generator snapshot production does not mean the released Host can import TRON snapshots.
 
-Proceed to [verification](../verify/). Do not interpret successful indexing as approved registry participation.
+After startup, check `http://localhost:8080/health` and the logs for advancing TRON blocks. Query `Tron__Mainnet__Block` from the local DefraDB GraphQL API and confirm the block height advances. Do not interpret successful indexing as approved registry participation.

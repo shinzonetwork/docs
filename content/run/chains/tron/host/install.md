@@ -1,6 +1,7 @@
 +++
+draft = true
 path = "run/tron/host/install"
-aliases = ["run/chains/tron/mainnet/host/install"]
+aliases = ["run/chains/tron/mainnet/host/install", "run/tron/host/verify", "run/chains/tron/mainnet/host/verify"]
 title = "Host installation status \u2014 TRON Mainnet"
 description = "Identify the compatible Host release before attempting TRON deployment."
 template = "chain-page.html"
@@ -21,7 +22,7 @@ The available TRON Generator branch supplies real ingestion code. The reviewed H
 2. Obtain the matching Host implementation and supported configuration from the maintainers.
 3. Confirm the collection compatibility requirements in [Prerequisites](../prerequisites/).
 4. Configure the TRON Generator's schema base URL and full P2P multiaddr, using its actual schema prefix and authorization token.
-5. Run the [verification sequence](../verify/) against an isolated deployment before registration.
+5. Check Block, Transaction, Log, and InternalTransfer data against the Generator in an isolated deployment before registration. Confirm the compatibility requirements in [Prerequisites](../prerequisites/).
 
 ## What the release must define
 

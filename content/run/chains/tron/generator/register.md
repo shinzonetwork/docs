@@ -1,4 +1,5 @@
 +++
+draft = true
 path = "run/tron/generator/register"
 aliases = ["run/chains/tron/mainnet/generator/register"]
 title = "Register a Generator \u2014 TRON Mainnet"

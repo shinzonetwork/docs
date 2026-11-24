@@ -11,7 +11,7 @@ product = "generator"
 task = "register"
 +++
 
-Registration makes a Generator discoverable through the Shinzo network. It is separate from [installing](/run/bnb/generator/install/) and [verifying](/run/bnb/generator/verify/) the client. An unregistered Generator can still be tested with a directly connected Host.
+Registration makes a Generator discoverable through the Shinzo network. It is separate from [installing and checking](/run/bnb/generator/install/#confirm-bsc-ingestion) the client. An unregistered Generator can still be tested with a directly connected Host.
 
 ## BSC registration status
 
@@ -28,7 +28,7 @@ This page will provide the exact BSC registration steps once those details are c
 
 ## Information to have ready
 
-- The BSC Mainnet source chain (chain ID `56`) and a successful [ingestion check](/run/bnb/generator/verify/).
+- The BSC Mainnet source chain (chain ID `56`) and a successful [ingestion check](/run/bnb/generator/install/#confirm-bsc-ingestion).
 - The running Generator's version, DID or public identity, Peer ID, and reachable connection address.
 - Secure backups of the DefraDB identity keys and the unchanged `DEFRADB_KEYRING_SECRET`.
 - Access to the wallet and proof that Shinzo support confirms for BSC onboarding.

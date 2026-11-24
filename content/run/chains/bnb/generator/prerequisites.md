@@ -17,7 +17,7 @@ The Generator reads BNB Smart Chain (BSC) Mainnet from a JSON-RPC endpoint, writ
 
 1. Prepare a BSC Mainnet node or provider endpoint and capacity for the Generator.
 1. [Install and configure](/run/bnb/generator/install/) the EVM Generator with `config/config_bsc.yaml`.
-1. [Verify ingestion](/run/bnb/generator/verify/) before connecting a Host or requesting registration.
+1. [Confirm BSC ingestion](/run/bnb/generator/install/#confirm-bsc-ingestion) before connecting a Host or requesting registration.
 1. [Register](/run/bnb/generator/register/) when BSC operator onboarding is available for your role.
 
 ## BSC source node

@@ -27,7 +27,15 @@
 {% endcomponent sidebar.page_link %}
 
 {% component sidebar.render(blocks, current) %}
-{% if current == "/run/chains/" or current is starting_with(pat="/run/bnb/") or current is starting_with(pat="/run/tron/") %}
+{% set catalog = load_data(path="data/chains.toml") %}
+{% set_global use_chain_sidebar = current == "/run/chains/" %}
+{% for chain in catalog.chains %}
+  {% if chain.slug in catalog.published_slugs and chain.slug != catalog.legacy_chain_slug %}
+    {% set base = "/run/" ~ chain.slug ~ "/" %}
+    {% if current is starting_with(pat=base) %}{% set_global use_chain_sidebar = true %}{% endif %}
+  {% endif %}
+{% endfor %}
+{% if use_chain_sidebar %}
   {{<chains.sidebar current={current} />}}
 {% else %}
 <nav class="menu" aria-label="Docs sidebar">

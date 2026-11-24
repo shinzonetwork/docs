@@ -1,6 +1,6 @@
 +++
 path = "run/bnb/host/install"
-aliases = ["run/chains/bnb/mainnet/host/install"]
+aliases = ["run/chains/bnb/mainnet/host/install", "run/bnb/host/verify", "run/chains/bnb/mainnet/host/verify"]
 title = "Install a Host \u2014 BNB Smart Chain Mainnet"
 description = "Connect the released Host to BNB Smart Chain Generators with an explicit chain configuration."
 template = "chain-page.html"
@@ -97,4 +97,4 @@ docker logs shinzo-host-bnb
 curl -fsS http://localhost:8080/health
 ```
 
-The config mount is required; merely creating `config.yaml` does not make Docker read it. Continue to [Verify & troubleshoot](../verify/) before [registration](../register/).
+The config mount is required; merely creating `config.yaml` does not make Docker read it. Check the container logs for schema initialization and a stable Generator connection, then query `BSC__Mainnet__Block` from the local Host GraphQL API to confirm data is arriving. Complete these checks before [registration](../register/).

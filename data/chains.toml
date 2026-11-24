@@ -1,3 +1,8 @@
+## Add a chain record below, then add its slug here when its docs are ready to publish.
+published_slugs = ["ethereum", "bnb"]
+## Ethereum keeps the original Run infrastructure landing and sidebar.
+legacy_chain_slug = "ethereum"
+
 [[chains]]
 slug = "ethereum"
 name = "Ethereum"
@@ -21,6 +26,9 @@ description = "Use the BSC configuration, chain ID 56, and BSC-specific collecti
 generator_status = "Source build documented"
 host_status = "Configuration documented"
 registration_status = "Eligibility requires confirmation"
+generator_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+host_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+operations = [{ slug = "add-testnet-to-wallet", title = "Add the testnet to your wallet" }, { slug = "troubleshooting", title = "Troubleshooting" }]
 
 [[chains]]
 slug = "tron"
@@ -33,16 +41,6 @@ description = "Explore the TRON adapter, wallet HTTP APIs, and chain-specific da
 generator_status = "Integration branch"
 host_status = "Compatibility not validated"
 registration_status = "Flow requires confirmation"
-
-[[steps]]
-slug = "prerequisites"
-title = "Prerequisites"
-[[steps]]
-slug = "install"
-title = "Install & configure"
-[[steps]]
-slug = "register"
-title = "Register"
-[[steps]]
-slug = "verify"
-title = "Verify & troubleshoot"
+generator_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+host_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+operations = [{ slug = "add-testnet-to-wallet", title = "Add the testnet to your wallet" }]

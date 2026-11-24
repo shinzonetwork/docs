@@ -1,4 +1,5 @@
 +++
+draft = true
 path = "run/tron/host/register"
 aliases = ["run/chains/tron/mainnet/host/register"]
 title = "Host registration status \u2014 TRON Mainnet"
@@ -13,7 +14,7 @@ task = "register"
 
 ## Complete compatibility checks first
 
-Do not treat a successful generic Host registration as evidence that the Host serves TRON correctly. Complete the [TRON Host compatibility checks](../verify/) with a supported implementation first.
+Do not treat a successful generic Host registration as evidence that the Host serves TRON correctly. Complete the [TRON Host compatibility requirements](../prerequisites/) with a supported implementation first.
 
 ## Coordination identity
 

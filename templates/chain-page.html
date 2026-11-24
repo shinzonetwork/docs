@@ -28,7 +28,9 @@
     {{ content_page.content | safe }}
     {% if page.extra.product %}
     <nav class="chain-pagination" aria-label="Setup steps">
-      {% for step in catalog.steps %}
+      {% set steps = chain.generator_steps %}
+      {% if page.extra.product == "host" %}{% set steps = chain.host_steps %}{% endif %}
+      {% for step in steps %}
         <a href="{{ base }}{{ page.extra.product }}/{{ step.slug }}/"{% if page.extra.task == step.slug %} aria-current="step"{% endif %}><span>{{ loop.index }}</span>{{ step.title }}</a>
       {% endfor %}
     </nav>

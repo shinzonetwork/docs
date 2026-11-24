@@ -1,6 +1,6 @@
 +++
 title = "Chains"
-description = "Ethereum, BNB Smart Chain, and TRON operator documentation."
+description = "Ethereum and BNB Smart Chain operator documentation."
 template = "chains-directory.html"
 page_template = "chain-page.html"
 +++
@@ -15,6 +15,6 @@ Choose the chain whose data you want to serve. Each guide names the expected sch
 
 ## Reading support status
 
-**Existing guides** preserves the Ethereum setup. **Source-reviewed** means commands and configuration were checked against client source, not a live deployment. **Integration preview** means the guide targets a development branch rather than a verified production release.
+**Existing guides** preserves the Ethereum setup. **Source-reviewed** means commands and configuration were checked against client source, not a live deployment.
 
 Source-chain Mainnet and **Shinzo testnet** are different networks. The first identifies the data; the second coordinates participation. Registration availability is listed separately from the ability to run a client.

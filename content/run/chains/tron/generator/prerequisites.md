@@ -1,4 +1,5 @@
 +++
+draft = true
 path = "run/tron/generator/prerequisites"
 aliases = ["run/chains/tron/mainnet/generator/prerequisites"]
 title = "Generator prerequisites \u2014 TRON Mainnet"

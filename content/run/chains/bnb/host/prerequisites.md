@@ -18,7 +18,7 @@ task = "prerequisites"
 - A schema access token if the Generator uses token authentication.
 - Persistent storage and a stable `DEFRA_KEYRING_SECRET`. The Host variable uses `DEFRA_`, while Generator uses `DEFRADB_`.
 
-The Host does not require an Ethereum, BSC, or TRON source-node RPC connection. It receives data from Generators. For BNB Smart Chain, verify the namespace is `BSC__Mainnet`.
+The Host does not require a source-node RPC connection. It receives data from Generators. For BNB Smart Chain, verify the namespace is `BSC__Mainnet`.
 
 ## Capacity and connectivity
 
