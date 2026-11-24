@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/host/install"
+path = "run/tron/host/install"
+aliases = ["run/chains/tron/mainnet/host/install"]
 title = "Host installation status \u2014 TRON Mainnet"
 description = "Identify the compatible Host release before attempting TRON deployment."
 template = "chain-page.html"

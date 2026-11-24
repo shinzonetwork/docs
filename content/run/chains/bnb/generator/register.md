@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/generator/register"
+path = "run/bnb/generator/register"
+aliases = ["run/chains/bnb/mainnet/generator/register"]
 title = "Register a Generator \u2014 BNB Smart Chain Mainnet"
 description = "Separate BSC ingestion from approval to join the Shinzo registry."
 template = "chain-page.html"
@@ -20,7 +21,7 @@ Do not submit Ethereum validator keys or withdrawal-address instructions by anal
 
 Collect the source network (BNB Smart Chain Mainnet, ID 56), Generator version, DID/public identity, reachable connection string, and successful ingestion checks. Retain the persistent identity keys and secret.
 
-Ask [Shinzo onboarding](https://discord.shinzo.network/) to confirm the accepted operator role, consensus identity representation, assertion authority, and BSC availability in the registry. The [shared registration page](/run/run-a-generator/register/) explains the current Ethereum-oriented process; it is not a verified BSC walkthrough.
+Ask [Shinzo onboarding](https://discord.shinzo.network/) to confirm the accepted operator role, consensus identity representation, assertion authority, and BSC availability in the registry. The [shared registration page](/run/ethereum/generator/register/) explains the current Ethereum-oriented process; it is not a verified BSC walkthrough.
 
 ## After the flow is confirmed
 

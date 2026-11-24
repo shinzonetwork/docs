@@ -231,8 +231,8 @@ subsections = [
 section = "run"
 label = "Operations"
 pages = [
-  "run/operations/add-testnet-to-wallet/index.md",
-  "run/operations/troubleshooting/index.md"
+  "run/chains/ethereum/operations/add-testnet-to-wallet.md",
+  "run/chains/ethereum/operations/troubleshooting.md"
 ]
 
 # Reference

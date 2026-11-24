@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/private-hosts"
+path = "run/ethereum/host/private-hosts"
+aliases = ["run/run-a-host/private-hosts"]
 title = "Private Hosts"
 description = "Run a Shinzo Host client privately, peered only to your own Generator and publicizing nothing to the network."
 [extra]
@@ -21,7 +22,7 @@ A standard Host client ships configured for the public network. On startup it do
 - Dials the public bootstrap peers shipped in `config.yaml` to reach Generator clients it doesn't control.
 - Contacts ShinzoHub (`shinzo.hub_base_url`) to fetch every registered View and subscribe to live registration events.
 
-A third step is opt-in: registering on the [Host registry](../register) so other nodes can discover and replicate from it. This is a manual, wallet-signed action from the registration app, not something the Host client does on startup.
+A third step is opt-in: registering on the [Host registry](/run/ethereum/host/register) so other nodes can discover and replicate from it. This is a manual, wallet-signed action from the registration app, not something the Host client does on startup.
 
 A private Host client connection closes some or all of these. How many you close decides how private the setup is.
 
@@ -37,9 +38,9 @@ What changes from the defaults:
 
 - `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do not include any other multiaddrs.
 - `shinzo.hub_base_url`: set it to `testnet.shinzo.network` (the shipped value; the code default is empty) so the Host client keeps fetching public Views. The value is a bare hostname without a scheme or port; the Host client appends the ports itself, so including one crashes it on startup.
-- Skip [Register](/run/run-a-host/register/). An unregistered Host isn't discoverable and won't serve the network.
+- Skip [Register](/run/ethereum/host/register/). An unregistered Host isn't discoverable and won't serve the network.
 
-This is the topology covered in the [Operator Quickstart](/run/get-started/).
+This is the topology covered in the [Operator Quickstart](/run/ethereum/get-started/).
 
 ### Fully air-gapped Host client
 
@@ -56,7 +57,7 @@ With no hub connection, no public peers, and no registration, nothing about this
 
 ## Configure an air-gapped direct client
 
-You need a reachable Generator client and its libp2p multiaddr. If you don't have one running, see [Generator Install](/run/run-a-generator/install/) and the [Operator Quickstart](/run/get-started/). The Generator client's `/health` endpoint returns its peer ID and listening addresses under `.p2p.self`, as an object rather than a finished multiaddr:
+You need a reachable Generator client and its libp2p multiaddr. If you don't have one running, see [Generator Install](/run/ethereum/generator/install/) and the [Operator Quickstart](/run/ethereum/get-started/). The Generator client's `/health` endpoint returns its peer ID and listening addresses under `.p2p.self`, as an object rather than a finished multiaddr:
 
 ```shell
 PEER_ID=$(curl -s http://<generator-host>:8080/health | jq -r '.p2p.self.id')
@@ -116,7 +117,7 @@ Publishing `9171` is optional for a private setup. The Host client only dials ou
 You don't need to expose port `9171` to the internet for a private setup. The Host client dials out to your Generator client; it doesn't need to accept inbound P2P from the public network. Keep `9171` firewalled to your private network.
 {% </admonition> %}
 
-For the full run sequence including persistent volume mounts and building from source, see [Install](/run/run-a-host/install/). For every config field, see the [Config reference](/run/run-a-host/config-reference/).
+For the full run sequence including persistent volume mounts and building from source, see [Install](/run/ethereum/host/install/). For every config field, see the [Config reference](/run/ethereum/host/config-reference/).
 
 ## Loading Views in a private setup
 
@@ -129,7 +130,7 @@ In a [fully air-gapped Host client](#fully-air-gapped-host-client), with `hub_ba
 1. Start the Host client once with `hub_base_url` set to ShinzoHub. It fetches the public Views and writes them to `views.json`.
 1. Stop the Host client, edit the mounted config to set `hub_base_url` to `""`, and restart the **same** container (`docker stop shinzo-host && docker start shinzo-host`). The Host client now loads those Views from the local file and contacts no hub.
 
-Restart the same container, not a fresh one. `views.json` and the cached WASM lens files live in `./.defra` inside the container, and the `docker run` above doesn't mount that path. If you `docker rm` and start a new container, `views.json` is gone and the host boots with no Views. To let `views.json` survive container recreation, mount a persistent `.defra` volume as shown in [Install](/run/run-a-host/install/).
+Restart the same container, not a fresh one. `views.json` and the cached WASM lens files live in `./.defra` inside the container, and the `docker run` above doesn't mount that path. If you `docker rm` and start a new container, `views.json` is gone and the host boots with no Views. To let `views.json` survive container recreation, mount a persistent `.defra` volume as shown in [Install](/run/ethereum/host/install/).
 
 ## What stays the same and the trade-offs
 

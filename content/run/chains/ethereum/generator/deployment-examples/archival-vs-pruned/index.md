@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/deployment-examples/archival-vs-pruned"
+path = "run/ethereum/generator/deployment-examples/archival-vs-pruned"
+aliases = ["run/run-a-generator/deployment-examples/archival-vs-pruned"]
 title = "Archival versus pruned"
 description = "Decide whether your Generator keeps all historical blocks or prunes old ones. A pruned Generator uses less storage and can still serve snapshots; an archival Generator keeps everything but grows without bound."
 [extra]
@@ -8,7 +9,7 @@ mermaid = true
 
 When to use this: you need to decide whether your Generator keeps all historical data or prunes old blocks. A pruned Generator uses less storage but can still serve snapshots for Host bootstrap. An archival Generator keeps everything but grows without bound.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/ethereum/generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -95,13 +96,13 @@ snapshot:
 
 ### Pruned key values
 
-- `pruner.enabled: true`: Turn on automatic pruning. See [pruner config](/run/run-a-generator/config-reference#pruner).
-- `pruner.max_blocks: 1000`: Keep the last 1000 blocks in the database. At roughly 12 seconds per block, that is about 3.3 hours of history (adjust for your chain's block time). See [pruner config](/run/run-a-generator/config-reference#pruner).
-- `pruner.docs_per_block: 1000`: Average docs per block. The pruner triggers at `max_blocks` times `docs_per_block` documents. See [pruner config](/run/run-a-generator/config-reference#pruner).
-- `pruner.interval_seconds: 30`: Check for pruning every 30 seconds. See [pruner config](/run/run-a-generator/config-reference#pruner).
-- `pruner.prune_history: false`: Do not walk DAG chains to delete historical block versions. Setting this to true is two to three times slower. See [pruner config](/run/run-a-generator/config-reference#pruner).
-- `snapshot.enabled: true`: Produce snapshot files before pruning. Hosts can download these for historical bootstrap. See [snapshot config](/run/run-a-generator/config-reference#snapshot).
-- `snapshot.blocks_per_file: 100`: Bundle 100 blocks per snapshot file. The shipped `config.yaml` sets 100, while the code default in `SetDefaults` is 1000. See [snapshot config](/run/run-a-generator/config-reference#snapshot).
+- `pruner.enabled: true`: Turn on automatic pruning. See [pruner config](/run/ethereum/generator/config-reference#pruner).
+- `pruner.max_blocks: 1000`: Keep the last 1000 blocks in the database. At roughly 12 seconds per block, that is about 3.3 hours of history (adjust for your chain's block time). See [pruner config](/run/ethereum/generator/config-reference#pruner).
+- `pruner.docs_per_block: 1000`: Average docs per block. The pruner triggers at `max_blocks` times `docs_per_block` documents. See [pruner config](/run/ethereum/generator/config-reference#pruner).
+- `pruner.interval_seconds: 30`: Check for pruning every 30 seconds. See [pruner config](/run/ethereum/generator/config-reference#pruner).
+- `pruner.prune_history: false`: Do not walk DAG chains to delete historical block versions. Setting this to true is two to three times slower. See [pruner config](/run/ethereum/generator/config-reference#pruner).
+- `snapshot.enabled: true`: Produce snapshot files before pruning. Hosts can download these for historical bootstrap. See [snapshot config](/run/ethereum/generator/config-reference#snapshot).
+- `snapshot.blocks_per_file: 100`: Bundle 100 blocks per snapshot file. The shipped `config.yaml` sets 100, while the code default in `SetDefaults` is 1000. See [snapshot config](/run/ethereum/generator/config-reference#snapshot).
 
 ## Archival Generator config
 
@@ -157,8 +158,8 @@ snapshot:
 
 ### Archival key values
 
-- `pruner.enabled: false`: No pruning. The database retains every block, transaction, log, and signature from `start_height` onward. See [pruner config](/run/run-a-generator/config-reference#pruner).
-- `snapshot.enabled: false`: No snapshots. An archival Generator does not need snapshots because it never deletes blocks. Hosts can replicate the full history over P2P. See [snapshot config](/run/run-a-generator/config-reference#snapshot).
+- `pruner.enabled: false`: No pruning. The database retains every block, transaction, log, and signature from `start_height` onward. See [pruner config](/run/ethereum/generator/config-reference#pruner).
+- `snapshot.enabled: false`: No snapshots. An archival Generator does not need snapshots because it never deletes blocks. Hosts can replicate the full history over P2P. See [snapshot config](/run/ethereum/generator/config-reference#snapshot).
 
 ## Storage comparison
 
@@ -208,16 +209,16 @@ services:
       start_period: 60s
 ```
 
-`GOMEMLIMIT=14GiB` is a Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+`GOMEMLIMIT=14GiB` is a Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/ethereum/generator/config-reference#gomemlimit).
 
 ## Gotchas
 
-- `pruner.prune_threshold` appears in the shipped `config.yaml` with value 1. It is deprecated and unused by the pruner. It has been omitted from both configs above. See [pruner config](/run/run-a-generator/config-reference#pruner).
+- `pruner.prune_threshold` appears in the shipped `config.yaml` with value 1. It is deprecated and unused by the pruner. It has been omitted from both configs above. See [pruner config](/run/ethereum/generator/config-reference#pruner).
 - `snapshot.blocks_per_file` defaults to 1000 in the code (`SetDefaults`), but the shipped `config.yaml` sets 100. If you omit the field entirely, you get 1000. If you mount the shipped config, you get 100.
 - When switching from pruned to archival, old pruned data is gone. The Generator will not re-fetch blocks that were already deleted. You need to restart with `start_height` set to a block you want to begin archival from, or accept that history before the switch is incomplete.
 - When switching from archival to pruned, the pruner will start deleting old blocks on the next interval. Snapshot files are created before pruning begins, but if the snapshot directory does not have enough disk space, snapshots may fail and blocks will be pruned without a snapshot backup.
 - The pruner uses `DefaultCollectionConfig` which prunes `Block`, `BlockSignature`, `AccessListEntry`, `Log`, and `Transaction` collections. It does not prune `SnapshotSignature` documents, which accumulate over time even on a pruned Generator.
-- For an archival Generator, consider increasing `block_cache_mb` and `index_cache_mb` to keep more of the larger database in memory. See the [high-throughput tuning scenario](../high-throughput-tuning/) for cache sizing guidance.
+- For an archival Generator, consider increasing `block_cache_mb` and `index_cache_mb` to keep more of the larger database in memory. See the [high-throughput tuning scenario](/run/ethereum/generator/deployment-examples/high-throughput-tuning/) for cache sizing guidance.
 
 ## Need help
 

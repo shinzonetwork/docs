@@ -1,4 +1,5 @@
 +++
+render = false
 title = "Troubleshooting"
 description = "Common errors, troubleshooting steps, and frequently asked questions for Generator clients, Host clients, and Viewkit."
 +++
@@ -15,7 +16,7 @@ No. The Generator client is a sidecar that connects to an existing execution nod
 
 ### What hardware is recommended for deploying Shinzo?
 
-The Generator client is lightweight on CPU, but storage performance and host stability matter for reliable operation. See the [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements) for the full table.
+The Generator client is lightweight on CPU, but storage performance and host stability matter for reliable operation. See the [hardware requirements](/run/ethereum/generator/prerequisites#hardware-requirements) for the full table.
 
 ### Which RPC methods does the Generator client call on the upstream node?
 
@@ -60,11 +61,11 @@ The Generator client reads all blockchain data, including blocks, transactions, 
 
 ### How much space do I need?
 
-With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet; we recommend provisioning 300 to 500 GB to leave headroom (see [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history. Storage figures differ by chain. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
+With pruning enabled (the default), the Generator's own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet; we recommend provisioning 300 to 500 GB to leave headroom (see [hardware requirements](/run/ethereum/generator/prerequisites#hardware-requirements)). The pruner retains the last 1,000 blocks by default and reclaims older ones. Without pruning, storage grows with chain history. Storage figures differ by chain. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
 
 ### How long does it take to sync?
 
-Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The shipped `config.yaml` sets `blocks_per_minute: 60`, which caps the Generator client at one block per second. That cap only matters when catching up from an old start height: at the chain head the Generator client easily keeps up, since chains produce blocks much more slowly than one per second. Raise `blocks_per_minute` if catch-up is too slow, or set it to `0` to remove the cap. With no cap, speed depends on your node. See [high-throughput tuning](/run/run-a-generator/deployment-examples/high-throughput-tuning/).
+Sync time depends entirely on the chosen start height. The further back the Generator client begins, the longer it will take to catch up to the current block height. The shipped `config.yaml` sets `blocks_per_minute: 60`, which caps the Generator client at one block per second. That cap only matters when catching up from an old start height: at the chain head the Generator client easily keeps up, since chains produce blocks much more slowly than one per second. Raise `blocks_per_minute` if catch-up is too slow, or set it to `0` to remove the cap. With no cap, speed depends on your node. See [high-throughput tuning](/run/ethereum/generator/deployment-examples/high-throughput-tuning/).
 
 ### How do I choose a start height?
 
@@ -104,9 +105,9 @@ The dashboard determines if a node is online/offline by probing `http://<your-se
 
 This is the most common reason a running Generator appears offline, and it almost always comes down to `8080` not being published or opened:
 
-- **Docker:** the default `docker run` in [Install](/run/run-a-generator/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
+- **Docker:** the default `docker run` in [Install](/run/ethereum/generator/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
 - **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
-- **Reverse proxy:** if you put nginx in front (as in the [Nginx with snapshots](/run/run-a-generator/deployment-examples/nginx-with-snapshots/) example), make sure the dashboard's plaintext probe to `http://<your-server-ip>:8080/health` reaches the Generator's health server on port `8080`. If your proxy only listens on a TLS port such as `443`, also publish `8080` directly so the probe can reach it.
+- **Reverse proxy:** if you put nginx in front (as in the [Nginx with snapshots](/run/ethereum/generator/deployment-examples/nginx-with-snapshots/) example), make sure the dashboard's plaintext probe to `http://<your-server-ip>:8080/health` reaches the Generator's health server on port `8080`. If your proxy only listens on a TLS port such as `443`, also publish `8080` directly so the probe can reach it.
 
 Confirm the fix by running the same probe the dashboard runs, from outside your server:
 
@@ -124,11 +125,11 @@ A healthy Generator returns `healthy`. A connection refused or timeout means `80
 
 ### What is the difference between a Host and a Generator?
 
-Generator clients are the write side: they read raw blocks from an execution node, sign the data, gossip it over P2P, and provide attestations to prove the data is correct. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node, but a Host client never does. See the [Run a Host](/run/run-a-host/hardware-requirements/) overview for more.
+Generator clients are the write side: they read raw blocks from an execution node, sign the data, gossip it over P2P, and provide attestations to prove the data is correct. Host clients are the read side: they receive those signed primitives, verify them, run WebAssembly lens transforms to build Views, and serve the results to applications over GraphQL. A Generator client talks to a source-chain node, but a Host client never does. See the [Run a Host](/run/ethereum/host/hardware-requirements/) overview for more.
 
 ### Do I need to run my own Generator client to run a Host client?
 
-No, but you do need access to at least one working Generator client. A Host client doesn't read the source chain itself; it receives signed primitives from Generator clients over P2P, so it needs at least one reachable Generator client to sync from. That Generator client doesn't have to be _yours_; you can point at any one you can reach. The image ships with default peers, but they aren't guaranteed to be live, so in practice set `BOOTSTRAP_PEERS` to a Generator client you know is up (see [Install](/run/run-a-host/install/)).
+No, but you do need access to at least one working Generator client. A Host client doesn't read the source chain itself; it receives signed primitives from Generator clients over P2P, so it needs at least one reachable Generator client to sync from. That Generator client doesn't have to be _yours_; you can point at any one you can reach. The image ships with default peers, but they aren't guaranteed to be live, so in practice set `BOOTSTRAP_PEERS` to a Generator client you know is up (see [Install](/run/ethereum/host/install/)).
 
 A public Generator client you can point at is planned; this page will link it once it's live.
 
@@ -156,7 +157,7 @@ The peer ID is derived from the Generator client's keyring secret, so it's stabl
 
 ### What hardware is recommended for running a Host client?
 
-See [Hardware requirements](/run/run-a-host/hardware-requirements/) for a detailed rundown of hardware recommendations.
+See [Hardware requirements](/run/ethereum/host/hardware-requirements/) for a detailed rundown of hardware recommendations.
 
 ### How do Views and lenses arrive on my Host client?
 
@@ -191,7 +192,7 @@ Copy the directory somewhere safe:
 cp -r ~/.defra/keys /mnt/backup-drive/   # adjust the source path to match your setup
 ```
 
-See [Register](/run/run-a-host/register/#back-up-your-node-identity-key) for more.
+See [Register](/run/ethereum/host/register/#back-up-your-node-identity-key) for more.
 
 ### My Host client starts but connects to no peers. What's wrong?
 
@@ -201,7 +202,7 @@ The Host client is running but can't sync from a Generator client. Check `docker
 - `all dials failed` / `no route to host` / `i/o timeout` all mean that the address is unreachable. Confirm the Generator client is up and that outbound port `9171` is open from your machine.
 - `dial tcp4 ... i/o timeout` usually indicates that you're running the Host client on an IPv6-only machine. The IPv4 peers are unreachable. Run on a dual-stack host, or enable NAT64/DNS64.
 
-See [Install](/run/run-a-host/install/#use-docker) for how to confirm a healthy connection.
+See [Install](/run/ethereum/host/install/#use-docker) for how to confirm a healthy connection.
 
 ### My Host appears offline in the dashboard but is still running
 
@@ -209,9 +210,9 @@ The dashboard determines if a node is online/offline by probing `http://<your-se
 
 This is the most common reason a running Host appears offline, and it almost always comes down to `8080` not being published or opened:
 
-- **Docker:** the default `docker run` in [Install](/run/run-a-host/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
+- **Docker:** the default `docker run` in [Install](/run/ethereum/host/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
 - **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
-- **Reverse proxy:** if you put nginx in front (as in the [Quickstart](/run/run-a-host/quickstart/)), make sure it routes `/health` to the Host client's health server on port `8080`, not to DefraDB on `9181`. Otherwise the probe reaches DefraDB, which doesn't answer `/health` the way the dashboard expects.
+- **Reverse proxy:** if you put nginx in front (as in the [Quickstart](/run/ethereum/host/quickstart/)), make sure it routes `/health` to the Host client's health server on port `8080`, not to DefraDB on `9181`. Otherwise the probe reaches DefraDB, which doesn't answer `/health` the way the dashboard expects.
 
 Confirm the fix by running the same probe the dashboard runs, from outside your server:
 
@@ -235,7 +236,7 @@ curl -si -X OPTIONS https://<your-host>/api/v0/graphql \
   -H "Access-Control-Request-Method: POST"
 ```
 
-A working setup answers with `204` and an `Access-Control-Allow-Origin` header echoing the origin you sent. If the header is missing or empty, your proxy isn't handling CORS. See [CORS for browser access](/run/run-a-host/install/#cors-for-browser-access) for what to allow, or the [prod VM example](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/) for a full nginx config.
+A working setup answers with `204` and an `Access-Control-Allow-Origin` header echoing the origin you sent. If the header is missing or empty, your proxy isn't handling CORS. See [CORS for browser access](/run/ethereum/host/install/#cors-for-browser-access) for what to allow, or the [prod VM example](/run/ethereum/host/deployment-examples/prod-vm-nginx-tls/) for a full nginx config.
 
 ## Viewkit
 

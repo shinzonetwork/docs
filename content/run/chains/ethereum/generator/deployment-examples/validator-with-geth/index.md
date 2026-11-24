@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/deployment-examples/validator-with-geth"
+path = "run/ethereum/generator/deployment-examples/validator-with-geth"
+aliases = ["run/run-a-generator/deployment-examples/validator-with-geth"]
 title = "Validator with Geth"
 description = "Run the Generator client beside your own Geth node on the same machine or VPC, with no API key and minimal latency."
 [extra]
@@ -8,7 +9,7 @@ mermaid = true
 
 When to use this: you run a validator and want to run the Generator client beside your own Geth node on the same machine or VPC, with no API key and minimal latency.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/ethereum/generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -31,7 +32,7 @@ The Generator and Geth share a single machine. The Generator connects to Geth ov
 
 - Docker installed on the validator machine.
 - Geth running and synced, with HTTP and WebSocket enabled on ports 8545 and 8546. See the [Geth documentation](https://geth.ethereum.org/docs/fundamentals/security) for configuration.
-- Ports 9171, 9181, and 8080 available on the validator machine. See [exposed ports](/run/run-a-generator/install#exposed-ports) for details, and [Security](/run/run-a-generator/security/) for which of these to publish and which to keep private.
+- Ports 9171, 9181, and 8080 available on the validator machine. See [exposed ports](/run/ethereum/generator/install#exposed-ports) for details, and [Security](/run/ethereum/generator/security/) for which of these to publish and which to keep private.
 
 ## Run the Generator
 
@@ -64,13 +65,13 @@ docker run -d \
 
 ### What each value means
 
-- `GETH_RPC_URL=http://localhost:8545`: Geth JSON-RPC on localhost. See [geth config](/run/run-a-generator/config-reference#geth).
-- `GETH_WS_URL=ws://localhost:8546`: Geth WebSocket on localhost. See [geth config](/run/run-a-generator/config-reference#geth).
-- `INDEXER_START_HEIGHT=0`: Start verifiable indexing from the chain tip. See [indexer config](/run/run-a-generator/config-reference#indexer).
-- `DEFRADB_KEYRING_SECRET=testnet-secret`: Encryption secret for the DefraDB keyring. Change this to your own secret and keep it consistent across restarts. See [defradb config](/run/run-a-generator/config-reference#defradb).
-- `DEFRADB_P2P_ENABLED=true`: Enable P2P networking so the Generator can push data to Hosts. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).
-- `DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171`: Listen on all interfaces so Hosts outside the machine can connect. See [defradb p2p config](/run/run-a-generator/config-reference#defradb-p2p).
-- `LOGGER_DEBUG=false`: Production log level. Set to `true` for debug-level output during setup. See [logger config](/run/run-a-generator/config-reference#logger).
+- `GETH_RPC_URL=http://localhost:8545`: Geth JSON-RPC on localhost. See [geth config](/run/ethereum/generator/config-reference#geth).
+- `GETH_WS_URL=ws://localhost:8546`: Geth WebSocket on localhost. See [geth config](/run/ethereum/generator/config-reference#geth).
+- `INDEXER_START_HEIGHT=0`: Start verifiable indexing from the chain tip. See [indexer config](/run/ethereum/generator/config-reference#indexer).
+- `DEFRADB_KEYRING_SECRET=testnet-secret`: Encryption secret for the DefraDB keyring. Change this to your own secret and keep it consistent across restarts. See [defradb config](/run/ethereum/generator/config-reference#defradb).
+- `DEFRADB_P2P_ENABLED=true`: Enable P2P networking so the Generator can push data to Hosts. See [defradb p2p config](/run/ethereum/generator/config-reference#defradb-p2p).
+- `DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171`: Listen on all interfaces so Hosts outside the machine can connect. See [defradb p2p config](/run/ethereum/generator/config-reference#defradb-p2p).
+- `LOGGER_DEBUG=false`: Production log level. Set to `true` for debug-level output during setup. See [logger config](/run/ethereum/generator/config-reference#logger).
 - `-v ~/shinzo-data/defradb:/app/.defra`: Keeps the database, node identity, and snapshots on the host. Without the mount, an image update or a `docker rm` discards them.
 
 ## Verify the connection
@@ -97,15 +98,15 @@ If `blocks_processed` is climbing, the Generator is receiving blocks from Geth a
 
 ## Registration
 
-Once the Generator is running, register it with the Shinzo Network. See [Registration](/run/run-a-generator/register/).
+Once the Generator is running, register it with the Shinzo Network. See [Registration](/run/ethereum/generator/register/).
 
 ## Gotchas
 
 - `DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator cannot load its existing DefraDB identity and will fail to start. The value `testnet-secret` is from the install page. Replace it with your own secret for any real deployment.
-- The install page includes `DEFRADB_PLAYGROUND=true` in its `docker run` example. This env var is not read by the Generator client. The playground is controlled by build tags, not environment variables. See the [env vars table](/run/run-a-generator/config-reference#environment-variables) for which vars are effective.
+- The install page includes `DEFRADB_PLAYGROUND=true` in its `docker run` example. This env var is not read by the Generator client. The playground is controlled by build tags, not environment variables. See the [env vars table](/run/ethereum/generator/config-reference#environment-variables) for which vars are effective.
 - If Geth is on a different machine in the same VPC, replace `localhost` with the internal IP or hostname of the Geth machine. Still no API key needed as long as the traffic stays within the private network.
 - If the Generator falls back to HTTP-only mode, the WebSocket connection to Geth failed. Check that `GETH_WS_URL` is correct and that Geth has WebSocket enabled with `--ws --ws.port 8546`.
-- The default `config.yaml` in the container image enables pruning with `max_blocks: 1000` and snapshots with `blocks_per_file: 100`. For an archival Generator, see the [archival versus pruned scenario](../archival-vs-pruned/).
+- The default `config.yaml` in the container image enables pruning with `max_blocks: 1000` and snapshots with `blocks_per_file: 100`. For an archival Generator, see the [archival versus pruned scenario](/run/ethereum/generator/deployment-examples/archival-vs-pruned/).
 
 ## Need help
 

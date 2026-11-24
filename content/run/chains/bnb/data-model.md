@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/data-model"
+path = "run/bnb/data-model"
+aliases = ["run/chains/bnb/mainnet/data-model"]
 title = "Data model & examples \u2014 BNB Smart Chain Mainnet"
 description = "Query BNB Smart Chain primitives using the exact source-network namespace."
 template = "chain-page.html"

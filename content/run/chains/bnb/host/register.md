@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/host/register"
+path = "run/bnb/host/register"
+aliases = ["run/chains/bnb/mainnet/host/register"]
 title = "Register a Host \u2014 BNB Smart Chain Mainnet"
 description = "Register the Host identity after verifying BNB Smart Chain ingestion."
 template = "chain-page.html"
@@ -16,7 +17,7 @@ Confirm the Host has the `BSC__Mainnet` schema and receives advancing data from 
 
 ## Register on ShinzoHub
 
-The shared [Host registration guide](/run/run-a-host/register/) covers the hosted app, local app, and CLI options. Register against the designated **Shinzo testnet**, not BSC chain ID 56. Have a wallet funded with testnet SHNZ for the registry transaction.
+The shared [Host registration guide](/run/ethereum/host/register/) covers the hosted app, local app, and CLI options. Register against the designated **Shinzo testnet**, not BSC chain ID 56. Have a wallet funded with testnet SHNZ for the registry transaction.
 
 Use the Host's public identity and reachable connection string. Generator validator assertions are a different flow and are not Host prerequisites.
 

@@ -27,4 +27,4 @@ View output types keep whatever name the View's SDL declares: `Erc20Event`, `Eve
 - The parts are case-sensitive and use the configured values verbatim.
 - The examples across these docs use the `<Chain>__<Network>__` placeholder. Substitute the prefix that matches your data, for example `Ethereum__Mainnet__Block` or `Optimism__Mainnet__Block`.
 
-See the [chain config](/run/run-a-generator/config-reference#chain) for the settings behind the prefix.
+See the [chain config](/run/ethereum/generator/config-reference#chain) for the settings behind the prefix.

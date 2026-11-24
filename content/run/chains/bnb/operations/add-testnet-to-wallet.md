@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/operations/add-testnet-to-wallet"
+path = "run/bnb/operations/add-testnet-to-wallet"
+aliases = ["run/chains/bnb/mainnet/operations/add-testnet-to-wallet"]
 title = "Add the testnet to your wallet"
 description = "Connect a browser wallet to the Shinzo testnet."
 template = "chain-page.html"

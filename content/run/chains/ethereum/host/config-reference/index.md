@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/config-reference"
+path = "run/ethereum/host/config-reference"
+aliases = ["run/run-a-host/config-reference"]
 title = "Config reference"
 description = "Every Host client config field with its YAML key, default, env var override, and notes on which keys are silently ignored."
 +++
@@ -221,7 +222,7 @@ The following env vars appear in some deployment artifacts but are not read by t
 | `LOG_LEVEL` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. Log level is controlled by `logger.development`. |
 | `LOG_SOURCE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
 | `LOG_STACKTRACE` | `docker-compose-prod.yml`, `host-prod-setup.sh`, GCP startup scripts | Not read. |
-| `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/run-a-host/config-reference#gomemlimit). |
+| `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/ethereum/host/config-reference#gomemlimit). |
 | `ALLOWED_ORIGINS` | `host-prod-setup.sh` | Not read. CORS is handled by the reverse proxy, not the Host client. |
 
 ### GOMEMLIMIT

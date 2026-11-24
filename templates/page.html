@@ -5,6 +5,7 @@
 {% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
 
 {% block body %}
+{% if page.extra.shared_page %}{% set content_page = get_page(path=page.extra.shared_page) %}{% else %}{% set content_page = page %}{% endif %}
 <main class="main-wrapper">
   <div class="docs-layout">
     <aside class="theme-doc-sidebar-container">
@@ -36,7 +37,7 @@
         <p class="lead-text">{{ page.description }}</p>
         {% endif %}
 
-        {{ page.content | safe }}
+        {{ content_page.content | safe }}
 
         {# Prev / next navigation #}
         {# (rendered below; TOC lives in the aside column) #}
@@ -61,12 +62,12 @@
     </div>
 
     {# Table of contents (right column) #}
-    {% if page.toc %}
+    {% if content_page.toc %}
     <aside class="toc-container">
       <nav class="toc" aria-label="Table of contents">
         <div class="toc__title">On this page</div>
         <ul class="toc__list">
-          {% for h1 in page.toc %}
+          {% for h1 in content_page.toc %}
           <li class="toc__item">
             <a class="toc__link" href="#{{ h1.id | safe }}">{{ h1.title }}</a>
             {% if h1.children %}

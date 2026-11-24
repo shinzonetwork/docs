@@ -55,6 +55,8 @@ Every page is a folder containing an `index.md` file. The URL is derived from th
 
 If you're moving or renaming a page, add the old path to `static/_redirects` as a permanent (301) redirect. Cloudflare Pages serves these as real HTTP redirects, which search engines handle better than meta-refresh pages. Write each rule twice: bare path and trailing-slash form.
 
+Also add the old path to the page's `aliases` frontmatter so the redirect works in a local Zola preview. Keep the `_redirects` destination and the page's new `path` in sync.
+
 ```text
 /old-path      /new/section/new-page/  301
 /old-path/     /new/section/new-page/  301

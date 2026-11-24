@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/deployment-examples/nginx-with-snapshots"
+path = "run/ethereum/generator/deployment-examples/nginx-with-snapshots"
+aliases = ["run/run-a-generator/deployment-examples/nginx-with-snapshots"]
 title = "Nginx with snapshots"
 description = "Run a production Generator behind nginx with TLS termination and serve signed snapshot files to Hosts for fast historical bootstrap."
 [extra]
@@ -8,7 +9,7 @@ mermaid = true
 
 When to use this: you want to run a production Generator behind Nginx with TLS, serving snapshot files to Host clients for fast historical bootstrapping.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/ethereum/generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -203,10 +204,10 @@ http {
 
 ### What the key values mean
 
-- `SNAPSHOT_ENABLED=true`: The Generator produces signed snapshot files before pruning. The original `docker-compose-prod.yml` sets this to `false`. This scenario enables it so Hosts can bootstrap from snapshots. See [snapshot config](/run/run-a-generator/config-reference#snapshot).
-- `SCHEMA_AUTH_MODE=none`: Disables authentication on the `/api/v1/schema` endpoints that Nginx proxies. The code default is `token`, which requires keys via `SCHEMA_API_KEYS` or every schema request returns 503. The repo's `docker-compose-prod.yml` sets `none`. See [indexer config](/run/run-a-generator/config-reference#indexer).
-- `GETH_API_KEY_TYPE=x-goog-api-key`: Header name for GCP BNE authentication. See [geth config](/run/run-a-generator/config-reference#geth).
-- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+- `SNAPSHOT_ENABLED=true`: The Generator produces signed snapshot files before pruning. The original `docker-compose-prod.yml` sets this to `false`. This scenario enables it so Hosts can bootstrap from snapshots. See [snapshot config](/run/ethereum/generator/config-reference#snapshot).
+- `SCHEMA_AUTH_MODE=none`: Disables authentication on the `/api/v1/schema` endpoints that Nginx proxies. The code default is `token`, which requires keys via `SCHEMA_API_KEYS` or every schema request returns 503. The repo's `docker-compose-prod.yml` sets `none`. See [indexer config](/run/ethereum/generator/config-reference#indexer).
+- `GETH_API_KEY_TYPE=x-goog-api-key`: Header name for GCP BNE authentication. See [geth config](/run/ethereum/generator/config-reference#geth).
+- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/ethereum/generator/config-reference#gomemlimit).
 - The Nginx `proxy_buffering off` and extended timeouts on `/snapshots/(.+)$` prevent Nginx from buffering large snapshot downloads. `client_max_body_size 0` removes the request body size limit.
 
 ### Serving the dashboard health check on 8080
@@ -252,17 +253,17 @@ curl https://your-domain/snapshots
 
 ## Registration
 
-Once the Generator is running, register it with the Shinzo Network. See [Registration](/run/run-a-generator/register/).
+Once the Generator is running, register it with the Shinzo Network. See [Registration](/run/ethereum/generator/register/).
 
 ## Gotchas
 
 - The original `docker-compose-prod.yml` sets `SNAPSHOT_ENABLED=false`. This scenario changes it to `true` because the purpose is to serve snapshots to Hosts. If you keep it `false`, no snapshot files are produced and the `/snapshots` endpoint returns nothing.
 - The Nginx config terminates TLS on port 443 (`listen 443 ssl;` with `ssl_certificate` / `ssl_certificate_key` pointing at `/etc/nginx/ssl/nginx.crt` and `/etc/nginx/ssl/nginx.key`), and the compose maps host `443` to container `443`. You must place your certificate and key at `~/ssl/nginx.crt` and `~/ssl/nginx.key` or Nginx will fail to start. The repo's `nginx.conf` listens on `8080` as plaintext and maps `8080:8080` and does not terminate TLS, so the `listen 443 ssl` and `ssl_certificate*` directives above are the only additions this scenario makes beyond the repo file.
-- The image tag `ghcr.io/shinzonetwork/shinzo-generator-client:standard` in this compose matches `docker-compose-prod.yml`. The repo's `indexer-prod-setup.sh` pins a versioned tag (`ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.1-ethereum-mainnet`), and the [install page](/run/run-a-generator/install/) uses `ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest`. Docker pull/run tag strategy is being consolidated in issues #326 and #327; align with whatever those land on rather than mixing tags across deployments.
-- `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `docker-compose-prod.yml` but are not read by the Generator client, so they are omitted here. `SCHEMA_AUTH_MODE=none` is kept because the Generator client does read it (it controls auth on the `/api/v1/schema` endpoints Nginx proxies). See the [env vars table](/run/run-a-generator/config-reference#environment-variables) for details.
+- The image tag `ghcr.io/shinzonetwork/shinzo-generator-client:standard` in this compose matches `docker-compose-prod.yml`. The repo's `indexer-prod-setup.sh` pins a versioned tag (`ghcr.io/shinzonetwork/shinzo-generator-client:v0.6.5.1-ethereum-mainnet`), and the [install page](/run/ethereum/generator/install/) uses `ghcr.io/shinzonetwork/shinzo-generator-client:ethereum-mainnet-latest`. Docker pull/run tag strategy is being consolidated in issues #326 and #327; align with whatever those land on rather than mixing tags across deployments.
+- `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `docker-compose-prod.yml` but are not read by the Generator client, so they are omitted here. `SCHEMA_AUTH_MODE=none` is kept because the Generator client does read it (it controls auth on the `/api/v1/schema` endpoints Nginx proxies). See the [env vars table](/run/ethereum/generator/config-reference#environment-variables) for details.
 - The snapshot directory defaults to `./snapshots` inside the container. Snapshots are written to the DefraDB data directory at `~/shinzo-data/defradb/snapshots` on the host because of the volume mount. Hosts download them through Nginx, not directly from the filesystem.
 - The `proxy_read_timeout` and `proxy_send_timeout` are set to 300 seconds for snapshot downloads. Large snapshot files can take time to transfer. If Hosts time out downloading, increase these values.
-- **Dashboard online check:** this scenario only opens `443` and `9171`, so the dashboard's plaintext probe to `http://<your-server-ip>:8080/health` can't reach the Generator and it shows as offline even while it's healthy. See [Serving the dashboard health check on 8080](#serving-the-dashboard-health-check-on-8080) to publish `/health` without exposing the other paths, and [Troubleshooting](/run/operations/troubleshooting/#my-generator-appears-offline-in-the-dashboard-but-is-still-running) for the general case.
+- **Dashboard online check:** this scenario only opens `443` and `9171`, so the dashboard's plaintext probe to `http://<your-server-ip>:8080/health` can't reach the Generator and it shows as offline even while it's healthy. See [Serving the dashboard health check on 8080](#serving-the-dashboard-health-check-on-8080) to publish `/health` without exposing the other paths, and [Troubleshooting](/run/ethereum/operations/troubleshooting/#my-generator-appears-offline-in-the-dashboard-but-is-still-running) for the general case.
 
 ## Need help
 

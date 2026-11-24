@@ -91,7 +91,7 @@ PAGES = [
     "understand/core-concepts/views",
     "reference/glossary",
     "build/how-to/query-data",
-    "run/run-a-generator/install",
+    "run/ethereum/generator/install",
 ]
 
 for rel in PAGES:

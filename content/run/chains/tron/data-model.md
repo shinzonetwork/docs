@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/data-model"
+path = "run/tron/data-model"
+aliases = ["run/chains/tron/mainnet/data-model"]
 title = "Data model & examples \u2014 TRON Mainnet"
 description = "Inspect the TRON adapter\u2019s collections and avoid EVM-only assumptions."
 template = "chain-page.html"

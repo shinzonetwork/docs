@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/operations/troubleshooting"
+path = "run/bnb/operations/troubleshooting"
+aliases = ["run/chains/bnb/mainnet/operations/troubleshooting"]
 title = "Troubleshooting"
 description = "Common Generator and Host issues and how to resolve them."
 template = "chain-page.html"

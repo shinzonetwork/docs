@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/generator/prerequisites"
+path = "run/tron/generator/prerequisites"
+aliases = ["run/chains/tron/mainnet/generator/prerequisites"]
 title = "Generator prerequisites \u2014 TRON Mainnet"
 description = "Prepare the TRON wallet APIs and the integration-preview build environment."
 template = "chain-page.html"

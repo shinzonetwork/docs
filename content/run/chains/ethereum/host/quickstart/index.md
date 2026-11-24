@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/quickstart"
+path = "run/ethereum/host/quickstart"
+aliases = ["run/run-a-host/quickstart"]
 title = "Quick Start"
 description = "Run a Shinzo Host to transform blockchain data into verifiable Views"
 +++
@@ -8,7 +9,7 @@ Hosts turn raw blockchain data into structured Views and produce Attestation Rec
 
 ## Hardware recommendations
 
-The Host client does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage of a full node or archival Generator. See the [hardware requirements page](../hardware-requirements/) for CPU, RAM, storage, and network sizing.
+The Host client does not run a blockchain node and has no archival mode, so it never needs the multi-terabyte storage of a full node or archival Generator. See the [hardware requirements page](/run/ethereum/host/hardware-requirements/) for CPU, RAM, storage, and network sizing.
 
 ## Local deployment
 
@@ -328,7 +329,7 @@ services:
 ```
 
 {% <admonition type="info"> %}
-This compose file pairs `mem_limit: 16g` with `GOMEMLIMIT=14GiB`. Scale both together if your VM has more or less RAM. See [memory limits](/run/run-a-host/config-reference#gomemlimit) for what each limit covers.
+This compose file pairs `mem_limit: 16g` with `GOMEMLIMIT=14GiB`. Scale both together if your VM has more or less RAM. See [memory limits](/run/ethereum/host/config-reference#gomemlimit) for what each limit covers.
 {% </admonition> %}
 
 ### Start the Host client

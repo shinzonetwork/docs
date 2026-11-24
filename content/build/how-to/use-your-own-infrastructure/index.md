@@ -19,8 +19,8 @@ A fully air-gapped setup cuts ShinzoHub off entirely by setting `shinzo.hub_base
 
 This page is the bridge, not the guide. The run section has the real instructions:
 
-1. Run a Generator client to produce the signed primitive data. Start with [Run a Generator](/run/run-a-generator/install/) for installation and configuration.
-1. Run a Host client against it. [Install a Host](/run/run-a-host/install/) covers the binary and ports, and [Private Hosts](/run/run-a-host/private-hosts/) walks through both privacy tiers with complete configs, including how to load Views onto an air-gapped Host.
+1. Run a Generator client to produce the signed primitive data. Start with [Run a Generator](/run/ethereum/generator/install/) for installation and configuration.
+1. Run a Host client against it. [Install a Host](/run/ethereum/host/install/) covers the binary and ports, and [Private Hosts](/run/ethereum/host/private-hosts/) walks through both privacy tiers with complete configs, including how to load Views onto an air-gapped Host.
 1. Point your app at your Host exactly as you would at a public one. The `connection_string` and `endpoint_address` come from your Host's own `/registration` endpoint.
 
 Expect to run real infrastructure: a synced source-chain node or a managed endpoint for the Generator, disk for DefraDB, and the usual monitoring.

@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/register"
+path = "run/ethereum/generator/register"
+aliases = ["run/run-a-generator/register"]
 title = "Register"
 description = "How to register your Generator on the Shinzo Network: the assertion step, the on-chain registration, and backing up your node identity key."
 +++
@@ -8,9 +9,9 @@ To participate in the Shinzo Network, you must register your node. Registration 
 
 ## Prerequisites
 
-Running the Generator client only requires an execution node (see [Install](../install)). To register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step that ties your generator's operator key to your validator identity. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
+Running the Generator client only requires an execution node (see [Install](/run/ethereum/generator/install)). To register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step that ties your generator's operator key to your validator identity. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
 
-Before you start, have the items in [Registration requirements](../prerequisites#registration-requirements) ready: 
+Before you start, have the items in [Registration requirements](/run/ethereum/generator/prerequisites#registration-requirements) ready:
 
 - Your validator's consensus public key. 
 - Your validator's withdrawal address
@@ -18,7 +19,7 @@ Before you start, have the items in [Registration requirements](../prerequisites
 
 ## Register your Generator
 
-1. Start your Generator client with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Generators dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Generator shows as online. If `8080` isn't reachable from the internet, your Generator shows as offline on the dashboard even while it's running fine. The default `docker run` in [Install](../install) already publishes `8080`.
+1. Start your Generator client with the health/registration port published (`-p 8080:8080`) and open inbound TCP `8080` in your firewall. The registration app is served on port `8080`, and the public Generators dashboard also probes `http://<your-server-ip>:8080/health` to decide whether your Generator shows as online. If `8080` isn't reachable from the internet, your Generator shows as offline on the dashboard even while it's running fine. The default `docker run` in [Install](/run/ethereum/generator/install) already publishes `8080`.
 1. Add the Shinzo Testnet to your browser wallet with the following values:
    - Network name: `Shinzo`
    - Default RPC URL: `http://testnet.shinzo.network:8545`

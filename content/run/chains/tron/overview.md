@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet"
+path = "run/tron"
+aliases = ["run/chains/tron/mainnet"]
 title = "TRON Mainnet"
 description = "Explore Generator setup for TRON Mainnet and review Host compatibility requirements."
 template = "chain-page.html"

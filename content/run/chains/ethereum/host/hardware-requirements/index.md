@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/hardware-requirements"
+path = "run/ethereum/host/hardware-requirements"
+aliases = ["run/run-a-host/hardware-requirements"]
 title = "Hardware requirements"
 description = "Hardware sizing for a Host client: what drives CPU, RAM, and storage needs, and why a Host never needs the storage a blockchain node does."
 +++
@@ -19,7 +20,7 @@ The Host client has specific hardware requirements depending on the linked Gener
 | Storage | 300 GB | 500 GB |
 | Network | 100 Mbps | 1 Gbps |
 
-The 16 GB recommendation assumes a 16g container limit with `GOMEMLIMIT` at 14GiB. Scale the limits along with the RAM. See [memory limits](/run/run-a-host/config-reference#gomemlimit).
+The 16 GB recommendation assumes a 16g container limit with `GOMEMLIMIT` at 14GiB. Scale the limits along with the RAM. See [memory limits](/run/ethereum/host/config-reference#gomemlimit).
 
 ## Storage
 

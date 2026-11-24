@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet"
+path = "run/bnb"
+aliases = ["run/chains/bnb/mainnet"]
 title = "BNB Smart Chain Mainnet"
 description = "Run a Generator to publish BNB Smart Chain data, or connect a Host to serve it."
 template = "chain-page.html"

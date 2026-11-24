@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/host/prerequisites"
+path = "run/bnb/host/prerequisites"
+aliases = ["run/chains/bnb/mainnet/host/prerequisites"]
 title = "Host prerequisites \u2014 BNB Smart Chain Mainnet"
 description = "Prepare a Host that serves BNB Smart Chain Mainnet collections."
 template = "chain-page.html"

@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/host/install"
+path = "run/bnb/host/install"
+aliases = ["run/chains/bnb/mainnet/host/install"]
 title = "Install a Host \u2014 BNB Smart Chain Mainnet"
 description = "Connect the released Host to BNB Smart Chain Generators with an explicit chain configuration."
 template = "chain-page.html"
@@ -85,7 +86,7 @@ docker run -d --name shinzo-host-bnb \
   ghcr.io/shinzonetwork/shinzo-host-client:v0.7.2-ethereum-mainnet
 ```
 
-The 16 GB container limit and 14 GiB runtime budget form a consistent example allocation, not a measured minimum. Change both together when sizing the machine. This example binds GraphQL to localhost; public browser access requires the [proxy and CORS setup](/run/run-a-host/install/#cors-for-browser-access).
+The 16 GB container limit and 14 GiB runtime budget form a consistent example allocation, not a measured minimum. Change both together when sizing the machine. This example binds GraphQL to localhost; public browser access requires the [proxy and CORS setup](/run/ethereum/host/install/#cors-for-browser-access).
 
 If running a Generator on the same machine, select unused host-side port mappings and update your checks and registered endpoint accordingly. The container paths remain unchanged.
 

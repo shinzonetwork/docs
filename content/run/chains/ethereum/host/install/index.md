@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/install"
+path = "run/ethereum/host/install"
+aliases = ["run/run-a-host/install"]
 title = "Install"
 description = "How to install a Host client with Docker or a source build and connect it to a Generator client to sync from."
 +++
@@ -13,8 +14,8 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
-- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A Host connects to one or more Generator clients to receive blockchain data. You can connect to a Shinzo-operated Generator client or configure your own. Generator connections are defined in the chains section of `config.yaml`. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
-- **Hardware** that meets the [recommendations](/run/run-a-host/hardware-requirements/).
+- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A Host connects to one or more Generator clients to receive blockchain data. You can connect to a Shinzo-operated Generator client or configure your own. Generator connections are defined in the chains section of `config.yaml`. The [Operator Quickstart](/run/ethereum/host/quickstart/) walks through standing up a Generator client and a Host client together.
+- **Hardware** that meets the [recommendations](/run/ethereum/host/hardware-requirements/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
 
@@ -117,7 +118,7 @@ chains:
 
     A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. A public Generator client to point at is coming; this page will link a known-good endpoint and a ready-to-run query once it's live. See [query examples](/build/how-to/query-data/).
 
-1. To serve data to the network, register your Host client with ShinzoHub. See [Register a Host](/run/run-a-host/register/).
+1. To serve data to the network, register your Host client with ShinzoHub. See [Register a Host](/run/ethereum/host/register/).
 
 ### Running a persistent host
 
@@ -216,7 +217,7 @@ A stock Host client sends no CORS headers and it never passes any allowed origin
 
 Server-to-server traffic is unaffected. The Shinzo network explorer and the registration app probe registered Host clients from the server side, and the registration flow is a redirect from your client's `/registration-app` endpoint to `registration.shinzo.network`, so neither needs CORS on your Host.
 
-To serve a browser app, put a reverse proxy in front (the [prod VM example](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/) has a complete nginx config) and allow:
+To serve a browser app, put a reverse proxy in front (the [prod VM example](/run/ethereum/host/deployment-examples/prod-vm-nginx-tls/) has a complete nginx config) and allow:
 
 - Origin: the app's origin, echoed back in `Access-Control-Allow-Origin`. For the Shinzo explorer that is `https://explorer.shinzo.network`.
 - Paths: `/api/v0/graphql` on the API port, and `/health`, `/metrics`, `/registration`, `/registration-app` on the health server port.
@@ -224,7 +225,7 @@ To serve a browser app, put a reverse proxy in front (the [prod VM example](/run
 - Headers: `Authorization, Content-Type, Accept, Origin`.
 - Preflight: answer `OPTIONS` requests at the proxy. The reference nginx config returns `204` with the headers above.
 
-If the proxy doesn't handle this, the Host answers `curl` but the browser app can't read it. See [Troubleshooting](/run/operations/troubleshooting/#my-host-client-answers-curl-requests-but-the-explorer-can-t-query-it).
+If the proxy doesn't handle this, the Host answers `curl` but the browser app can't read it. See [Troubleshooting](/run/ethereum/operations/troubleshooting/#my-host-client-answers-curl-requests-but-the-explorer-can-t-query-it).
 
 ## Need help
 

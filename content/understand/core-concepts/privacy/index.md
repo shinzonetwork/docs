@@ -19,7 +19,7 @@ A standard Host client ships configured for the public network. On startup it do
 - Dials the public bootstrap peers shipped in `config.yaml` to reach Generator clients it doesn't control.
 - Contacts ShinzoHub (`shinzo.hub_base_url`) to fetch every registered View and subscribe to live registration events.
 
-A third step is opt-in: registering on the [Host registry](/run/run-a-host/register/) so other nodes can discover and replicate from it. This is a manual, wallet-signed action from the registration app, not something the Host client does on startup.
+A third step is opt-in: registering on the [Host registry](/run/ethereum/host/register/) so other nodes can discover and replicate from it. This is a manual, wallet-signed action from the registration app, not something the Host client does on startup.
 
 A private Host client connection closes some or all of these. How many you close decides how private the setup is.
 
@@ -35,9 +35,9 @@ What changes from the defaults:
 
 - `defradb.p2p.bootstrap_peers`: replace the public peers with your Generator client's multiaddr. Do not include any other multiaddrs.
 - `shinzo.hub_base_url`: set it to `testnet.shinzo.network` (the shipped value; the code default is empty) so the Host client keeps fetching public Views. The value is a bare hostname without a scheme or port; the Host client appends the ports itself, so including one crashes it on startup.
-- Skip [Register](/run/run-a-host/register/). An unregistered Host isn't discoverable and won't serve the network.
+- Skip [Register](/run/ethereum/host/register/). An unregistered Host isn't discoverable and won't serve the network.
 
-This is the topology covered in the [Operator Quickstart](/run/get-started/).
+This is the topology covered in the [Operator Quickstart](/run/ethereum/get-started/).
 
 ### Fully air-gapped Host client
 
@@ -47,4 +47,4 @@ With no hub connection, no public peers, and no registration, nothing about this
 
 ## Install a private Host client
 
-If this sounds like something you'd like to use, head on over to the [Private Hosts install page](../../../run/run-a-host/private-hosts) for more information.
+If this sounds like something you'd like to use, head on over to the [Private Hosts install page](../../../run/ethereum/host/private-hosts) for more information.

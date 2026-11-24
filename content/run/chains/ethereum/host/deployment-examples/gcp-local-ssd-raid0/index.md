@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/deployment-examples/gcp-local-ssd-raid0"
+path = "run/ethereum/host/deployment-examples/gcp-local-ssd-raid0"
+aliases = ["run/run-a-host/deployment-examples/gcp-local-ssd-raid0"]
 title = "GCP VM with local SSD RAID-0"
 description = "Run a Host on a GCP VM with local SSDs striped into a RAID-0 array for high IOPS, using the bundled startup script that detects, formats, and mounts the disks."
 [extra]
@@ -8,7 +9,7 @@ mermaid = true
 
 When to use this: you need high IOPS for DefraDB storage and want to use GCP local SSDs in a RAID-0 array. Local SSDs provide much higher throughput than standard persistent disks but are ephemeral.
 
-These scenarios use data from a supported chain. Shinzo supports multiple chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported chain. Shinzo supports multiple chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/ethereum/generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -130,8 +131,8 @@ docker run -d \
 - `mount -o noatime,discard`: Mounts the filesystem with `noatime` (no access time updates) and `discard` (TRIM support for SSD wear leveling).
 - `chown -R 1001:1001 $MNT/defradb`: Sets ownership so the Host container (UID 1001, GID 1001) can read and write.
 - `--network host`: The Host container uses the host network directly. No port mappings are needed because all ports are exposed on the VM.
-- `-v $MNT/defradb:/app/.defra`: Mounts the RAID-0 filesystem as the DefraDB data directory. See [defradb store](/run/run-a-host/config-reference#defradb-store).
-- `START_HEIGHT=${START_HEIGHT:-}` and `BOOTSTRAP_PEERS=${BOOTSTRAP_PEERS:-}`: These env vars are passed through from the VM environment if set. See [environment variables](/run/run-a-host/config-reference#environment-variables).
+- `-v $MNT/defradb:/app/.defra`: Mounts the RAID-0 filesystem as the DefraDB data directory. See [defradb store](/run/ethereum/host/config-reference#defradb-store).
+- `START_HEIGHT=${START_HEIGHT:-}` and `BOOTSTRAP_PEERS=${BOOTSTRAP_PEERS:-}`: These env vars are passed through from the VM environment if set. See [environment variables](/run/ethereum/host/config-reference#environment-variables).
 
 ## Running the script
 
@@ -152,9 +153,9 @@ sudo -E ./gcp-startup-host-local-ssd.sh
 
 ## Gotchas
 
-- GCP local SSDs are ephemeral. If the VM stops or restarts, all data on the local SSDs is lost. Use this setup only for data that can be re-synced from Generators over P2P, or pair it with the [snapshot bootstrap scenario](../snapshot-bootstrap/) to re-import historical data on restart.
-- The script pins the image to `ghcr.io/shinzonetwork/shinzo-host-client:v0.5.1`. The [Watchtower scenario](../watchtower-auto-deploy/) uses `:latest`, and the [prod VM scenario](../prod-vm-nginx-tls/) uses `:v0.6.5-ethereum-mainnet`. Pick one tag and be consistent. The `v0.5.1` pin protects against unexpected updates but means you need to manually update the script to get new releases.
-- `DEFRA_URL` in the `docker run` command overrides `defradb.url` and is read by the Host client (`config/config.go`). It is kept here because it is in the original script, where it binds the DefraDB API to `0.0.0.0:9181` instead of the loopback-only YAML default. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` are also kept from the original script but are not read by the Host client and have no effect. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
+- GCP local SSDs are ephemeral. If the VM stops or restarts, all data on the local SSDs is lost. Use this setup only for data that can be re-synced from Generators over P2P, or pair it with the [snapshot bootstrap scenario](/run/ethereum/host/deployment-examples/snapshot-bootstrap/) to re-import historical data on restart.
+- The script pins the image to `ghcr.io/shinzonetwork/shinzo-host-client:v0.5.1`. The [Watchtower scenario](/run/ethereum/host/deployment-examples/watchtower-auto-deploy/) uses `:latest`, and the [prod VM scenario](/run/ethereum/host/deployment-examples/prod-vm-nginx-tls/) uses `:v0.6.5-ethereum-mainnet`. Pick one tag and be consistent. The `v0.5.1` pin protects against unexpected updates but means you need to manually update the script to get new releases.
+- `DEFRA_URL` in the `docker run` command overrides `defradb.url` and is read by the Host client (`config/config.go`). It is kept here because it is in the original script, where it binds the DefraDB API to `0.0.0.0:9181` instead of the loopback-only YAML default. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` are also kept from the original script but are not read by the Host client and have no effect. See [env vars that are not read](/run/ethereum/host/config-reference#env-vars-that-are-not-read).
 - The script uses `--network host`, so no Docker port mappings are specified. All Host ports (9181, 9171, 8080) are directly exposed on the VM. If you need nginx as a reverse proxy, run it as a separate container or install it on the host.
 - The `nvme_card` model check is specific to GCP local SSDs. If you are running on a different cloud provider, the NVMe model string will differ. Adjust the `MODEL` check accordingly.
 - The `chmod 777 $MNT` sets world-writable permissions on the mount point. This is permissive but matches the original script. If you want tighter permissions, adjust the chmod and ensure the Host container's UID (1001) can still access the directory.

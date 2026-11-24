@@ -67,7 +67,7 @@ Some DID methods publish a DID document to a ledger or registry that can be upda
 
 ### It's not rotatable
 
-Because the identifier _is_ the key, changing the key changes the identity. If a node's key is lost or compromised, you can't swap in a new key and keep the same DID. You get a new DID, which is a new identity. This is why backing up the keyring secret matters: the key, the keyring, and the DID are one unit. Lose the key and the identity is gone. See the backup guidance on the [Generator](/run/run-a-generator/register/#back-up-your-node-identity-key) and [Host](/run/run-a-host/register/#back-up-your-node-identity-key) registration pages.
+Because the identifier _is_ the key, changing the key changes the identity. If a node's key is lost or compromised, you can't swap in a new key and keep the same DID. You get a new DID, which is a new identity. This is why backing up the keyring secret matters: the key, the keyring, and the DID are one unit. Lose the key and the identity is gone. See the backup guidance on the [Generator](/run/ethereum/generator/register/#back-up-your-node-identity-key) and [Host](/run/ethereum/host/register/#back-up-your-node-identity-key) registration pages.
 
 ### It's not encryption
 

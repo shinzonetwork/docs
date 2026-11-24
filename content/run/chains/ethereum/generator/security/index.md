@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/security"
+path = "run/ethereum/generator/security"
+aliases = ["run/run-a-generator/security"]
 title = "Security"
 description = "Security guidance for placing the Generator client relative to your validator: same-machine vs separate-machine deployments, key separation, and port exposure."
 [extra]
@@ -20,9 +21,9 @@ The Generator client generates and stores its own operator (delegate) key locall
 | --- | --- | --- |
 | Operator / delegate key | Generator client (local keyring) | Signing block batches, registering on ShinzoHub. |
 | Consensus key | Validator client | Signing blocks and participating in consensus. |
-| Withdrawal key | Browser wallet (off-machine) | Signing the one-time assertion that links the operator key to your validator during [registration](../register). |
+| Withdrawal key | Browser wallet (off-machine) | Signing the one-time assertion that links the operator key to your validator during [registration](/run/ethereum/generator/register). |
 
-The withdrawal key is used exactly once, in a browser wallet, to sign the assertion that ties the operator key to the validator's identity. After that, the Generator client runs on the operator key alone. See [Registration](../register) and the [architecture reference](/reference/architecture/#generator-registration) for the full flow.
+The withdrawal key is used exactly once, in a browser wallet, to sign the assertion that ties the operator key to the validator's identity. After that, the Generator client runs on the operator key alone. See [Registration](/run/ethereum/generator/register) and the [architecture reference](/reference/architecture/#generator-registration) for the full flow.
 
 Because no key material is shared, a compromise of the Generator client's operator key does not expose your validator's consensus or withdrawal keys.
 
@@ -36,7 +37,7 @@ See the [Generator client reference](/reference/components/generator-client/#p2p
 
 The Generator client is a lightweight sidecar: a ~50 MB binary with its own CPU and memory budget. It is CPU-light but storage-I/O-sensitive, because every block is fetched, structured, signed, and written to its local DefraDB instance before being published. The risk to a co-located validator is resource contention, not protocol interference. The Generator client does not touch consensus (see [Key separation](#key-separation)), so isolation is an operational concern, not a safety one.
 
-Size the machine for the execution node first, then add the Generator overhead on top. The execution node's footprint dwarfs the Generator client's: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. The Generator client with pruning enabled keeps its own data bounded at roughly 50 to 100 GB; provision 300 to 500 GB of disk to leave headroom for growth, snapshot serving, and P2P replication. See [hardware requirements](../prerequisites#hardware-requirements) for the full table.
+Size the machine for the execution node first, then add the Generator overhead on top. The execution node's footprint dwarfs the Generator client's: a snap-synced full node typically needs over 650 GB of fast SSD storage and at least 16 GB of RAM, and an archive node can exceed 12 TB. The Generator client with pruning enabled keeps its own data bounded at roughly 50 to 100 GB; provision 300 to 500 GB of disk to leave headroom for growth, snapshot serving, and P2P replication. See [hardware requirements](/run/ethereum/generator/prerequisites#hardware-requirements) for the full table.
 
 To keep the two workloads from competing on a shared machine:
 
@@ -45,7 +46,7 @@ To keep the two workloads from competing on a shared machine:
 1. Decide pruned versus archival deliberately. In archival mode (pruning disabled), the Generator's storage grows linearly with chain history. Running archival on a validator machine risks crowding the execution node's much larger data set. Pruned is the right choice for almost all validator-side deployments.
 1. Keep `DEFRADB_KEYRING_SECRET` stable across restarts. If it changes, the Generator cannot reload its existing DefraDB identity and will fail to start, a reliability risk to your data feed, not to consensus.
 
-For a worked same-machine example, see the [Validator with Geth](../deployment-examples/validator-with-geth/) deployment guide.
+For a worked same-machine example, see the [Validator with Geth](/run/ethereum/generator/deployment-examples/validator-with-geth/) deployment guide.
 
 ## Separate-machine deployment
 
@@ -83,7 +84,7 @@ The execution node feeds the Generator client over a restricted private link. Th
 | Port | Service | Expose publicly? | Recommendation |
 | --- | --- | --- | --- |
 | `9171` | DefraDB P2P (libp2p) | Yes | Open on the firewall. This is how Hosts subscribe and receive data. |
-| `8080` | Health, metrics, registration, schema | Yes, at least for `/health` | The dashboard's online check probes `http://<your-server-ip>:8080/health` over plaintext HTTP, and it can't follow a redirect to TLS. If `8080` isn't reachable, your Generator shows as offline on the dashboard even while it's running fine. The tradeoff: publishing `8080` raw also exposes `/metrics`, `/registration`, `/api/v1/schema`, and anything else on the port. If you want the online status without that surface, put nginx (or equivalent) on `8080` proxying only `/health`, and serve the remaining paths over TLS on `443`. See the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config. |
+| `8080` | Health, metrics, registration, schema | Yes, at least for `/health` | The dashboard's online check probes `http://<your-server-ip>:8080/health` over plaintext HTTP, and it can't follow a redirect to TLS. If `8080` isn't reachable, your Generator shows as offline on the dashboard even while it's running fine. The tradeoff: publishing `8080` raw also exposes `/metrics`, `/registration`, `/api/v1/schema`, and anything else on the port. If you want the online status without that surface, put nginx (or equivalent) on `8080` proxying only `/health`, and serve the remaining paths over TLS on `443`. See the [nginx with snapshots](/run/ethereum/generator/deployment-examples/nginx-with-snapshots/) example for a working config. |
 | `9181` | DefraDB GraphQL / REST API | No | Bind to localhost or a private network. This port gives raw, unauthenticated read/write access to the local DefraDB database. Publishing it to `0.0.0.0` lets anyone read or mutate the Generator's data. |
 
 The shipped production tooling (`docker-compose-prod.yml` and `indexer-prod-setup.sh` in the `shinzo-generator-client` repo) follows this pattern: it publishes `9171` and `8080`, fronts the management paths with an nginx allowlist, and never publishes `9181`.
@@ -94,11 +95,11 @@ Host clients intentionally expose `9181` because serving GraphQL queries to subs
 
 ### Execution-node side
 
-On the execution node side of the link, restrict its JSON-RPC and WebSocket ports (commonly `8545` and `8546`) to the Generator's IP via a private network or VPC firewall. The Generator client only reads from the node; it never writes to it. If the connection must cross a public boundary, authenticate it with an API key or a reverse proxy rather than exposing the node unauthenticated. See the [install page's API key guidance](../install/#do-you-need-an-api-key) for the header configuration.
+On the execution node side of the link, restrict its JSON-RPC and WebSocket ports (commonly `8545` and `8546`) to the Generator's IP via a private network or VPC firewall. The Generator client only reads from the node; it never writes to it. If the connection must cross a public boundary, authenticate it with an API key or a reverse proxy rather than exposing the node unauthenticated. See the [install page's API key guidance](/run/ethereum/generator/install/#do-you-need-an-api-key) for the header configuration.
 
 ### Schema endpoint auth
 
-The shipped production scripts set `SCHEMA_AUTH_MODE=none`, which disables authentication on the `/api/v1/schema` endpoints. That's acceptable when nginx publishes only `/health` on `8080` and proxies the schema endpoints only over TLS with its own access controls. If you publish `8080` raw, every path on it is reachable, including schema management, so switch `SCHEMA_AUTH_MODE` to `token` and provide accepted tokens via `SCHEMA_API_KEYS`. See the [config reference](../config-reference/#indexer) for the full set of values.
+The shipped production scripts set `SCHEMA_AUTH_MODE=none`, which disables authentication on the `/api/v1/schema` endpoints. That's acceptable when nginx publishes only `/health` on `8080` and proxies the schema endpoints only over TLS with its own access controls. If you publish `8080` raw, every path on it is reachable, including schema management, so switch `SCHEMA_AUTH_MODE` to `token` and provide accepted tokens via `SCHEMA_API_KEYS`. See the [config reference](/run/ethereum/generator/config-reference/#indexer) for the full set of values.
 
 ## MEV-boost and block construction
 
@@ -108,7 +109,7 @@ For example, on Ethereum Mainnet, MEV-boost builders construct the block header 
 
 The practical consequence of this is that running the Generator does not change your MEV-boost setup, and MEV-boost does not change how Shinzo identifies you. You do not need to disable MEV-boost, modify your builder configuration, or tag `extraData` to participate in Shinzo.
 
-This point is covered in the [outpost reference](../../../reference/components/outpost), where the EVM implementation notes that there is no `extraData` tagging and no dependency on who built the block.
+This point is covered in the [outpost reference](/reference/components/outpost), where the EVM implementation notes that there is no `extraData` tagging and no dependency on who built the block.
 
 ## Need help
 

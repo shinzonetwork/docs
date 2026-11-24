@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/deployment-examples/high-throughput-tuning"
+path = "run/ethereum/generator/deployment-examples/high-throughput-tuning"
+aliases = ["run/run-a-generator/deployment-examples/high-throughput-tuning"]
 title = "High-throughput tuning"
 description = "Tune the Generator for high throughput and fast catch-up from a historical start height by raising block and receipt concurrency, Badger cache sizes, and the Go runtime memory limit."
 [extra]
@@ -8,7 +9,7 @@ mermaid = true
 
 When to use this: your Generator needs to catch up from a historical start height quickly, or you want to maximize block processing throughput on a machine with available CPU and memory.
 
-These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change `chain.name` and point the RPC URLs at a compatible node. See the [chain config](/run/ethereum/generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -138,14 +139,14 @@ services:
 
 ### What each tuning value does
 
-- `concurrent_blocks: 8`: Process 8 blocks at the same time instead of the shipped default of 1. This is the code default from `applyDefaults`. Increase it if your node can handle parallel requests. See [indexer config](/run/run-a-generator/config-reference#indexer).
-- `receipt_workers: 32`: Fetch 32 receipts concurrently per block, up from the shipped 8. Receipts are the bottleneck for blocks with many transactions. See [indexer config](/run/run-a-generator/config-reference#indexer).
-- `blocks_per_minute: 0`: Disable the rate limit. The shipped `config.yaml` sets 60, which caps verifiable indexing speed. Set to 0 for maximum throughput during catch-up. See [indexer config](/run/run-a-generator/config-reference#indexer).
-- `block_cache_mb: 1024`: Double the shipped 512. More cache means fewer disk reads for recently written blocks. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).
-- `memtable_mb: 128`: Double the shipped 64. Larger memtables reduce the frequency of flushes to disk. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).
-- `index_cache_mb: 512`: Double the shipped 256. More index cache speeds up point lookups during pruning and snapshot creation. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).
-- `num_compactors: 8`: Double the shipped 4. More compaction workers prevent L0 table buildup during high write rates. See [defradb store config](/run/run-a-generator/config-reference#defradb-store).
-- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+- `concurrent_blocks: 8`: Process 8 blocks at the same time instead of the shipped default of 1. This is the code default from `applyDefaults`. Increase it if your node can handle parallel requests. See [indexer config](/run/ethereum/generator/config-reference#indexer).
+- `receipt_workers: 32`: Fetch 32 receipts concurrently per block, up from the shipped 8. Receipts are the bottleneck for blocks with many transactions. See [indexer config](/run/ethereum/generator/config-reference#indexer).
+- `blocks_per_minute: 0`: Disable the rate limit. The shipped `config.yaml` sets 60, which caps verifiable indexing speed. Set to 0 for maximum throughput during catch-up. See [indexer config](/run/ethereum/generator/config-reference#indexer).
+- `block_cache_mb: 1024`: Double the shipped 512. More cache means fewer disk reads for recently written blocks. See [defradb store config](/run/ethereum/generator/config-reference#defradb-store).
+- `memtable_mb: 128`: Double the shipped 64. Larger memtables reduce the frequency of flushes to disk. See [defradb store config](/run/ethereum/generator/config-reference#defradb-store).
+- `index_cache_mb: 512`: Double the shipped 256. More index cache speeds up point lookups during pruning and snapshot creation. See [defradb store config](/run/ethereum/generator/config-reference#defradb-store).
+- `num_compactors: 8`: Double the shipped 4. More compaction workers prevent L0 table buildup during high write rates. See [defradb store config](/run/ethereum/generator/config-reference#defradb-store).
+- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/ethereum/generator/config-reference#gomemlimit).
 
 ## Start the Generator
 
@@ -164,7 +165,7 @@ curl -s http://localhost:8080/metrics | jq '.blocks_processed, .blocks_per_minut
 - The shipped `config.yaml` sets `concurrent_blocks: 1`, and the Docker image always loads that file, so you get 1 unless you override it.
 - High `concurrent_blocks` and `receipt_workers` values generate parallel RPC requests against your execution node. A local node can usually handle this. A shared or rate-limited managed provider may throttle or reject connections. Monitor your node's request queue and RPC error rate.
 - `blocks_per_minute: 0` removes the rate limit entirely. This is useful for catch-up but means the Generator will process blocks as fast as your node can serve them. If your node is also serving other consumers, this can starve them of RPC capacity.
-- `GOMEMLIMIT` is a Go runtime soft memory limit, not a Generator client config var. Keep it below the container `mem_limit` or the kernel can OOM-kill the container. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+- `GOMEMLIMIT` is a Go runtime soft memory limit, not a Generator client config var. Keep it below the container `mem_limit` or the kernel can OOM-kill the container. See [memory limits](/run/ethereum/generator/config-reference#gomemlimit).
 - Increasing Badger cache sizes raises memory usage. The values above (`block_cache_mb: 1024`, `memtable_mb: 128`, `index_cache_mb: 512`) add up to roughly 1.6 GB of cache alone. Make sure the total stays within the `GOMEMLIMIT` and container memory limit.
 - `num_compactors: 8` uses more CPU. On a machine with fewer than 8 cores, this can cause CPU contention with block processing. Match it to your available cores.
 

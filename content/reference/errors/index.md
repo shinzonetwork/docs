@@ -78,4 +78,4 @@ See [Primitives](../data-model/primitives/) for the endpoints themselves.
 
 ## When a Host will not answer
 
-On a testnet, registered endpoints go stale as Hosts come and go. If a Host times out or its connection fails, pick another registered Host and try again; [Query your first View](/build/tutorials/query-your-first-view/) shows the fallback loop. For operational symptoms on the infrastructure side, see [Troubleshooting](/run/operations/troubleshooting/).
+On a testnet, registered endpoints go stale as Hosts come and go. If a Host times out or its connection fails, pick another registered Host and try again; [Query your first View](/build/tutorials/query-your-first-view/) shows the fallback loop. For operational symptoms on the infrastructure side, see [Troubleshooting](/run/ethereum/operations/troubleshooting/).

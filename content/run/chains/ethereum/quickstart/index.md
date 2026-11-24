@@ -1,5 +1,6 @@
 +++
-path = "run/get-started"
+path = "run/ethereum/get-started"
+aliases = ["run/get-started"]
 title = "Get started"
 description = "Bring up a Generator client and a Host on one machine, peer them over libp2p, and query the result."
 [extra]
@@ -30,9 +31,9 @@ Two containers through one shared Docker bridge. Both containers run on the same
 
 - Docker.
 - Both `curl` and `jq`.
-- A live execution node exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or any managed node provider. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/run-a-generator/install/#do-you-need-an-api-key).
+- A live execution node exposing JSON-RPC and WebSocket. The Generator client reads from this node; it does not run one for you. Acceptable sources include a node you self-host, a node co-located with a validator, GCP Blockchain Node Engine, or any managed node provider. If your node is behind authentication, see the [Generator client install guide's notes on API keys](/run/ethereum/generator/install/#do-you-need-an-api-key).
 
-You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/run/run-a-generator/register/) and [Host registration](/run/run-a-host/quickstart/#shinzohub-registration) pages. Both use the hosted [Registration app](https://registration.shinzo.network/), and you can get the testnet SHNZ for the registration fee from the [faucet](https://faucet.shinzo.network/).
+You don't need a wallet, funds, or a ShinzoHub registration for this quickstart. Registration is what lets your operators participate in the network and earn rewards. It's covered on the [Generator registration](/run/ethereum/generator/register/) and [Host registration](/run/ethereum/host/quickstart/#shinzohub-registration) pages. Both use the hosted [Registration app](https://registration.shinzo.network/), and you can get the testnet SHNZ for the registration fee from the [faucet](https://faucet.shinzo.network/).
 
 ## Set your execution node endpoint
 
@@ -89,7 +90,7 @@ docker run -d \
 `DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
 {% <admonition type="note"> %}
-This quickstart mounts no volumes, so the Generator client's database and node identity are discarded if you remove the container. That's fine here. For a setup that survives restarts, see [running a persistent Generator](/run/run-a-generator/install/#running-a-persistent-generator).
+This quickstart mounts no volumes, so the Generator client's database and node identity are discarded if you remove the container. That's fine here. For a setup that survives restarts, see [running a persistent Generator](/run/ethereum/generator/install/#running-a-persistent-generator).
 {% </admonition> %}
 
 ## Read the Generator client's P2P address
@@ -120,7 +121,7 @@ curl -s http://localhost:8080/health | jq '.p2p.self'
 
 `addresses` are the multiaddrs the Generator client is actually listening on. The first one (`127.0.0.1`) is loopback and useless to other containers. The second (`172.17.0.2` here) is the Generator client container's IP on the Docker bridge. That's the one the Host client will dial.
 
-Reading the dialable address from `/health` only works because both containers share a Docker bridge on one machine. Those are the Generator's own listen addresses, so on a remote Generator client they're loopback and container-internal IPs your Host client can't reach. For a Generator on another machine, take only the peer ID from `/health` and build the multiaddr with its public IP or hostname, as in the [Host install guide](/run/run-a-host/install/).
+Reading the dialable address from `/health` only works because both containers share a Docker bridge on one machine. Those are the Generator's own listen addresses, so on a remote Generator client they're loopback and container-internal IPs your Host client can't reach. For a Generator on another machine, take only the peer ID from `/health` and build the multiaddr with its public IP or hostname, as in the [Host install guide](/run/ethereum/host/install/).
 
 Capture both into shell variables:
 
@@ -173,8 +174,8 @@ There are a few things in here worth calling out:
 
 - `defradb.url: localhost:9181` is the Host client's _internal_ DefraDB API, not the Generator client's. Inside the Host client container, DefraDB binds to `9181` on `localhost`. The Generator client's API happens to use the same number because they're both DefraDB; we'll remap the published ports in the next step so they don't collide.
 - `bootstrap_peers` is the only Generator-specific value. The Host client learns everything else (schemas, signed data) from the Generator client over P2P once it connects.
-- `minimum_attestations: 1` means the Host client will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients. See the [Host overview](/run/run-a-host/hardware-requirements/) for more on attestations.
-- `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host client still opens a WebSocket to ShinzoHub on startup and panics if it can't connect. If you're running fully offline, set `hub_base_url: ""` and the Host client skips ShinzoHub entirely. See [Fully air-gapped Host client](/run/run-a-host/private-hosts/#fully-air-gapped-host-client).
+- `minimum_attestations: 1` means the Host client will serve data as soon as it has one signature on it. Production setups use higher values to require independent confirmation from multiple Generator clients. See the [Host overview](/run/ethereum/host/hardware-requirements/) for more on attestations.
+- `hub_base_url` points to ShinzoHub. We're not registering anything here, but the Host client still opens a WebSocket to ShinzoHub on startup and panics if it can't connect. If you're running fully offline, set `hub_base_url: ""` and the Host client skips ShinzoHub entirely. See [Fully air-gapped Host client](/run/ethereum/host/private-hosts/#fully-air-gapped-host-client).
 
 ## Start the Host client
 
@@ -200,7 +201,7 @@ docker run -d \
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
 
 {% <admonition type="note"> %}
-The Host client stores its data inside the container too. To keep it across restarts, see [running a persistent Host](/run/run-a-host/install/#running-a-persistent-host).
+The Host client stores its data inside the container too. To keep it across restarts, see [running a persistent Host](/run/ethereum/host/install/#running-a-persistent-host).
 {% </admonition> %}
 
 ## Verify the peering
@@ -271,7 +272,7 @@ curl -s -X POST http://localhost:9182/api/v0/graphql \
 The rows that come back were originally just logs on the source chain, then pulled in by the Generator client over the node's WebSocket, signed, gossiped over libp2p to the Host client, and are now being served back to you over GraphQL. You can also browse this data visually in the [Explorer](https://explorer.shinzo.network/). More queries are on the [Host examples](/build/how-to/query-data/) page.
 
 {% <admonition type="note"> %}
-The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match, for example `Optimism__Mainnet__Log`. See the [chain config](/run/run-a-generator/config-reference#chain) for details.
+The collection prefix (`Ethereum__Mainnet__` in this example) is derived from the `chain.name` and `chain.network` settings of the image you pulled. If you run a Generator client pointed at a different chain, the prefix changes to match, for example `Optimism__Mainnet__Log`. See the [chain config](/run/ethereum/generator/config-reference#chain) for details.
 {% </admonition> %}
 
 ## Undo everything

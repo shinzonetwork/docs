@@ -234,11 +234,11 @@ Bootstrap peers are configured in the DefraDB config. Peers are also discovered 
 
 ## Resource requirements
 
-See the [hardware requirements](/run/run-a-generator/prerequisites#hardware-requirements) section for current minimum and recommended specs.
+See the [hardware requirements](/run/ethereum/generator/prerequisites#hardware-requirements) section for current minimum and recommended specs.
 
 ## Security
 
-The [Security](/run/run-a-generator/security/) page covers deployment security: key separation from the validator, the write-only P2P model, and which ports to expose versus keep private.
+The [Security](/run/ethereum/generator/security/) page covers deployment security: key separation from the validator, the write-only P2P model, and which ports to expose versus keep private.
 
 ## Configuration
 

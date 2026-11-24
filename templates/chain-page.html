@@ -6,7 +6,7 @@
 {% set catalog = load_data(path="data/chains.toml") %}
 {% for chain in catalog.chains %}{% if chain.slug == page.extra.chain %}
 {% if page.extra.shared_page %}{% set content_page = get_page(path=page.extra.shared_page) %}{% else %}{% set content_page = page %}{% endif %}
-{% set base = "/run/chains/" ~ chain.slug ~ "/mainnet/" %}
+{% set base = "/run/" ~ chain.slug ~ "/" %}
 <main class="main-wrapper chain-surface"><div class="docs-layout">
   <aside class="theme-doc-sidebar-container">{{<chains.sidebar current={page.path} />}}</aside>
   <div class="docs-content"><article class="docItemCol markdown">

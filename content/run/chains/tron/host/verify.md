@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/host/verify"
+path = "run/tron/host/verify"
+aliases = ["run/chains/tron/mainnet/host/verify"]
 title = "TRON Host verification \u2014 TRON Mainnet"
 description = "Use these acceptance checks with a confirmed TRON-compatible Host implementation."
 template = "chain-page.html"

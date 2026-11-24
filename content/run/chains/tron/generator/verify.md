@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/generator/verify"
+path = "run/tron/generator/verify"
+aliases = ["run/chains/tron/mainnet/generator/verify"]
 title = "Verify a Generator \u2014 TRON Mainnet"
 description = "Check client health, the correct chain namespace, and advancing data before onboarding."
 template = "chain-page.html"

@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/generator/prerequisites"
+path = "run/bnb/generator/prerequisites"
+aliases = ["run/chains/bnb/mainnet/generator/prerequisites"]
 title = "Generator prerequisites \u2014 BNB Smart Chain Mainnet"
 description = "Prepare a BSC Mainnet endpoint and the source-build toolchain."
 template = "chain-page.html"

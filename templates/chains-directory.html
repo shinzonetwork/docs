@@ -10,7 +10,7 @@
     <p class="lead-text">One place for the prerequisites, installation, registration, and data model of each source chain. Start with Ethereum, BNB Smart Chain, or TRON.</p>
     <div class="chain-directory">
       {% for chain in catalog.chains %}
-      <a class="chain-directory__row" href="{% if chain.slug == "ethereum" %}/run/{% else %}/run/chains/{{ chain.slug }}/mainnet/{% endif %}">
+      <a class="chain-directory__row" href="{% if chain.slug == "ethereum" %}/run/{% else %}/run/{{ chain.slug }}/{% endif %}">
         <div><span class="chain-eyebrow">{{ chain.family }} · {{ chain.network }}</span><h2>{{ chain.name }}</h2></div>
         <p>{{ chain.description }}</p><span class="chain-status">{{ chain.status }}</span><span class="chain-directory__arrow" aria-hidden="true">→</span>
       </a>

@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/register"
+path = "run/ethereum/host/register"
+aliases = ["run/run-a-host/register"]
 title = "Register"
 description = "How to register your Host with the Shinzo Network through the hosted or local registration app so it can serve Views publicly."
 +++
@@ -51,7 +52,7 @@ We're working on allowing Hosts to register their clients through the CLI using 
 This key is your Host's identity on the network. If you lose it without a backup, you cannot restore your Host with the same identity.
 
 - Store a secure backup of the key.
-- In a recovery scenario, restore it to the same path your Host reads keys from: `~/.defra/keys` for a source build, or the directory you mounted to `/app/.defra/keys` for Docker. See [backing up your keys](/run/operations/troubleshooting/) in the FAQ for the details per run mode.
+- In a recovery scenario, restore it to the same path your Host reads keys from: `~/.defra/keys` for a source build, or the directory you mounted to `/app/.defra/keys` for Docker. See [backing up your keys](/run/ethereum/operations/troubleshooting/) in the FAQ for the details per run mode.
 - Use the same keyring secret. Your identity depends on both the key files and the keyring secret, so a backup of the keys alone is not enough to recover it.
 
 {% <admonition type="warning"> %}

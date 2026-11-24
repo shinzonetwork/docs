@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/prerequisites"
+path = "run/ethereum/generator/prerequisites"
+aliases = ["run/run-a-generator/prerequisites"]
 title = "Prerequisites"
 description = "What you need before you run a Generator: hardware sizing for the client and the execution node it reads from, and what registration asks for."
 +++
@@ -10,8 +11,8 @@ This page is the starting point for running a Generator. Two kinds of prerequisi
 
 Setting up a Generator takes two steps:
 
-1. [Install](../install) the Generator client next to an execution node. Any node that exposes JSON-RPC and WebSocket works: one you run yourself, one co-located with your validator, or a managed provider. You do not need to be a validator for this step.
-1. [Register](../register) the client with the Shinzo Network once it is running. Registration identifies and authenticates your node so it can replicate data for the network.
+1. [Install](/run/ethereum/generator/install) the Generator client next to an execution node. Any node that exposes JSON-RPC and WebSocket works: one you run yourself, one co-located with your validator, or a managed provider. You do not need to be a validator for this step.
+1. [Register](/run/ethereum/generator/register) the client with the Shinzo Network once it is running. Registration identifies and authenticates your node so it can replicate data for the network.
 
 You can run a Generator client _without_ registering. An unregistered Generator can still accept direct connections from Hosts, but it will not be included in the Shinzo Network’s registry for Hosts to discover and connect to. Registering the Generator makes it discoverable to Hosts through the network.
 
@@ -35,9 +36,9 @@ Generator client hardware requirements depend on which chain the Generator reads
 | Storage | 300 GB | 500 GB |
 | Network | 100 Mbps | 1 Gbps |
 
-The 16 GB recommendation is for the Generator client itself, sized against a 16g container limit with `GOMEMLIMIT` at 14GiB. Scale the limits along with the RAM. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+The 16 GB recommendation is for the Generator client itself, sized against a 16g container limit with `GOMEMLIMIT` at 14GiB. Scale the limits along with the RAM. See [memory limits](/run/ethereum/generator/config-reference#gomemlimit).
 
-With pruning enabled (the default), the Generator retains roughly the last 1,000 blocks, so its own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet. The 300 to 500 GB figures above are the recommended provisioned disk. The headroom covers growth, snapshot serving, and P2P replication. In archival mode (pruning disabled), storage grows linearly with chain history and on Ethereum Mainnet can exceed 3 TB (see the [FAQ](/run/operations/troubleshooting/) for details on growth rate). Storage growth differs by chain. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
+With pruning enabled (the default), the Generator retains roughly the last 1,000 blocks, so its own data stays bounded at roughly 50 to 100 GB on Ethereum Mainnet. The 300 to 500 GB figures above are the recommended provisioned disk. The headroom covers growth, snapshot serving, and P2P replication. In archival mode (pruning disabled), storage grows linearly with chain history and on Ethereum Mainnet can exceed 3 TB (see the [FAQ](/run/ethereum/operations/troubleshooting/) for details on growth rate). Storage growth differs by chain. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
 
 ### Sizing for your execution node
 

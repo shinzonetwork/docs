@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/generator/install"
+path = "run/bnb/generator/install"
+aliases = ["run/chains/bnb/mainnet/generator/install"]
 title = "Install a Generator \u2014 BNB Smart Chain Mainnet"
 description = "Build the EVM Generator and run it with the BSC configuration and source-node credentials."
 template = "chain-page.html"

@@ -631,7 +631,7 @@ Goal: run GraphQL queries against a deployed View's output collection. These exa
 
 This filter pins a single transfer once `hash` is populated. Today it matches nothing, because `hash` comes from the parent transaction relation, which isn't populated (see [Decode event logs](#decode-event-logs)).
 
-For the full list of Viewkit commands and GraphQL filter operators, see the [Viewkit reference](/reference/components/viewkit/). For the prebuilt lens catalog and how to chain lenses, see the [lens reference](/reference/components/lens/). For more query patterns, see [Query data](/build/how-to/query-data/). For troubleshooting and common errors, see the [FAQ](/run/operations/troubleshooting/).
+For the full list of Viewkit commands and GraphQL filter operators, see the [Viewkit reference](/reference/components/viewkit/). For the prebuilt lens catalog and how to chain lenses, see the [lens reference](/reference/components/lens/). For more query patterns, see [Query data](/build/how-to/query-data/). For troubleshooting and common errors, see the [FAQ](/run/ethereum/operations/troubleshooting/).
 
 ## Need help
 

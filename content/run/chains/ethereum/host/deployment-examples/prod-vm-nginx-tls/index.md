@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/deployment-examples/prod-vm-nginx-tls"
+path = "run/ethereum/host/deployment-examples/prod-vm-nginx-tls"
+aliases = ["run/run-a-host/deployment-examples/prod-vm-nginx-tls"]
 title = "Prod VM with nginx and TLS"
 description = "Run a production Host on a VM behind nginx with TLS termination and persistent volumes for DefraDB data, keys, and lens files."
 [extra]
@@ -8,7 +9,7 @@ mermaid = true
 
 When to use this: you want to run a production Host on a VM with nginx as a reverse proxy, TLS termination, and persistent volumes for DefraDB data, keys, and lens files.
 
-These scenarios use data from a supported blockchain. Shinzo supports multiple blockchains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported blockchain. Shinzo supports multiple blockchains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/ethereum/generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -316,11 +317,11 @@ http {
 ### What the key values mean
 
 - `user: "1001:1001"`: The container runs as UID 1001, GID 1001. Update this to match your user and group ID on the VM (the repo script notes this). The data directories must be owned by this UID and GID.
-- `DEFRA_URL=0.0.0.0:9181`: Overrides `defradb.url` so the DefraDB API binds to all interfaces instead of the loopback-only YAML default. Read in `config/config.go`. See [environment variables](/run/run-a-host/config-reference#environment-variables).
-- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/run-a-host/config-reference#gomemlimit).
-- `~/data/defradb:/app/.defra`: Persistent volume for DefraDB data. See [defradb store](/run/run-a-host/config-reference#defradb-store).
-- `~/data/keys:/app/.defra/keys`: Persistent volume for DefraDB keyring keys. See [defradb](/run/run-a-host/config-reference#defradb).
-- `~/data/lens:/app/.defra/lens`: Persistent volume for lens WASM files. See [host](/run/run-a-host/config-reference#host).
+- `DEFRA_URL=0.0.0.0:9181`: Overrides `defradb.url` so the DefraDB API binds to all interfaces instead of the loopback-only YAML default. Read in `config/config.go`. See [environment variables](/run/ethereum/host/config-reference#environment-variables).
+- `GOMEMLIMIT=14GiB`: Go runtime soft memory limit, set below the 16g container limit. See [memory limits](/run/ethereum/host/config-reference#gomemlimit).
+- `~/data/defradb:/app/.defra`: Persistent volume for DefraDB data. See [defradb store](/run/ethereum/host/config-reference#defradb-store).
+- `~/data/keys:/app/.defra/keys`: Persistent volume for DefraDB keyring keys. See [defradb](/run/ethereum/host/config-reference#defradb).
+- `~/data/lens:/app/.defra/lens`: Persistent volume for lens WASM files. See [host](/run/ethereum/host/config-reference#host).
 - `~/config.yaml:/app/config.yaml:ro`: Mount the config file read-only.
 - The `443:9181` port mapping exposes the DefraDB GraphQL API on host port 443. The `444:9182` mapping exposes the GraphQL Playground on port 444. The playground is built with the `hostplayground` build tag, not controlled by env vars.
 - nginx terminates TLS on 443 using `/etc/nginx/ssl/nginx.crt` and `/etc/nginx/ssl/nginx.key` (mounted from `~/ssl/`), and also listens on 80 and 8080.
@@ -350,14 +351,14 @@ curl -s -X POST https://localhost/api/v0/graphql \
 ## Gotchas
 
 - The `user: "1001:1001"` in the compose file must match the ownership of the data directories. If the directories are owned by root, the Host container will fail to write. Fix ownership with `chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens`.
-- `DEFRA_URL` overrides `defradb.url` and is read by the Host client (`config/config.go`); it binds the DefraDB API to `0.0.0.0:9181`. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `host-prod-setup.sh` compose but are not read by the Host client and have no effect. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
-- `host-prod-setup.sh` also sets `ALLOWED_ORIGINS=https://*.shinzo.network` in the compose environment, but no Host client code reads it, so it's omitted above. The Host client sends no CORS headers itself; CORS is handled by the nginx config. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
-- The `DEFRA_KEYRING_SECRET` env var uses the `DEFRA_` prefix. The Generator client uses `DEFRADB_KEYRING_SECRET` with the `DEFRADB_` prefix. If you are running both clients on the same VM, do not confuse the two env var names. See [environment variables](/run/run-a-host/config-reference#environment-variables).
-- The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from the config above. See [no-op keys](/run/run-a-host/config-reference#no-op-keys).
-- The `logger.level` field in the shipped config is not in the `LoggerConfig` struct and has no effect. It has been omitted. See [logger](/run/run-a-host/config-reference#logger).
+- `DEFRA_URL` overrides `defradb.url` and is read by the Host client (`config/config.go`); it binds the DefraDB API to `0.0.0.0:9181`. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` appear in the original `host-prod-setup.sh` compose but are not read by the Host client and have no effect. See [env vars that are not read](/run/ethereum/host/config-reference#env-vars-that-are-not-read).
+- `host-prod-setup.sh` also sets `ALLOWED_ORIGINS=https://*.shinzo.network` in the compose environment, but no Host client code reads it, so it's omitted above. The Host client sends no CORS headers itself; CORS is handled by the nginx config. See [env vars that are not read](/run/ethereum/host/config-reference#env-vars-that-are-not-read).
+- The `DEFRA_KEYRING_SECRET` env var uses the `DEFRA_` prefix. The Generator client uses `DEFRADB_KEYRING_SECRET` with the `DEFRADB_` prefix. If you are running both clients on the same VM, do not confuse the two env var names. See [environment variables](/run/ethereum/host/config-reference#environment-variables).
+- The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from the config above. See [no-op keys](/run/ethereum/host/config-reference#no-op-keys).
+- The `logger.level` field in the shipped config is not in the `LoggerConfig` struct and has no effect. It has been omitted. See [logger](/run/ethereum/host/config-reference#logger).
 - The bootstrap peer IDs in this config are the three trustless indexer peers from `host-prod-setup.sh` (identical to the shipped `config.yaml`) and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
 - The nginx CORS config restricts origins to `https://explorer.shinzo.network`. If you need to allow other origins, add them to the `map` block in the nginx config.
-- The Host image tag in this compose file is `ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet`, matching `host-prod-setup.sh`. The [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`, and the [Watchtower setup](../watchtower-auto-deploy/) uses `:latest`. Pick one tag and be consistent across your deployment.
+- The Host image tag in this compose file is `ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet`, matching `host-prod-setup.sh`. The [GCP local SSD scenario](/run/ethereum/host/deployment-examples/gcp-local-ssd-raid0/) pins `:v0.5.1`, and the [Watchtower setup](/run/ethereum/host/deployment-examples/watchtower-auto-deploy/) uses `:latest`. Pick one tag and be consistent across your deployment.
 
 ## Need help
 

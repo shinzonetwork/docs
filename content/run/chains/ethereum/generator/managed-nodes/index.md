@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/managed-nodes"
+path = "run/ethereum/generator/managed-nodes"
+aliases = ["run/run-a-generator/managed-nodes"]
 title = "Managed nodes"
 description = "What a managed node provider buys you, what it costs, and what it leaves untouched, compared to running your own execution node."
 +++
@@ -24,11 +25,11 @@ What changes between the three is who operates the node and how much of the day-
 </div>
 {% </player> %}
 
-Running your own node on your own hardware is the default shape: the Generator sits next to the execution node, often on the same machine, and nothing stands between the chain and your signature except your own software. The [Validator with Geth](../deployment-examples/validator-with-geth/) example shows this setup end to end.
+Running your own node on your own hardware is the default shape: the Generator sits next to the execution node, often on the same machine, and nothing stands between the chain and your signature except your own software. The [Validator with Geth](/run/ethereum/generator/deployment-examples/validator-with-geth/) example shows this setup end to end.
 
-Running your own node on rented hardware is the same trust with someone else's rack. You hold every key and config file; the node just lives on a VM you pay for. The data you sign still comes from software you control. The [separate-machine deployment](../security/#separate-machine-deployment) advice on the security page covers the networking.
+Running your own node on rented hardware is the same trust with someone else's rack. You hold every key and config file; the node just lives on a VM you pay for. The data you sign still comes from software you control. The [separate-machine deployment](/run/ethereum/generator/security/#separate-machine-deployment) advice on the security page covers the networking.
 
-A managed node provider operates the node for you. They provision a dedicated node for your validator, keep it synced, patched, and online, and hand you an endpoint. You point `GETH_RPC_URL` at that endpoint, put the access token in `GETH_API_KEY`, and name the header to send it in with `GETH_API_KEY_TYPE`. The node is still yours: it's dedicated to your validator, and nobody else reads through it. The [QuickNode setup guide](../guides/quicknode-setup/) walks through this path end to end.
+A managed node provider operates the node for you. They provision a dedicated node for your validator, keep it synced, patched, and online, and hand you an endpoint. You point `GETH_RPC_URL` at that endpoint, put the access token in `GETH_API_KEY`, and name the header to send it in with `GETH_API_KEY_TYPE`. The node is still yours: it's dedicated to your validator, and nobody else reads through it. The [QuickNode setup guide](/run/ethereum/generator/guides/quicknode-setup/) walks through this path end to end.
 
 One distinction matters when you pick a provider. Node providers like QuickNode run an actual node for you: you choose the chain and region, they keep it synced and patched, and you get a dedicated endpoint speaking standard JSON-RPC. Other companies sell metered access to shared infrastructure instead, where requests are served through the provider's own API layer and responses can be cached or augmented on the way back. A dedicated node is the expected setup for a Generator. A shared endpoint isn't, because what your signature vouches for is whatever that API layer decides to serve.
 
@@ -37,8 +38,8 @@ One distinction matters when you pick a provider. Node providers like QuickNode 
 Most of the trust machinery doesn't care where the blocks come from:
 
 - Your Generator generates and holds its own operator key locally and signs every block with it. A `BlockSignature` commits to a Merkle root covering every document in the block, whatever endpoint the blocks arrived from.
-- Registration still ties your operator key to your validator identity through the assertion step. Whoever operates your node, the network still knows which validator stands behind it. See [Registration](../register).
-- Your validator's consensus and withdrawal keys never touch the Generator client or the provider. The client only ever holds its own operator key and its DefraDB keyring secret. See [Key separation](../security/#key-separation).
+- Registration still ties your operator key to your validator identity through the assertion step. Whoever operates your node, the network still knows which validator stands behind it. See [Registration](/run/ethereum/generator/register).
+- Your validator's consensus and withdrawal keys never touch the Generator client or the provider. The client only ever holds its own operator key and its DefraDB keyring secret. See [Key separation](/run/ethereum/generator/security/#key-separation).
 - Host clients verify every block signature and recompute the Merkle root from the document CIDs before recording anything. Attestation records are keyed by block height and signed root, and the vote count only climbs. See [Attestations](/understand/core-concepts/attestations/).
 
 What changes with a managed provider is who keeps the node healthy, and what that hands over.
@@ -58,7 +59,7 @@ Two details worth knowing:
 
 ## The trade in practice
 
-What you get is simplicity. A snap-synced full execution node typically wants over 650 GB of fast SSD storage and at least 16 GB of RAM, before you count the Generator's own needs. The managed path runs on a small VM instead: the QuickNode guide uses about 8 GB of RAM and 30 GB of disk. The [hardware requirements](../prerequisites#hardware-requirements) table has the full numbers. Syncing, upgrading, and keeping a node online at 3am is the provider's job. Most providers have a free tier for testing, and the QuickNode guide takes you from account to signed blocks in one sitting.
+What you get is simplicity. A snap-synced full execution node typically wants over 650 GB of fast SSD storage and at least 16 GB of RAM, before you count the Generator's own needs. The managed path runs on a small VM instead: the QuickNode guide uses about 8 GB of RAM and 30 GB of disk. The [hardware requirements](/run/ethereum/generator/prerequisites#hardware-requirements) table has the full numbers. Syncing, upgrading, and keeping a node online at 3am is the provider's job. Most providers have a free tier for testing, and the QuickNode guide takes you from account to signed blocks in one sitting.
 
 What you give is the flip side. Your signature rides on the provider's data quality: if they serve something wrong, you sign it, and the attestation counts tell the story. The provider's outage is your outage: if the endpoint goes down, your Generator stops until it's back. And the node's health, sync state, and configuration become the provider's to manage, so you see only what they expose.
 

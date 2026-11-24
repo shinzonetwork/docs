@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/host/prerequisites"
+path = "run/tron/host/prerequisites"
+aliases = ["run/chains/tron/mainnet/host/prerequisites"]
 title = "Host prerequisites \u2014 TRON Mainnet"
 description = "Confirm TRON schema compatibility before provisioning a Host."
 template = "chain-page.html"

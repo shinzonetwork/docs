@@ -27,7 +27,7 @@
 {% endcomponent sidebar.page_link %}
 
 {% component sidebar.render(blocks, current) %}
-{% if current == "/run/chains/" or current is starting_with(pat="/run/chains/bnb/") or current is starting_with(pat="/run/chains/tron/") %}
+{% if current == "/run/chains/" or current is starting_with(pat="/run/bnb/") or current is starting_with(pat="/run/tron/") %}
   {{<chains.sidebar current={current} />}}
 {% else %}
 <nav class="menu" aria-label="Docs sidebar">

@@ -1,16 +1,17 @@
 +++
-path = "run/run-a-generator/install"
+path = "run/ethereum/generator/install"
+aliases = ["run/run-a-generator/install"]
 title = "Install"
 description = "How to install a Generator client with the one-line script, Docker, or a source build, and how to keep it running with systemd."
 +++
 
-This page covers installing a Shinzo Generator client with Docker or from source. To complete the Generator setup, you must also register it with the Shinzo Network (see [Registration](../register)).
+This page covers installing a Shinzo Generator client with Docker or from source. To complete the Generator setup, you must also register it with the Shinzo Network (see [Registration](/run/ethereum/generator/register)).
 
-Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration requirements](../prerequisites#registration-requirements) for details.
+Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration requirements](/run/ethereum/generator/prerequisites#registration-requirements) for details.
 
 ## Hardware recommendations
 
-The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See [Hardware requirements](../prerequisites#hardware-requirements) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
+The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See [Hardware requirements](/run/ethereum/generator/prerequisites#hardware-requirements) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
 
 ## One-line install
 
@@ -57,7 +58,7 @@ rm -rf shinzo-generator ~/shinzo-data
 ```
 
 {% <admonition type="info"> %}
-This script does not register your Generator client. Check the [registration requirements](../prerequisites#registration-requirements) for details on how to register a client.
+This script does not register your Generator client. Check the [registration requirements](/run/ethereum/generator/prerequisites#registration-requirements) for details on how to register a client.
 {% </admonition> %}
 
 ## Using Docker
@@ -70,7 +71,7 @@ These steps use Docker to run the Shinzo Generator client. To build the Generato
 - Access to an execution node that exposes JSON-RPC and WebSocket. The Generator client does not run a node for you; it just reads from one. This can be a node you run yourself, a node co-located with your validator, or a managed provider.
 - A browser wallet setup. This wallet does not need to hold any funds.
 
-You do not need to be a validator, or to run a validator, just to install and run the Generator client. Validator requirements only apply to the [Registration](../register) step.
+You do not need to be a validator, or to run a validator, just to install and run the Generator client. Validator requirements only apply to the [Registration](/run/ethereum/generator/register) step.
 
 ### Steps
 
@@ -171,12 +172,12 @@ The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership 
 `DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator client can't load its existing identity and fails to start.
 
 {% <admonition type="info"> %}
-The `docker run` example is a throwaway first run, so it sets no memory limits. For anything long-lived, set a container memory limit and `GOMEMLIMIT` below it. See [memory limits](/run/run-a-generator/config-reference#gomemlimit).
+The `docker run` example is a throwaway first run, so it sets no memory limits. For anything long-lived, set a container memory limit and `GOMEMLIMIT` below it. See [memory limits](/run/ethereum/generator/config-reference#gomemlimit).
 {% </admonition> %}
 
 ### Registration
 
-Once the Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
+Once the Generator client is running, register it with the Shinzo Network. See [Registration](/run/ethereum/generator/register) for details.
 
 ## Building from source
 
@@ -218,7 +219,7 @@ You can also build the Generator client binary from source instead of using Dock
     EOF
     ```
 
-    You [may not need to enter an API key](#do-you-need-an-api-key). The client fails to start without `SCHEMA_AUTH_MODE` set: the shipped `config.yaml` reads this variable from the environment. The value `none` matches the shipped Docker setup. See the [security page](../security/#schema-endpoint-auth) before exposing the schema endpoints.
+    You [may not need to enter an API key](#do-you-need-an-api-key). The client fails to start without `SCHEMA_AUTH_MODE` set: the shipped `config.yaml` reads this variable from the environment. The value `none` matches the shipped Docker setup. See the [security page](/run/ethereum/generator/security/#schema-endpoint-auth) before exposing the schema endpoints.
 
 1. Build the binary.
 
@@ -295,7 +296,7 @@ Run the service as a dedicated user rather than root. The service user needs wri
 
 ### Registration
 
-Once your Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
+Once your Generator client is running, register it with the Shinzo Network. See [Registration](/run/ethereum/generator/register) for details.
 
 ## Do you need an API key?
 
@@ -317,7 +318,7 @@ Set `GETH_API_KEY_TYPE` to the header name your provider expects.
 
 ## Exposed ports
 
-The following ports must be available on the machine. Two of them need to be reachable from the internet. See [Security](../security/) for the full exposure rules.
+The following ports must be available on the machine. Two of them need to be reachable from the internet. See [Security](/run/ethereum/generator/security/) for the full exposure rules.
 
 | Port | Service | Publish publicly? |
 | --- | --- | --- |
@@ -325,7 +326,7 @@ The following ports must be available on the machine. Two of them need to be rea
 | `9171` | DefraDB P2P. | Yes. This is how Hosts receive data. |
 | `9181` | DefraDB GraphQL API. | No. Localhost only. Raw, unauthenticated read/write access to the local database. |
 
-Publishing `8080` exposes everything on it, not just `/health`. If you want to limit that surface, put nginx in front and proxy only the paths you intend to serve. See [Security](../security/) for the tradeoffs and the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config.
+Publishing `8080` exposes everything on it, not just `/health`. If you want to limit that surface, put nginx in front and proxy only the paths you intend to serve. See [Security](/run/ethereum/generator/security/) for the tradeoffs and the [nginx with snapshots](/run/ethereum/generator/deployment-examples/nginx-with-snapshots/) example for a working config.
 
 ## Troubleshooting
 

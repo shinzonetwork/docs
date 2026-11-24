@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/configure-event-filters"
+path = "run/ethereum/host/configure-event-filters"
+aliases = ["run/run-a-host/configure-event-filters"]
 title = "Configure event filters"
 description = "Shinzo hosts will store absolutely everything it is given from a Generator client by default. In this guide you will learn how to configure a Host to only store specific token transfer events."
 +++

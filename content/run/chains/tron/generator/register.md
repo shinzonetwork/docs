@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/generator/register"
+path = "run/tron/generator/register"
+aliases = ["run/chains/tron/mainnet/generator/register"]
 title = "Register a Generator \u2014 TRON Mainnet"
 description = "Understand what must be confirmed before registering a TRON Generator."
 template = "chain-page.html"

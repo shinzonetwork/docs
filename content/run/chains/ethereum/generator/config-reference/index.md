@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-generator/config-reference"
+path = "run/ethereum/generator/config-reference"
+aliases = ["run/run-a-generator/config-reference"]
 title = "Config reference"
 description = "Reference for every Generator client config field: YAML key, default, env var override, and whether the field is actually read."
 +++
@@ -208,7 +209,7 @@ The following env vars appear in some deployment artifacts but are not read by t
 | `LOG_SOURCE` | `docker-compose-prod.yml`, `indexer-prod-setup.sh` | Not read. |
 | `LOG_STACKTRACE` | `docker-compose-prod.yml`, `indexer-prod-setup.sh` | Not read. |
 | `DEFRADB_PLAYGROUND` | Install page `docker run` example | Not read. The playground is controlled by build tags, not env vars. |
-| `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/run-a-generator/config-reference#gomemlimit). |
+| `GOMEMLIMIT` | `docker-compose-prod.yml` | Not read by the client. The Go runtime honors it as a soft memory limit. See [memory limits](/run/ethereum/generator/config-reference#gomemlimit). |
 
 ### GOMEMLIMIT
 

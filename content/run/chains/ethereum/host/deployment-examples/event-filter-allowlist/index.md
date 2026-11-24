@@ -1,5 +1,6 @@
 +++
-path = "run/run-a-host/deployment-examples/event-filter-allowlist"
+path = "run/ethereum/host/deployment-examples/event-filter-allowlist"
+aliases = ["run/run-a-host/deployment-examples/event-filter-allowlist"]
 title = "Event filter with allowlist and blocklist"
 description = "Configure a Host to store only specific contract events using the event filter in allowlist mode, with a blocklist variant and an optional block range gate."
 [extra]
@@ -8,7 +9,7 @@ mermaid = true
 
 When to use this: you want your Host to store only specific contract events instead of every document from every Generator. This cuts storage and speeds up view processing.
 
-These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+These scenarios use data from a supported EVM chain. Shinzo supports multiple EVM chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/ethereum/generator/config-reference#chain) for details.
 
 ## Topology
 
@@ -109,14 +110,14 @@ host:
 
 ### What each filter value does
 
-- `event_filter.enabled: true`: Turn on content-based filtering. Without this, the Host stores every document it receives. See [shinzo event filter](/run/run-a-host/config-reference#shinzo-event-filter).
-- `event_filter.mode: "allowlist"`: Only accept documents matching an enabled group. Set to `blocklist` to invert: accept everything except documents matching a group. See [shinzo event filter](/run/run-a-host/config-reference#shinzo-event-filter).
-- `event_filter.cascade_filters: true`: A contract filter with `types: ["transaction"]` also applies to logs and access-list entries from the same address. Set to false for strict per-type matching only. See [shinzo event filter](/run/run-a-host/config-reference#shinzo-event-filter).
-- `groups[].name`: Human-readable label for logging. See [shinzo event filter groups](/run/run-a-host/config-reference#shinzo-event-filter-groups).
-- `groups[].enabled`: Toggle a group on or off without removing it. See [shinzo event filter groups](/run/run-a-host/config-reference#shinzo-event-filter-groups).
-- `contracts[].address`: The on-chain contract address to match. See [shinzo event filter groups contracts](/run/run-a-host/config-reference#shinzo-event-filter-groups-contracts).
-- `contracts[].types`: Which collection types the address filter applies to: `transaction`, `log`, or `accessListEntry`. Multiple types can be combined. See [shinzo event filter groups contracts](/run/run-a-host/config-reference#shinzo-event-filter-groups-contracts).
-- `topics[].topic0`: The keccak256 hash of the event signature. Required for topic matching. See [shinzo event filter groups topics](/run/run-a-host/config-reference#shinzo-event-filter-groups-topics).
+- `event_filter.enabled: true`: Turn on content-based filtering. Without this, the Host stores every document it receives. See [shinzo event filter](/run/ethereum/host/config-reference#shinzo-event-filter).
+- `event_filter.mode: "allowlist"`: Only accept documents matching an enabled group. Set to `blocklist` to invert: accept everything except documents matching a group. See [shinzo event filter](/run/ethereum/host/config-reference#shinzo-event-filter).
+- `event_filter.cascade_filters: true`: A contract filter with `types: ["transaction"]` also applies to logs and access-list entries from the same address. Set to false for strict per-type matching only. See [shinzo event filter](/run/ethereum/host/config-reference#shinzo-event-filter).
+- `groups[].name`: Human-readable label for logging. See [shinzo event filter groups](/run/ethereum/host/config-reference#shinzo-event-filter-groups).
+- `groups[].enabled`: Toggle a group on or off without removing it. See [shinzo event filter groups](/run/ethereum/host/config-reference#shinzo-event-filter-groups).
+- `contracts[].address`: The on-chain contract address to match. See [shinzo event filter groups contracts](/run/ethereum/host/config-reference#shinzo-event-filter-groups-contracts).
+- `contracts[].types`: Which collection types the address filter applies to: `transaction`, `log`, or `accessListEntry`. Multiple types can be combined. See [shinzo event filter groups contracts](/run/ethereum/host/config-reference#shinzo-event-filter-groups-contracts).
+- `topics[].topic0`: The keccak256 hash of the event signature. Required for topic matching. See [shinzo event filter groups topics](/run/ethereum/host/config-reference#shinzo-event-filter-groups-topics).
 
 ## Using blocklist mode
 
@@ -165,18 +166,18 @@ Add a `block_range` to restrict filtering to a specific block range. Omit it to 
             topic0: "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"
 ```
 
-`max_block: 0` means no upper limit. See [shinzo event filter block range](/run/run-a-host/config-reference#shinzo-event-filter-block-range).
+`max_block: 0` means no upper limit. See [shinzo event filter block range](/run/ethereum/host/config-reference#shinzo-event-filter-block-range).
 
 ## Tutorial companion
 
-For a step-by-step walkthrough of configuring a single USDT Transfer filter, see the [Configuring Event Filters guide](/run/run-a-host/configure-event-filters/). This scenario shows the fuller multi-group topology from the shipped config.
+For a step-by-step walkthrough of configuring a single USDT Transfer filter, see the [Configuring Event Filters guide](/run/ethereum/host/configure-event-filters/). This scenario shows the fuller multi-group topology from the shipped config.
 
 ## Gotchas
 
 - The shipped `config.yaml` sets `event_filter.enabled: false`. This scenario changes it to `true`. If you keep it false, no filtering happens and the Host stores everything.
 - Blocks and BlockSignatures always pass through the filter regardless of mode or group settings. You cannot filter out block headers or signatures.
 - `cascade_filters: true` means a `transaction` type filter on a contract address also filters logs and access-list entries from that address. If you want strict per-type matching, set it to false.
-- The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from this config. See [no-op keys](/run/run-a-host/config-reference#no-op-keys) for the full list.
+- The shipped `config.yaml` includes several `shinzo.*` keys that are not in the `config.go` struct and are silently ignored: `wait_for_gaps`, `max_gap_size`, `batch_processing_enabled`, `batch_max_views_per_job`, `batch_query_cache_size`. They have been omitted from this config. See [no-op keys](/run/ethereum/host/config-reference#no-op-keys) for the full list.
 - The `topic0` for ERC-20 Transfer is the same across all tokens because it is derived from the function signature `Transfer(address,address,uint256)`, not from the contract address. To filter a different event, compute its keccak256 hash from the canonical signature.
 - The bootstrap peer IDs in this config are the three trustless indexer peers from the shipped `config.yaml` and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
 

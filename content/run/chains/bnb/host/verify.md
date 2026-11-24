@@ -1,5 +1,6 @@
 +++
-path = "run/chains/bnb/mainnet/host/verify"
+path = "run/bnb/host/verify"
+aliases = ["run/chains/bnb/mainnet/host/verify"]
 title = "Verify a Host \u2014 BNB Smart Chain Mainnet"
 description = "Check the schema, P2P connection, and data served from BNB Smart Chain."
 template = "chain-page.html"
@@ -37,4 +38,4 @@ Check for a nonempty `data.BSC__Mainnet__Block` array and absence of GraphQL err
 - **Snapshot configuration rejected:** this release only imports snapshots when serving Ethereum Mainnet alone.
 - **Event filter rejected on multiple chains:** disable it or use separate single-chain Hosts.
 
-Use the [shared troubleshooting guide](/run/operations/troubleshooting/) for networking and browser access issues; older examples using only `BOOTSTRAP_PEERS` do not replace the explicit chain/schema configuration here.
+Use the [shared troubleshooting guide](/run/bnb/operations/troubleshooting/) for networking and browser access issues; older examples using only `BOOTSTRAP_PEERS` do not replace the explicit chain/schema configuration here.

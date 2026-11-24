@@ -1,5 +1,6 @@
 +++
-path = "run/chains/tron/mainnet/generator/install"
+path = "run/tron/generator/install"
+aliases = ["run/chains/tron/mainnet/generator/install"]
 title = "Install a Generator \u2014 TRON Mainnet"
 description = "Build the TRON-specific executable from the reviewed integration branch."
 template = "chain-page.html"
