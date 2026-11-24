@@ -11,7 +11,9 @@ To participate in the Shinzo Network, you must register your node. Registration 
 
 Running the Generator client only requires an execution node (see [Install](/run/ethereum/generator/install)). To register a Generator client, however, you must be an active, bonded chain validator. Registration includes an [assertion](/reference/components/outpost#validator-assertions) step that ties your generator's operator key to your validator identity. If you are not a validator, you can still run the client, but your node will not be recognized by the network.
 
-Before you start, have the items in [Registration requirements](/run/ethereum/generator/prerequisites#registration-requirements) ready:
+The validator only establishes your identity. It doesn't have to be related to the execution node your Generator reads from, so the two can run on different machines in different regions.
+
+Before you start, have the items in [Registration requirements](/run/ethereum/generator/prerequisites/#registration-requirements) ready:
 
 - Your validator's consensus public key. 
 - Your validator's withdrawal address

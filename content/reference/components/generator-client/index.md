@@ -253,7 +253,7 @@ SNAPSHOT_INTERVAL_SECONDS=60
 LOG_LEVEL=error
 ```
 
-`INDEXER_START_HEIGHT` is the block number to start verifiable indexing from on first run with no existing data. Setting the value to 0 will start verifiable indexing at the tip of any chain. To start from a specific block, set the value to that block number.
+`INDEXER_START_HEIGHT` is the block number to start verifiable indexing from on first run with no existing data. Setting the value to 0 starts at the chain tip minus `start_buffer` (100 blocks by default), not exactly at the tip. To start from a specific block, set the value to that block number. Once the client has existing data, the setting is ignored and the Generator resumes from its highest stored block.
 
 ## Chain abstraction (in progress)
 

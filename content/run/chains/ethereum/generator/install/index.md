@@ -9,6 +9,8 @@ This page covers installing a Shinzo Generator client with Docker or from source
 
 Running the client only requires access to an execution node. You do not need to run a validator to install or run the Generator. Registration, however, is a separate step that does require you to be an active, bonded validator on your source chain. See the [Registration requirements](/run/ethereum/generator/prerequisites#registration-requirements) for details.
 
+That validator doesn't have to be related to the execution node the Generator reads from: registration uses the validator to establish your identity, while the execution node is just the data source. Run the Generator wherever makes operational sense, next to any execution node you operate. It doesn't need to be co-located with your validator or use your validator's node.
+
 ## Hardware recommendations
 
 The Generator client is a lightweight sidecar (the binary is approximately 254 MB) that runs next to an execution node. See [Hardware requirements](/run/ethereum/generator/prerequisites#hardware-requirements) for CPU, RAM, storage, and network sizing, including how to account for the execution node itself.
@@ -124,7 +126,7 @@ You should see the Generator client connect to your node and start collecting an
 2026-05-11T10:59:54.762Z	INFO	Committed block 25071330 (ID: bae-235bbc36-32ff-5fb0-8361-6c4dc3d6aeb9)
 2026-05-11T10:59:54.902Z	DEBUG	HTTP response: 200 OK (Content-Length: )
 2026-05-11T10:59:54.902Z	DEBUG	HTTP request successful, status: 200 OK
-2026-05-11T10:59:55.272Z	DEBUG	HTTP Request: POST http://35.193.228.182:8080
+2026-05-11T10:59:55.272Z	DEBUG	HTTP Request: POST http://203.0.113.15:8080
 2026-05-11T10:59:55.272Z	DEBUG	Setting x-goog-api-key header: df7f****e6db
 2026-05-11T10:59:55.272Z	DEBUG	Request headers: Content-Type=application/json, User-Agent=
 2026-05-11T10:59:55.409Z	DEBUG	HTTP response: 200 OK (Content-Length: )
