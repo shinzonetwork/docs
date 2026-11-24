@@ -11,7 +11,6 @@
   <aside class="theme-doc-sidebar-container">{{<chains.sidebar current={page.path} />}}</aside>
   <div class="docs-content"><article class="docItemCol markdown">
     <nav class="chain-breadcrumbs" aria-label="Breadcrumb"><a href="/run/">Run infrastructure</a><span>/</span><a href="{{ base }}">{{ chain.name }}</a><span>/</span><span>Mainnet</span>{% if page.extra.product %}<span>/</span><span>{{ page.extra.product | title }}</span>{% endif %}</nav>
-    {% if not page.extra.overview and not page.extra.operation %}<div class="chain-page-meta"><span class="chain-status">{{ chain.status }}</span><span>Source: {{ chain.name }} Mainnet</span></div>{% endif %}
     <h1 class="doc-title">{{ page.extra.heading | default(value=page.title) }}</h1>
     <p class="lead-text">{{ page.description }}</p>
     {% if page.extra.overview %}

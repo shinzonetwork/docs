@@ -32,7 +32,6 @@
 .chain-menu__links a:hover { color: var(--foreground); background: color-mix(in srgb, var(--foreground) 5%, transparent); }
 .chain-menu__links a.is-active { color: var(--color-primary); background: var(--color-primary-tint); border-left: 1px solid var(--color-primary); margin-left: -1px; }
 .chain-breadcrumbs { display: flex; flex-wrap: wrap; gap: .6rem; font-size: .7rem; color: var(--foreground-muted); margin-bottom: 1.5rem; }
-.chain-page-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .8rem; color: var(--foreground-muted); font-size: .7rem; margin-bottom: 1rem; }
 .chain-status { display: inline-block; border: 1px solid var(--szo-border-strong); padding: .2rem .65rem; border-radius: 999px; font-size: .65rem; white-space: nowrap; color: var(--foreground-muted); }
 .chain-overview__note { border-left: 2px solid var(--szo-border-strong); padding: .2rem 0 .2rem .8rem; color: var(--foreground-muted); font-size: .8rem; margin: 1.5rem 0 2rem; }
 .chain-surface .markdown .portal-section__heading,

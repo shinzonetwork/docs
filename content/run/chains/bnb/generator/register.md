@@ -1,8 +1,8 @@
 +++
 path = "run/bnb/generator/register"
 aliases = ["run/chains/bnb/mainnet/generator/register"]
-title = "Register a Generator \u2014 BNB Smart Chain Mainnet"
-description = "Separate BSC ingestion from approval to join the Shinzo registry."
+title = "Register a Generator — BNB Smart Chain Mainnet"
+description = "Prepare a verified BSC Generator for Shinzo network onboarding."
 template = "chain-page.html"
 [extra]
 chain = "bnb"
@@ -11,18 +11,26 @@ product = "generator"
 task = "register"
 +++
 
-## Registration status
+Registration makes a Generator discoverable through the Shinzo network. It is separate from [installing](/run/bnb/generator/install/) and [verifying](/run/bnb/generator/verify/) the client. An unregistered Generator can still be tested with a directly connected Host.
 
-BSC runtime configuration is present in the reviewed Generator source. A complete BSC-specific registry eligibility and assertion procedure has not been verified for this documentation revision.
+## BSC registration status
 
-Do not submit Ethereum validator keys or withdrawal-address instructions by analogy. BSC operator identity and the accepted proof must match the live Shinzo onboarding flow.
+The BSC Generator runtime is configured in the [client repository](https://github.com/shinzonetwork/shinzo-generator-client/blob/main/config/config_bsc.yaml), but the BSC-specific operator eligibility, validator proof, and assertion steps have **not yet been confirmed**. Do not submit a registration based on another chain's identity or signing instructions.
 
-## Prepare the onboarding details
+Before attempting registry onboarding, ask [Shinzo support](https://discord.shinzo.network/) to confirm:
 
-Collect the source network (BNB Smart Chain Mainnet, ID 56), Generator version, DID/public identity, reachable connection string, and successful ingestion checks. Retain the persistent identity keys and secret.
+1. Whether BSC Mainnet Generator registration is open in the intended ShinzoHub environment.
+1. Which BSC operator role is eligible and what proof or assertion is accepted.
+1. Which wallet and on-chain transaction, if any, the current flow requires.
+1. How the registry identifies the BSC source chain and your Generator's P2P endpoint.
 
-Ask [Shinzo onboarding](https://discord.shinzo.network/) to confirm the accepted operator role, consensus identity representation, assertion authority, and BSC availability in the registry. The [shared registration page](/run/ethereum/generator/register/) explains the current Ethereum-oriented process; it is not a verified BSC walkthrough.
+This page will provide the exact BSC registration steps once those details are confirmed.
 
-## After the flow is confirmed
+## Information to have ready
 
-Register against the designated ShinzoHub environment, then verify that the registry entry identifies BSC Mainnet and your actual Generator endpoint. Running the Generator and connecting a Host directly can be evaluated separately from public registry onboarding.
+- The BSC Mainnet source chain (chain ID `56`) and a successful [ingestion check](/run/bnb/generator/verify/).
+- The running Generator's version, DID or public identity, Peer ID, and reachable connection address.
+- Secure backups of the DefraDB identity keys and the unchanged `DEFRADB_KEYRING_SECRET`.
+- Access to the wallet and proof that Shinzo support confirms for BSC onboarding.
+
+After registration, check that the registry entry identifies **BSC Mainnet** and your actual Generator endpoint. A registration record is not a substitute for checking that new BSC blocks continue to arrive.
