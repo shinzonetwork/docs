@@ -324,9 +324,9 @@ The following ports must be available on the machine. Two of them need to be rea
 
 | Port | Service | Publish publicly? |
 | --- | --- | --- |
-| `8080` | Health (`/health`), metrics (`/metrics`), registration (`/registration`). | Yes, at least for `/health`. The public Generators dashboard probes `http://<your-server-ip>:8080/health` over plaintext HTTP to decide whether your Generator shows as online, and the probe can't follow a redirect to TLS. If `8080` isn't reachable from the internet, your Generator shows as offline even while it's running fine. |
-| `9171` | DefraDB P2P. | Yes. This is how Hosts receive data. |
-| `9181` | DefraDB GraphQL API. | No. Localhost only. Raw, unauthenticated read/write access to the local database. |
+| <code class="port-number">8080</code> | Health (`/health`), metrics (`/metrics`), registration (`/registration`). | Yes, at least for `/health`. The public Generators dashboard probes `http://<your-server-ip>:8080/health` over plaintext HTTP to decide whether your Generator shows as online, and the probe can't follow a redirect to TLS. If `8080` isn't reachable from the internet, your Generator shows as offline even while it's running fine. |
+| <code class="port-number">9171</code> | DefraDB P2P. | Yes. This is how Hosts receive data. |
+| <code class="port-number">9181</code> | DefraDB GraphQL API. | No. Localhost only. Raw, unauthenticated read/write access to the local database. |
 
 Publishing `8080` exposes everything on it, not just `/health`. If you want to limit that surface, put nginx in front and proxy only the paths you intend to serve. See [Security](/run/ethereum/generator/security/) for the tradeoffs and the [nginx with snapshots](/run/ethereum/generator/deployment-examples/nginx-with-snapshots/) example for a working config.
 

@@ -27,7 +27,8 @@ generator_status = "Source build documented"
 host_status = "Configuration documented"
 registration_status = "Eligibility requires confirmation"
 generator_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
-host_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+host_steps = [{ slug = "hardware-requirements", title = "Hardware requirements" }, { slug = "install", title = "Install" }, { slug = "configure-event-filters", title = "Configure event filters" }, { slug = "register", title = "Register" }, { slug = "private-hosts", title = "Private Hosts" }, { slug = "quickstart", title = "Quick Start" }, { slug = "config-reference", title = "Config reference" }]
+host_examples = [{ slug = "event-filter-allowlist", title = "Event filter with allowlist and blocklist" }, { slug = "snapshot-bootstrap", title = "Snapshot bootstrap from a trustless indexer" }, { slug = "prod-vm-nginx-tls", title = "Prod VM with nginx and TLS" }, { slug = "gcp-local-ssd-raid0", title = "GCP VM with local SSD RAID-0" }, { slug = "watchtower-auto-deploy", title = "Watchtower auto-deploy" }]
 operations = [{ slug = "add-testnet-to-wallet", title = "Add the testnet to your wallet" }, { slug = "troubleshooting", title = "Troubleshooting" }]
 
 [[chains]]

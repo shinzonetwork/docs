@@ -16,7 +16,7 @@
     {% if page.extra.overview %}
       {% if page.extra.overview_note %}<p class="chain-overview__note">{{ page.extra.overview_note }}</p>{% endif %}
       {% set generator_url = base ~ "generator/prerequisites/" %}
-      {% set host_url = base ~ "host/prerequisites/" %}
+      {% if chain.host_steps %}{% set host_url = base ~ "host/" ~ chain.host_steps[0].slug ~ "/" %}{% else %}{% set host_url = base ~ "host/prerequisites/" %}{% endif %}
       <section class="portal-section" aria-label="Choose your path">
         <h2 class="portal-section__heading">Choose your path</h2>
         <div class="portal-tracks">
@@ -25,7 +25,11 @@
         </div>
       </section>
     {% endif %}
-    {{ content_page.content | safe }}
+    {% if page.extra.shared_page and page.extra.product == "host" %}
+      {{ content_page.content | replace(from="/run/ethereum/host/", to=base ~ "host/") | replace(from="/run/ethereum/operations/", to=base ~ "operations/") | safe }}
+    {% else %}
+      {{ content_page.content | safe }}
+    {% endif %}
     {% if page.extra.product %}
     <nav class="chain-pagination" aria-label="Setup steps">
       {% set steps = chain.generator_steps %}
@@ -41,3 +45,4 @@
 {% endif %}{% endfor %}
 {% endblock body %}
 {% block mobile_sidebar %}{{<chains.sidebar current={page.path} />}}{% endblock mobile_sidebar %}
+{% block scripts %}{% if page.extra.mermaid %}{{<mermaid_script />}}{% endif %}{% endblock scripts %}

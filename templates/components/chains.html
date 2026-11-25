@@ -47,6 +47,17 @@
             {% set target = base ~ product ~ "/" ~ step.slug ~ "/" %}
             <a class="{% if current == target %}is-active{% endif %}" href="{{ target }}"{% if current == target %} aria-current="page"{% endif %}>{{ step.title }}</a>
           {% endfor %}
+          {% if product == "host" and chain.host_examples %}
+          <div class="chain-menu__subgroup">
+            <h3>Deployment Examples</h3>
+            <div class="chain-menu__links chain-menu__links--nested">
+              {% for example in chain.host_examples %}
+                {% set target = base ~ "host/deployment-examples/" ~ example.slug ~ "/" %}
+                <a class="{% if current == target %}is-active{% endif %}" href="{{ target }}"{% if current == target %} aria-current="page"{% endif %}>{{ example.title }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
         </div>
       </div>
       {% endfor %}

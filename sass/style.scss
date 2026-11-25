@@ -796,6 +796,13 @@ a.menu__link--category:hover {
     -webkit-box-decoration-break: clone;
   }
 
+  // Port numbers should remain a single token in narrow table columns.
+  td code.port-number {
+    display: inline-block;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+
   thead {
     background: var(--surface-sunken);
   }
