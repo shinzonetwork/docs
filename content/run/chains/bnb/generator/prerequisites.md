@@ -1,61 +1,63 @@
 +++
 path = "run/bnb/generator/prerequisites"
 aliases = ["run/chains/bnb/mainnet/generator/prerequisites"]
-title = "Generator prerequisites — BNB Smart Chain Mainnet"
-description = "Prepare a BSC Mainnet node, a machine for the Generator, and the credentials needed to start indexing."
-template = "chain-page.html"
-[extra]
-chain = "bnb"
-heading = "Generator prerequisites"
-product = "generator"
-task = "prerequisites"
+title = "Prerequisites"
+description = "Requirements for running a Shinzo Generator on BNB Smart Chain Mainnet"
 +++
 
-The Generator reads BNB Smart Chain (BSC) Mainnet from a JSON-RPC endpoint, writes chain data to its local DefraDB, and makes that data available to Hosts. You can run it without registering it; registration controls discovery through the Shinzo network.
+A Shinzo Generator connects to a synchronized BNB Smart Chain Mainnet node through JSON-RPC and WebSocket endpoints to ingest blockchain data, process it into structured records and distribute signed data across the Shinzo network.
 
-## The setup flow
+Before installing the Generator, you’ll need access to a BSC node with HTTP JSON-RPC and WebSocket subscriptions enabled, sufficient computing resources and connectivity to the Shinzo network. The Generator can run alongside your existing BSC node or on a separate server, provided both endpoints are accessible.
 
-1. Prepare a BSC Mainnet node or provider endpoint and capacity for the Generator.
-1. [Install and configure](/run/bnb/generator/install/) the EVM Generator with `config/config_bsc.yaml`.
-1. [Confirm BSC ingestion](/run/bnb/generator/install/#confirm-bsc-ingestion) before connecting a Host or requesting registration.
-1. [Register](/run/bnb/generator/register/) when BSC operator onboarding is available for your role.
+{% <admonition type="note"> %}
+Note: Running a Generator and registering it with Shinzo are separate steps. You can install the client without registering, but network participation is subject to the eligibility requirements described in [Register Your Generator](../register)⁠￼.
+{% </admonition> %}
 
-## BSC source node
+## Hardware requirements
 
-You need HTTP JSON-RPC and preferably WebSocket access to **BSC Mainnet**. The Generator reads blocks and transaction receipts from this endpoint; it does not run a source node for you. A node you operate or a managed provider can work if it supplies the required methods and enough request capacity for receipt fetching.
+The Generator runs independently of the BSC node. The resources below are for the Generator only and must be provisioned in addition to the resources used by your existing blockchain infrastructure.
 
-Check the chain ID before installing. Supply your provider's authentication headers if required:
+Resource|	Minimum	|Recommended
+| --- | --- | --- |
+CPU|	4 cores	|8 cores
+Memory|	8 GB	|16 GB
+Storage	|300 GB|	500 GB
+Network|	100 Mbps|	1 Gbps
 
-```shell
-curl -fsS https://your-bsc-mainnet-rpc.example \
-  -H 'Content-Type: application/json' \
-  --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'
-```
+### Storage
 
-The result must be `0x38` (decimal `56`). Also check that the endpoint supports `eth_getBlockByNumber` and `eth_getTransactionReceipt`. The `GETH_*` environment variable names used in the config are historical; enter your **BSC** endpoints in them. The WebSocket endpoint helps the client follow the chain head. If its initial connection fails while HTTP is available, the client can use HTTP polling.
+The Generator uses pruning by default to limit how much historical blockchain data it retains. With pruning enabled, storage usage remains bounded by the configured retention window rather than growing indefinitely with chain history.
 
-## Generator machine
+The 300–500 GB recommendation includes headroom for database operations, snapshot serving and P2P replication. With pruning disabled, storage grows as historical data accumulates.
 
-Install Git, Make, and **Go 1.27.3 or newer** for the [source build](https://github.com/shinzonetwork/shinzo-generator-client/blob/main/BUILD.md). The BSC guide uses a source build because it does not rely on a published BSC container image.
+### Network
 
-The [supplied BSC config](https://github.com/shinzonetwork/shinzo-generator-client/blob/main/config/config_bsc.yaml) is sized around a **16 GB machine**: it reserves 10,240 MiB for the P2P resource manager and specifies 8,192 file descriptors. Run with a process file-descriptor limit of at least 8,192. If the Generator shares a machine with the source node, size the machine for both workloads; the BSC node's storage and memory are separate from the Generator's.
+A stable connection to your BSC node matters more than peak bandwidth. The Generator reads new blocks as they arrive, so RPC latency and node availability directly affect how closely it follows the chain tip. A 100 Mbps connection is the current planning baseline, while 1 Gbps provides additional headroom for snapshot serving and P2P replication.
 
-| Resource | Starting point for this config |
-| --- | --- |
-| Memory | 16 GB allocation with `GOMEMLIMIT=14GiB`; resize the P2P budget if you change the allocation. |
-| Open file descriptors | At least 8,192 for the Generator process. |
-| CPU and network | Size against your node's block and receipt rate, Host connections, and observed backlog. No BSC-specific minimum has been measured for this guide. |
-| Disk | Persistent, monitored storage for DefraDB, snapshots, and identity keys. Provision from observed usage; no fixed BSC capacity is established here. |
+## Deployment requirements
 
-Use persistent disk for the DefraDB store (`./.defra-bsc` by default), snapshots (`./.defra-bsc/snapshots`), and identity keys. The amount of disk required depends on data volume and how long you retain it. The supplied config prunes after **16,000 BSC blocks** and keeps up to **200 snapshots of 100 blocks each**. Monitor actual disk use before choosing a capacity; these settings are not a measured storage minimum.
+The Generator can be deployed on the same machine as your BSC node or on separate infrastructure.
 
-Before starting, prepare:
+### Running alongside your BSC node
 
-- A stable `DEFRADB_KEYRING_SECRET` that you will retain across restarts.
-- At least one `SCHEMA_API_KEYS` token for the authenticated schema endpoint used by Hosts.
-- A reachable P2P port (`9171` in the supplied config) if Hosts will connect to this Generator.
-- A plan to back up the identity keys and secrets. Losing them changes the Generator's identity.
+You can run the Generator on the same machine as your existing BSC node, provided sufficient computing resources are available. In this configuration, the Generator connects to locally accessible JSON-RPC and WebSocket endpoints. Account for the Generator’s additional CPU, memory, and storage requirements when sizing the machine.
 
-## Registration
+### Running on a separate machine
 
-The BSC-specific operator role and validator assertion requirements have not been confirmed. You can install and verify the Generator without registration. See [Register a Generator](/run/bnb/generator/register/) before attempting registry onboarding.
+You can deploy the Generator on a dedicated server and connect it to your BSC node remotely. This approach separates the Generator’s resource consumption from the underlying blockchain node and allows both services to be managed independently. The BSC node’s JSON-RPC and WebSocket endpoints must be reachable from the Generator. Use a private network or secured connection rather than exposing unauthenticated RPC endpoints to the public internet.
+
+## Registration requirements
+
+Shinzo Testnet registration is open. To register a BNB Smart Chain Generator, you’ll need:
+
+* **An eligible BSC validator**: Registration requires a validator recognized by the BNB Smart Chain network. Validator status is not currently verified during testnet registration. On mainnet, registration will require verification that the operator is associated with an active BSC validator.
+* **Your validator address**: The BSC validator address used to identify your validator on the network. This will be required for validator verification on mainnet.
+* **A browser wallet**: An EVM-compatible wallet to sign the registration transaction on ShinzoHub.
+
+{% <admonition type="note"> %}
+Validator verification is not enforced on the current testnet. You can register and operate a Generator without completing validator verification. This requirement will be enforced as Shinzo transitions to mainnet.
+{% </admonition> %}
+
+## Next steps
+
+Once your BSC node is synchronized and the required infrastructure is available, continue to [Install & Configure](../install)⁠ to deploy the Generator and connect it to your node.
