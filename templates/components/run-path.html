@@ -1,0 +1,15 @@
+{% component run_path.card(product, href, description, cta) %}
+{% set cta_arrow = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' %}
+<a class="portal-card portal-card--featured" href="{{ href }}">
+  <div class="portal-card__icon" aria-hidden="true">
+    {% if product == "generator" %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+    {% else %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    {% endif %}
+  </div>
+  <h3 class="portal-card__title">Run a {{ product | title }}</h3>
+  <p class="portal-card__desc">{{ description }}</p>
+  <span class="portal-card__cta">{{ cta }} {{ cta_arrow | safe }}</span>
+</a>
+{% endcomponent run_path.card %}

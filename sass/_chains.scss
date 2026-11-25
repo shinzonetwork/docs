@@ -1,0 +1,54 @@
+// Product documentation follows the web brand kit: flat, sharp surfaces,
+// Geist Mono headings, Inter body, and crimson reserved for interaction.
+.chain-surface, .chain-menu {
+  --heading-font-family: "Geist Mono", monospace;
+  --font-family-display: "Geist Mono", monospace;
+  --font-family-monospace: "Geist Mono", monospace;
+  --heading-font-weight: 400;
+}
+.chain-surface .doc-title { font-family: var(--heading-font-family); font-weight: 400; letter-spacing: -.035em; }
+.chain-surface .markdown h2, .chain-surface .markdown h3 { font-family: var(--heading-font-family); font-weight: 400; }
+.chain-surface .markdown pre, .chain-surface .markdown .admonition { border-radius: 0; box-shadow: none; }
+.chain-eyebrow { display: block; font-family: var(--font-family-base); font-size: .65rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--foreground-muted); margin-bottom: .6rem; }
+.chain-menu { padding: 1.75rem 1.25rem 3rem .5rem; }
+.chain-menu__selector { margin-bottom: 2rem; }
+.chain-menu__selector-label { margin: 0 0 .65rem .75rem; color: var(--foreground); font-size: .875rem; font-weight: 600; }
+.chain-picker { position: relative; width: min(100%, 11rem); margin-left: .75rem; }
+.chain-picker summary { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 2rem; cursor: pointer; padding: .35rem .55rem; border: 1px solid var(--szo-border-strong); background: var(--background); list-style: none; }
+.chain-picker summary::-webkit-details-marker { display: none; }
+.chain-picker summary:hover { border-color: var(--foreground-muted); }
+.chain-picker summary:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.chain-picker summary strong { min-width: 0; font-size: .875rem; font-weight: 500; line-height: 1.45; }
+.chain-picker__chevron { color: var(--foreground-muted); font-size: .9rem; line-height: 1; }
+.chain-picker[open] .chain-picker__chevron { transform: rotate(180deg); }
+.chain-picker__options { position: absolute; z-index: 10; top: 100%; left: 0; min-width: 12rem; border: 1px solid var(--szo-border); background: var(--background); padding: .25rem; box-shadow: 0 6px 18px rgb(0 0 0 / .08); }
+.chain-picker__options a { display: block; padding: .32rem .75rem; color: var(--menu-color); font-size: .875rem; line-height: 1.45; text-decoration: none; }
+.chain-picker__options a:hover { background: var(--surface-sunken); }
+.chain-picker__options a[aria-current] { color: var(--color-primary); }
+.chain-menu__group { margin: 0 0 2rem; }
+.chain-menu__group h2 { font-family: var(--font-family-base); font-weight: 600; font-size: .875rem; margin: 0 0 .65rem .75rem; }
+.chain-menu__links { border-left: 1px solid var(--docs-menu-border); margin-left: 1rem; padding-left: .25rem; }
+.chain-menu__links a { display: block; padding: .32rem .75rem; color: var(--menu-color); font-size: .875rem; line-height: 1.45; text-decoration: none; }
+.chain-menu__links a:hover { color: var(--foreground); background: color-mix(in srgb, var(--foreground) 5%, transparent); }
+.chain-menu__links a.is-active { color: var(--color-primary); background: var(--color-primary-tint); border-left: 1px solid var(--color-primary); margin-left: -1px; }
+.chain-menu__subgroup { margin: 1.5rem 0 0; }
+.chain-menu__subgroup h3 { font-family: var(--font-family-base); font-size: .8125rem; font-weight: 600; line-height: 1.45; margin: 0 0 .65rem .75rem; }
+.chain-menu__links--nested { margin-left: 1rem; }
+.chain-breadcrumbs { display: flex; flex-wrap: wrap; gap: .6rem; font-size: .7rem; color: var(--foreground-muted); margin-bottom: 1.5rem; }
+.chain-status { display: inline-block; border: 1px solid var(--szo-border-strong); padding: .2rem .65rem; border-radius: 999px; font-size: .65rem; white-space: nowrap; color: var(--foreground-muted); }
+.chain-overview__note { border-left: 2px solid var(--szo-border-strong); padding: .2rem 0 .2rem .8rem; color: var(--foreground-muted); font-size: .8rem; margin: 1.5rem 0 2rem; }
+.chain-surface .markdown .portal-section__heading,
+.chain-surface .markdown .portal-card__title { font-family: var(--font-family-base); font-weight: 600; }
+.chain-directory { margin: 2.5rem 0; }
+.markdown a.chain-directory__row { display: grid; grid-template-columns: 1.2fr 1.5fr auto 20px; align-items: center; gap: 1.5rem; padding: 1.8rem 0; border-top: 1px solid var(--szo-border); text-decoration: none; color: var(--foreground); }
+.markdown a.chain-directory__row:last-child { border-bottom: 1px solid var(--szo-border); }
+.markdown .chain-directory__row h2 { font-size: 1.25rem; border: 0; padding: 0; margin: 0; }
+.chain-directory__row p { color: var(--foreground-muted); font-size: .8rem; margin: 0; }
+.chain-directory__arrow { color: var(--color-primary); }
+.chain-directory__row:hover h2 { color: var(--color-primary); }
+.chain-pagination { display: flex; flex-wrap: wrap; gap: .7rem 1.2rem; padding: 1.5rem 0; margin-top: 3rem; border-top: 1px solid var(--szo-border); }
+.markdown .chain-pagination a { font-size: .75rem; color: var(--foreground-muted); text-decoration: none; }
+.chain-pagination a span { margin-right: .4rem; font-family: var(--font-family-monospace); }
+.markdown .chain-pagination a[aria-current] { color: var(--color-primary); }
+@media (max-width: 1100px) { .markdown a.chain-directory__row { grid-template-columns: 1fr auto; gap: .8rem; } .chain-directory__row p { grid-column: 1; } .chain-directory__arrow { display: none; } .chain-directory__row .chain-status { grid-row: 1; grid-column: 2; } }
+@media (max-width: 600px) { .markdown a.chain-directory__row { grid-template-columns: 1fr; } .chain-directory__row .chain-status { grid-column: 1; grid-row: auto; justify-self: start; } }

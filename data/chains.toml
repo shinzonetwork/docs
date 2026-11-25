@@ -1,0 +1,47 @@
+## Add a chain record below, then add its slug here when its docs are ready to publish.
+published_slugs = ["ethereum", "bnb"]
+## Ethereum keeps the original Run infrastructure landing and sidebar.
+legacy_chain_slug = "ethereum"
+
+[[chains]]
+slug = "ethereum"
+name = "Ethereum"
+family = "EVM"
+network = "Mainnet"
+prefix = "Ethereum__Mainnet"
+status = "Existing guides"
+description = "Run the Ethereum data pipeline with the established Generator and Host guides."
+generator_status = "Existing setup"
+host_status = "Released client"
+registration_status = "Testnet flow documented"
+
+[[chains]]
+slug = "bnb"
+name = "BNB Smart Chain"
+family = "EVM"
+network = "Mainnet"
+prefix = "BSC__Mainnet"
+status = "Source-reviewed"
+description = "Use the BSC configuration, chain ID 56, and BSC-specific collections."
+generator_status = "Source build documented"
+host_status = "Configuration documented"
+registration_status = "Eligibility requires confirmation"
+generator_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+host_steps = [{ slug = "hardware-requirements", title = "Hardware requirements" }, { slug = "install", title = "Install" }, { slug = "configure-event-filters", title = "Configure event filters" }, { slug = "register", title = "Register" }, { slug = "private-hosts", title = "Private Hosts" }, { slug = "quickstart", title = "Quick Start" }, { slug = "config-reference", title = "Config reference" }]
+host_examples = [{ slug = "event-filter-allowlist", title = "Event filter with allowlist and blocklist" }, { slug = "snapshot-bootstrap", title = "Snapshot bootstrap from a trustless indexer" }, { slug = "prod-vm-nginx-tls", title = "Prod VM with nginx and TLS" }, { slug = "gcp-local-ssd-raid0", title = "GCP VM with local SSD RAID-0" }, { slug = "watchtower-auto-deploy", title = "Watchtower auto-deploy" }]
+operations = [{ slug = "add-testnet-to-wallet", title = "Add the testnet to your wallet" }, { slug = "troubleshooting", title = "Troubleshooting" }]
+
+[[chains]]
+slug = "tron"
+name = "TRON"
+family = "TRON VM"
+network = "Mainnet"
+prefix = "Tron__Mainnet"
+status = "Integration preview"
+description = "Explore the TRON adapter, wallet HTTP APIs, and chain-specific data model."
+generator_status = "Integration branch"
+host_status = "Compatibility not validated"
+registration_status = "Flow requires confirmation"
+generator_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+host_steps = [{ slug = "prerequisites", title = "Prerequisites" }, { slug = "install", title = "Install & configure" }, { slug = "register", title = "Register" }]
+operations = [{ slug = "add-testnet-to-wallet", title = "Add the testnet to your wallet" }]

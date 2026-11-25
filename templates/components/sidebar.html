@@ -27,7 +27,21 @@
 {% endcomponent sidebar.page_link %}
 
 {% component sidebar.render(blocks, current) %}
+{% set catalog = load_data(path="data/chains.toml") %}
+{% set_global use_chain_sidebar = current == "/run/chains/" %}
+{% for chain in catalog.chains %}
+  {% if chain.slug in catalog.published_slugs and chain.slug != catalog.legacy_chain_slug %}
+    {% set base = "/run/" ~ chain.slug ~ "/" %}
+    {% if current is starting_with(pat=base) %}{% set_global use_chain_sidebar = true %}{% endif %}
+  {% endif %}
+{% endfor %}
+{% if use_chain_sidebar %}
+  {{<chains.sidebar current={current} />}}
+{% else %}
 <nav class="menu" aria-label="Docs sidebar">
+  {% if current == "/run/" or current is starting_with(pat="/run/") %}
+    {{<chains.selector current={current} />}}
+  {% endif %}
   <ul class="menu__list">
     {# Determine the active section from the current path. The site root is
        the Home page, which shows the Understand groups. #}
@@ -81,4 +95,5 @@
     {% endfor %}
   </ul>
 </nav>
+{% endif %}
 {% endcomponent sidebar.render %}

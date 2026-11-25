@@ -1,9 +1,10 @@
-# Cloudflare Pages redirects. First match wins, and static files take
-# precedence over rules, so a rule only fires when no page exists at the path.
+# Cloudflare Pages redirects. First match wins, including when a static asset
+# exists at the old path (such as a Zola alias page for local previews).
 #
-# All legacy URLs use permanent (301) redirects so search engines consolidate
-# ranking onto the canonical page. Non-splat rules are listed in both bare and
-# trailing-slash form because a rule matches the request path exactly.
+# Published legacy URLs use permanent (301) redirects. Unpublished TRON routes
+# temporarily redirect (302) to Run infrastructure so they can return later.
+# Non-splat rules are listed in both bare and trailing-slash form because a rule
+# matches the request path exactly.
 
 # ---------------------------------------------------------------------------
 # Home page. The site root (content/_index.md) is the Home page itself; the
@@ -45,10 +46,10 @@
 /guides/                                /build/concepts/the-app-model/            301
 /guides/building-apps-with-shinzo       /build/concepts/the-app-model/            301
 /guides/building-apps-with-shinzo/      /build/concepts/the-app-model/            301
-/guides/operator-quickstart             /run/get-started/                         301
-/guides/operator-quickstart/            /run/get-started/                         301
-/guides/configuring-event-filters-on-a-shinzo-host  /run/run-a-host/configure-event-filters/  301
-/guides/configuring-event-filters-on-a-shinzo-host/ /run/run-a-host/configure-event-filters/  301
+/guides/operator-quickstart             /run/ethereum/get-started/                         301
+/guides/operator-quickstart/            /run/ethereum/get-started/                         301
+/guides/configuring-event-filters-on-a-shinzo-host  /run/ethereum/host/configure-event-filters/  301
+/guides/configuring-event-filters-on-a-shinzo-host/ /run/ethereum/host/configure-event-filters/  301
 /build/build-an-app                     /build/concepts/the-app-model/            301
 /build/build-an-app/                    /build/concepts/the-app-model/            301
 /build/explanation/the-app-model        /build/concepts/the-app-model/            301
@@ -69,67 +70,157 @@
 # Run - generators (including the old "indexer" naming). The
 # /run/run-a-generator/ section itself renders no page, so landings go to its
 # first page, Prerequisites.
-/generators                             /run/run-a-generator/prerequisites/       301
-/generators/                            /run/run-a-generator/prerequisites/       301
-/generator                              /run/run-a-generator/prerequisites/       301
-/generator/                             /run/run-a-generator/prerequisites/       301
-/indexer                                /run/run-a-generator/prerequisites/       301
-/indexer/                               /run/run-a-generator/prerequisites/       301
-/indexers                               /run/run-a-generator/prerequisites/       301
-/indexers/                              /run/run-a-generator/prerequisites/       301
-/run/run-a-generator                    /run/run-a-generator/prerequisites/       301
-/run/run-a-generator/                   /run/run-a-generator/prerequisites/       301
-/run/run-a-generator/hardware-requirements  /run/run-a-generator/prerequisites/   301
-/run/run-a-generator/hardware-requirements/ /run/run-a-generator/prerequisites/   301
-/generator/hardware-requirements        /run/run-a-generator/prerequisites/       301
-/generator/hardware-requirements/       /run/run-a-generator/prerequisites/       301
-/generators/hardware-requirements       /run/run-a-generator/prerequisites/       301
-/generators/hardware-requirements/      /run/run-a-generator/prerequisites/       301
-/generator/prerequisites                /run/run-a-generator/prerequisites/       301
-/generator/prerequisites/               /run/run-a-generator/prerequisites/       301
-/generator/install                      /run/run-a-generator/install/             301
-/generator/install/                     /run/run-a-generator/install/             301
-/generator/register                     /run/run-a-generator/register/            301
-/generator/register/                    /run/run-a-generator/register/            301
-/generator/security                     /run/run-a-generator/security/            301
-/generator/security/                    /run/run-a-generator/security/            301
-/generator/faq                          /run/operations/troubleshooting/          301
-/generator/faq/                         /run/operations/troubleshooting/          301
-/generators/faq                         /run/operations/troubleshooting/          301
-/generators/faq/                        /run/operations/troubleshooting/          301
-/generators/frequently-asked-questions  /run/operations/troubleshooting/          301
-/generators/frequently-asked-questions/ /run/operations/troubleshooting/          301
-/generators/deployment-examples/managed-node-gcp   /run/run-a-generator/managed-nodes/          301
-/generators/deployment-examples/managed-node-gcp/  /run/run-a-generator/managed-nodes/          301
-/run/run-a-generator/deployment-examples/managed-gcp-node   /run/run-a-generator/managed-nodes/  301
-/run/run-a-generator/deployment-examples/managed-gcp-node/  /run/run-a-generator/managed-nodes/  301
-/generators/deployment-examples/nginx-tls-snapshots  /run/run-a-generator/deployment-examples/nginx-with-snapshots/  301
-/generators/deployment-examples/nginx-tls-snapshots/ /run/run-a-generator/deployment-examples/nginx-with-snapshots/  301
-/generators/deployment-examples/validator-local-geth  /run/run-a-generator/deployment-examples/validator-with-geth/  301
-/generators/deployment-examples/validator-local-geth/ /run/run-a-generator/deployment-examples/validator-with-geth/  301
+/generators                             /run/ethereum/generator/prerequisites/       301
+/generators/                            /run/ethereum/generator/prerequisites/       301
+/generator                              /run/ethereum/generator/prerequisites/       301
+/generator/                             /run/ethereum/generator/prerequisites/       301
+/indexer                                /run/ethereum/generator/prerequisites/       301
+/indexer/                               /run/ethereum/generator/prerequisites/       301
+/indexers                               /run/ethereum/generator/prerequisites/       301
+/indexers/                              /run/ethereum/generator/prerequisites/       301
+/run/run-a-generator                    /run/ethereum/generator/prerequisites/       301
+/run/run-a-generator/                   /run/ethereum/generator/prerequisites/       301
+/run/run-a-generator/hardware-requirements  /run/ethereum/generator/prerequisites/   301
+/run/run-a-generator/hardware-requirements/ /run/ethereum/generator/prerequisites/   301
+/generator/hardware-requirements        /run/ethereum/generator/prerequisites/       301
+/generator/hardware-requirements/       /run/ethereum/generator/prerequisites/       301
+/generators/hardware-requirements       /run/ethereum/generator/prerequisites/       301
+/generators/hardware-requirements/      /run/ethereum/generator/prerequisites/       301
+/generator/prerequisites                /run/ethereum/generator/prerequisites/       301
+/generator/prerequisites/               /run/ethereum/generator/prerequisites/       301
+/generator/install                      /run/ethereum/generator/install/             301
+/generator/install/                     /run/ethereum/generator/install/             301
+/generator/register                     /run/ethereum/generator/register/            301
+/generator/register/                    /run/ethereum/generator/register/            301
+/generator/security                     /run/ethereum/generator/security/            301
+/generator/security/                    /run/ethereum/generator/security/            301
+/generator/faq                          /run/ethereum/operations/troubleshooting/          301
+/generator/faq/                         /run/ethereum/operations/troubleshooting/          301
+/generators/faq                         /run/ethereum/operations/troubleshooting/          301
+/generators/faq/                        /run/ethereum/operations/troubleshooting/          301
+/generators/frequently-asked-questions  /run/ethereum/operations/troubleshooting/          301
+/generators/frequently-asked-questions/ /run/ethereum/operations/troubleshooting/          301
+/generators/deployment-examples/managed-node-gcp   /run/ethereum/generator/managed-nodes/          301
+/generators/deployment-examples/managed-node-gcp/  /run/ethereum/generator/managed-nodes/          301
+/run/run-a-generator/deployment-examples/managed-gcp-node   /run/ethereum/generator/managed-nodes/  301
+/run/run-a-generator/deployment-examples/managed-gcp-node/  /run/ethereum/generator/managed-nodes/  301
+/generators/deployment-examples/nginx-tls-snapshots  /run/ethereum/generator/deployment-examples/nginx-with-snapshots/  301
+/generators/deployment-examples/nginx-tls-snapshots/ /run/ethereum/generator/deployment-examples/nginx-with-snapshots/  301
+/generators/deployment-examples/validator-local-geth  /run/ethereum/generator/deployment-examples/validator-with-geth/  301
+/generators/deployment-examples/validator-local-geth/ /run/ethereum/generator/deployment-examples/validator-with-geth/  301
 
 # Run - hosts. The /run/run-a-host/ section itself renders no page, so
 # landings go to its first page, Hardware requirements.
-/host                                   /run/run-a-host/hardware-requirements/    301
-/host/                                  /run/run-a-host/hardware-requirements/    301
-/hosts                                  /run/run-a-host/hardware-requirements/    301
-/hosts/                                 /run/run-a-host/hardware-requirements/    301
-/run/run-a-host                         /run/run-a-host/hardware-requirements/    301
-/run/run-a-host/                        /run/run-a-host/hardware-requirements/    301
+/host                                   /run/ethereum/host/hardware-requirements/    301
+/host/                                  /run/ethereum/host/hardware-requirements/    301
+/hosts                                  /run/ethereum/host/hardware-requirements/    301
+/hosts/                                 /run/ethereum/host/hardware-requirements/    301
+/run/run-a-host                         /run/ethereum/host/hardware-requirements/    301
+/run/run-a-host/                        /run/ethereum/host/hardware-requirements/    301
 /hosts/examples                         /build/how-to/query-data/                 301
 /hosts/examples/                        /build/how-to/query-data/                 301
-/hosts/faq                              /run/operations/troubleshooting/          301
-/hosts/faq/                             /run/operations/troubleshooting/          301
-/hosts/frequently-asked-questions       /run/operations/troubleshooting/          301
-/hosts/frequently-asked-questions/      /run/operations/troubleshooting/          301
-/run/run-a-host/private                 /run/run-a-host/private-hosts/            301
-/run/run-a-host/private/                /run/run-a-host/private-hosts/            301
-/run/run-a-host/direct-client           /run/run-a-host/private-hosts/            301
-/run/run-a-host/direct-client/          /run/run-a-host/private-hosts/            301
+/hosts/faq                              /run/ethereum/operations/troubleshooting/          301
+/hosts/faq/                             /run/ethereum/operations/troubleshooting/          301
+/hosts/frequently-asked-questions       /run/ethereum/operations/troubleshooting/          301
+/hosts/frequently-asked-questions/      /run/ethereum/operations/troubleshooting/          301
+/run/run-a-host/private                 /run/ethereum/host/private-hosts/            301
+/run/run-a-host/private/                /run/ethereum/host/private-hosts/            301
+/run/run-a-host/direct-client           /run/ethereum/host/private-hosts/            301
+/run/run-a-host/direct-client/          /run/ethereum/host/private-hosts/            301
 
 # Run - operations
-/wallets/add-testnet                    /run/operations/add-testnet-to-wallet/    301
-/wallets/add-testnet/                   /run/operations/add-testnet-to-wallet/    301
+/run/operations/add-testnet-to-wallet /run/ethereum/operations/add-testnet-to-wallet/ 301
+/run/operations/add-testnet-to-wallet/ /run/ethereum/operations/add-testnet-to-wallet/ 301
+/run/operations/troubleshooting /run/ethereum/operations/troubleshooting/ 301
+/run/operations/troubleshooting/ /run/ethereum/operations/troubleshooting/ 301
+/wallets/add-testnet                    /run/ethereum/operations/add-testnet-to-wallet/    301
+/wallets/add-testnet/                   /run/ethereum/operations/add-testnet-to-wallet/    301
+
+# Previous published operator URLs and temporarily unpublished TRON URLs.
+/run/tron /run/ 302
+/run/tron/ /run/ 302
+/run/tron/* /run/ 302
+/run/chains/tron /run/ 302
+/run/chains/tron/ /run/ 302
+/run/chains/tron/* /run/ 302
+/run/ethereum /run/ 301
+/run/ethereum/ /run/ 301
+/run/chains/bnb/mainnet /run/bnb/ 301
+/run/chains/bnb/mainnet/ /run/bnb/ 301
+/run/chains/bnb/mainnet/data-model /run/bnb/data-model/ 301
+/run/chains/bnb/mainnet/data-model/ /run/bnb/data-model/ 301
+/run/chains/bnb/mainnet/generator/install /run/bnb/generator/install/ 301
+/run/chains/bnb/mainnet/generator/install/ /run/bnb/generator/install/ 301
+/run/chains/bnb/mainnet/generator/prerequisites /run/bnb/generator/prerequisites/ 301
+/run/chains/bnb/mainnet/generator/prerequisites/ /run/bnb/generator/prerequisites/ 301
+/run/chains/bnb/mainnet/generator/register /run/bnb/generator/register/ 301
+/run/chains/bnb/mainnet/generator/register/ /run/bnb/generator/register/ 301
+/run/chains/bnb/mainnet/generator/verify /run/bnb/generator/install/ 301
+/run/chains/bnb/mainnet/generator/verify/ /run/bnb/generator/install/ 301
+/run/chains/bnb/mainnet/host/install /run/bnb/host/install/ 301
+/run/chains/bnb/mainnet/host/install/ /run/bnb/host/install/ 301
+/run/chains/bnb/mainnet/host/prerequisites /run/bnb/host/prerequisites/ 301
+/run/chains/bnb/mainnet/host/prerequisites/ /run/bnb/host/prerequisites/ 301
+/run/chains/bnb/mainnet/host/register /run/bnb/host/register/ 301
+/run/chains/bnb/mainnet/host/register/ /run/bnb/host/register/ 301
+/run/chains/bnb/mainnet/host/verify /run/bnb/host/install/ 301
+/run/chains/bnb/mainnet/host/verify/ /run/bnb/host/install/ 301
+/run/chains/bnb/mainnet/operations/add-testnet-to-wallet /run/bnb/operations/add-testnet-to-wallet/ 301
+/run/chains/bnb/mainnet/operations/add-testnet-to-wallet/ /run/bnb/operations/add-testnet-to-wallet/ 301
+/run/chains/bnb/mainnet/operations/troubleshooting /run/bnb/operations/troubleshooting/ 301
+/run/chains/bnb/mainnet/operations/troubleshooting/ /run/bnb/operations/troubleshooting/ 301
+/run/bnb/generator/verify /run/bnb/generator/install/ 301
+/run/bnb/generator/verify/ /run/bnb/generator/install/ 301
+/run/bnb/host/verify /run/bnb/host/install/ 301
+/run/bnb/host/verify/ /run/bnb/host/install/ 301
+/run/get-started /run/ethereum/get-started/ 301
+/run/get-started/ /run/ethereum/get-started/ 301
+/run/run-a-generator/config-reference /run/ethereum/generator/config-reference/ 301
+/run/run-a-generator/config-reference/ /run/ethereum/generator/config-reference/ 301
+/run/run-a-generator/deployment-examples/archival-vs-pruned /run/ethereum/generator/deployment-examples/archival-vs-pruned/ 301
+/run/run-a-generator/deployment-examples/archival-vs-pruned/ /run/ethereum/generator/deployment-examples/archival-vs-pruned/ 301
+/run/run-a-generator/deployment-examples/high-throughput-tuning /run/ethereum/generator/deployment-examples/high-throughput-tuning/ 301
+/run/run-a-generator/deployment-examples/high-throughput-tuning/ /run/ethereum/generator/deployment-examples/high-throughput-tuning/ 301
+/run/run-a-generator/deployment-examples/nginx-with-snapshots /run/ethereum/generator/deployment-examples/nginx-with-snapshots/ 301
+/run/run-a-generator/deployment-examples/nginx-with-snapshots/ /run/ethereum/generator/deployment-examples/nginx-with-snapshots/ 301
+/run/run-a-generator/deployment-examples/validator-with-geth /run/ethereum/generator/deployment-examples/validator-with-geth/ 301
+/run/run-a-generator/deployment-examples/validator-with-geth/ /run/ethereum/generator/deployment-examples/validator-with-geth/ 301
+/run/run-a-generator/guides/quicknode-setup /run/ethereum/generator/guides/quicknode-setup/ 301
+/run/run-a-generator/guides/quicknode-setup/ /run/ethereum/generator/guides/quicknode-setup/ 301
+/run/run-a-generator/install /run/ethereum/generator/install/ 301
+/run/run-a-generator/install/ /run/ethereum/generator/install/ 301
+/run/run-a-generator/managed-nodes /run/ethereum/generator/managed-nodes/ 301
+/run/run-a-generator/managed-nodes/ /run/ethereum/generator/managed-nodes/ 301
+/run/run-a-generator/prerequisites /run/ethereum/generator/prerequisites/ 301
+/run/run-a-generator/prerequisites/ /run/ethereum/generator/prerequisites/ 301
+/run/run-a-generator/register /run/ethereum/generator/register/ 301
+/run/run-a-generator/register/ /run/ethereum/generator/register/ 301
+/run/run-a-generator/security /run/ethereum/generator/security/ 301
+/run/run-a-generator/security/ /run/ethereum/generator/security/ 301
+/run/run-a-host/config-reference /run/ethereum/host/config-reference/ 301
+/run/run-a-host/config-reference/ /run/ethereum/host/config-reference/ 301
+/run/run-a-host/configure-event-filters /run/ethereum/host/configure-event-filters/ 301
+/run/run-a-host/configure-event-filters/ /run/ethereum/host/configure-event-filters/ 301
+/run/run-a-host/deployment-examples/event-filter-allowlist /run/ethereum/host/deployment-examples/event-filter-allowlist/ 301
+/run/run-a-host/deployment-examples/event-filter-allowlist/ /run/ethereum/host/deployment-examples/event-filter-allowlist/ 301
+/run/run-a-host/deployment-examples/gcp-local-ssd-raid0 /run/ethereum/host/deployment-examples/gcp-local-ssd-raid0/ 301
+/run/run-a-host/deployment-examples/gcp-local-ssd-raid0/ /run/ethereum/host/deployment-examples/gcp-local-ssd-raid0/ 301
+/run/run-a-host/deployment-examples/prod-vm-nginx-tls /run/ethereum/host/deployment-examples/prod-vm-nginx-tls/ 301
+/run/run-a-host/deployment-examples/prod-vm-nginx-tls/ /run/ethereum/host/deployment-examples/prod-vm-nginx-tls/ 301
+/run/run-a-host/deployment-examples/snapshot-bootstrap /run/ethereum/host/deployment-examples/snapshot-bootstrap/ 301
+/run/run-a-host/deployment-examples/snapshot-bootstrap/ /run/ethereum/host/deployment-examples/snapshot-bootstrap/ 301
+/run/run-a-host/deployment-examples/watchtower-auto-deploy /run/ethereum/host/deployment-examples/watchtower-auto-deploy/ 301
+/run/run-a-host/deployment-examples/watchtower-auto-deploy/ /run/ethereum/host/deployment-examples/watchtower-auto-deploy/ 301
+/run/run-a-host/hardware-requirements /run/ethereum/host/hardware-requirements/ 301
+/run/run-a-host/hardware-requirements/ /run/ethereum/host/hardware-requirements/ 301
+/run/run-a-host/install /run/ethereum/host/install/ 301
+/run/run-a-host/install/ /run/ethereum/host/install/ 301
+/run/run-a-host/private-hosts /run/ethereum/host/private-hosts/ 301
+/run/run-a-host/private-hosts/ /run/ethereum/host/private-hosts/ 301
+/run/run-a-host/quickstart /run/ethereum/host/quickstart/ 301
+/run/run-a-host/quickstart/ /run/ethereum/host/quickstart/ 301
+/run/run-a-host/register /run/ethereum/host/register/ 301
+/run/run-a-host/register/ /run/ethereum/host/register/ 301
 
 # Views (old top-level section)
 /views                                  /build/concepts/views-for-builders/       301
@@ -144,8 +235,8 @@
 /views/examples/                        /build/how-to/view-recipes/               301
 /views/lenses                           /reference/components/lens/               301
 /views/lenses/                          /reference/components/lens/               301
-/views/faq                              /run/operations/troubleshooting/          301
-/views/faq/                             /run/operations/troubleshooting/          301
+/views/faq                              /run/ethereum/operations/troubleshooting/          301
+/views/faq/                             /run/ethereum/operations/troubleshooting/          301
 /view-creator                           /build/concepts/views-for-builders/       301
 /view-creator/                          /build/concepts/views-for-builders/       301
 /view-creator/overview                  /build/concepts/views-for-builders/       301
@@ -167,12 +258,12 @@
 # Splat passthroughs for same-name pages under a renamed section. Explicit
 # rules above win over these.
 # ---------------------------------------------------------------------------
-/host/*                                 /run/run-a-host/:splat                    301
-/hosts/*                                /run/run-a-host/:splat                    301
-/generator/*                            /run/run-a-generator/:splat               301
-/generators/*                           /run/run-a-generator/:splat               301
-/indexer/*                              /run/run-a-generator/:splat               301
-/indexers/*                             /run/run-a-generator/:splat               301
+/host/*                                 /run/ethereum/host/:splat                    301
+/hosts/*                                /run/ethereum/host/:splat                    301
+/generator/*                            /run/ethereum/generator/:splat               301
+/generators/*                           /run/ethereum/generator/:splat               301
+/indexer/*                              /run/ethereum/generator/:splat               301
+/indexers/*                             /run/ethereum/generator/:splat               301
 
 # ---------------------------------------------------------------------------
 # Original Docusaurus site served docs under the default "/docs" route prefix.
@@ -194,16 +285,16 @@
 /docs/guides/building-apps-with-shinzo/*      /build/concepts/the-app-model/      301
 /docs/hosts/examples                          /build/how-to/query-data/           301
 /docs/hosts/examples/*                        /build/how-to/query-data/           301
-/docs/hosts/overview                          /run/run-a-host/hardware-requirements/  301
-/docs/hosts/overview/*                        /run/run-a-host/hardware-requirements/  301
-/docs/hosts/quickstart                        /run/run-a-host/quickstart/         301
-/docs/hosts/quickstart/*                      /run/run-a-host/quickstart/         301
-/docs/indexer/faq                             /run/operations/troubleshooting/    301
-/docs/indexer/faq/*                           /run/operations/troubleshooting/    301
-/docs/indexer/overview                        /run/run-a-generator/prerequisites/ 301
-/docs/indexer/overview/*                      /run/run-a-generator/prerequisites/ 301
-/docs/indexer/quickstart                      /run/get-started/                   301
-/docs/indexer/quickstart/*                    /run/get-started/                   301
+/docs/hosts/overview                          /run/ethereum/host/hardware-requirements/  301
+/docs/hosts/overview/*                        /run/ethereum/host/hardware-requirements/  301
+/docs/hosts/quickstart                        /run/ethereum/host/quickstart/         301
+/docs/hosts/quickstart/*                      /run/ethereum/host/quickstart/         301
+/docs/indexer/faq                             /run/ethereum/operations/troubleshooting/    301
+/docs/indexer/faq/*                           /run/ethereum/operations/troubleshooting/    301
+/docs/indexer/overview                        /run/ethereum/generator/prerequisites/ 301
+/docs/indexer/overview/*                      /run/ethereum/generator/prerequisites/ 301
+/docs/indexer/quickstart                      /run/ethereum/get-started/                   301
+/docs/indexer/quickstart/*                    /run/ethereum/get-started/                   301
 /docs/view-creator/overview                   /build/concepts/views-for-builders/ 301
 /docs/view-creator/overview/*                 /build/concepts/views-for-builders/ 301
 /docs/view-creator/quickstart                 /build/tutorials/create-your-first-view/  301

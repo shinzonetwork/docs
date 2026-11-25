@@ -28,7 +28,7 @@ flowchart LR
 
 The Generator client reads blocks from its validator's node over JSON-RPC, and the operator owns the entire infrastructure. It doesn't verify what the node returns: no re-executing transactions, no recomputing the block's Merkle roots, no comparing responses against a second node. It doesn't need to. You don't verify your own infrastructure.
 
-That holds wherever the node runs: your own hardware, a rented VM, or a dedicated node that a managed provider operates for you. In every case it's your node, inside your boundary. [Managed nodes](/run/run-a-generator/managed-nodes/) compares the setups.
+That holds wherever the node runs: your own hardware, a rented VM, or a dedicated node that a managed provider operates for you. In every case it's your node, inside your boundary. [Managed nodes](/run/ethereum/generator/managed-nodes/) compares the setups.
 
 If the node ever serves wrong or incomplete data, that data is what gets signed, and your blocks stop matching what other Generator clients sign for the same heights. Catching that divergence is what attestations are for, as the example below shows.
 
@@ -71,5 +71,5 @@ Policing and economic penalties for manipulative Hosts are part of the protocol 
 - [Attestations](/understand/core-concepts/attestations/): how vote counts on data work.
 - [Verify data with signatures and CIDs](/build/how-to/verify-data/): the hands-on queries for checking data yourself.
 - [Attestation as a query filter](/build/concepts/attestation-as-a-query-filter/): setting per-query trust thresholds in your app.
-- [Generator security](/run/run-a-generator/security/): deployment shapes and key separation for operators.
-- [Managed nodes](/run/run-a-generator/managed-nodes/): what changes when a provider operates your node.
+- [Generator security](/run/ethereum/generator/security/): deployment shapes and key separation for operators.
+- [Managed nodes](/run/ethereum/generator/managed-nodes/): what changes when a provider operates your node.

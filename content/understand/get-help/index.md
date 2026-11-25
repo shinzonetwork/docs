@@ -31,5 +31,5 @@ Include the following where it applies:
 
 Before opening an issue, check the existing FAQs:
 
-- [Generator FAQ](/run/operations/troubleshooting/)
-- [Host FAQ](/run/operations/troubleshooting/)
+- [Generator FAQ](/run/ethereum/operations/troubleshooting/)
+- [Host FAQ](/run/ethereum/operations/troubleshooting/)

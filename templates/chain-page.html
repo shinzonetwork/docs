@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}<title>{{ page.title }} | {{ config.title }}</title>{% endblock title %}
+{% block description %}{{ page.description }}{% endblock description %}
+{% block og_title %}{{ page.title }} | {{ config.title }}{% endblock og_title %}
+{% block body %}
+{% set catalog = load_data(path="data/chains.toml") %}
+{% for chain in catalog.chains %}{% if chain.slug == page.extra.chain %}
+{% if page.extra.shared_page %}{% set content_page = get_page(path=page.extra.shared_page) %}{% else %}{% set content_page = page %}{% endif %}
+{% set base = "/run/" ~ chain.slug ~ "/" %}
+<main class="main-wrapper chain-surface"><div class="docs-layout">
+  <aside class="theme-doc-sidebar-container">{{<chains.sidebar current={page.path} />}}</aside>
+  <div class="docs-content"><article class="docItemCol markdown">
+    <nav class="chain-breadcrumbs" aria-label="Breadcrumb"><a href="/run/">Run infrastructure</a><span>/</span><a href="{{ base }}">{{ chain.name }}</a><span>/</span><span>Mainnet</span>{% if page.extra.product %}<span>/</span><span>{{ page.extra.product | title }}</span>{% endif %}</nav>
+    <h1 class="doc-title">{{ page.extra.heading | default(value=page.title) }}</h1>
+    <p class="lead-text">{{ page.description }}</p>
+    {% if page.extra.overview %}
+      {% if page.extra.overview_note %}<p class="chain-overview__note">{{ page.extra.overview_note }}</p>{% endif %}
+      {% set generator_url = base ~ "generator/prerequisites/" %}
+      {% if chain.host_steps %}{% set host_url = base ~ "host/" ~ chain.host_steps[0].slug ~ "/" %}{% else %}{% set host_url = base ~ "host/prerequisites/" %}{% endif %}
+      <section class="portal-section" aria-label="Choose your path">
+        <h2 class="portal-section__heading">Choose your path</h2>
+        <div class="portal-tracks">
+          {{<run_path.card product="generator" href={generator_url} description={page.extra.generator_summary} cta="Start Generator setup" />}}
+          {{<run_path.card product="host" href={host_url} description={page.extra.host_summary} cta={page.extra.host_cta} />}}
+        </div>
+      </section>
+    {% endif %}
+    {% if page.extra.shared_page and page.extra.product == "host" %}
+      {{ content_page.content | replace(from="/run/ethereum/host/", to=base ~ "host/") | replace(from="/run/ethereum/operations/", to=base ~ "operations/") | safe }}
+    {% else %}
+      {{ content_page.content | safe }}
+    {% endif %}
+    {% if page.extra.product %}
+    <nav class="chain-pagination" aria-label="Setup steps">
+      {% set steps = chain.generator_steps %}
+      {% if page.extra.product == "host" %}{% set steps = chain.host_steps %}{% endif %}
+      {% for step in steps %}
+        <a href="{{ base }}{{ page.extra.product }}/{{ step.slug }}/"{% if page.extra.task == step.slug %} aria-current="step"{% endif %}><span>{{ loop.index }}</span>{{ step.title }}</a>
+      {% endfor %}
+    </nav>
+    {% endif %}
+  </article></div>
+  {% if content_page.toc %}<aside class="toc-container"><nav class="toc" aria-label="On this page"><div class="toc__title">On this page</div><ul class="toc__list">{% for heading in content_page.toc %}<li class="toc__item"><a class="toc__link" href="#{{ heading.id }}">{{ heading.title }}</a></li>{% endfor %}</ul></nav></aside>{% endif %}
+</div></main>
+{% endif %}{% endfor %}
+{% endblock body %}
+{% block mobile_sidebar %}{{<chains.sidebar current={page.path} />}}{% endblock mobile_sidebar %}
+{% block scripts %}{% if page.extra.mermaid %}{{<mermaid_script />}}{% endif %}{% endblock scripts %}

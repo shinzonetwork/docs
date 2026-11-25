@@ -491,5 +491,5 @@ docker pull ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet
 ### ✨ Highlights
 
 - Shinzō Testnet is now live.
-- {{<tag name="Generator" />}} Generator Client is available for Shinzo Testnet deployments. Installation instructions: [Generator Installation Guide](https://docs.shinzo.network/run/run-a-generator/install/)
-- {{<tag name="Host" />}} Host Client is available for Shinzo Testnet deployments. Installation instructions: [Host Installation Guide](https://docs.shinzo.network/run/run-a-host/install/)
+- {{<tag name="Generator" />}} Generator Client is available for Shinzo Testnet deployments. Installation instructions: [Generator Installation Guide](https://docs.shinzo.network/run/ethereum/generator/install/)
+- {{<tag name="Host" />}} Host Client is available for Shinzo Testnet deployments. Installation instructions: [Host Installation Guide](https://docs.shinzo.network/run/ethereum/host/install/)

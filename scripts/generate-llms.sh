@@ -37,9 +37,9 @@ mkdir -p "$OUTPUT_DIR"
 # Extract a TOML front-matter field. Returns empty string if absent.
 get_toml_field() {
     local file="$1" field="$2"
-    grep -m1 "^${field}\s*=" "$file" 2>/dev/null \
-        | sed -E "s/^${field}\s*=\s*//" \
-        | sed -E "s/^(\"(.*)\"|'(.*)')\s*$/\2\3/" \
+    grep -m1 "^${field}[[:space:]]*=" "$file" 2>/dev/null \
+        | sed -E "s/^${field}[[:space:]]*=[[:space:]]*//" \
+        | sed -E "s/^(\"(.*)\"|'(.*)')[[:space:]]*$/\2\3/" \
         || true
 }
 
@@ -128,10 +128,18 @@ add_page() {
         return
     fi
 
+    sidebar_pages+=("$rel_path")
+
     local title description url
     title="$(get_toml_field "$content_file" "title")"
     description="$(get_toml_field "$content_file" "description")"
-    url="${BASE_URL}$(path_to_url "$rel_path")"
+    local explicit_path
+    explicit_path="$(get_toml_field "$content_file" "path")"
+    if [[ -n "$explicit_path" ]]; then
+        url="${BASE_URL}/${explicit_path%/}/"
+    else
+        url="${BASE_URL}$(path_to_url "$rel_path")"
+    fi
 
     # Index line - written to both files
     if [[ -n "$description" ]]; then
@@ -241,6 +249,7 @@ write_header "$LLMS_FULL_TXT"
 # The while-loop uses process substitution (< <(...)) so that variables
 # (current_section) persist across iterations.
 current_section=""
+sidebar_pages=()
 while IFS='|' read -r section paths; do
     if [[ "$section" != "$current_section" ]]; then
         section_header "$(section_title "$section")"
@@ -290,3 +299,28 @@ done < <(
 
 echo "Written $(wc -l < "$LLMS_TXT") lines → $LLMS_TXT"
 echo "Written $(wc -l < "$LLMS_FULL_TXT") lines → $LLMS_FULL_TXT"
+
+# Chain pages use explicit `path` front matter and a contextual sidebar, so
+# they are not listed in the ordinary config.toml sidebar tree. Include them
+# here from the per-chain content directories.
+section_header "Chains · Run infrastructure"
+while IFS= read -r content_file; do
+    rel_path="${content_file#"$CONTENT_DIR/"}"
+    # Draft chain pages are absent from the built site and must stay out of LLM indexes.
+    [[ "$(get_toml_field "$content_file" "draft")" == "true" ]] && continue
+    # Pages already listed in the standard sidebar were emitted above.
+    for sidebar_page in "${sidebar_pages[@]}"; do
+        [[ "$sidebar_page" == "$rel_path" ]] && continue 2
+    done
+    # Chain-specific entry points render these shared pages; index the source once.
+    [[ -n "$(get_toml_field "$content_file" "shared_page")" ]] && continue
+    explicit_path="$(get_toml_field "$content_file" "path")"
+    if [[ -n "$explicit_path" ]]; then
+        title="$(get_toml_field "$content_file" "title")"
+        description="$(get_toml_field "$content_file" "description")"
+        url="${BASE_URL}/${explicit_path%/}/"
+        printf -- '- [%s](%s): %s\n' "$title" "$url" "$description" | tee -a "$LLMS_TXT" >> "$LLMS_FULL_TXT"
+        body="$(get_body "$content_file" | clean_body | collapse_blanks)"
+        [[ -z "$body" ]] || printf '\n### %s\n\n%s\n' "$title" "$body" >> "$LLMS_FULL_TXT"
+    fi
+done < <(find "$CONTENT_DIR/run/chains" -type f -name '*.md' ! -name '_index.md' | LC_ALL=C sort)
