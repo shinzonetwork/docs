@@ -69,7 +69,6 @@ docker run -d \
   -e GETH_API_KEY="$GETH_API_KEY" \
   -e INDEXER_START_HEIGHT=0 \
   -e DEFRADB_KEYRING_SECRET=testnet-secret \
-  -e DEFRADB_PLAYGROUND=true \
   -e DEFRADB_P2P_ENABLED=true \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
   -e LOGGER_DEBUG=true \
@@ -86,8 +85,6 @@ The `ethereum-mainnet` part of the image tag names the source chain the client r
 `DEFRADB_P2P_LISTEN_ADDR` tells DefraDB which interface and port to bind libp2p to inside the container. Binding to `0.0.0.0:9171` means the Host container, running on the same Docker bridge, can reach it.
 
 `INDEXER_START_HEIGHT=0` only applies to a first run with no existing data: the client starts at the chain tip minus `start_buffer` (100 blocks by default) and catches up from there, with no historical backfill. Once the client has data, the setting is ignored and it resumes from its highest stored block. To sync from a specific point instead, set this to that block's height. On a chain with a lot of history, a height far below tip means a lot of data to process, so use a recent block if you just want to confirm the pipeline works.
-
-`DEFRADB_PLAYGROUND=true` enables a browser-based GraphQL playground on the API port.
 
 {% <admonition type="note"> %}
 This quickstart mounts no volumes, so the Generator client's database and node identity are discarded if you remove the container. That's fine here. For a setup that survives restarts, see [running a persistent Generator](/run/run-a-generator/install/#running-a-persistent-generator).
