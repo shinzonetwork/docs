@@ -1,5 +1,5 @@
 +++
-title = "Snapshot bootstrap from a trustless indexer"
+title = "Snapshot bootstrap (Ethereum-only)"
 description = "Bootstrap a Host with historical data on first startup by downloading signed snapshot files from a trustless indexer over HTTPS, then receive live blocks over P2P."
 [extra]
 mermaid = true
@@ -7,7 +7,9 @@ mermaid = true
 
 When to use this: you want your Host to sync historical data quickly on first startup by downloading signed snapshot files from a trustless indexer, instead of waiting for P2P replication to catch up from the chain tip.
 
-These scenarios use data from a supported blockchain. Shinzo supports multiple blockchains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list. To target a different chain, change the contract addresses and topic hashes to match the target chain. See the [Generator chain config](/run/run-a-generator/config-reference#chain) for details.
+{% <admonition type="warning"> %}
+Snapshots are supported only on an Ethereum-only Host. The Host will not start with snapshots enabled if it serves another chain or multiple chains. Keep `host.snapshot.enabled: false` for those deployments.
+{% </admonition> %}
 
 ## Topology
 

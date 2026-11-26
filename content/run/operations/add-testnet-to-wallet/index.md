@@ -60,5 +60,5 @@ Wallets that expose the standard `wallet_addEthereumChain` method can also pick 
 
 ## Next steps
 
-Once your wallet is connected, you can register as a Host or Generator on the [Registration app](https://registration.shinzo.network/). See the [Host quickstart](/run/run-a-host/quickstart/) and [Generator registration](/run/run-a-generator/register/) guides for the full registration flow.
+Once your wallet is connected, you can register as a Host or Generator on the [Registration app](https://registration.shinzo.network/). See the [Host registration](/run/run-a-host/register/) and [Generator registration](/run/run-a-generator/register/) guides for the full registration flow.
 

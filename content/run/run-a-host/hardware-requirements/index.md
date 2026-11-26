@@ -7,9 +7,11 @@ These requirements are for the Host client. A Host does not run a blockchain nod
 
 ## Recommended hardware
 
-The Host client has specific hardware requirements depending on the linked Generator's chain. See [shinzo.network/chains](https://shinzo.network/chains) for the current list of supported networks.
+Host hardware requirements depend on the chains configured, their combined data volume, and the Views served. A Host can serve multiple chains at once. Size multi-chain deployments for the combined workload of all configured chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list of supported networks.
 
 ### Ethereum mainnet
+
+These figures are a baseline for an Ethereum-only Host. Multi-chain deployments need additional capacity based on their combined workload.
 
 | Resource | Minimum | Recommended |
 | --- | --- | --- |
@@ -22,8 +24,12 @@ The 16 GB recommendation assumes a 16g container limit with `GOMEMLIMIT` at 14Gi
 
 ## Storage
 
-Host storage depends almost entirely on how many Views you serve and how aggressively you prune. A Host serving a few filtered Views with pruning enabled stays close to the minimum. A Host that accepts all primitive data and serves many materialized Views will trend toward the recommended figure and beyond. Pruning is enabled by default and retains roughly the last 2,000 blocks. Because the Host receives primitives from Generator clients, its storage growth tracks the throughput of the source chain. Chains with higher transaction volume produce more documents per block. See [shinzo.network/chains](https://shinzo.network/chains) for the chains Shinzo supports.
+Host storage depends on the data volume of the configured chains, how many Views you serve, and how aggressively you prune. A Host that accepts all primitive data and serves many materialized Views needs more storage than one serving a few filtered Views with pruning enabled. Chains with higher transaction volume produce more documents per block.
+
+For multi-chain Hosts, storage requirements reflect the combined data retained across all configured chains. Each entry under `chains:` can set its own retention limit using the optional `max_blocks` field, which controls how many blocks the Host keeps for that chain.
+
+Removing a chain from the configuration and restarting the Host does not delete that chain's stored data. The data remains until the store is wiped, so removing a chain does not reclaim disk space.
 
 ## Network
 
-The Host maintains P2P connections to Generator clients and serves GraphQL queries to applications. Both are sensitive to latency and uptime rather than peak bandwidth. 100 Mbps keeps up with primitive replication; 1 Gbps gives headroom when serving many concurrent application subscribers.
+The Host maintains P2P connections to Generator clients and serves GraphQL queries to applications. Reliable connectivity and low latency matter for both. The 100 Mbps minimum and 1 Gbps recommendation above are an Ethereum-only baseline. For multi-chain Hosts, size bandwidth for primitive replication across all configured chains and for concurrent application subscribers.

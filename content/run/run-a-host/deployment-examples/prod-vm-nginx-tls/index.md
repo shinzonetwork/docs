@@ -356,7 +356,7 @@ curl -s -X POST https://localhost/api/v0/graphql \
 - The `logger.level` field in the shipped config is not in the `LoggerConfig` struct and has no effect. It has been omitted. See [logger](/run/run-a-host/config-reference#logger).
 - The bootstrap peer IDs in this config are the three trustless indexer peers from `host-prod-setup.sh` (identical to the shipped `config.yaml`) and may be stale. Check the [Shinzo Validators list](https://registration.shinzo.network/validators) for current peers.
 - The nginx CORS config restricts origins to `https://explorer.shinzo.network`. If you need to allow other origins, add them to the `map` block in the nginx config.
-- The Host image tag in this compose file is `ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet`, matching `host-prod-setup.sh`. The [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`, and the [Watchtower setup](../watchtower-auto-deploy/) uses `:latest`. Pick one tag and be consistent across your deployment.
+- The Host image tag in this compose file is `ghcr.io/shinzonetwork/shinzo-host-client:v0.6.5-ethereum-mainnet`, matching `host-prod-setup.sh`. The [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`, and the [Watchtower setup](/run/operations/watchtower-auto-deploy/) uses `:latest`. Pick one tag and be consistent across your deployment.
 
 ## Need help
 

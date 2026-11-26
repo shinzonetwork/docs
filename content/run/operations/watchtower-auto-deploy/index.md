@@ -1,4 +1,5 @@
 +++
+aliases = ["/run/run-a-host/deployment-examples/watchtower-auto-deploy/"]
 title = "Watchtower auto-deploy"
 description = "Auto-deploy Host updates on push to main: GitHub Actions builds and pushes the image to GHCR, and Watchtower on the VM pulls the new image and restarts the container."
 [extra]
@@ -158,11 +159,11 @@ Replace `sha-abc1234` with the actual commit SHA tag you want to roll back to.
 
 - The container must have the `com.centurylinklabs.watchtower.enable=true` label or Watchtower will ignore it. Verify with `docker inspect shinzo-host | grep watchtower`.
 - `DEFRA_URL` in the `docker run` commands overrides `defradb.url` and is read by the Host client (`config/config.go`) and binds the DefraDB API to `0.0.0.0:9181`. `LOG_LEVEL`, `LOG_SOURCE`, and `LOG_STACKTRACE` also come from the original DEPLOYMENT.md but are not read by the Host client and have no effect. See [env vars that are not read](/run/run-a-host/config-reference#env-vars-that-are-not-read).
-- The Host image tag `:latest` is used here. The [prod VM scenario](../prod-vm-nginx-tls/) uses `:v0.6.5-ethereum-mainnet`, and the [GCP local SSD scenario](../gcp-local-ssd-raid0/) pins `:v0.5.1`. If you use Watchtower with `:latest`, you get automatic updates. If you pin a specific tag, Watchtower will not detect new images.
+- The Host image tag `:latest` is used here. The [prod VM scenario](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/) uses `:v0.6.5-ethereum-mainnet`, and the [GCP local SSD scenario](/run/run-a-host/deployment-examples/gcp-local-ssd-raid0/) pins `:v0.5.1`. If you use Watchtower with `:latest`, you get automatic updates. If you pin a specific tag, Watchtower will not detect new images.
 - Watchtower preserves the container's configuration (ports, volumes, env vars, labels) across restarts. It only replaces the image. If you need to change the container configuration, stop and remove it manually, then start a new container with the updated configuration.
 - The `DEFRA_KEYRING_SECRET` GitHub secret is used for tests in the CI pipeline, not for runtime. The runtime keyring secret comes from your `config.yaml` on the VM. See [defradb config](/run/run-a-host/config-reference#defradb).
 - There is a 5-minute delay between the image push and the container restart, controlled by `WATCHTOWER_POLL_INTERVAL=300`. To reduce this, lower the interval. To increase it, raise the interval. Lower intervals mean more frequent GHCR API calls.
-- Local SSDs are ephemeral on GCP. If you use Watchtower with the [GCP local SSD scenario](../gcp-local-ssd-raid0/), a VM restart will lose all DefraDB data. Watchtower will restart the container with the new image, but the data directory will be empty. Pair with the [snapshot bootstrap scenario](../snapshot-bootstrap/) to re-import data on restart.
+- Local SSDs are ephemeral on GCP. If you use Watchtower with the [GCP local SSD scenario](/run/run-a-host/deployment-examples/gcp-local-ssd-raid0/), a VM restart will lose all DefraDB data. Watchtower will restart the container with the new image, but the data directory will be empty. Pair with the [snapshot bootstrap scenario](/run/run-a-host/deployment-examples/snapshot-bootstrap/) to re-import data on restart.
 
 ## Need help
 
