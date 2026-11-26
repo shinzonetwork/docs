@@ -1,5 +1,4 @@
 +++
-aliases = ["/run/run-a-host/quickstart/"]
 title = "Install"
 description = "How to install a Host client with Docker or a source build and connect it to a Generator client to sync from."
 +++
@@ -20,16 +19,12 @@ There are two ways to install: [Docker](#use-docker) (recommended) or [build fro
 
 ## Use Docker
 
-The same Docker image supports all chains. Supply a keyring secret and mount a configuration file listing every chain the Host will serve.
-
-{% <admonition type="info"> %}
-**Image name pending:** `xyz` is a placeholder for the multi-chain release image. Replace it with the finalized image reference before running the Docker commands below.
-{% </admonition> %}
+Use the same Docker image for every supported chain. Before starting the container, set `DEFRA_KEYRING_SECRET` and add each chain’s prefix, Generator HTTP URL, and P2P address to `config.yaml`.
 
 1. Pull the image:
 
     ```shell
-    docker pull xyz
+    docker pull shinzo-host-client:multichain-latest
     ```
 
 1. Generate a secure key for the `DEFRA_KEYRING_SECRET`:
@@ -77,20 +72,32 @@ The same Docker image supports all chains. Supply a keyring secret and mount a c
 
     For the address portion, use the Generator client's public IP or hostname. Don't copy an address from `.p2p.self.addresses` in the health response: those are the addresses the Generator client listens on, and under Docker bridge networking they're loopback (`127.0.0.1`) and the container's internal IP, which your Host client can't reach.
 
-1. Run the container from the directory containing `config.yaml`, supplying the secret and mounting the configuration:
+1. From the directory containing `config.yaml`, create directories for the database, identity keys, and Lens files, then run the container with these directories and your configuration mounted:
 
     ```shell
+    mkdir -p ~/data/defradb ~/data/keys ~/data/lens
+    sudo chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens
+
     docker run -d \
       --name shinzo-host \
       -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
       -e DEFRA_URL="0.0.0.0:9181" \
       -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
+      -v ~/data/defradb:/app/.defra \
+      -v ~/data/keys:/app/.defra/keys \
+      -v ~/data/lens:/app/.defra/lens \
       -p 9181:9181 \
       -p 9182:9182 \
       -p 9171:9171 \
       -p 8080:8080 \
-      xyz
+      shinzo-host-client:multichain-latest
     ```
+
+    The database, identity keys, and Lens files are stored in these directories on your machine, so they remain available when you replace the container. Reuse the same directories and keyring secret when starting a replacement container.
+
+    {% <admonition type="warning"> %}
+    The container runs as UID/GID `1001:1001`. The `chown` command gives that user access to the mounted directories. Without the correct ownership, the Host can exit with a `permission denied` error on `.defra/keys`.
+    {% </admonition> %}
 
     {% <admonition type="info"> %}
     **ARM machines (Apple Silicon):** check the finalized image's supported platforms. If it is `linux/amd64` only, add `--platform linux/amd64` to the `pull` and `run` commands to use emulation.
@@ -100,10 +107,10 @@ The same Docker image supports all chains. Supply a keyring secret and mount a c
 
     | Port | Service | Notes |
     | --- | --- | --- |
-    | `9181` | DefraDB GraphQL + REST API | |
-    | `9182` | GraphQL Playground UI | |
-    | `9171` | libp2p P2P networking | Must be reachable from the internet. Open or forward this port |
-    | `8080` | Health + metrics | Open inbound TCP `8080` in your firewall as well. The public Hosts dashboard probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. |
+    | <code style="white-space: nowrap;">9181</code> | DefraDB GraphQL + REST API | Applications send GraphQL queries to `/api/v0/graphql` on this port. For public access, use a reverse proxy with TLS. |
+    | <code style="white-space: nowrap;">9182</code> | GraphQL Playground UI | Open `http://localhost:9182` in your browser to test GraphQL queries. The Playground must be included in the Host build; this port does not need to be publicly accessible. |
+    | <code style="white-space: nowrap;">9171</code> | libp2p P2P networking | Must be reachable from the internet. Open or forward this port |
+    | <code style="white-space: nowrap;">8080</code> | Health + metrics | Open inbound TCP `8080` in your firewall as well. The public Hosts dashboard probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. |
 
 1. Confirm the container is up:
 
@@ -153,45 +160,18 @@ The same Docker image supports all chains. Supply a keyring secret and mount a c
 
 1. To serve data to the network, register your Host client with ShinzoHub. See [Register a Host](/run/run-a-host/register/).
 
-### Running a persistent host
-
-The command above stores everything inside the container, so removing the container discards its database and node identity. That's fine for testing. For a long-running Host client, use the following command instead of the temporary container command above. Run it from the directory containing `config.yaml` to persist data on the host machine and mount the same configuration:
-
-```shell
-mkdir -p ~/data/defradb ~/data/keys ~/data/lens
-sudo chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens
-
-docker run -d \
-  --name shinzo-host \
-  -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
-  -e DEFRA_URL="0.0.0.0:9181" \
-  -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
-  -v ~/data/defradb:/app/.defra \
-  -v ~/data/keys:/app/.defra/keys \
-  -v ~/data/lens:/app/.defra/lens \
-  -p 9181:9181 \
-  -p 9182:9182 \
-  -p 9171:9171 \
-  -p 8080:8080 \
-  xyz
-```
-
-{% <admonition type="warning"> %}
-The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Host client can't write to the mounts and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
-{% </admonition> %}
-
 Production deployments also put an nginx reverse proxy in front for TLS and [CORS](#cors-for-browser-access). The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
 
 ## Build from source
 
-### Prerequisites
+**Prerequisites**
 
 - [Go 1.25+](https://go.dev/dl/)
 - Make
 
 When building outside Docker, the Wasmtime and Wasmer WASM runtimes must be on your `LD_LIBRARY_PATH`. The repo's [`Dockerfile`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/Dockerfile) has the exact versions and install steps. The Docker build installs these automatically.
 
-### Build
+**Build**
 
 ```shell
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
@@ -208,7 +188,7 @@ make deps-playground
 make build-playground
 ```
 
-### Configure and run
+**Configure and run**
 
 Edit `config/config.yaml` using the `chains:` example and startup compatibility guidance in [Use Docker](#use-docker). Keep the other settings from the default configuration, list every chain to serve, and supply reachable Generator HTTP URLs and P2P addresses. You also need a keyring secret.
 
@@ -238,7 +218,7 @@ Edit `config/config.yaml` using the `chains:` example and startup compatibility 
 
 1. Check the API, per-chain health status, and Generator connections using the verification steps above.
 
-### Build tags
+**Build tags**
 
 | Tag | Effect |
 | --- | --- |

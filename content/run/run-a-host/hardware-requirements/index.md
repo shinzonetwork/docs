@@ -9,8 +9,6 @@ These requirements are for the Host client. A Host does not run a blockchain nod
 
 Host hardware requirements depend on the chains configured, their combined data volume, and the Views served. A Host can serve multiple chains at once. Size multi-chain deployments for the combined workload of all configured chains. See [shinzo.network/chains](https://shinzo.network/chains) for the current list of supported networks.
 
-### Ethereum mainnet
-
 These figures are a baseline for an Ethereum-only Host. Multi-chain deployments need additional capacity based on their combined workload.
 
 | Resource | Minimum | Recommended |
@@ -26,7 +24,7 @@ The 16 GB recommendation assumes a 16g container limit with `GOMEMLIMIT` at 14Gi
 
 Host storage depends on the data volume of the configured chains, how many Views you serve, and how aggressively you prune. A Host that accepts all primitive data and serves many materialized Views needs more storage than one serving a few filtered Views with pruning enabled. Chains with higher transaction volume produce more documents per block.
 
-For multi-chain Hosts, storage requirements reflect the combined data retained across all configured chains. Each entry under `chains:` can set its own retention limit using the optional `max_blocks` field, which controls how many blocks the Host keeps for that chain.
+For multi-chain Hosts, storage requirements reflect the combined data retained across all configured chains. Each entry under `chains:` can set its own retention limit using the optional `max_blocks` field in the [config file](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml), which controls how many blocks the Host keeps for that chain.
 
 Removing a chain from the configuration and restarting the Host does not delete that chain's stored data. The data remains until the store is wiped, so removing a chain does not reclaim disk space.
 

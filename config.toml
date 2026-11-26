@@ -212,6 +212,7 @@ pages = [
   "run/run-a-host/hardware-requirements/index.md",
   "run/run-a-host/install/index.md",
   "run/run-a-host/register/index.md",
+  "run/run-a-host/quickstart/index.md",
   "run/run-a-host/config-reference/index.md",
 ]
 subsections = [
