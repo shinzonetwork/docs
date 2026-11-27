@@ -201,7 +201,7 @@ docker run -d \
 `BOOTSTRAP_PEERS` is an override. The same value is in the config file, but some Host client builds also read the env var, so we set both.
 
 {% <admonition type="note"> %}
-The Host client stores its data inside the container too. To keep it across restarts, see [running a persistent Host](/run/run-a-host/install/#running-a-persistent-host).
+The Host client stores its data inside the container too. To keep it across restarts, see [mounting the Host data directories](/run/run-a-host/install/#use-docker).
 {% </admonition> %}
 
 ## Verify the peering
