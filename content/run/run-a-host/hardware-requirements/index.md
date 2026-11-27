@@ -18,6 +18,10 @@ These figures are a baseline for an Ethereum-only Host. Multi-chain deployments 
 | Storage | 300 GB | 500 GB |
 | Network | 100 Mbps | 1 Gbps |
 
+{% <admonition type="warning"> %}
+Higher throughput across the chains your Host serves increases CPU usage, disk I/O and storage growth. Keeping more blocks increases the disk space required. Size your Host for the combined workload of its configured chains and allow extra capacity when adding chains or increasing retention.
+{% </admonition> %}
+
 The 16 GB recommendation assumes a 16g container limit with `GOMEMLIMIT` at 14GiB. Scale the limits along with the RAM. See [memory limits](/run/run-a-host/config-reference#gomemlimit).
 
 ## Storage
