@@ -350,7 +350,7 @@ Publishing `8080` exposes everything on it, not just `/health`. If you want to l
 
 ### Pruning stalls or the Generator is OOM-killed
 
-A stalled pruner can leave a growing backlog. In the v0.7.2.1 incident documented in [#530](https://github.com/shinzonetwork/shinzo-generator-client/issues/530), startup cleanup loaded all document IDs in the backlog before deleting anything. Each restart needed more memory as the backlog grew, and OOM kills prevented cleanup from finishing.
+A stalled pruner leaves a growing backlog of old blocks. If startup cleanup loads all document IDs in that backlog into memory, it can exhaust memory before deleting them. Repeated restarts do not clear the backlog and can require more memory as indexing adds blocks. See [how retention affects memory](../config-reference/#block-retention-memory-and-disk).
 
 Save the startup logs containing `pruneBlockRange`, `Startup cleanup`, `Purging`, or `Restored`, along with the node's image version history. Follow the [reset runbook](../config-reference/#reset-a-store-after-a-pruning-backlog) to back up the identity keys, stop the Generator, clear `/app/.defra` including snapshots, restore the keys, and restart with the same `DEFRADB_KEYRING_SECRET` and `indexer.start_height: 0`. The runbook preserves the node identity and Peer ID while discarding local indexed history. Verify the backups before deleting data.
 
