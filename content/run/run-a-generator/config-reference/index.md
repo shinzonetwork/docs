@@ -111,6 +111,34 @@ Removes old data to keep storage bounded. Defaults are applied by `SetDefaults` 
 | `prune_history` | bool | false | no | (none) | Walk DAG chains to delete historical block versions. Two to three times slower. Shipped `config.yaml` sets true. |
 | `max_blocks_per_cycle` | int64 | 0 (no limit) | no | (none) | Caps how many blocks one prune cycle may delete. Without a cap, a large backlog produces a cycle long enough that the queue cannot be checkpointed for hours. Shipped `config.yaml` sets 50. |
 
+### Block retention, memory, and disk
+
+The shipped configuration enables pruning and keeps about **1,000 block heights** (`pruner.max_blocks: 1000`); the fallback when this field is unset is 10,000. Raising `max_blocks` retains more history, uses more database disk space, and increases the in-memory bookkeeping needed to track documents for pruning. Lowering it reduces the steady-state storage and bookkeeping, but creates more work to delete any data already outside the new window. It does not immediately release disk space or cure a stalled pruner. Badger's caches are bounded by `block_cache_mb` and `index_cache_mb`; database size is not a direct measure of live heap. Its memory-mapped `.sst` and `.vlog` files also contribute file-backed memory that the kernel can reclaim. Snapshot files have a separate retention limit, `snapshot.max_snapshots`.
+
+In [Generator issue #530](https://github.com/shinzonetwork/shinzo-generator-client/issues/530#issuecomment-7039224701), a v0.7.2.1 node accumulated about 200,000 blocks after pruning stalled. Its startup cleanup loaded every document ID in the excess range before deleting anything, requiring about 15 GiB of memory. The process was OOM-killed before cleanup completed, and normal pruning could not run until that initial pass succeeded. As indexing added more blocks without removing old ones, each restart attempted a larger cleanup and needed more memory. These figures describe that incident, not a per-block sizing rule or a guarantee about newer releases.
+
+Keep `max_blocks` at 1,000 unless you need a longer local history, and set [GOMEMLIMIT](#gomemlimit) below the container memory limit. `defradb.p2p.resource_memory_mib` caps libp2p's memory budget; it does not reserve that amount or cap the pruner's heap.
+
+### Token mode and retention
+
+For a token-mode deployment with snapshots disabled (`snapshot.enabled: false`), `max_blocks` still controls the local database retention window when pruning is enabled. Older blocks are deleted without creating snapshot copies, so this Generator cannot supply that pruned history through snapshots. Disabling snapshots does not disable pruning or prevent a pruning backlog. Schema token authentication (`SCHEMA_AUTH_MODE=token`) controls access to the schema endpoints; it does not itself disable snapshots. Configure `snapshot.enabled` separately.
+
+### Troubleshooting stalled pruning
+
+With the shipped settings, once the store exceeds 1,000 blocks, healthy pruning logs `Pruning N blocks (queue had ...)` about every 30 seconds, followed by `Prune complete` messages. The 30 seconds is the configured check interval, not a completion deadline: a large cycle or `prune_history: true` can take longer. If these messages stop while new blocks continue to arrive and the store remains above its retention window, treat pruning as stalled. Check for a cycle that never completes, repeated startup cleanup, and OOM kills; silence before the retention window fills is expected.
+
+Before resetting the store, save startup log lines containing `pruneBlockRange`, `Startup cleanup`, `Purging`, or `Restored`, along with the image versions the node has run since pruning last worked. If memory keeps climbing, set `GODEBUG=gctrace=1` in the container environment to log heap sizes around each garbage collection and include that output in your report. In v0.7.2.1, port 9464 serves only Generator metrics and there is no pprof endpoint.
+
+### Reset a store after a pruning backlog
+
+This runbook follows the [engineer's recovery instructions in #530](https://github.com/shinzonetwork/shinzo-generator-client/issues/530#issuecomment-7039224701). It deletes the local indexed data and snapshots and starts indexing near the chain tip. Preserve the identity keys and their existing encryption secret before deleting anything.
+
+1. Copy `/app/keys` out of the container to a safe backup location outside `/app/.defra`. Also back up `/app/.defra/keys` and `/app/.defra/defra_identity.key` if they exist, recording their original paths. Keep the existing `DEFRADB_KEYRING_SECRET` and record the node identity and Peer ID so you can compare them after recovery. Verify the backups before continuing.
+1. Stop the Generator. Delete everything inside its `/app/.defra` data directory, including snapshots. If the directory is a bind mount or Docker volume, clear the corresponding mounted data, not an unrelated host directory. Do not delete the key backups.
+1. Restore the backed-up `/app/keys` contents to `/app/keys` and any identity files backed up from `/app/.defra` to their original paths before starting the Generator. Persist `/app/keys` with a Docker volume or bind mount; the production Compose example uses `~/shinzo-data/keys:/app/keys`. **The image does not declare `/app/keys` as a volume**, so unmounted keys are lost when the container is recreated.
+1. Restart with the **same `DEFRADB_KEYRING_SECRET`**, `indexer.start_height: 0` (or `INDEXER_START_HEIGHT=0`), `pruner.enabled: true`, and `pruner.max_blocks: 1000`. With the old data removed, `start_height: 0` starts near the chain tip, offset by `start_buffer`, rather than replaying the full chain.
+1. Verify that the node identity and Peer ID match the values recorded before the reset, indexing resumes, and pruning completes periodically after the store passes 1,000 blocks. Preserving the keys and secret preserves the identity and Peer ID; the [operator confirmed this recovery in #530](https://github.com/shinzonetwork/shinzo-generator-client/issues/530#issuecomment-7106113568), along with stable memory and no further observed OOM errors. If memory still climbs, collect `gctrace` output for further investigation.
+
 ## snapshot
 
 Bundles multiple blocks into a single signed file for faster initial sync. Defaults are applied by `SetDefaults` in `config/config.go` when fields are unset.
