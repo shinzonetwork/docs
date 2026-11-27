@@ -40,6 +40,8 @@ It's safe to run the script more than once. If a Generator client is already set
 
 ### Post-install
 
+Before recreating the container, verify that both `/app/.defra` and `/app/keys` are mounted persistently and keep the generated `DEFRADB_KEYRING_SECRET`. See [Running a persistent Generator](#running-a-persistent-generator). After startup, follow [Verify retention and pruning](#verify-retention-and-pruning).
+
 Once the install script has finished, you can interact with the client:
 
 ```shell
@@ -140,11 +142,11 @@ Eventually your Generator client will catch up with the validator node and start
 
 ### Running a persistent Generator
 
-The command above stores everything inside the container, so removing the container discards its database and node identity. That's fine for testing. For a long-running Generator client, persist the data directory on the host machine:
+The command above stores everything inside the container, so removing the container discards its database and node identity. That's fine for testing. For a long-running Generator client, persist both the database and identity keys on the host machine:
 
 ```shell
-mkdir -p ~/shinzo-data/defradb
-sudo chown -R 1001:1001 ~/shinzo-data/defradb
+mkdir -p ~/shinzo-data/defradb ~/shinzo-data/keys
+sudo chown -R 1001:1001 ~/shinzo-data/defradb ~/shinzo-data/keys
 
 docker run -d \
   --name shinzo-generator \
@@ -158,6 +160,7 @@ docker run -d \
   -e DEFRADB_P2P_LISTEN_ADDR=/ip4/0.0.0.0/tcp/9171 \
   -e LOGGER_DEBUG=true \
   -v ~/shinzo-data/defradb:/app/.defra \
+  -v ~/shinzo-data/keys:/app/keys \
   -p 127.0.0.1:9181:9181 \
   -p 9171:9171 \
   -p 8080:8080 \
@@ -167,6 +170,8 @@ docker run -d \
 {% <admonition type="warning"> %}
 The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Generator client can't write to the mount and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
 {% </admonition> %}
+
+**The image does not declare `/app/keys` as a volume.** Without an explicit mount, those keys are lost when the container is recreated. If you already have a Generator, back up its keys before recreating it and copy them into the persistent directories before starting the replacement; mounting an empty directory does not preserve the existing keys. See the [key backup and restore steps](../config-reference/#reset-a-store-after-a-pruning-backlog).
 
 `DEFRADB_KEYRING_SECRET` must stay the same across restarts. If it changes, the Generator client can't load its existing identity and fails to start.
 
@@ -296,6 +301,21 @@ Run the service as a dedicated user rather than root. The service user needs wri
 
 Once your Generator client is running, register it with the Shinzo Network. See [Registration](../register) for details.
 
+## Verify retention and pruning
+
+After any install method, check the logs once the Generator has indexed more than its retention window. The shipped configuration enables pruning and retains about **1,000 block heights** (`pruner.max_blocks: 1000`). Raising this value keeps more history and increases disk use and in-memory prune bookkeeping; lowering it reduces steady-state requirements but adds cleanup work for existing data. Keep the shipped value unless you need more history, and set `GOMEMLIMIT` below the container or service memory limit. See [retention and memory guidance](../config-reference/#block-retention-memory-and-disk).
+
+Look for messages like these (the counts vary):
+
+```output
+Pruning 32 blocks (queue had 1032 blocks, keeping 1000, target 1000, prune_history=true)
+Prune complete: removed 36143 docs for 32 blocks
+```
+
+The shipped prune check interval is about 30 seconds, but a cycle can take longer. Repeated completed cycles with the queue staying near 1,000 blocks indicate healthy pruning. If pruning messages stop while indexing continues above the retention window, see [Pruning stalls or the Generator is OOM-killed](#pruning-stalls-or-the-generator-is-oom-killed).
+
+For token-mode deployments with snapshots disabled (`snapshot.enabled: false`), the retention window still applies, but pruned blocks have no new snapshot copies. Token authentication alone does not disable snapshots; configure that separately. See [token mode and retention](../config-reference/#token-mode-and-retention).
+
 ## Do you need an API key?
 
 It depends on where your node is.
@@ -327,6 +347,12 @@ The following ports must be available on the machine. Two of them need to be rea
 Publishing `8080` exposes everything on it, not just `/health`. If you want to limit that surface, put nginx in front and proxy only the paths you intend to serve. See [Security](../security/) for the tradeoffs and the [nginx with snapshots](../deployment-examples/nginx-with-snapshots/) example for a working config.
 
 ## Troubleshooting
+
+### Pruning stalls or the Generator is OOM-killed
+
+A stalled pruner leaves a growing backlog of old blocks. If startup cleanup loads all document IDs in that backlog into memory, it can exhaust memory before deleting them. Repeated restarts do not clear the backlog and can require more memory as indexing adds blocks. See [how retention affects memory](../config-reference/#block-retention-memory-and-disk).
+
+Save the startup logs containing `pruneBlockRange`, `Startup cleanup`, `Purging`, or `Restored`, along with the node's image version history. Follow the [reset runbook](../config-reference/#reset-a-store-after-a-pruning-backlog) to back up the identity keys, stop the Generator, clear `/app/.defra` including snapshots, restore the keys, and restart with the same `DEFRADB_KEYRING_SECRET` and `indexer.start_height: 0`. The runbook preserves the node identity and Peer ID while discarding local indexed history. Verify the backups before deleting data.
 
 ### Permission denied on `.defra/keys`
 
