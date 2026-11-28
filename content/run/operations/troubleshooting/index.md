@@ -215,7 +215,7 @@ This is the most common reason a running Host appears offline, and it almost alw
 
 - **Docker:** the default `docker run` in [Install](/run/run-a-host/install/) publishes `8080` with `-p 8080:8080`. If you removed that flag, or you run a Compose file that doesn't map `8080`, add it back.
 - **Firewall / security group:** open inbound TCP `8080` on your server's firewall or cloud security group (Hetzner, DigitalOcean, GCP, AWS, etc.). This is separate from the P2P port `9171`. The dashboard online check only looks at `8080`.
-- **Reverse proxy:** if you put nginx in front (as in the [Quickstart](/run/run-a-host/quickstart/)), make sure it routes `/health` to the Host client's health server on port `8080`, not to DefraDB on `9181`. Otherwise the probe reaches DefraDB, which doesn't answer `/health` the way the dashboard expects.
+- **Reverse proxy:** if you put nginx in front (as in the [production VM guide](/run/run-a-host/deployment-examples/prod-vm-nginx-tls/)), make sure it routes `/health` to the Host client's health server on port `8080`, not to DefraDB on `9181`. Otherwise the probe reaches DefraDB, which doesn't answer `/health` the way the dashboard expects.
 
 Confirm the fix by running the same probe the dashboard runs, from outside your server:
 

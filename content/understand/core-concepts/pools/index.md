@@ -64,5 +64,5 @@ Every pool exposes a snapshot of its current state: the pool's metadata, which H
 ## Where to go next
 
 - [Views](/understand/core-concepts/views/): what a View is and what it contains.
-- [Run a Host](/run/run-a-host/quickstart/): install and run a Host client, then join a pool.
+- [Run a Host](/run/run-a-host/install/): install and run a Host client, then join a pool.
 - [Views for builders](/build/concepts/views-for-builders/): the Viewkit toolchain for defining and deploying Views.

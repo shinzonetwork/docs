@@ -12,19 +12,19 @@ A Host client pulls primitive blockchain data from Generator clients, runs Lens 
 ## Prerequisites
 
 - **Docker** (for the Docker path), or **[Go 1.25+](https://go.dev/dl/) and Make** (to build from source).
-- **Access to a running Generator client.** The Host client doesn't produce data itself. It receives primitive block data from a Generator client over libp2p and transforms it, so it needs at least one Generator client to sync from. The Generator client doesn't have to be your own, you just need one you can reach and its libp2p multiaddr. A Host connects to one or more Generator clients to receive blockchain data. You can connect to a Shinzo-operated Generator client or configure your own. Generator connections are defined in the chains section of `config.yaml`. The [Operator Quickstart](/run/run-a-host/quickstart/) walks through standing up a Generator client and a Host client together.
+- **Access to a running Generator client for each chain.** You need its HTTP API URL and full libp2p multiaddr, including the peer ID. The Host fetches chain schemas over HTTP and receives primitive data over P2P. You can use reachable Shinzo-operated Generators or your own. Configure these connections manually under `chains:` in `config.yaml`. See [Run a Generator and Host on one machine](/run/run-a-host/deployment-examples/generator-and-host/) if you are colocating them.
 - **Hardware** that meets the [recommendations](/run/run-a-host/hardware-requirements/).
 
 There are two ways to install: [Docker](#use-docker) (recommended) or [build from source](#build-from-source).
 
 ## Use Docker
 
-Pull the image and start it with a single `docker run`. You supply two values: a keyring secret, and the Generator client to sync from.
+Use the same Docker image for every supported chain. Before starting the container, set `DEFRA_KEYRING_SECRET` and add each chain’s prefix, Generator HTTP URL, and P2P address to `config.yaml`.
 
 1. Pull the image:
 
     ```shell
-    docker pull ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
+    docker pull shinzo-host-client:multichain-latest
     ```
 
 1. Generate a secure key for the `DEFRA_KEYRING_SECRET`:
@@ -33,21 +33,30 @@ Pull the image and start it with a single `docker run`. You supply two values: a
     openssl rand -hex 32
     ```
 
-1. Create or update your `config.yaml` with the Generator connections below. Each Generator requires a schema endpoint URL and a libp2p multiaddr. It must be a full multiaddr that includes IP, port and peer ID:
+1. Save a copy of the release's [default configuration](https://github.com/shinzonetwork/shinzo-host-client/blob/main/config/config.yaml) as `config.yaml` in your working directory. Keep its other settings and add or replace the top-level `chains:` section. The example below serves Ethereum mainnet and BSC mainnet; replace each placeholder with a reachable Generator's details:
 
-```yaml
-chains:
-  - prefix: Ethereum__Mainnet
-    generators:
-      - url: https://generator01.infra.shinzo.network:8445
-        peer: /dns4/generator01.infra.shinzo.network/tcp/9174/p2p/12D3KooWHVQHUMxWmSwCHVPZ2pE1xzwjjNJbC7UmcwyqxJUmxRwV
-      - url: https://generator02.infra.shinzo.network:8445
-        peer: /dns4/generator02.infra.shinzo.network/tcp/9175/p2p/12D3KooWKZvZTTWxAGVwBfpVrk6guEt4ZwSXPQogZNUa5pUnV4nR
-      - url: https://generator03.infra.shinzo.network:8445
-        peer: /dns4/generator03.infra.shinzo.network/tcp/9176/p2p/12D3KooWCthjY1CT2Ug7zhyW3jZZugeNnqHrKcpKRWEyU4dJVTL6
-      - url: https://generator04.infra.shinzo.network:8445
-        peer: /dns4/generator04.infra.shinzo.network/tcp/9177/p2p/12D3KooWP7Dy4QevtXX64po3L1MG1Je5m5Dmj81CArTfs76TuPxj   
-```
+    ```yaml
+    chains:
+      - prefix: Ethereum__Mainnet
+        generators:
+          - url: http://<ethereum-generator-ip>:8080
+            peer: /ip4/<ethereum-generator-ip>/tcp/9171/p2p/<ethereum-generator-peer-id>
+      - prefix: BSC__Mainnet
+        generators:
+          - url: http://<bsc-generator-ip>:8080
+            peer: /ip4/<bsc-generator-ip>/tcp/9171/p2p/<bsc-generator-peer-id>
+        # max_blocks: 1000  # Optional retention limit for this chain
+    ```
+
+    Each `prefix` must match the Generator's chain exactly, including case. `url` is the Generator's HTTP API base URL; `peer` is its P2P multiaddr. Use the ports exposed by your Generator, which may differ from this example. The optional `max_blocks` overrides `pruner.max_blocks` for that chain.
+
+    Without a `chains` key, the Host serves Ethereum only. Once you add it, list every chain you want to serve, including Ethereum. For a single-chain Host, keep only that chain's entry. A Host that does not serve Ethereum can remove the Ethereum peers from `defradb.p2p.bootstrap_peers`. Adding bootstrap peers alone does not enable another chain.
+
+    At least one listed Generator for each chain must answer the HTTP schema request on first start. If none of the BSC Generators answers, BSC is disabled; a BSC-only Host will not start.
+
+    {% <admonition type="warning"> %}
+    **Check startup compatibility:** snapshots work only on an Ethereum-only Host, and event filtering works only on a single-chain Host. For the two-chain example above, keep `host.snapshot.enabled` and `shinzo.event_filter.enabled` set to `false`. The Host will not start with an incompatible feature enabled.
+    {% </admonition> %}
 
     If your Generator client has a public hostname, use a `dns4` multiaddr instead:
 
@@ -63,32 +72,45 @@ chains:
 
     For the address portion, use the Generator client's public IP or hostname. Don't copy an address from `.p2p.self.addresses` in the health response: those are the addresses the Generator client listens on, and under Docker bridge networking they're loopback (`127.0.0.1`) and the container's internal IP, which your Host client can't reach.
 
-1. Run the container, supplying the secret and multiaddr:
+1. From the directory containing `config.yaml`, create directories for the database, identity keys, and Lens files, then run the container with these directories and your configuration mounted:
 
     ```shell
+    mkdir -p ~/data/defradb ~/data/keys ~/data/lens
+    sudo chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens
+
     docker run -d \
       --name shinzo-host \
       -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
-      -e BOOTSTRAP_PEERS="<generator-multiaddr>" \
+      -e DEFRA_URL="0.0.0.0:9181" \
+      -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
+      -v ~/data/defradb:/app/.defra \
+      -v ~/data/keys:/app/.defra/keys \
+      -v ~/data/lens:/app/.defra/lens \
       -p 9181:9181 \
       -p 9182:9182 \
       -p 9171:9171 \
       -p 8080:8080 \
-      ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
+      shinzo-host-client:multichain-latest
     ```
 
-    {% <admonition type="info"> %}
-    **ARM machines (Apple Silicon):** the image is `linux/amd64` only. Add `--platform linux/amd64` to the `pull` and `run` commands to run it under emulation. Running on native x86-64 hardware is recommended.
+    The database, identity keys, and Lens files are stored in these directories on your machine, so they remain available when you replace the container. Reuse the same directories and keyring secret when starting a replacement container.
+
+    {% <admonition type="warning"> %}
+    The container runs as UID/GID `1001:1001`. The `chown` command gives that user access to the mounted directories. Without the correct ownership, the Host can exit with a `permission denied` error on `.defra/keys`.
     {% </admonition> %}
 
-1. The remaining settings, including the ShinzoHub endpoint the Host client pulls View definitions from, use the image's built-in defaults:
+    {% <admonition type="info"> %}
+    **ARM machines (Apple Silicon):** check the finalized image's supported platforms. If it is `linux/amd64` only, add `--platform linux/amd64` to the `pull` and `run` commands to use emulation.
+    {% </admonition> %}
+
+1. The remaining settings, including the ShinzoHub endpoint used to fetch View definitions, come from your mounted configuration. The commands above publish these ports:
 
     | Port | Service | Notes |
     | --- | --- | --- |
-    | `9181` | DefraDB GraphQL + REST API | |
-    | `9182` | GraphQL Playground UI | |
-    | `9171` | libp2p P2P networking | Must be reachable from the internet. Open or forward this port |
-    | `8080` | Health + metrics | Open inbound TCP `8080` in your firewall as well. The public Hosts dashboard probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. |
+    | <code style="white-space: nowrap;">9181</code> | DefraDB GraphQL + REST API | Applications send GraphQL queries to `/api/v0/graphql` on this port. For public access, use a reverse proxy with TLS. |
+    | <code style="white-space: nowrap;">9182</code> | GraphQL Playground UI | Open `http://localhost:9182` in your browser to test GraphQL queries. The Playground must be included in the Host build; this port does not need to be publicly accessible. |
+    | <code style="white-space: nowrap;">9171</code> | libp2p P2P networking | Must be reachable from the internet. Open or forward this port |
+    | <code style="white-space: nowrap;">8080</code> | Health + metrics | Open inbound TCP `8080` in your firewall as well. The public Hosts dashboard probes `http://<your-server-ip>:8080/health` to decide whether your Host shows as online. |
 
 1. Confirm the container is up:
 
@@ -114,47 +136,42 @@ chains:
     docker logs shinzo-host | grep -i peer
     ```
 
-    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. A public Generator client to point at is coming; this page will link a known-good endpoint and a ready-to-run query once it's live. See [query examples](/build/how-to/query-data/).
+    A healthy connection adds the Generator client's peer and keeps it. You should not see that peer stuck in a loop of `dial backoff` / `all dials failed`. Once it's syncing, query real data from the Playground or the API. See [query examples](/build/how-to/query-data/).
+
+1. Check the status of each configured chain:
+
+    ```shell
+    curl -s http://localhost:8080/health | jq '.chains'
+    ```
+
+    `/health`, `/registration`, `/stats`, and `/metrics` report per-chain status under `chains`. Update monitoring that reads the removed top-level `current_block` or `last_processed` fields. A responding API alone does not confirm that every configured chain is syncing.
+
+    Views that reference tables without a chain prefix are treated as Ethereum Views and will not load on a Host that does not serve Ethereum.
+
+1. Confirm primitive data is arriving. For an Ethereum Host, query recent logs:
+
+    ```shell
+    curl -s http://localhost:9181/api/v0/graphql \
+      -H "Content-Type: application/json" \
+      -d '{"query":"{ Ethereum__Mainnet__Log(order: {blockNumber: DESC}, limit: 10) { address topics data blockNumber transactionHash } }"}'
+    ```
+
+    Returned records confirm that log data is available. An empty result can mean the Host has not received matching data yet; check per-chain health and Generator connections. For another chain, use its schema's collection name.
 
 1. To serve data to the network, register your Host client with ShinzoHub. See [Register a Host](/run/run-a-host/register/).
-
-### Running a persistent host
-
-The command above stores everything inside the container, so removing the container discards its database and node identity. That's fine for testing. For a long-running Host client, persist data on the host machine with volume mounts:
-
-```shell
-mkdir -p ~/data/defradb ~/data/keys ~/data/lens
-sudo chown -R 1001:1001 ~/data/defradb ~/data/keys ~/data/lens
-
-docker run -d \
-  --name shinzo-host \
-  -e DEFRA_KEYRING_SECRET="<your-strong-secret>" \
-  -v ~/data/defradb:/app/.defra \
-  -v ~/data/keys:/app/.defra/keys \
-  -v ~/data/lens:/app/.defra/lens \
-  -p 9181:9181 \
-  -p 9182:9182 \
-  -p 9171:9171 \
-  -p 8080:8080 \
-  ghcr.io/shinzonetwork/shinzo-host-client:ethereum-mainnet-latest
-```
-
-{% <admonition type="warning"> %}
-The container runs as UID/GID `1001:1001`, and a bind mount takes the ownership of the host directory. Without the `chown` above, the Host client can't write to the mounts and exits with a `permission denied` error on `.defra/keys`. This is a workaround until the image handles directory ownership on startup.
-{% </admonition> %}
 
 Production deployments also put an nginx reverse proxy in front for TLS and [CORS](#cors-for-browser-access). The repo has example Compose files you can adapt if you prefer to orchestrate with Compose.
 
 ## Build from source
 
-### Prerequisites
+**Prerequisites**
 
 - [Go 1.25+](https://go.dev/dl/)
 - Make
 
 When building outside Docker, the Wasmtime and Wasmer WASM runtimes must be on your `LD_LIBRARY_PATH`. The repo's [`Dockerfile`](https://github.com/shinzonetwork/shinzo-host-client/blob/main/Dockerfile) has the exact versions and install steps. The Docker build installs these automatically.
 
-### Build
+**Build**
 
 ```shell
 git clone https://github.com/shinzonetwork/shinzo-host-client.git
@@ -171,9 +188,9 @@ make deps-playground
 make build-playground
 ```
 
-### Configure and run
+**Configure and run**
 
-The only required setting is the keyring secret.
+Edit `config/config.yaml` using the `chains:` example and startup compatibility guidance in [Use Docker](#use-docker). Keep the other settings from the default configuration, list every chain to serve, and supply reachable Generator HTTP URLs and P2P addresses. You also need a keyring secret.
 
 1. Export the secret key:
 
@@ -199,15 +216,27 @@ The only required setting is the keyring secret.
 
     {{<endtab />}}
 
-1. Done!
+1. Check the API, per-chain health status, and Generator connections using the verification steps above.
 
-### Build tags
+**Build tags**
 
 | Tag | Effect |
 | --- | --- |
 | `hostplayground` | Embeds the GraphQL Playground UI (served on port `9182`) |
 
 Ports, verification, and registration are the same as the Docker path above.
+
+## Add or remove a chain
+
+Edit the `chains:` list in your configuration and restart the Host. For Docker, edit the mounted `config.yaml`, then run:
+
+```shell
+docker restart shinzo-host
+```
+
+For a source build, edit `config/config.yaml` and restart the running process. Keep an entry for every chain you still want to serve, and check per-chain health after restarting. Review the snapshot and event-filter restrictions before changing the list.
+
+Removing a chain stops its subscription after restart but leaves its stored data in place until the store is wiped. It does not reclaim disk space automatically.
 
 ## CORS for browser access
 

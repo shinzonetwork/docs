@@ -211,19 +211,20 @@ label = "Run a Host"
 pages = [
   "run/run-a-host/hardware-requirements/index.md",
   "run/run-a-host/install/index.md",
-  "run/run-a-host/configure-event-filters/index.md",
   "run/run-a-host/register/index.md",
-  "run/run-a-host/private-hosts/index.md",
   "run/run-a-host/quickstart/index.md",
   "run/run-a-host/config-reference/index.md",
 ]
 subsections = [
+  { label = "Advanced configuration", pages = [
+    "run/run-a-host/configure-event-filters/index.md",
+    "run/run-a-host/private-hosts/index.md",
+  ] },
   { label = "Deployment Examples", pages = [
-    "run/run-a-host/deployment-examples/event-filter-allowlist/index.md",
-    "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
     "run/run-a-host/deployment-examples/prod-vm-nginx-tls/index.md",
     "run/run-a-host/deployment-examples/gcp-local-ssd-raid0/index.md",
-    "run/run-a-host/deployment-examples/watchtower-auto-deploy/index.md",
+    "run/run-a-host/deployment-examples/generator-and-host/index.md",
+    "run/run-a-host/deployment-examples/snapshot-bootstrap/index.md",
   ] },
 ]
 
@@ -232,6 +233,7 @@ section = "run"
 label = "Operations"
 pages = [
   "run/operations/add-testnet-to-wallet/index.md",
+  "run/operations/watchtower-auto-deploy/index.md",
   "run/operations/troubleshooting/index.md"
 ]
 

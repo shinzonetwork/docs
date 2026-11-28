@@ -752,19 +752,15 @@ a.menu__link--category:hover {
   }
 
   table {
-    display: table;
+    display: block;
     width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border-collapse: collapse;
     margin: 1.5rem 0;
     font-size: 0.9rem;
 
-    @container docs (max-width: 41rem) {
-      display: block;
-      width: 100%;
-      max-width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
   }
 
   th,
@@ -783,15 +779,17 @@ a.menu__link--category:hover {
     font-size: 0.8125rem;
   }
 
-  // A code token that wraps across lines renders as connected border
-  // fragments; `clone` gives each wrapped line its own complete chip.
+  // Wrap prose between words and keep identifiers intact. Wide tables
+  // scroll within the article instead of breaking individual tokens.
   td {
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   th code,
   td code {
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    overflow-wrap: normal;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
   }
